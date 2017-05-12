@@ -10,9 +10,8 @@ import { AppComponent } from './app.component';
 import { HeaderComponent } from './header/header.component';
 import { FooterComponent } from './footer/footer.component';
 import { TradeSectComponent } from './trade-sect/trade-sect.component';
-import { ButtonsSectComponent } from './buttons-sect/buttons-sect.component';
 import { ImagesTextComponent } from './images-text/images-text.component';
-import { HeadersTextComponent } from './headers-text/headers-text.component';
+import { DemoSectComponent } from './demo-sect/demo-sect.component';
 
 
 @NgModule({
@@ -21,9 +20,8 @@ import { HeadersTextComponent } from './headers-text/headers-text.component';
     HeaderComponent,
     FooterComponent,
     TradeSectComponent,
-    ButtonsSectComponent,
     ImagesTextComponent,
-    HeadersTextComponent,
+    DemoSectComponent,
   ],
   imports: [
     FormsModule,
