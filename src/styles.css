@@ -1,0 +1,88 @@
+/* You can add global styles to this file, and also import other style files */
+
+body{
+    font-family:  "Roboto",sans-serif;
+}
+.section {
+    padding-top: 30px;
+    padding-bottom: 30px;
+    min-height: 300px;
+}
+
+
+.center {
+  margin: auto;
+}
+
+.txt-center {
+    text-align: center;
+}
+
+/* Flex box related */
+
+.flex {
+  display: flex;
+}
+
+.grow-1 {
+  flex-grow: 1;        
+}
+.grow-2 {
+  flex-grow: 2;        
+}
+.grow-3 {
+  flex-grow: 3;        
+}
+.grow-4 {
+  flex-grow: 4;        
+}
+.grow-5 {
+  flex-grow: 5;        
+}
+.grow-6 {
+  flex-grow: 6;        
+}
+
+.nowrap {
+  flex-wrap: nowrap;        
+}
+
+/*font colors*/
+
+.txt-black {
+    color: #000;
+}
+
+.txt-white {
+    color: #FFF;
+}
+
+.txt-nav-purp {
+    color: hsl(263, 38%, 53%);
+}
+
+.txt-nav-blue {
+    color: hsl(199, 81%, 58%);
+}
+
+/* Background Colors*/
+
+.bg-black {
+    background-color: #000;
+}
+
+.bg-white {
+    background-color: #FFF;
+}
+
+.bg-nav-purp {
+    background-color: hsl(263, 38%, 53%);
+}
+
+.bg-nav-blue {
+    background-color: hsl(199, 81%, 58%);
+}
+
+.bg-med-grey {
+    background-color: #555;
+}
