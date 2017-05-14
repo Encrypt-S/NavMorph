@@ -26,3 +26,19 @@ body{
     text-align: center;
 }
 
+button {
+    width: 60%;
+    max-width: 175px;
+}
+
+.btn-small {
+    width: 15%;
+    max-width: 75px;
+}
+
+.btn-wide {
+    width: 100%;
+    max-width: 100%; /* Overriding the default button style */
+    padding: -15px 0;
+    
+}
