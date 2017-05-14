@@ -3,9 +3,14 @@
 body{
     font-family:  "Roboto",sans-serif;
 }
+
 .section {
     padding-top: 30px;
-    padding-bottom: 30px;
+    min-height: 300px;
+}
+
+.section-main {
+    padding: 10px 50px;
     min-height: 300px;
 }
 
@@ -20,8 +25,14 @@ body{
 
 /* Flex box related */
 
-.flex {
-  display: flex;
+.flex-row{
+    display: flex;
+    flex-direction: column;
+}
+
+.flex-col {
+    display: flex;
+    flex-direction: row;
 }
 
 .grow-1 {
@@ -45,6 +56,10 @@ body{
 
 .nowrap {
   flex-wrap: nowrap;        
+}
+
+.width-100 {
+    flex-basis: 100%;
 }
 
 /*font colors*/
@@ -85,4 +100,8 @@ body{
 
 .bg-med-grey {
     background-color: #555;
+}
+
+.bg-light-grey {
+    background-color: #aaa;
 }
