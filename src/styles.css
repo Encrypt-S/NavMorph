@@ -62,4 +62,13 @@ button {
 .input-std{
     flex-basis: 60%;
 }
+
+
+.textareaContainer {
+    height: 200px;
+    width: 60%
+}
+
+p {
+    font-size: 14px;
 }
