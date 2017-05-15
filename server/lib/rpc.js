@@ -9,72 +9,32 @@ let Rpc = { //eslint-disable-line
   }),
 }
 
-Rpc.navcoinRpc = (req, res) => {
-  if (!req.body || !req.body.command) {
-    res.send(JSON.stringify({
-      status: 200,
-      type: 'FAIL',
-      code: 'API_001',
-      message: 'failed to receive command',
-    }))
-    return
-  }
+Rpc.getInfo = (req, res) => {
   try {
-    Rpc.runCommand(req, res)
-    return
-  } catch (e) {
-    res.send(JSON.stringify({
-      status: 200,
-      type: 'FAIL',
-      code: 'API_002',
-      message: 'something went wrong',
-      error: e,
-    }))
-  }
-}
-
-Rpc.runCommand = (req, res) => {
-  if (typeof Rpc.navClient[req.body.command] !== 'function') {
-    res.send(JSON.stringify({
-      status: 200,
-      type: 'FAIL',
-      code: 'API_003',
-      message: 'parsed command is not a function',
-      command: req.body.command,
-    }))
-    return
-  }
-  if (req.body.params && typeof Array.isArray(req.body.params)) {
-    Rpc.navClient[req.body.command](...req.body.params).then((data) => {
+    Rpc.navClient.getInfo().then((data) => {
       res.send(JSON.stringify({
         status: 200,
         type: 'SUCCESS',
         data,
       }))
-    }).catch((error) => {
+    }).catch((e) => {
       res.send(JSON.stringify({
         status: 200,
         type: 'FAIL',
-        code: error.code,
-        message: error.message,
+        code: 'RPC_002',
+        message: 'something went wrong',
+        error: e,
       }))
     })
-    return
-  }
-  Rpc.navClient[req.body.command]().then((data) => {
-    res.send(JSON.stringify({
-      status: 200,
-      type: 'SUCCESS',
-      data,
-    }))
-  }).catch((error) => {
+  } catch (e) {
     res.send(JSON.stringify({
       status: 200,
       type: 'FAIL',
-      code: error.code,
-      message: error.message,
+      code: 'RPC_001',
+      message: 'something went wrong',
+      error: e,
     }))
-  })
+  }
 }
 
 module.exports = Rpc
