@@ -11,5 +11,5 @@ export class DemoSectComponent implements OnInit {
 
   ngOnInit() {
   }
-
+  coins = ['Navcoin', 'Bitcoin', 'Litecoin'];
 }

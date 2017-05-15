@@ -15,6 +15,7 @@ body{
 
 .section-main {
     padding: 10px 50px;
+    flex-basis: 60%;
     min-height: 300px;
 }
 
@@ -25,6 +26,12 @@ body{
 
 .txt-center {
     text-align: center;
+}
+
+@media (max-width: 500px){
+    .mob-hdn {
+        display: none;
+    }
 }
 
 button {
@@ -40,6 +47,6 @@ button {
 .btn-wide {
     width: 100%;
     max-width: 100%; /* Overriding the default button style */
-    padding: -15px 0;
+    padding: 0;
     
 }
