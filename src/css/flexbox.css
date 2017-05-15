@@ -1,13 +1,13 @@
-/* Flex box related */
+/* Flexbox related */
 
 .flex-row{
-    display: flex;
-    flex-direction: column;
+  display: flex;
+  flex-direction: column;
 }
 
 .flex-col {
-    display: flex;
-    flex-direction: row;
+  display: flex;
+  flex-direction: row;
 }
 
 .flex-wrap {
@@ -31,14 +31,6 @@
 }
 .grow-6 {
   flex-grow: 6;        
-}
-
-.nowrap {
-  flex-wrap: nowrap;        
-}
-
-.width-100 {
-    flex-basis: 100%;
 }
 
 .flex-justify-center {

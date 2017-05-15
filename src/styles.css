@@ -5,70 +5,67 @@
 @import "./css/flexbox.css";
 
 body{
-    font-family:  "Roboto",sans-serif;
+  font-family:  "Roboto",sans-serif;
 }
 
 .section {
-    padding-top: 30px;
-    min-height: 300px;
+  padding-top: 30px;
+  min-height: 300px;
 }
 
 .section-main {
-    padding: 10px 50px;
-    flex-basis: 60%;
-    min-height: 250px;
+  padding: 10px 50px;
+  flex-basis: 60%;
+  min-height: 250px;
 }
-
 
 .center {
   margin: auto;
 }
 
 .txt-center {
-    text-align: center;
+  text-align: center;
 }
 
 @media (max-width: 500px){
-    .mob-hdn {
-        display: none;
-    }
+  .mob-hdn {
+    display: none;
+  }
 }
 
 button {
-    width: 60%;
-    max-width: 175px;
+  width: 60%;
+  max-width: 175px;
 }
 
 .btn-small {
-    width: 15%;
-    max-width: 75px;
+  width: 15%;
+  max-width: 75px;
 }
 
 .btn-wide {
-    width: 100%;
-    max-width: 100%; /* Overriding the default button style */
-    padding: 0;
-    
+  width: 100%;
+  max-width: 100%; /* Overriding the default button style */
+  padding: 0;    
 }
 
 .align-md-select {
-    padding-top: 5px;
+  padding-top: 5px;
 }
 
 .input-label {
-    flex-basis: 80%;
+  flex-basis: 80%;
 }
 
 .input-std{
-    flex-basis: 60%;
+  flex-basis: 60%;
 }
 
-
 .textareaContainer {
-    height: 200px;
-    width: 60%
+  height: 200px;
+  width: 60%
 }
 
 p {
-    font-size: 14px;
+  font-size: 14px;
 }

@@ -1,43 +1,43 @@
-/*font colors*/
+/*font colours*/
 
 .txt-black {
-    color: #000;
+  color: #000;
 }
 
 .txt-white {
-    color: #FFF;
+  color: #FFF;
 }
 
 .txt-nav-purp {
-    color: hsl(263, 38%, 53%);
+  color: hsl(263, 38%, 53%);
 }
 
 .txt-nav-blue {
-    color: hsl(199, 81%, 58%);
+  color: hsl(199, 81%, 58%);
 }
 
 /* Background Colors*/
 
 .bg-black {
-    background-color: #000;
+  background-color: #000;
 }
 
 .bg-white {
-    background-color: #FFF;
+  background-color: #FFF;
 }
 
 .bg-nav-purp {
-    background-color: hsl(263, 38%, 53%);
+  background-color: hsl(263, 38%, 53%);
 }
 
 .bg-nav-blue {
-    background-color: hsl(199, 81%, 58%);
+  background-color: hsl(199, 81%, 58%);
 }
 
 .bg-med-grey {
-    background-color: #555;
+  background-color: #555;
 }
 
 .bg-light-grey {
-    background-color: #aaa;
+  background-color: #aaa;
 }
