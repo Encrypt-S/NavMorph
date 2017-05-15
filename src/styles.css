@@ -50,3 +50,16 @@ button {
     padding: 0;
     
 }
+
+.align-md-select {
+    padding-top: 5px;
+}
+
+.input-label {
+    flex-basis: 80%;
+}
+
+.input-std{
+    flex-basis: 60%;
+}
+}

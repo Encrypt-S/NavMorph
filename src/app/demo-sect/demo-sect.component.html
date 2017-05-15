@@ -17,14 +17,31 @@
   </div>
 </div>
   
-<!--  
-  <div class="grow-3"><h2>Form Fields</h2>
-    <form action="">
-      <input type="text">
-      <textarea name="" id="" cols="30" rows="10"></textarea>
-      <select name="" id=""></select>
-    </form>
+<div class="section bg-nav-blue flex-row">
+  <div class="flex-col">
+    <div class="grow-1 mob-hdn"></div>
+      <md-card class="grow-1 bg-white section-main">
+      <md-card-title>Form Fields</md-card-title>
+      <md-card-content class="">
+      
+        <div class="flex-col flex-justify-center flex-wrap">
+          <h3 class="input-label">Input and select</h3>
+          <md-input-container  floatPlaceholder="never" class="input-std"><input mdInput type="text" placeholder="Enter Text Here"> </md-input-container>
+          <md-select placeholder="Pick a coin" [(ngModel)]="selected" name="selected" id="currency-select" class="align-md-select "  floatPlaceholder="never">
+              <md-option *ngFor="let coin of coins" [value]="coin">
+                  {{coin}}
+              </md-option>
+          </md-select>
+          
+        </div>
+        <md-input-container class="textareaContainer center flex-col"> <textarea mdInput placeholder="Enter Text Here" name="" id="" class="center" ></textarea> </md-input-container> <br>
+        
+      </md-card-content>
+    </md-card>
+        
+    <div class="grow-1 mob-hdn"></div>
   </div>
+</div>
 
   <div class="grow-3"><h3>Text</h3>
 
