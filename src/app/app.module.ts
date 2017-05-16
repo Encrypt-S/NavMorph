@@ -36,9 +36,35 @@ import { SendPageComponent } from './send-page/send-page.component';
     FormsModule,
     BrowserAnimationsModule, // 
     MaterialModule,          // Mat. Design comps
-    BrowserModule,
-    
-    HttpModule
+    BrowserModule,    
+    HttpModule,
+    RouterModule.forRoot([
+  {
+    path: 'demo',
+    component: DemoSectComponent
+  },
+  {
+    path: '',
+    component: HomePageComponent
+  },
+  {
+    path: 'home',
+    component: HomePageComponent
+  },
+  {
+    path: 'send',
+    component: SendPageComponent
+  },
+  {
+    path: 'about',
+    component: AboutPageComponent
+  },
+  {
+    path: 'contact',
+    component: ContactPageComponent
+  },
+  
+])
   ],
   providers: [],
   bootstrap: [AppComponent]
