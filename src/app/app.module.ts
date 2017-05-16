@@ -2,7 +2,6 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
-import { BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import { RouterModule } from '@angular/router';
 import { MaterializeModule } from 'angular2-materialize';
 
@@ -31,9 +30,8 @@ import { SendPageComponent } from './send-page/send-page.component';
     SendPageComponent,
   ],
   imports: [
-    FormsModule,
-    BrowserAnimationsModule, // 
-    MaterializeModule,          // Mat. Design comps
+    FormsModule, 
+    MaterializeModule,       
     BrowserModule,    
     HttpModule,
     RouterModule.forRoot([
