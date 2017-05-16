@@ -6,16 +6,16 @@
       <md-card-title>Send Coin</md-card-title>
       <md-card-content class="flex-row">  
         <div class="flex-col flex-wrap">
-          <md-input-container  floatPlaceholder="never" class="input-std"><input mdInput type="text" placeholder="Enter Amount"> </md-input-container>
-          <md-select placeholder="Pick a coin" [(ngModel)]="initialCoin" name="initialCoin" id="currency-select" class="align-md-select "  floatPlaceholder="never">
+          <md-input-container class="input-std"><input mdInput type="text" placeholder="Enter Amount"> </md-input-container>
+          <md-select placeholder="Pick a coin" [(ngModel)]="initialCoin" name="initialCoin" id="currency-select" class="align-md-select">
             <md-option *ngFor="let coin of coins" [value]="coin">
               {{coin}}
             </md-option>
           </md-select>
         </div>
         <div class="flex-col flex-wrap">
-          <md-input-container  floatPlaceholder="never" class="input-std"><input mdInput type="text" placeholder="Enter Destination Address"> </md-input-container>
-          <md-select placeholder="Pick a coin" [(ngModel)]="destinationCoin" name="destinationCoin" id="currency-select" class="align-md-select "  floatPlaceholder="never">
+          <md-input-container class="input-std"><input mdInput type="text" placeholder="Enter Destination Address"> </md-input-container>
+          <md-select placeholder="Pick a coin" [(ngModel)]="destinationCoin" name="destinationCoin" id="currency-select" class="align-md-select">
             <md-option *ngFor="let coin of coins" [value]="coin">
               {{coin}}
             </md-option>
