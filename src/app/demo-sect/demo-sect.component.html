@@ -1,5 +1,84 @@
-<div class="section bg-white flex">
-
-  Demo section
+<div class="section bg-nav-blue flex-row">
   
+  <div class="flex-col flex-justify-center">
+    <div class="grow-1 mob-hdn"></div>
+    <md-card class="grow-1 bg-white section-main">
+      <md-card-title>Send Coin</md-card-title>
+      <md-card-content class="flex-row">  
+        <div class="flex-col flex-wrap">
+          <md-input-container class="input-std"><input mdInput type="text" placeholder="Enter Amount"> </md-input-container>
+          <md-select placeholder="Pick a coin" [(ngModel)]="initialCoin" name="initialCoin" class="align-md-select">
+            <md-option *ngFor="let coin of coins" [value]="coin">
+              {{coin}}
+            </md-option>
+          </md-select>
+        </div>
+        <div class="flex-col flex-wrap">
+          <md-input-container class="input-std"><input mdInput type="text" placeholder="Enter Destination Address"> </md-input-container>
+          <md-select placeholder="Pick a coin" [(ngModel)]="destinationCoin" name="destinationCoin" class="align-md-select">
+            <md-option *ngFor="let coin of coins" [value]="coin">
+              {{coin}}
+            </md-option>
+          </md-select>
+        </div>
+        <button md-raised-button color="accent">Send Coins!!</button> 
+        <button md-raised-button class="btn-small" >Clear</button>
+      </md-card-content>
+    </md-card> 
+    <div class="grow-1 mob-hdn"></div>
+  </div>
+</div>
+
+<div class="section bg-nav-blue flex-row">
+  <div class="flex-col">
+    <div class="grow-1 mob-hdn"></div>
+    <md-card class="grow-1 bg-white section-main">
+      <md-card-title>Buttons</md-card-title>
+      <md-card-content class="flex-row">
+        <button md-raised-button >Default</button> <br><br>
+        <button md-raised-button disabled>Disabled</button> <br><br> 
+        <button md-raised-button color="accent">Click Me</button> <br><br>
+        <button md-raised-button class="btn-small">Small</button> <br><br>
+        <button md-raised-button class="btn-wide">Wide</button>
+      </md-card-content>
+    </md-card>
+    <div class="grow-1 mob-hdn"></div>
+  </div>
+</div>
+  
+<div class="section bg-nav-blue flex-row">
+  <div class="flex-col">
+    <div class="grow-1 mob-hdn"></div>
+      <md-card class="grow-1 bg-white section-main">
+      <md-card-title>Form Fields</md-card-title>
+      <md-card-content class="">
+        <div class="flex-col flex-wrap">
+          <h3 class="input-label">Input and select</h3>
+          <md-input-container  floatPlaceholder="never" class="input-std"><input mdInput type="text" placeholder="Enter Text Here"> </md-input-container>
+          <md-select placeholder="Pick a coin" [(ngModel)]="selected" name="selected" class="align-md-select"  floatPlaceholder="never">
+            <md-option *ngFor="let coin of coins" [value]="coin">
+              {{coin}}
+            </md-option>
+          </md-select>
+        </div>
+        <md-input-container class="textareaContainer center flex-col"> <textarea mdInput placeholder="Enter Text Here" class="center" ></textarea> </md-input-container> <br>
+      </md-card-content>
+    </md-card>
+    <div class="grow-1 mob-hdn"></div>
+  </div>
+</div>
+<div class="section bg-nav-blue flex-row">
+  <div class="flex-col">
+    <div class="grow-1 mob-hdn"></div>
+    <md-card class="grow-1 bg-white section-main">
+      <md-card-title>Text</md-card-title>
+      <md-card-content class="flex-row">
+        <h1 class="txt-nav-blue">Header 1</h1>
+        <h2 class="txt-nav-purp">Header 2</h2>
+        <h3 class="">Header 3</h3>
+        <p>Paragraph: Proident tempor duis enim est eu. Eu magna laborum ullamco fugiat. Sit ad velit commodo culpa deserunt magna id adipisicing. Consectetur nostrud in ex labore occaecat.</p>
+      </md-card-content>
+    </md-card>    
+    <div class="grow-1 mob-hdn"></div>
+  </div>
 </div>

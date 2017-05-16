@@ -7,9 +7,10 @@ import { Component, OnInit } from '@angular/core';
 })
 export class DemoSectComponent implements OnInit {
 
+  coins = ['Navcoin', 'Bitcoin', 'Litecoin'];
+
   constructor() { }
 
   ngOnInit() {
   }
-
 }

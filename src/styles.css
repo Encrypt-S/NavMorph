@@ -1,88 +1,87 @@
 /* You can add global styles to this file, and also import other style files */
 
+@import '~@angular/material/prebuilt-themes/indigo-pink.css';
+@import "./css/colours.css";
+@import "./css/flexbox.css";
+
 body{
-    font-family:  "Roboto",sans-serif;
-}
-.section {
-    padding-top: 30px;
-    padding-bottom: 30px;
-    min-height: 300px;
+  font-family:  "Roboto",sans-serif;
 }
 
+.section {
+  padding-top: 30px;
+  min-height: 300px;
+}
+
+.section-main {
+  padding: 10px 50px;
+  flex-basis: 60%;
+  min-height: 250px;
+}
 
 .center {
   margin: auto;
 }
 
 .txt-center {
-    text-align: center;
+  text-align: center;
 }
 
-/* Flex box related */
-
-.flex {
-  display: flex;
+@media (max-width: 500px){
+  .mob-hdn {
+    display: none;
+  }
 }
 
-.grow-1 {
-  flex-grow: 1;        
-}
-.grow-2 {
-  flex-grow: 2;        
-}
-.grow-3 {
-  flex-grow: 3;        
-}
-.grow-4 {
-  flex-grow: 4;        
-}
-.grow-5 {
-  flex-grow: 5;        
-}
-.grow-6 {
-  flex-grow: 6;        
+button {
+  width: 60%;
+  max-width: 175px;
 }
 
-.nowrap {
-  flex-wrap: nowrap;        
+.btn-small {
+  width: 15%;
+  max-width: 75px;
 }
 
-/*font colors*/
-
-.txt-black {
-    color: #000;
+.btn-wide {
+  width: 100%;
+  max-width: 100%; /* Overriding the default button style */
+  padding: 0;    
 }
 
-.txt-white {
-    color: #FFF;
+.mat-card-content{
+  font-size: 16px;
 }
 
-.txt-nav-purp {
-    color: hsl(263, 38%, 53%);
+.mat-input-element {
+  font-size: 16px !important;
 }
 
-.txt-nav-blue {
-    color: hsl(199, 81%, 58%);
+md-select {
+  transform: translate(0px, 7px);
+  -webkit-transform: translate(0px, 7px);
+  -moz-transform: translate(0px, 10px);
 }
 
-/* Background Colors*/
-
-.bg-black {
-    background-color: #000;
+.mat-select-placeholder.mat-floating-placeholder {
+  transform: scale(.75) translateY(8px) !important;
+  -webkit-transform: scale(.75) translateY(8px) !important;
+  -moz-transform: scale(.75) translateY(8px) !important;
 }
 
-.bg-white {
-    background-color: #FFF;
+.input-label {
+  flex-basis: 80%;
 }
 
-.bg-nav-purp {
-    background-color: hsl(263, 38%, 53%);
+.input-std{
+  flex-basis: 60%;
 }
 
-.bg-nav-blue {
-    background-color: hsl(199, 81%, 58%);
+.textareaContainer {
+  height: 200px;
+  width: 60%
 }
 
-.bg-med-grey {
-    background-color: #555;
+p {
+  font-size: 14px;
 }
