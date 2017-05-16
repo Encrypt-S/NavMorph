@@ -7,7 +7,7 @@
       <md-card-content class="flex-row">  
         <div class="flex-col flex-wrap">
           <md-input-container class="input-std"><input mdInput type="text" placeholder="Enter Amount"> </md-input-container>
-          <md-select placeholder="Pick a coin" [(ngModel)]="initialCoin" name="initialCoin" id="currency-select" class="align-md-select">
+          <md-select placeholder="Pick a coin" [(ngModel)]="initialCoin" name="initialCoin" class="align-md-select">
             <md-option *ngFor="let coin of coins" [value]="coin">
               {{coin}}
             </md-option>
@@ -15,7 +15,7 @@
         </div>
         <div class="flex-col flex-wrap">
           <md-input-container class="input-std"><input mdInput type="text" placeholder="Enter Destination Address"> </md-input-container>
-          <md-select placeholder="Pick a coin" [(ngModel)]="destinationCoin" name="destinationCoin" id="currency-select" class="align-md-select">
+          <md-select placeholder="Pick a coin" [(ngModel)]="destinationCoin" name="destinationCoin" class="align-md-select">
             <md-option *ngFor="let coin of coins" [value]="coin">
               {{coin}}
             </md-option>
@@ -55,13 +55,13 @@
         <div class="flex-col flex-wrap">
           <h3 class="input-label">Input and select</h3>
           <md-input-container  floatPlaceholder="never" class="input-std"><input mdInput type="text" placeholder="Enter Text Here"> </md-input-container>
-          <md-select placeholder="Pick a coin" [(ngModel)]="selected" name="selected" id="currency-select" class="align-md-select "  floatPlaceholder="never">
+          <md-select placeholder="Pick a coin" [(ngModel)]="selected" name="selected" class="align-md-select"  floatPlaceholder="never">
             <md-option *ngFor="let coin of coins" [value]="coin">
               {{coin}}
             </md-option>
           </md-select>
         </div>
-        <md-input-container class="textareaContainer center flex-col"> <textarea mdInput placeholder="Enter Text Here" name="" id="" class="center" ></textarea> </md-input-container> <br>
+        <md-input-container class="textareaContainer center flex-col"> <textarea mdInput placeholder="Enter Text Here" class="center" ></textarea> </md-input-container> <br>
       </md-card-content>
     </md-card>
     <div class="grow-1 mob-hdn"></div>
