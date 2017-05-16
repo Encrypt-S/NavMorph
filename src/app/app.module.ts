@@ -46,10 +46,6 @@ import { SendPageComponent } from './send-page/send-page.component';
         component: HomePageComponent
       },
       {
-        path: 'home',
-        component: HomePageComponent
-      },
-      {
         path: 'send',
         component: SendPageComponent
       },
