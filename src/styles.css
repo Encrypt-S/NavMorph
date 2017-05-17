@@ -1,35 +1,8 @@
 /* You can add global styles to this file, and also import other style files */
-
 @import "./css/colours.css";
-@import "./css/flexbox.css";
 
 body{
   font-family: "Roboto",sans-serif;
-}
-
-.section {
-  padding-top: 30px;
-  min-height: 300px;
-}
-
-.section-main {
-  padding: 10px 50px;
-  flex-basis: 60%;
-  min-height: 250px;
-}
-
-.center {
-  margin: auto;
-}
-
-.txt-center {
-  text-align: center;
-}
-
-@media (max-width: 500px){
-  .mob-hdn {
-    display: none;
-  }
 }
 
 button {
@@ -48,41 +21,4 @@ button {
   width: 100%;
   max-width: 100%; /* Overriding the default button style */
   padding: 0;    
-}
-
-.mat-card-content{
-  font-size: 16px;
-}
-
-.mat-input-element {
-  font-size: 16px !important;
-}
-
-md-select {
-  transform: translate(0px, 7px);
-  -webkit-transform: translate(0px, 7px);
-  -moz-transform: translate(0px, 10px);
-}
-
-.mat-select-placeholder.mat-floating-placeholder {
-  transform: scale(.75) translateY(8px) !important;
-  -webkit-transform: scale(.75) translateY(8px) !important;
-  -moz-transform: scale(.75) translateY(8px) !important;
-}
-
-.input-label {
-  flex-basis: 80%;
-}
-
-.input-std{
-  flex-basis: 60%;
-}
-
-.textareaContainer {
-  height: 200px;
-  width: 60%
-}
-
-p {
-  font-size: 14px;
 }
