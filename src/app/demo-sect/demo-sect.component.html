@@ -1,77 +1,83 @@
-<div class="bg-nav-blue">
-<!--<div class="section flex-row">
-  
-  <div class="flex-col flex-justify-center">
-    <div class="grow-1 mob-hdn"></div>
-    <div class="grow-1 bg-white section-main">
-      <h3>Send Coin</h3>
-      <div class="flex-row">  
-        <div class="flex-col flex-wrap">
-          <md-input-container class="input-std"><input mdInput type="text" placeholder="Enter Amount"> </md-input-container>
-          <md-select placeholder="Pick a coin" [(ngModel)]="initialCoin" name="initialCoin" class="align-md-select">
-            <md-option *ngFor="let coin of coins" [value]="coin">
-              {{coin}}
-            </md-option>
-          </md-select>
+<div class="section row bg-white z-depth-3">   
+  <div class="col hide-on-small-only m1 l2"> </div>
+  <div class="col s12 m10 l8">
+    <h3>Send Coin</h3>
+    <div class="row col s12">
+      <div class="col s12">
+        <div class="input-field col s10">
+          <input type="text" name="enter-text-ex" > 
+          <label for="enter-text-ex">Enter amount</label>
         </div>
-        <div class="flex-col flex-wrap">
-          <md-input-container class="input-std"><input mdInput type="text" placeholder="Enter Destination Address"> </md-input-container>
-          <md-select placeholder="Pick a coin" [(ngModel)]="destinationCoin" name="destinationCoin" class="align-md-select">
-            <md-option *ngFor="let coin of coins" [value]="coin">
-              {{coin}}
-            </md-option>
-          </md-select>
+        <div class="input-field col s2">
+          <select materialize="material_select" [(ngModel)]="selected" name="selected" class="">
+            <option *ngFor="let coin of coins" [value]="coin">{{coin}}</option>
+          </select>
+          <label>Source Coin</label>
         </div>
-        <button md-raised-button color="accent">Send Coins!!</button> 
-        <button md-raised-button class="btn-small" >Clear</button>
       </div>
-    </div> 
-    <div class="grow-1 mob-hdn"></div>
-  </div>
-</div>-->
-
-<div class="section flex-row">
-  <div class="flex-col">
-    <div class="grow-1 mob-hdn"></div>
-    <div class="grow-1 bg-white section-main">
-      <h3>Buttons</h3>
-        <div class="flex-col">
-
-          <div class="flex-row grow-1">
-            <button class="btn waves-effect waves-light light-blue lighten-1" type="submit" name="action">Submit
-              <i class="material-icons right">send</i>
-            </button><br>
-            <button class="btn waves-effect waves-light disabled" type="submit" name="action">Disabled
-              <i class="material-icons right">send</i>
-            </button><br>
-            <button class="btn waves-effect waves-light purple" type="submit" name="action">Accent
-              <i class="material-icons right">send</i>
-            </button><br>
-            <button class="btn waves-effect waves-light btn-flat" type="submit" name="action">Flat
-              <i class="material-icons right">send</i>
-            </button>
-          </div>
-
-          <div class="flex-row grow-1">
-            <button class="btn waves-effect waves-light btn-large" type="submit" name="action">Large</button><br>
-            <button class="btn waves-effect waves-light btn-small" type="submit" name="action">Small</button><br>
-            <button class="btn waves-effect waves-light btn-wide" type="submit" name="action">Wide</button><br>
-             <button class="btn waves-effect waves-light btn-flat disabled" type="submit" name="action">Disabled
-              <i class="material-icons right">send</i>
-            </button>
-          </div>
-        </div>
     </div>
-    <div class="grow-1 mob-hdn"></div>
+
+    <div class="row col s12">
+      <div class="col s12">
+        <div class="input-field col s10">
+          <input type="text" name="enter-text-ex" > 
+          <label for="enter-text-ex">Enter Destination Address</label>
+        </div>
+        <div class="input-field col s2">
+          <select materialize="material_select" [(ngModel)]="selected" name="selected" class="">
+            <option *ngFor="let coin of coins" [value]="coin">{{coin}}</option>
+          </select>
+          <label>Dest. Coin</label>
+        </div>
+      </div>
+    </div>
+    <div class="row col s12">
+      <button class="btn waves-effect waves-light light-blue lighten-1" type="submit" name="action">Send
+          <i class="material-icons right">send</i>
+      </button>
+      <button class="btn waves-effect waves-light btn-small" type="submit" name="action">Clear</button>
+    </div>
+  </div> 
+  <div class="col hide-on-small-only m1 l2"> </div>
+</div>
+
+<div class="section row bg-white z-depth-3">
+  <div class="col hide-on-small-only m1 l2"> </div>
+  <div class="col s12 m10 l8">
+    <h2 class="col s12">Buttons</h2>
+    <div class="row col s12">
+      <div class="col s6">
+        <button class="btn waves-effect waves-light light-blue lighten-1" type="submit" name="action">Submit
+          <i class="material-icons right">send</i>
+        </button><br><br>
+        <button class="btn waves-effect waves-light disabled" type="submit" name="action">Disabled
+          <i class="material-icons right">send</i>
+        </button><br><br>
+        <button class="btn waves-effect waves-light purple" type="submit" name="action">Accent
+          <i class="material-icons right">send</i>
+        </button><br><br>
+        <button class="btn waves-effect waves-light btn-flat" type="submit" name="action">Flat
+          <i class="material-icons right">send</i>
+        </button>
+      </div>
+      <div class="col s6">
+        <button class="btn waves-effect waves-light btn-large" type="submit" name="action">Large</button><br><br>
+        <button class="btn waves-effect waves-light btn-small" type="submit" name="action">Small</button><br><br>
+        <button class="btn waves-effect waves-light btn-wide" type="submit" name="action">Wide</button><br><br>
+          <button class="btn waves-effect waves-light btn-flat disabled" type="submit" name="action">Disabled
+          <i class="material-icons right">send</i>
+        </button>
+      </div>
+    </div>
   </div>
+  <div class="col hide-on-small-only m1 l2"> </div>
 </div>
   
-<div class="section row">
-  <div class="col s2 mob-hdn"></div>
-  <div class="col s8 bg-white section-main">
-    <h2>Form Fields</h2>
-  
-    <div class="row">
+<div class="section row bg-white z-depth-3">
+  <div class="col hide-on-small-only m1 l2"> </div>
+  <div class="col s12 m10 l8">
+    <h2 class="col s12">Form Fields</h2>
+    <div class="row col s12">
       <h5 class="col s12">Input and select</h5>
       <div class="col s12">
         <div class="input-field col s10">
@@ -86,7 +92,7 @@
         </div>
       </div>
     </div>
-    <div class="row">
+    <div class="row col s12">
       <h5 class="col s12">Text Area</h5>
       <div class="input-field col s12"> 
         <textarea id="textarea-ex" class="materialize-textarea" ></textarea> 
@@ -94,22 +100,19 @@
       </div>
     </div>
   </div>
-  <div class="col s2 mob-hdn"></div>
+  <div class="col hide-on-small-only m1 l2"> </div>
 </div>
 
-<div class="section flex-row">
-  <div class="flex-col">
-    <div class="grow-1 mob-hdn"></div>
-    <div class="grow-1 bg-white section-main">
-      <h3>Text</h3>
-      <div class="flex-row">
-        <h1 class="txt-nav-blue">Header 1</h1>
-        <h2 class="txt-nav-purp">Header 2</h2>
-        <h3 class="">Header 3</h3>
-        <p>Paragraph: Proident tempor duis enim est eu. Eu magna laborum ullamco fugiat. Sit ad velit commodo culpa deserunt magna id adipisicing. Consectetur nostrud in ex labore occaecat.</p>
-      </div>
-    </div>    
-    <div class="grow-1 mob-hdn"></div>
-  </div>
-</div>
+<div class="section row bg-white z-depth-3">
+  <div class="col hide-on-small-only m1 l2"> </div>
+  <div class="col s12 m10 l8">
+    <h3>Text</h3>
+    <div class="row">
+      <h1 class="txt-nav-blue">Header 1</h1>
+      <h2 class="txt-nav-purp">Header 2</h2>
+      <h3 class="">Header 3</h3>
+      <p>Paragraph: Proident tempor duis enim est eu. Eu magna laborum ullamco fugiat. Sit ad velit commodo culpa deserunt magna id adipisicing. Consectetur nostrud in ex labore occaecat.</p>
+    </div>
+  </div>    
+  <div class="col hide-on-small-only m1 l2"> </div>
 </div>
