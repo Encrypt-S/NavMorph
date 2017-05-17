@@ -2,10 +2,6 @@
   height: 50px;
 }
 
-.fill-remaining-space {
-  flex: 1 1 auto;
-}
-
 a {
   color: #fff;
   text-decoration: none;
