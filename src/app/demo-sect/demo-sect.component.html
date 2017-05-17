@@ -1,4 +1,5 @@
-<!--<div class="section bg-nav-blue flex-row">
+<div class="bg-nav-blue">
+<!--<div class="section flex-row">
   
   <div class="flex-col flex-justify-center">
     <div class="grow-1 mob-hdn"></div>
@@ -29,7 +30,7 @@
   </div>
 </div>-->
 
-<div class="section bg-nav-blue flex-row">
+<div class="section flex-row">
   <div class="flex-col">
     <div class="grow-1 mob-hdn"></div>
     <div class="grow-1 bg-white section-main">
@@ -65,29 +66,38 @@
   </div>
 </div>
   
-<!--<div class="section bg-nav-blue flex-row">
-  <div class="flex-col">
-    <div class="grow-1 mob-hdn"></div>
-      <div class="grow-1 bg-white section-main">
-      <h1>Form Fields</h1>
-      <div class="">
-        <div class="flex-col flex-wrap">
-          <h3 class="input-label">Input and select</h3>
-          <md-input-container  floatPlaceholder="never" class="input-std"><input mdInput type="text" placeholder="Enter Text Here"> </md-input-container>
-          <md-select placeholder="Pick a coin" [(ngModel)]="selected" name="selected" class="align-md-select"  floatPlaceholder="never">
-            <md-option *ngFor="let coin of coins" [value]="coin">
-              {{coin}}
-            </md-option>
-          </md-select>
+<div class="section row">
+  <div class="col s2 mob-hdn"></div>
+  <div class="col s8 bg-white section-main">
+    <h2>Form Fields</h2>
+  
+    <div class="row">
+      <h5 class="col s12">Input and select</h5>
+      <div class="col s12">
+        <div class="input-field col s10">
+          <input type="text" name="enter-text-ex" > 
+          <label for="enter-text-ex">Enter text here</label>
         </div>
-        <md-input-container class="textareaContainer center flex-col"> <textarea mdInput placeholder="Enter Text Here" class="center" ></textarea> </md-input-container> <br>
+        <div class="input-field col s2">
+          <select materialize="material_select" [(ngModel)]="selected" name="selected" class="">
+            <option *ngFor="let coin of coins" [value]="coin">{{coin}}</option>
+          </select>
+          <label>Label!</label>
+        </div>
       </div>
     </div>
-    <div class="grow-1 mob-hdn"></div>
+    <div class="row">
+      <h5 class="col s12">Text Area</h5>
+      <div class="input-field col s12"> 
+        <textarea id="textarea-ex" class="materialize-textarea" ></textarea> 
+        <label for="textarea-ex">I'm a textarea</label>
+      </div>
+    </div>
   </div>
-</div>-->
+  <div class="col s2 mob-hdn"></div>
+</div>
 
-<div class="section bg-nav-blue flex-row">
+<div class="section flex-row">
   <div class="flex-col">
     <div class="grow-1 mob-hdn"></div>
     <div class="grow-1 bg-white section-main">
@@ -101,4 +111,5 @@
     </div>    
     <div class="grow-1 mob-hdn"></div>
   </div>
+</div>
 </div>
