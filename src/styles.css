@@ -22,3 +22,7 @@ button {
   max-width: 100%; /* Overriding the default button style */
   padding: 0;    
 }
+
+.no-bot-margin {
+  margin-bottom: 0;
+}
