@@ -1,36 +1,8 @@
 /* You can add global styles to this file, and also import other style files */
-
-@import '~@angular/material/prebuilt-themes/indigo-pink.css';
 @import "./css/colours.css";
-@import "./css/flexbox.css";
 
 body{
-  font-family:  "Roboto",sans-serif;
-}
-
-.section {
-  padding-top: 30px;
-  min-height: 300px;
-}
-
-.section-main {
-  padding: 10px 50px;
-  flex-basis: 60%;
-  min-height: 250px;
-}
-
-.center {
-  margin: auto;
-}
-
-.txt-center {
-  text-align: center;
-}
-
-@media (max-width: 500px){
-  .mob-hdn {
-    display: none;
-  }
+  font-family: "Roboto",sans-serif;
 }
 
 button {
@@ -39,8 +11,10 @@ button {
 }
 
 .btn-small {
-  width: 15%;
-  max-width: 75px;
+  width: 25%;
+  max-width: 125px;
+  min-width: 70px;
+  padding: 0 0.5rem;
 }
 
 .btn-wide {
@@ -49,39 +23,6 @@ button {
   padding: 0;    
 }
 
-.mat-card-content{
-  font-size: 16px;
-}
-
-.mat-input-element {
-  font-size: 16px !important;
-}
-
-md-select {
-  transform: translate(0px, 7px);
-  -webkit-transform: translate(0px, 7px);
-  -moz-transform: translate(0px, 10px);
-}
-
-.mat-select-placeholder.mat-floating-placeholder {
-  transform: scale(.75) translateY(8px) !important;
-  -webkit-transform: scale(.75) translateY(8px) !important;
-  -moz-transform: scale(.75) translateY(8px) !important;
-}
-
-.input-label {
-  flex-basis: 80%;
-}
-
-.input-std{
-  flex-basis: 60%;
-}
-
-.textareaContainer {
-  height: 200px;
-  width: 60%
-}
-
-p {
-  font-size: 14px;
+.no-bot-margin {
+  margin-bottom: 0;
 }
