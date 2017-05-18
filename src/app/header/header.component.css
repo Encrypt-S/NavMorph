@@ -1,3 +1,5 @@
 #header-logo {
-  height: 50px;
+  max-height: 60px;
+  max-width: 108px;
+  padding: 10px;
 }
