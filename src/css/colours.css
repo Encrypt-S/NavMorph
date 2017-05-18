@@ -16,6 +16,18 @@
   color: hsl(199, 81%, 58%);
 }
 
+.txt-dark-grey {
+  color: #333;
+}
+
+.txt-med-grey {
+  color: #777;
+}
+
+.txt-light-grey {
+  color: #ccc;
+}
+
 /* Background Colors*/
 
 .bg-black {
