@@ -1,5 +1,6 @@
 /* You can add global styles to this file, and also import other style files */
-@import "./css/colours.css";
+@import "./css/base/colors.css";
+@import "./css/header/header.component.css"
 
 body{
   font-family: "Roboto",sans-serif;
@@ -20,7 +21,7 @@ button {
 .btn-wide {
   width: 100%;
   max-width: 100%; /* Overriding the default button style */
-  padding: 0;    
+  padding: 0;
 }
 
 .no-bot-margin {
