@@ -9,7 +9,7 @@ import { AppComponent } from './app.component';
 import { HeaderComponent } from './header/header.component';
 import { FooterComponent } from './footer/footer.component';
 import { TradeSectComponent } from './trade-sect/trade-sect.component';
-import { ImagesTextComponent } from './images-text/images-text.component';
+import { HowItWorksComponent } from './how-it-works/how-it-works.component';
 import { DemoSectComponent } from './demo-sect/demo-sect.component';
 import { AboutPageComponent } from './about-page/about-page.component';
 import { ContactPageComponent } from './contact-page/contact-page.component';
@@ -22,7 +22,7 @@ import { SendPageComponent } from './send-page/send-page.component';
     HeaderComponent,
     FooterComponent,
     TradeSectComponent,
-    ImagesTextComponent,
+    HowItWorksComponent,
     DemoSectComponent,
     AboutPageComponent,
     ContactPageComponent,
@@ -41,7 +41,7 @@ import { SendPageComponent } from './send-page/send-page.component';
       },
       {
         path: '',
-        component: HomePageComponent
+        component: HowItWorksComponent//HomePageComponent
       },
       {
         path: 'send',
