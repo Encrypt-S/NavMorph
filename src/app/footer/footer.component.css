@@ -1,0 +1,26 @@
+a {
+  color: #000;
+}
+
+a:hover {
+  color: hsl(263, 38%, 53%);
+}
+
+li {
+  line-height: 2;
+}
+
+#footer-logo {
+  padding:30px ;
+  max-height: 150px;
+}
+
+.footer-col {
+  text-align: left
+}
+
+@media (max-width: 600px) {
+  .footer-col {
+  text-align: center;
+  }
+}
