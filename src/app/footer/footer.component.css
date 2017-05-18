@@ -1,3 +1,15 @@
+footer{
+    min-height: 320px;
+    padding-top: 70px;
+}
+
+@media (max-width: 600px) {
+  footer{
+    padding-top: 30px;
+    padding-bottom: 80px;
+  }
+}
+
 p{
  padding: 0 10px; 
 }
