@@ -9,7 +9,7 @@ import { AppComponent } from './app.component';
 import { HeaderComponent } from './header/header.component';
 import { FooterComponent } from './footer/footer.component';
 import { TradeSectComponent } from './trade-sect/trade-sect.component';
-import { AboutSectionComponent } from './about-section/about-section.component';
+import { SellingPointsSectComponent } from './selling-points-sect/selling-points-sect.component';
 import { DemoSectComponent } from './demo-sect/demo-sect.component';
 import { AboutPageComponent } from './about-page/about-page.component';
 import { ContactPageComponent } from './contact-page/contact-page.component';
@@ -23,7 +23,7 @@ import { ImageWithTextComponent } from './image-with-text/image-with-text.compon
     HeaderComponent,
     FooterComponent,
     TradeSectComponent,
-    AboutSectionComponent,
+    SellingPointsSectComponent,
     DemoSectComponent,
     AboutPageComponent,
     ContactPageComponent,
