@@ -15,6 +15,7 @@ import { AboutPageComponent } from './about-page/about-page.component';
 import { ContactPageComponent } from './contact-page/contact-page.component';
 import { HomePageComponent } from './home-page/home-page.component';
 import { SendPageComponent } from './send-page/send-page.component';
+import { ImageWithTextComponent } from './image-with-text/image-with-text.component';
 
 @NgModule({
   declarations: [
@@ -28,6 +29,7 @@ import { SendPageComponent } from './send-page/send-page.component';
     ContactPageComponent,
     HomePageComponent,
     SendPageComponent,
+    ImageWithTextComponent,
   ],
   imports: [
     FormsModule, 
