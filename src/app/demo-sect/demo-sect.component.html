@@ -1,46 +1,49 @@
-<div class="section row bg-white">   
-  <div class="col hide-on-small-only m1 l2"> </div>
-  <div class="col s12 m10 l8">
-    <h3>Send Coin</h3>
-    <div class="row col s12">
-      <div class="col s12">
-        <div class="input-field col s10">
-          <input type="text" name="enter-text-ex" > 
-          <label for="enter-text-ex">Enter amount</label>
-        </div>
-        <div class="input-field col s2">
-          <select materialize="material_select" [(ngModel)]="selected" name="selected" class="">
-            <option *ngFor="let coin of coins" [value]="coin">{{coin}}</option>
-          </select>
-          <label>Source Coin</label>
+<div class="section parallax-container" id="demo-hero">
+  <div class="parallax" materialize="parallax"><img src="./assets/polymorph-background.jpg"></div>
+  <div class="row">
+    <div class="col hide-on-small-only m1 l2"> </div>
+    <div class="col s12 m10 l8">
+      <h3 class="txt-white"><img alt="Navtech logo" id="header-logo" src=".\assets\polymorph-logo.svg" /></h3>
+      <div class="row col s12">
+        <div class="col s12">
+          <div class="input-field col s10">
+            <input type="text" name="enter-text-ex" >
+            <label for="enter-text-ex">Enter amount</label>
+          </div>
+          <div class="input-field col s2">
+            <select materialize="material_select" [(ngModel)]="selected" name="selected" class="">
+              <option *ngFor="let coin of coins" [value]="coin.ticker">{{coin.ticker}}</option>
+            </select>
+            <label>Source Coin</label>
+          </div>
         </div>
       </div>
-    </div>
 
-    <div class="row col s12">
-      <div class="col s12">
-        <div class="input-field col s10">
-          <input type="text" name="enter-text-ex" > 
-          <label for="enter-text-ex">Enter Destination Address</label>
-        </div>
-        <div class="input-field col s2">
-          <select materialize="material_select" [(ngModel)]="selected" name="selected" class="">
-            <option *ngFor="let coin of coins" [value]="coin">{{coin}}</option>
-          </select>
-          <label>Dest. Coin</label>
+      <div class="row col s12">
+        <div class="col s12">
+          <div class="input-field col s10">
+            <input type="text" name="enter-text-ex" >
+            <label for="enter-text-ex">Enter Destination Address</label>
+          </div>
+          <div class="input-field col s2">
+            <select materialize="material_select" [(ngModel)]="selected" name="selected" class="">
+              <option *ngFor="let coin of coins" [value]="coin.ticker">{{coin.ticker}}</option>
+            </select>
+            <label>Dest. Coin</label>
+          </div>
         </div>
       </div>
+      <div class="row col s12 demo-send-buttons">
+        <button class="btn waves-effect waves-light btn-small bg-nav-blue" type="submit" name="action">Clear</button>
+        <button class="btn waves-effect waves-light bg-nav-fuschia lighten-1" type="submit" name="action">Send
+            <i class="material-icons right">send</i>
+        </button>
+      </div>
+
     </div>
-    <div class="row col s12">
-      <button class="btn waves-effect waves-light bg-nav-blue lighten-1" type="submit" name="action">Send
-          <i class="material-icons right">send</i>
-      </button>
-      <button class="btn waves-effect waves-light btn-small" type="submit" name="action">Clear</button>
-    </div>
-    
-  </div> 
-  <div class="col hide-on-small-only m1 l2"> </div>
-</div>  
+    <div class="col hide-on-small-only m1 l2"> </div>
+  </div>
+</div>
 
 <div class="section row bg-light-grey">
   <div class="col hide-on-small-only m1 l2"> </div>
@@ -73,8 +76,8 @@
   </div>
   <div class="col hide-on-small-only m1 l2"> </div>
 </div>
-  
-  
+
+
 <div class="section row bg-white">
   <div class="col hide-on-small-only m1 l2"> </div>
   <div class="col s12 m10 l8">
@@ -83,7 +86,7 @@
       <h5 class="col s12">Input and select</h5>
       <div class="col s12">
         <div class="input-field col s10">
-          <input type="text" name="enter-text-ex" > 
+          <input type="text" name="enter-text-ex" >
           <label for="enter-text-ex">Enter text here</label>
         </div>
         <div class="input-field col s2">
@@ -96,15 +99,15 @@
     </div>
     <div class="row col s12">
       <h5 class="col s12">Text Area</h5>
-      <div class="input-field col s12"> 
-        <textarea id="textarea-ex" class="materialize-textarea" ></textarea> 
+      <div class="input-field col s12">
+        <textarea id="textarea-ex" class="materialize-textarea" ></textarea>
         <label for="textarea-ex">I'm a textarea</label>
       </div>
     </div>
   </div>
   <div class="col hide-on-small-only m1 l2"> </div>
 </div>
-  
+
 
 <div class="section row bg-light-grey no-bot-margin">
   <div class="col hide-on-small-only m1 l2"> </div>
@@ -116,7 +119,6 @@
       <h3 class="">Header 3</h3>
       <p>Paragraph: Proident tempor duis enim est eu. Eu magna laborum ullamco fugiat. Sit ad velit commodo culpa deserunt magna id adipisicing. Consectetur nostrud in ex labore occaecat.</p>
     </div>
-  </div>    
+  </div>
   <div class="col hide-on-small-only m1 l2"> </div>
 </div>
-  

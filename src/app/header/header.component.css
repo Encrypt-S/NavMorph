@@ -1,5 +1,28 @@
+<<<<<<< Updated upstream
 #header-logo {
   max-height: 60px;
   max-width: 108px;
   padding: 10px;
+=======
+nav {
+  background-color: #FFF;
+  .tabs.tabs-transparent .indicator {
+      background-color: #000!important;
+  }
+}
+
+nav ul a {
+  color: #2f54a5;
+}
+
+nav .tabs.tabs-transparent .tab a.active {
+  color: #2f54a5;
+}
+
+
+
+#header-logo {
+  height: 50px;
+  margin: 6px 0;
+>>>>>>> Stashed changes
 }

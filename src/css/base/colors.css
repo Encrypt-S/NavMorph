@@ -11,6 +11,15 @@
 .txt-nav-blue {
   color: #3db4eb; }
 
+.txt-dark-grey {
+  color: #333; }
+
+.txt-med-grey {
+  color: #777; }
+
+.txt-light-grey {
+  color: #ccc; }
+
 /* Background Colors*/
 .bg-black {
   background-color: #000; }

@@ -1,0 +1,54 @@
+@import '../styles/base.scss';
+
+.input-field {
+  input {
+    background-color: rgba(255,255,255,0.2);
+    padding: 0 10px;
+    border-top-left-radius: 5px;
+    color: $grey-form;
+  }
+  label {
+    left: 20px;
+  }
+
+  label:not(.label-icon).active {
+    font-size: 0.8rem;
+    -webkit-transform: translateY(-175%);
+    transform: translateY(-175%);
+    color: $ice;
+  }
+  input[type=text]:focus:not([readonly]) {
+    border-bottom: 1px solid $ice;
+    box-shadow: none;
+  }
+}
+
+.input-field /deep/ .select-wrapper {
+  margin-left: -3px;
+  color: $grey-form;
+}
+
+.input-field /deep/ .select-wrapper + label {
+  top: -20px;
+  color: $ice;
+}
+
+.input-field /deep/ .select-wrapper input.select-dropdown {
+  background-color: rgba(255,255,255,0.2);
+  border-top-right-radius: 5px;
+  padding-left: 12px;
+}
+
+ .input-field /deep/ .select-wrapper  span.caret {
+  right: 10px;
+  color: $grey-form;
+}
+
+.demo-send-buttons {
+  text-align: right;
+  padding-right: 20px;
+}
+
+.input-field /deep/ .select-wrapper .dropdown-content li > span {
+  color: $blue;
+}

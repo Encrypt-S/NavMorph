@@ -2,9 +2,10 @@ $white: #FFF;
 $grey-light: #F5F5F5;
 $grey: #c7c5c5;
 $grey-dark: #828282;
+$grey-form: #9e9e9e;
 $black: #333;
-$purple: #c926b5;
-$grape: #7d59b5;
+$fuschia: #c926b5;
+$purple: #7d59b5;
 $blue: #0e4bbe;
 $ice: #43b5eb;
 
@@ -48,12 +49,20 @@ $ice: #43b5eb;
   background-color: #FFF;
 }
 
-.bg-nav-purp {
-  background-color: hsl(263, 38%, 53%);
+.bg-nav-fuschia {
+  background-color: $fuschia;
 }
 
 .bg-nav-blue {
-  background-color: hsl(199, 81%, 58%);
+  background-color: $blue;
+}
+
+.bg-nav-purp {
+  background-color: $purple;
+}
+
+.bg-nav-ice {
+  background-color: $ice;
 }
 
 .bg-dark-grey {

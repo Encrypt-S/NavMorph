@@ -1,18 +1,19 @@
-$white: #FFF;
-$grey-light: #F5F5F5;
-$grey: #c7c5c5;
-$grey-dark: #828282;
-$black: #333;
-$purple: #c926b5;
-$grape: #7d59b5;
-$blue: #0e4bbe;
-$ice: #43b5eb;
+@import '../styles/base.scss';
 
 nav {
-  background-color: $ice;
+  background-color: $white;
+  .tabs.tabs-transparent .tab a,
+  .tabs.tabs-transparent .tab.disabled a,
+  .tabs.tabs-transparent .tab.disabled a:hover {
+    color: $blue;
+  }
+}
+
+* /deep/ .tabs.tabs-transparent .indicator {
+    background-color: $blue;
 }
 
 #header-logo {
   height: 50px;
-  margin: 5px 0;
+  margin: 7px 5px;
 }
