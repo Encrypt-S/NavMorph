@@ -59,9 +59,11 @@
   margin: 0!important;
 }
 
-.no-vert-margin {
+.no-vert-spacing {
   margin-top: 0!important;
   margin-bottom: 0!important;
+  padding-top: 0!important;
+  padding-bottom: 0!important;
 }
 
 .no-hoz-spacing {
@@ -69,8 +71,4 @@
   margin-right: 0!important;
   padding-left: 0!important;
   padding-right: 0!important;
-}
-
-.float-right {
-  float: right;
 }
