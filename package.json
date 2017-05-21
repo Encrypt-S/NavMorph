@@ -12,9 +12,7 @@
     "mocha": "./node_modules/.bin/mocha",
     "express": "node server.js",
     "express-coverage": "istanbul cover ./node_modules/.bin/_mocha",
-    "express-test": "npm run mocha",
-    "build:sass": "node-sass -r src/** -o src/css/",
-    "watch:sass": "npm run build:sass && node-sass -r src/** -wo src/css/"
+    "express-test": "npm run mocha"
   },
   "private": true,
   "dependencies": {
@@ -38,9 +36,7 @@
     "lodash": "^4.17.4",
     "materialize-css": "^0.98.2",
     "mongoose": "^4.9.9",
-    "node-sass": "^4.5.3",
     "rxjs": "^5.1.0",
-    "sass-loader": "^6.0.5",
     "zone.js": "^0.8.4"
   },
   "devDependencies": {
@@ -50,8 +46,6 @@
     "@types/node": "~6.0.60",
     "babel-eslint": "^7.2.3",
     "codelyzer": "~2.0.0",
-    "concurrently": "^3.4.0",
-    "css-loader": "^0.28.1",
     "eslint": "^3.19.0",
     "eslint-config-airbnb": "^14.1.0",
     "eslint-plugin-import": "^2.2.0",
@@ -71,10 +65,8 @@
     "protractor": "~5.1.0",
     "rewire": "^2.5.2",
     "sinon": "^2.2.0",
-    "style-loader": "^0.17.0",
     "ts-node": "~2.0.0",
     "tslint": "~4.5.0",
-    "typescript": "~2.2.0",
-    "webpack": "^2.5.1"
+    "typescript": "~2.2.0"
   }
 }
