@@ -1,0 +1,90 @@
+$white: #FFF;
+$grey-light: #F5F5F5;
+$grey: #c7c5c5;
+$grey-dark: #828282;
+$grey-form: #9e9e9e;
+$black: #333;
+$fuschia: #c926b5;
+$purple: #7d59b5;
+$blue: #0e4bbe;
+$ice: #43b5eb;
+
+/*font colours*/
+
+.txt-black {
+  color: #000;
+}
+
+.txt-white {
+  color: #FFF;
+}
+
+.txt-purple {
+  color: hsl(263, 38%, 53%);
+}
+
+.txt-blue {
+  color: hsl(199, 81%, 58%);
+}
+
+.txt-grey-dark {
+  color: #333;
+}
+
+.txt-grey {
+  color: #777;
+}
+
+.txt-grey-light {
+  color: #ccc;
+}
+
+/* Background Colors*/
+
+.bg-black {
+  background-color: #000;
+}
+
+.bg-white {
+  background-color: $white;
+}
+
+.bg-fuschia {
+  background-color: $fuschia;
+  color: $white;
+}
+
+.bg-fuschia-dark {
+  background-color: darken($fuschia, 20%);
+  color: $white;
+}
+
+.bg-blue {
+  background-color: $blue;
+  color: $white;
+}
+
+.bg-blue-dark {
+  background-color: darken($blue, 20%);
+  color: $white;
+}
+
+.bg-purp {
+  background-color: $purple;
+}
+
+.bg-ice {
+  background-color: $ice;
+}
+
+.bg-grey-dark {
+  background-color: #333;
+}
+
+.bg-grey {
+  background-color: #777;
+}
+
+.bg-grey-light {
+  background-color: #EEE;
+}

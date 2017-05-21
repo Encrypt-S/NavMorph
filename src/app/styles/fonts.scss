@@ -1,0 +1,39 @@
+h1 {
+  font-size: 50px;
+}
+
+h2 {
+  font-size: 40px;
+}
+
+h3 {
+  font-size: 30px;
+}
+
+h4 {
+  font-size: 20px;
+}
+
+h5 {
+  font-size: 16px;
+}
+
+h6 {
+  font-size: 14px;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.text-center-m {
+  @media(max-width: 991px){
+    text-align: center;
+  }
+}
+
+.text-right-l {
+  @media(min-width: 992px){
+    text-align: right;
+  }
+}
