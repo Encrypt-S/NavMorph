@@ -21,3 +21,19 @@ h5 {
 h6 {
   font-size: 14px;
 }
+
+.text-center {
+  text-align: center;
+}
+
+.text-center-m {
+  @media(max-width: 991px){
+    text-align: center;
+  }
+}
+
+.text-right-l {
+  @media(min-width: 992px){
+    text-align: right;
+  }
+}
