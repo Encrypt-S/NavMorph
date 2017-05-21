@@ -1,1 +1,15 @@
 @import './colors.scss';
+@import './fonts.scss';
+@import './layout.scss';
+
+.no-margin {
+  margin: 0;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.text-right {
+  text-align: right;
+}

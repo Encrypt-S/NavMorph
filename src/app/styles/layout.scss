@@ -1,0 +1,22 @@
+.section {
+  padding: 4rem 0;
+}
+
+.flex-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
+
+.flex-grow {
+  flex: 1;
+}
+
+.content {
+  margin: 0 auto;
+  max-width: 1000px;
+  img {
+    max-width: 100%;
+  }
+}
