@@ -59,6 +59,11 @@ $ice: #43b5eb;
   color: $white;
 }
 
+.bg-blue-light {
+  background-color: lighten($blue, 20%);
+  color: $white;
+}
+
 .bg-blue {
   background-color: $blue;
   color: $white;
