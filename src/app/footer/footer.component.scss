@@ -1,0 +1,21 @@
+@import "../styles/base.scss";
+
+footer {
+  text-align: left;
+
+  @media (max-width: 600px) {
+    text-align: center;
+  }
+}
+
+a:hover {
+  color: $purple;
+}
+
+li {
+  line-height: 2;
+}
+
+img {
+  max-height: 250px;
+}
