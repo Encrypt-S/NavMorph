@@ -1,29 +1,31 @@
 <header>
   <div class="navbar-fixed">
     <nav>
-      <div class="nav-wrapper"> 
-        <a class="brand-logo" routerLink="/">
+      <div class="nav-wrapper">
+        <a class="brand-logo flex-row txt-black" routerLink="/">
           <div class="valign-wrapper">
             <img alt="Navtech logo" id="header-logo" src=".\assets\polymorph-symbol.svg" />
           </div>
+          Polymorph
         </a>
 
         <a href="#" materialize="sideNav" data-activates="mobile-nav" class="button-collapse" [materializeParams]="[{closeOnClick:true}]"><i class="material-icons">menu</i></a>
         <div class="right hide-on-med-and-down">
           <ul class="tabs tabs-transparent">
-            <li class="tab"><a routerLink="/" >HOME</a> </li>
-            <li class="tab"><a routerLink="/send" >SEND</a> </li>
-            <li class="tab"><a routerLink="/about" >ABOUT</a></li>
-            <li class="tab"><a routerLink="/contact" >CONTACT</a></li>
+            <li class="tab"><a routerLink="/">HOME</a> </li>
+            <li class="tab"><a routerLink="/send">SEND</a> </li>
+            <li class="tab"><a routerLink="/about">ABOUT</a></li>
+            <li class="tab"><a routerLink="/contact">CONTACT</a></li>
           </ul>
         </div>
       </div>
     </nav>
   </div>
+
   <ul class="side-nav" id="mobile-nav">
-    <li><a routerLink="/" >HOME</a> </li>
-    <li><a routerLink="/send" >SEND</a> </li>
-    <li><a routerLink="/about" >ABOUT</a></li>
-    <li><a routerLink="/contact" >CONTACT</a></li>
+    <li><a routerLink="/">HOME</a> </li>
+    <li><a routerLink="/send">SEND</a> </li>
+    <li><a routerLink="/about">ABOUT</a></li>
+    <li><a routerLink="/contact">CONTACT</a></li>
   </ul>
 </header>
