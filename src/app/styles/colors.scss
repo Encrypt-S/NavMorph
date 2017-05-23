@@ -12,37 +12,37 @@ $ice: #43b5eb;
 /*font colours*/
 
 .txt-black {
-  color: #000;
+  color: $black;
 }
 
 .txt-white {
-  color: #FFF;
+  color: $white;
 }
 
 .txt-purple {
-  color: hsl(263, 38%, 53%);
+  color: $purple;
 }
 
 .txt-blue {
-  color: hsl(199, 81%, 58%);
-}
-
-.txt-grey-dark {
-  color: #333;
-}
-
-.txt-grey {
-  color: #777;
+  color: $blue;
 }
 
 .txt-grey-light {
-  color: #ccc;
+  color: $grey-light;
+}
+
+.txt-grey {
+  color: $grey;
+}
+
+.txt-grey-dark {
+  color: $grey-dark;
 }
 
 /* Background Colors*/
 
 .bg-black {
-  background-color: #000;
+  background-color: $black;
 }
 
 .bg-white {
@@ -78,13 +78,13 @@ $ice: #43b5eb;
 }
 
 .bg-grey-dark {
-  background-color: #333;
+  background-color: $grey-dark;
 }
 
 .bg-grey {
-  background-color: #777;
+  background-color: $grey;
 }
 
 .bg-grey-light {
-  background-color: #EEE;
+  background-color: $grey-light;
 }
