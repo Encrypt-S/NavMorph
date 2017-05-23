@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { SendPageComponent } from './send-page.component';
+import { SendPage } from './send-page.component';
 
-describe('SendPageComponent', () => {
-  let component: SendPageComponent;
-  let fixture: ComponentFixture<SendPageComponent>;
+describe('SendPage', () => {
+  let component: SendPage;
+  let fixture: ComponentFixture<SendPage>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ SendPageComponent ]
+      declarations: [ SendPage ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(SendPageComponent);
+    fixture = TestBed.createComponent(SendPage);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

@@ -5,7 +5,7 @@ import { Component, OnInit } from '@angular/core';
   templateUrl: './send.component.html',
   styleUrls: ['./send.component.css']
 })
-export class SendPageComponent implements OnInit {
+export class SendPage implements OnInit {
 
   constructor() { }
 

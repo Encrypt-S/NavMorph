@@ -5,7 +5,7 @@ import { Component, OnInit } from '@angular/core';
   templateUrl: './demo.component.html',
   styleUrls: ['./demo.component.scss']
 })
-export class DemoSectComponent implements OnInit {
+export class DemoPage implements OnInit {
 
   coins = [
     { name: 'Nav Coin', ticker: 'NAV' },
