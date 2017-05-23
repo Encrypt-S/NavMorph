@@ -1,0 +1,29 @@
+@import '../styles/base.scss';
+
+/**** TILES *******/
+
+.tile {
+  background-color: $white;
+}
+
+.tile-padding-bot {
+  padding-bottom: 10px;
+}
+
+.tile-image {
+  padding: 20px 20px 0 20px;
+  img {
+    max-width: 100%;
+  }
+}
+
+.tile-text {
+  padding: 0px 20px;
+  color: $black;
+}
+
+.tile-button {
+  .btn {
+    border-radius: 0;
+  }
+}
