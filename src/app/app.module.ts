@@ -6,25 +6,25 @@ import { RouterModule } from '@angular/router';
 import { MaterializeModule } from 'angular2-materialize';
 
 import { AppComponent } from './app.component';
-import { HeaderComponent } from './header/header.component';
-import { FooterComponent } from './footer/footer.component';
-import { TradeSectComponent } from './trade-sect/trade-sect.component';
-import { SellingPointsSectComponent } from './selling-points-sect/selling-points-sect.component';
-import { DemoSectComponent } from './demo-sect/demo-sect.component';
-import { AboutPageComponent } from './about-page/about-page.component';
-import { ContactPageComponent } from './contact-page/contact-page.component';
-import { HomePageComponent } from './home-page/home-page.component';
-import { SendPageComponent } from './send-page/send-page.component';
-import { HowItWorksComponent } from './how-it-works/how-it-works.component';
-import { LegalSectComponent } from './legal-sect/legal-sect.component';
-import { PartnersSectComponent } from './partners-sect/partners-sect.component';
+
+import { DemoSectComponent } from './pages/demo/demo.component';
+import { AboutPageComponent } from './pages/about/about.component';
+import { ContactPageComponent } from './pages/contact/contact.component';
+import { HomePageComponent } from './pages/home/home.component';
+import { SendPageComponent } from './pages/send/send.component';
+
+import { HowItWorksComponent } from './sections/how-it-works/how-it-works.component';
+import { LegalSectComponent } from './sections/legal/legal.component';
+import { PartnersSectComponent } from './sections/partners/partners.component';
+import { HeaderComponent } from './sections/header/header.component';
+import { FooterComponent } from './sections/footer/footer.component';
+import { SellingPointsSectComponent } from './sections/selling-points/selling-points.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     HeaderComponent,
     FooterComponent,
-    TradeSectComponent,
     SellingPointsSectComponent,
     DemoSectComponent,
     AboutPageComponent,
