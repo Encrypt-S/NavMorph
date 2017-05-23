@@ -9,13 +9,15 @@ import { AppComponent } from './app.component';
 import { HeaderComponent } from './header/header.component';
 import { FooterComponent } from './footer/footer.component';
 import { TradeSectComponent } from './trade-sect/trade-sect.component';
-import { ImagesTextComponent } from './images-text/images-text.component';
+import { SellingPointsSectComponent } from './selling-points-sect/selling-points-sect.component';
 import { DemoSectComponent } from './demo-sect/demo-sect.component';
 import { AboutPageComponent } from './about-page/about-page.component';
 import { ContactPageComponent } from './contact-page/contact-page.component';
 import { HomePageComponent } from './home-page/home-page.component';
 import { SendPageComponent } from './send-page/send-page.component';
 import { HowItWorksComponent } from './how-it-works/how-it-works.component';
+import { LegalSectComponent } from './legal-sect/legal-sect.component';
+import { PartnersSectComponent } from './partners-sect/partners-sect.component';
 import { TileComponentComponent } from './tile-component/tile-component.component';
 
 @NgModule({
@@ -24,7 +26,7 @@ import { TileComponentComponent } from './tile-component/tile-component.componen
     HeaderComponent,
     FooterComponent,
     TradeSectComponent,
-    ImagesTextComponent,
+    SellingPointsSectComponent,
     DemoSectComponent,
     AboutPageComponent,
     ContactPageComponent,
@@ -32,11 +34,13 @@ import { TileComponentComponent } from './tile-component/tile-component.componen
     SendPageComponent,
     HowItWorksComponent,
     TileComponentComponent,
+    LegalSectComponent,
+    PartnersSectComponent,
   ],
   imports: [
-    FormsModule, 
-    MaterializeModule,       
-    BrowserModule,    
+    FormsModule,
+    MaterializeModule,
+    BrowserModule,
     HttpModule,
     RouterModule.forRoot([
       {
@@ -58,7 +62,7 @@ import { TileComponentComponent } from './tile-component/tile-component.componen
       {
         path: 'contact',
         component: ContactPageComponent
-      },    
+      },
   ])
   ],
   providers: [],
