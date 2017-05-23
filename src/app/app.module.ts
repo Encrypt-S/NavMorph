@@ -16,6 +16,7 @@ import { ContactPageComponent } from './contact-page/contact-page.component';
 import { HomePageComponent } from './home-page/home-page.component';
 import { SendPageComponent } from './send-page/send-page.component';
 import { HowItWorksComponent } from './how-it-works/how-it-works.component';
+import { PartnersSectComponent } from './partners-sect/partners-sect.component';
 
 @NgModule({
   declarations: [
@@ -30,11 +31,12 @@ import { HowItWorksComponent } from './how-it-works/how-it-works.component';
     HomePageComponent,
     SendPageComponent,
     HowItWorksComponent,
+    PartnersSectComponent,
   ],
   imports: [
-    FormsModule, 
-    MaterializeModule,       
-    BrowserModule,    
+    FormsModule,
+    MaterializeModule,
+    BrowserModule,
     HttpModule,
     RouterModule.forRoot([
       {
@@ -56,7 +58,7 @@ import { HowItWorksComponent } from './how-it-works/how-it-works.component';
       {
         path: 'contact',
         component: ContactPageComponent
-      },    
+      },
   ])
   ],
   providers: [],
