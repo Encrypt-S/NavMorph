@@ -1,6 +1,10 @@
 @import '../styles/base.scss';
 
-/**** TILES *******/
+a {
+  color: $black;
+}
+
+/**** Need to remove this on merge with master *******/
 
 .tile {
   background-color: $white;
