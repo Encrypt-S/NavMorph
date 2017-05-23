@@ -16,6 +16,7 @@ import { ContactPageComponent } from './contact-page/contact-page.component';
 import { HomePageComponent } from './home-page/home-page.component';
 import { SendPageComponent } from './send-page/send-page.component';
 import { HowItWorksComponent } from './how-it-works/how-it-works.component';
+import { TileComponentComponent } from './tile-component/tile-component.component';
 
 @NgModule({
   declarations: [
@@ -30,6 +31,7 @@ import { HowItWorksComponent } from './how-it-works/how-it-works.component';
     HomePageComponent,
     SendPageComponent,
     HowItWorksComponent,
+    TileComponentComponent,
   ],
   imports: [
     FormsModule, 
