@@ -1,0 +1,122 @@
+/*** FORM GENERIC ****/
+
+.input-field {
+  textarea {
+    padding: 10px;
+  }
+  input {
+    padding: 0 10px;
+  }
+  .input-with-select {
+    border-top-right-radius: 0;
+  }
+  input, textarea {
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    width: calc(100% - 20px);
+  }
+  label {
+    left: 10px;
+  }
+  label:not(.label-icon).active {
+    font-size: 0.8rem;
+    -webkit-transform: translateY(-175%);
+    transform: translateY(-175%);
+  }
+  input[type=text]:focus:not([readonly]), textarea:focus:not([readonly]) {
+    box-shadow: none;
+  }
+}
+
+.input-field /deep/ .select-wrapper + label {
+  top: -20px;
+}
+
+.input-field /deep/ .select-wrapper input.select-dropdown {
+  border-top-right-radius: 5px;
+  padding: 0 10px;
+  width: calc(100% - 20px);
+}
+
+.input-field /deep/ .select-wrapper  span.caret {
+ right: 10px;
+}
+
+/**** FORM LIGHT *******/
+
+.form-light {
+  .input-field {
+    input, textarea {
+      background-color: rgba(255,255,255,0.2);
+      color: $grey-form;
+    }
+
+    label:not(.label-icon).active {
+      color: $ice;
+    }
+    input[type=text]:focus:not([readonly]), textarea:focus:not([readonly]) {
+      border-bottom: 1px solid $ice;
+    }
+  }
+
+  .input-field /deep/ .select-wrapper {
+    color: $grey-form;
+  }
+
+  .input-field /deep/ .select-wrapper + label {
+    color: $ice;
+  }
+
+  .input-field /deep/ .select-wrapper input.select-dropdown {
+    background-color: rgba(255,255,255,0.2);
+  }
+
+   .input-field /deep/ .select-wrapper  span.caret {
+    color: $grey-form;
+  }
+
+  .input-field /deep/ .select-wrapper .dropdown-content li > span {
+    color: $blue;
+  }
+}
+
+/**** FORM DARK *******/
+
+.form-dark {
+  .input-field {
+    input, textarea {
+      background-color: rgba(14,75,190,0.1);
+      color: $black;
+    }
+    label {
+      color: $black;
+    }
+
+    label:not(.label-icon).active {
+      color: $blue;
+    }
+    input[type=text]:focus:not([readonly]), textarea:focus:not([readonly]) {
+      border-bottom: 1px solid $black;
+    }
+  }
+
+  .input-field /deep/ .select-wrapper {
+    color: $black;
+  }
+
+  .input-field /deep/ .select-wrapper + label {
+    color: $blue;
+  }
+
+  .input-field /deep/ .select-wrapper input.select-dropdown {
+    background-color: rgba(14,75,190,0.1);
+  }
+
+   .input-field /deep/ .select-wrapper  span.caret {
+    color: $black;
+  }
+
+  .input-field /deep/ .select-wrapper .dropdown-content li > span {
+    color: $black;
+  }
+}
