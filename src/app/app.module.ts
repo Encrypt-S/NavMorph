@@ -16,6 +16,7 @@ import { ContactPageComponent } from './contact-page/contact-page.component';
 import { HomePageComponent } from './home-page/home-page.component';
 import { SendPageComponent } from './send-page/send-page.component';
 import { HowItWorksComponent } from './how-it-works/how-it-works.component';
+import { LegalSectComponent } from './legal-sect/legal-sect.component';
 import { PartnersSectComponent } from './partners-sect/partners-sect.component';
 
 @NgModule({
@@ -31,6 +32,7 @@ import { PartnersSectComponent } from './partners-sect/partners-sect.component';
     HomePageComponent,
     SendPageComponent,
     HowItWorksComponent,
+    LegalSectComponent,
     PartnersSectComponent,
   ],
   imports: [
