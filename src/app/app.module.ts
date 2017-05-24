@@ -6,6 +6,7 @@ import { RouterModule } from '@angular/router';
 import { MaterializeModule } from 'angular2-materialize';
 
 import { AppComponent } from './app.component';
+import { routes } from './app.routes';
 
 import { DemoPage } from './pages/demo/demo.component';
 import { AboutPage } from './pages/about/about.component';
@@ -45,28 +46,7 @@ import { TileComponent } from './components/tile/tile.component';
     MaterializeModule,
     BrowserModule,
     HttpModule,
-    RouterModule.forRoot([
-      {
-        path: 'demo',
-        component: DemoPage
-      },
-      {
-        path: '',
-        component: HomePage
-      },
-      {
-        path: 'send',
-        component: SendPage
-      },
-      {
-        path: 'about',
-        component: AboutPage
-      },
-      {
-        path: 'contact',
-        component: ContactPage
-      },
-  ])
+    RouterModule.forRoot(routes)
   ],
   providers: [],
   bootstrap: [AppComponent]
