@@ -7,6 +7,12 @@ import { Component, OnInit } from '@angular/core';
 })
 export class SendCoinsSection implements OnInit {
 
+  coins = [
+    { name: 'Nav Coin', ticker: 'NAV' },
+    { name: 'Bitcoin', ticker: 'BTC' },
+    { name: 'Ethereum', ticker: 'ETH' },
+  ];
+
   constructor() { }
 
   ngOnInit() {
