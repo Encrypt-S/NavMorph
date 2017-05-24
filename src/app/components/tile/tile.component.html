@@ -1,0 +1,12 @@
+<div class="tile" [ngClass]="theme">
+  <div class="tile-image">
+    <img [src]="icon" />
+  </div>
+  <h3 *ngIf="title" class="tile-title">{{title}}</h3>
+  <div class="tile-text" *ngIf="text" [ngClass]="{'no-button': !buttonText}">
+    <p>{{text}}</p>
+  </div>
+  <div class="tile-button" *ngIf="buttonText">
+    <button class="btn waves-effect waves-light btn-wide btn-large" type="submit" name="action">{{buttonText}}</button>
+  </div>
+</div>

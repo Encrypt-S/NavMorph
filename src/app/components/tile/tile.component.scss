@@ -1,0 +1,60 @@
+@import '../../styles/base.scss';
+
+.tile {
+  &.tile-blue-white, &.tile-fuschia-white {
+    background-color: $white;
+  }
+  &.tile-fuschia, &.tile-blue {
+    padding-bottom: 20px;
+    .tile-text, .tile-title {
+      color: $white;
+    }
+  }
+  &.tile-blue-white, &.tile-fuschia-white {
+    .tile-text {
+      color: $black;
+    }
+  }
+  &.tile-blue-white {
+    .tile-title {
+      color: $blue;
+    }
+  }
+  &.tile-fuschia-white {
+    .tile-title {
+      color: $fuschia;
+    }
+  }
+  &.tile-fuschia-white, &.tile-fuschia {
+    .tile-button button {
+      background-color: $fuschia;
+    }
+  }
+  &.tile-blue-white, &.tile-blue {
+    .tile-button button {
+      background-color: $blue;
+    }
+  }
+}
+
+.tile-image {
+  padding: 20px 20px 0 20px;
+  img {
+    max-width: 100%;
+  }
+}
+
+.tile-text {
+  padding: 0 20px;
+  max-width: 600px;
+  margin: 0 auto;
+  &.no-button {
+    padding-bottom: 20px;
+  }
+}
+
+.tile-button {
+  .btn {
+    border-radius: 0;
+  }
+}
