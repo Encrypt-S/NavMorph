@@ -20,6 +20,8 @@ import { HeaderSection } from './sections/header/header.component';
 import { FooterSection } from './sections/footer/footer.component';
 import { SellingPointsSection } from './sections/selling-points/selling-points.component';
 
+import { TileComponent } from './components/tile/tile.component';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -34,6 +36,7 @@ import { SellingPointsSection } from './sections/selling-points/selling-points.c
     HowItWorksSection,
     LegalSection,
     PartnersSection,
+    TileComponent,
   ],
   imports: [
     FormsModule,
