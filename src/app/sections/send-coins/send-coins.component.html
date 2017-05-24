@@ -1,3 +1,42 @@
-<p>
-  send-coins works!
-</p>
+<div class="section parallax-container" id="demo-hero">
+  <div class="parallax" materialize="parallax"><img src="./assets/polymorph-background.jpg"></div>
+  <div class="container form-light">
+    <img alt="Navtech logo" id="header-logo" src=".\assets\polymorph-logo.svg" />
+    <div class="row">
+      <div class="col l8 m10 s12 push-l2 push-m1">
+        <div class="row">
+          <div class="input-field col s9 no-hoz-spacing">
+            <input type="text" name="enter-text-ex" class="input-with-select" />
+            <label for="enter-text-ex">Enter amount</label>
+          </div>
+          <div class="input-field col s3 no-hoz-spacing">
+            <select materialize="material_select" [(ngModel)]="selected" name="selected" class="">
+              <option *ngFor="let coin of coins" [value]="coin.ticker">{{coin.ticker}}</option>
+            </select>
+            <label>Source Coin</label>
+          </div>
+        </div>
+        <div class="row">
+          <div class="input-field col s9 no-hoz-spacing">
+            <input type="text" name="enter-text-ex" class="input-with-select" />
+            <label for="enter-text-ex">Enter Destination Address</label>
+          </div>
+          <div class="input-field col s3 no-hoz-spacing">
+            <select materialize="material_select" [(ngModel)]="selected" name="selected" class="">
+              <option *ngFor="let coin of coins" [value]="coin.ticker">{{coin.ticker}}</option>
+            </select>
+            <label>Dest. Coin</label>
+          </div>
+        </div>
+        <div class="row">
+          <div class="demo-send-buttons col s12 no-hoz-spacing">
+            <button class="btn waves-effect waves-light btn-small bg-blue" type="submit" name="action">Clear</button>
+            <button class="btn waves-effect waves-light bg-fuschia lighten-1" type="submit" name="action">Send
+                <i class="material-icons right">send</i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
