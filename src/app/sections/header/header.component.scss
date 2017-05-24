@@ -1,0 +1,20 @@
+@import "../../styles/base.scss";
+
+
+nav {
+  background-color: $white;
+  .tabs.tabs-transparent .tab a,
+  .tabs.tabs-transparent .tab.disabled a,
+  .tabs.tabs-transparent .tab.disabled a:hover {
+    color: $blue;
+  }
+}
+
+* /deep/ .tabs.tabs-transparent .indicator {
+    background-color: $blue;
+}
+
+#header-logo {
+  height: 50px;
+  margin: 7px 5px;
+}

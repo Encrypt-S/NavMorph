@@ -6,36 +6,34 @@ import { RouterModule } from '@angular/router';
 import { MaterializeModule } from 'angular2-materialize';
 
 import { AppComponent } from './app.component';
-import { HeaderComponent } from './header/header.component';
-import { FooterComponent } from './footer/footer.component';
-import { TradeSectComponent } from './trade-sect/trade-sect.component';
-import { SellingPointsSectComponent } from './selling-points-sect/selling-points-sect.component';
-import { DemoSectComponent } from './demo-sect/demo-sect.component';
-import { AboutPageComponent } from './about-page/about-page.component';
-import { ContactPageComponent } from './contact-page/contact-page.component';
-import { HomePageComponent } from './home-page/home-page.component';
-import { SendPageComponent } from './send-page/send-page.component';
-import { HowItWorksComponent } from './how-it-works/how-it-works.component';
-import { LegalSectComponent } from './legal-sect/legal-sect.component';
-import { PartnersSectComponent } from './partners-sect/partners-sect.component';
-import { TileComponentComponent } from './tile-component/tile-component.component';
+
+import { DemoPage } from './pages/demo/demo.component';
+import { AboutPage } from './pages/about/about.component';
+import { ContactPage } from './pages/contact/contact.component';
+import { HomePage } from './pages/home/home.component';
+import { SendPage } from './pages/send/send.component';
+
+import { HowItWorksSection } from './sections/how-it-works/how-it-works.component';
+import { LegalSection } from './sections/legal/legal.component';
+import { PartnersSection } from './sections/partners/partners.component';
+import { HeaderSection } from './sections/header/header.component';
+import { FooterSection } from './sections/footer/footer.component';
+import { SellingPointsSection } from './sections/selling-points/selling-points.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    HeaderComponent,
-    FooterComponent,
-    TradeSectComponent,
-    SellingPointsSectComponent,
-    DemoSectComponent,
-    AboutPageComponent,
-    ContactPageComponent,
-    HomePageComponent,
-    SendPageComponent,
-    HowItWorksComponent,
-    TileComponentComponent,
-    LegalSectComponent,
-    PartnersSectComponent,
+    HomePage,
+    SendPage,
+    DemoPage,
+    AboutPage,
+    ContactPage,
+    HeaderSection,
+    FooterSection,
+    SellingPointsSection,
+    HowItWorksSection,
+    LegalSection,
+    PartnersSection,
   ],
   imports: [
     FormsModule,
@@ -45,23 +43,23 @@ import { TileComponentComponent } from './tile-component/tile-component.componen
     RouterModule.forRoot([
       {
         path: 'demo',
-        component: DemoSectComponent
+        component: DemoPage
       },
       {
         path: '',
-        component: HomePageComponent
+        component: HomePage
       },
       {
         path: 'send',
-        component: SendPageComponent
+        component: SendPage
       },
       {
         path: 'about',
-        component: AboutPageComponent
+        component: AboutPage
       },
       {
         path: 'contact',
-        component: ContactPageComponent
+        component: ContactPage
       },
   ])
   ],
