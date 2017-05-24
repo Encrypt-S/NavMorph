@@ -19,6 +19,7 @@ import { PartnersSection } from './sections/partners/partners.component';
 import { HeaderSection } from './sections/header/header.component';
 import { FooterSection } from './sections/footer/footer.component';
 import { SellingPointsSection } from './sections/selling-points/selling-points.component';
+import { SendCoinsSection } from './sections/send-coins/send-coins.component';
 
 import { TileComponent } from './components/tile/tile.component';
 
@@ -37,6 +38,7 @@ import { TileComponent } from './components/tile/tile.component';
     LegalSection,
     PartnersSection,
     TileComponent,
+    SendCoinsSection,
   ],
   imports: [
     FormsModule,
