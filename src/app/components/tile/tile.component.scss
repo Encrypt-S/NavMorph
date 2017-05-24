@@ -58,14 +58,3 @@
     border-radius: 0;
   }
 }
-
-.hero-tile {
-  .col:first-of-type {
-    .tile .tile-text {
-     @media(max-width: 991px) and (min-width: 601px){
-       width: 30rem;
-       margin: auto;
-     }
-   }
- }
-}
