@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
+import { coinsJson } from './coins-json';
+
 @Component({
   selector: 'send-coins-section',
   templateUrl: './send-coins.component.html',
@@ -7,11 +9,7 @@ import { Component, OnInit } from '@angular/core';
 })
 export class SendCoinsSection implements OnInit {
 
-  coins = [
-    { name: 'Nav Coin', ticker: 'NAV' },
-    { name: 'Bitcoin', ticker: 'BTC' },
-    { name: 'Ethereum', ticker: 'ETH' },
-  ];
+  coins = coinsJson;
 
   constructor() { }
 
