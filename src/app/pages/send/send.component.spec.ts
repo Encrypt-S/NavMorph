@@ -1,6 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { SendPage } from './send-page.component';
+import { SendPage } from './send.component';
 
 describe('SendPage', () => {
   let component: SendPage;

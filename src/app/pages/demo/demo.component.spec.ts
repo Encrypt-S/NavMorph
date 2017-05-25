@@ -1,6 +1,15 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { FormsModule } from '@angular/forms';
+import { MaterializeModule } from 'angular2-materialize';
 
-import { DemoPage } from './demo-sect.component';
+import { LegalSection } from '../../sections/legal/legal.component';
+import { HeaderSection } from '../../sections/header/header.component';
+import { FooterSection } from '../../sections/footer/footer.component';
+import { SellingPointsSection } from '../../sections/selling-points/selling-points.component';
+
+import { TileComponent } from '../../components/tile/tile.component';
+
+import { DemoPage } from './demo.component';
 
 describe('DemoPage', () => {
   let component: DemoPage;
@@ -8,7 +17,10 @@ describe('DemoPage', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ DemoPage ]
+      imports: [ FormsModule, MaterializeModule ],
+      declarations: [
+        DemoPage,  LegalSection, HeaderSection, FooterSection, SellingPointsSection, TileComponent
+      ]
     })
     .compileComponents();
   }));
