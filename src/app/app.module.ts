@@ -1,7 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { HttpModule } from '@angular/http';
+import { HttpModule, JsonpModule } from '@angular/http';
 import { RouterModule } from '@angular/router';
 import { MaterializeModule } from 'angular2-materialize';
 
@@ -23,6 +23,9 @@ import { SellingPointsSection } from './sections/selling-points/selling-points.c
 import { SendCoinsSection } from './sections/send-coins/send-coins.component';
 
 import { TileComponent } from './components/tile/tile.component';
+
+import { CurrenciesService } from './services/currencies';
+
 
 @NgModule({
   declarations: [
@@ -46,9 +49,10 @@ import { TileComponent } from './components/tile/tile.component';
     MaterializeModule,
     BrowserModule,
     HttpModule,
+    JsonpModule,
     RouterModule.forRoot(routes)
   ],
-  providers: [],
+  providers: [CurrenciesService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

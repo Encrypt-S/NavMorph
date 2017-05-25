@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 
-import { coinsJson } from './coins-json';
+import { CurrenciesService } from '../../services/currencies';
 
 @Component({
   selector: 'send-coins-section',
@@ -9,11 +9,20 @@ import { coinsJson } from './coins-json';
 })
 export class SendCoinsSection implements OnInit {
 
-  coins = coinsJson;
+  currencies: object[];
+  errorMessage: string;
 
-  constructor() { }
+  constructor(private currenciesService: CurrenciesService) { }
 
   ngOnInit() {
+    this.getCurrencies();
+  }
+
+  getCurrencies() {
+    this.currenciesService.getCurrencies()
+      .subscribe(
+        currencies => this.currencies = currencies,
+        error => this.errorMessage = <any>error);
   }
 
 }
