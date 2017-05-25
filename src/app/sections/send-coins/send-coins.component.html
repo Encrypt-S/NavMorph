@@ -14,7 +14,7 @@
           </div>
           <div class="input-field col s3 no-hoz-spacing">
             <select materialize="material_select" [(ngModel)]="selectedOrigin" name="selectedOrigin" class="">
-              <option *ngFor="let coin of coins" [value]="coin.ticker">{{coin.ticker}}</option>
+              <option *ngFor="let currency of currencies" [value]="currency.ticker">{{currency.ticker}}</option>
             </select>
             <label>Source Coin</label>
           </div>
@@ -26,7 +26,7 @@
           </div>
           <div class="input-field col s3 no-hoz-spacing">
             <select materialize="material_select" [(ngModel)]="selectedDest" name="selectedDest" class="">
-              <option *ngFor="let coin of coins" [value]="coin.ticker">{{coin.ticker}}</option>
+              <option *ngFor="let currency of currencies" [value]="currency.ticker">{{currency.ticker}}</option>
             </select>
             <label>Dest. Coin</label>
           </div>

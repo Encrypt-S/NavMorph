@@ -17,14 +17,14 @@ export class SendCoinsSection implements OnInit {
   constructor(private currenciesService: CurrenciesService) { }
 
   ngOnInit() {
-    this.getCurrencies();
+    this.getCurrencies()
   }
 
   getCurrencies() {
     this.currenciesService.getCurrencies()
       .subscribe(
         currencies => this.currencies = currencies,
-        error => this.errorMessage = <any>error);
+        error => this.errorMessage = <any>error)
   }
 
 }
