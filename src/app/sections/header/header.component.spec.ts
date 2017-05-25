@@ -1,4 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { MaterializeModule } from 'angular2-materialize';
 
 import { HeaderSection } from './header.component';
 
@@ -8,6 +9,7 @@ describe('HeaderSection', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
+      imports: [ MaterializeModule ],
       declarations: [ HeaderSection ]
     })
     .compileComponents();

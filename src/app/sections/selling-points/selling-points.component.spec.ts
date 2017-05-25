@@ -1,6 +1,8 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { SellingPointsSection } from './selling-points.component';
+import { TileComponent } from '../../components/tile/tile.component';
+
 
 describe('SellingPointsSection', () => {
   let component: SellingPointsSection;
@@ -8,7 +10,7 @@ describe('SellingPointsSection', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ SellingPointsSection ]
+      declarations: [ SellingPointsSection, TileComponent ]
     })
     .compileComponents();
   }));
