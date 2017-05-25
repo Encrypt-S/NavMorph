@@ -8,7 +8,7 @@ export class TitleChangeService {
 
   constructor(private titleService: Title) { }
 
-  updateTitle(event){
+  updateTitle(event) {
     let newTitle = this.getNewTitle(event.url);
     this.titleService.setTitle(newTitle);
   }
