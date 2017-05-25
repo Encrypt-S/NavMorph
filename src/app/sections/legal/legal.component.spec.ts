@@ -1,6 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { LegalSection } from './legal-sect.component';
+import { LegalSection } from './legal.component';
 
 describe('LegalSection', () => {
   let component: LegalSection;

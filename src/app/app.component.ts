@@ -10,8 +10,7 @@ import { TitleChangeService } from './services/title-change';
   providers: [TitleChangeService]
 })
 export class AppComponent {
-  title = 'app works!';
-
+  
   constructor (
     private _router: Router,
     private titleChangeService: TitleChangeService ) {

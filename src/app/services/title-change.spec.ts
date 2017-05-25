@@ -1,15 +1,24 @@
 import { TestBed, inject } from '@angular/core/testing';
 
 import { TitleChangeService } from './title-change';
+import { Title } from '@angular/platform-browser';
+
 
 describe('TitleChangeService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [TitleChangeService]
+      providers: [TitleChangeService, Title]
     });
+
   });
 
-  it('should be created', inject([TitleChangeService], (service: TitleChangeService) => {
-    expect(service).toBeTruthy();
+  it('should be created', inject([TitleChangeService], (titleChangeService) => {
+    expect(titleChangeService).toBeTruthy();
   }));
-});
+
+  it('should set a title', inject([TitleChangeService], (titleChangeService) => {
+    this.titleChangeService.setTitle('test tile');
+
+    expect(this.titleService.getTitle()).toBe('test tile');
+  }));
+})

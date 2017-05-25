@@ -1,6 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { SellingPointsSection } from './selling-points-sect.component';
+import { SellingPointsSection } from './selling-points.component';
 
 describe('SellingPointsSection', () => {
   let component: SellingPointsSection;

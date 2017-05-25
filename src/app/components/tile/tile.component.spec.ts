@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { TileComponentComponent } from './tile-component.component';
+import { TileComponent } from './tile.component';
 
-describe('TileComponentComponent', () => {
-  let component: TileComponentComponent;
-  let fixture: ComponentFixture<TileComponentComponent>;
+describe('TileComponent', () => {
+  let component: TileComponent;
+  let fixture: ComponentFixture<TileComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ TileComponentComponent ]
+      declarations: [ TileComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(TileComponentComponent);
+    fixture = TestBed.createComponent(TileComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
