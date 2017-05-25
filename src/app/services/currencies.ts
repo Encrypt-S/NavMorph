@@ -13,7 +13,7 @@ export class CurrenciesService {
 
   constructor(private http: Http) { }
 
-  getCurrencies(): Observable<object[]> {
+  getCurrencies(): Observable<Object[]> {
     return this.http.get(this.currenciesApiUrl)
                     .map(this.extractData)
                     .catch(this.handleError);
@@ -21,6 +21,8 @@ export class CurrenciesService {
 
   private extractData(res: Response) {
     let body = res.json();
+    console.log(body);
+    console.log(body.data || { });
     return body.data || { };
   }
 
