@@ -16,9 +16,4 @@ describe('TitleChangeService', () => {
     expect(titleChangeService).toBeTruthy();
   }));
 
-  it('should set a title', inject([TitleChangeService], (titleChangeService) => {
-    this.titleChangeService.setTitle('test tile');
-
-    expect(this.titleService.getTitle()).toBe('test tile');
-  }));
 })
