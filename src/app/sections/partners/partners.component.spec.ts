@@ -1,6 +1,9 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { PartnersSection } from './partners-sect.component';
+import { PartnersSection } from './partners.component';
+
+import { TileComponent } from '../../components/tile/tile.component';
+
 
 describe('PartnersSection', () => {
   let component: PartnersSection;
@@ -8,7 +11,7 @@ describe('PartnersSection', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ PartnersSection ]
+      declarations: [ PartnersSection, TileComponent]
     })
     .compileComponents();
   }));
