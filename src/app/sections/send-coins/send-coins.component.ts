@@ -6,8 +6,7 @@ import { CurrenciesService } from '../../services/currencies';
   selector: 'send-coins-section',
   templateUrl: './send-coins.component.html',
   styleUrls: ['./send-coins.component.scss'],
-  providers: [ CurrenciesService ]
-
+  providers: [ CurrenciesService ],
 })
 export class SendCoinsSection implements OnInit {
 
@@ -23,7 +22,10 @@ export class SendCoinsSection implements OnInit {
   getCurrencies() {
     this.currenciesService.getCurrencies()
       .subscribe(
-        currencies => this.currencies = currencies,
+        currencies => {
+          //@TODO check data for correct format and display view error if wrong
+          this.currencies = currencies
+        },
         error => this.errorMessage = <any>error)
   }
 
