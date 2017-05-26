@@ -1,12 +1,14 @@
-import { Component, OnInit, EventEmitter, ViewChild } from '@angular/core';
-import { Router, NavigationStart } from '@angular/router';
+import { Component, OnInit , EventEmitter, ViewChild } from '@angular/core';
+import { Router, NavigationEnd } from '@angular/router';
+import { Location } from "@angular/common";
 
 @Component({
   selector: 'header-section',
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.scss'],
+  providers: [Location]
 })
-export class HeaderSection implements OnInit {
+export class HeaderSection implements OnInit  {
 
   @ViewChild('HOME') home;
   @ViewChild('SEND') send;
@@ -14,34 +16,38 @@ export class HeaderSection implements OnInit {
   @ViewChild('CONTACT') contact;
 
   constructor (
-    private router: Router ) {
-      router.events.subscribe ( event => {
+    private router: Router,
+    private location: Location) {
 
-        if( event instanceof NavigationStart ){
-          let tab = this.getTabFromUrl(event.url)
-          switch (tab){
-            case '':
-              this.home.nativeElement.click();
-              break;
-            case 'send':
-              this.send.nativeElement.click();
-              break;
-            case 'about':
-              this.about.nativeElement.click();
-              break;
-            case 'contact':
-              this.contact.nativeElement.click();
-              break;
-          }
-        }
-      });
     }
 
     ngOnInit() {
+      this.router.events.subscribe ( event => {
+        if( event instanceof NavigationEnd ){
+          this.clickTab(this.getTabFromUrl(window.location.pathname))
+        }
+      });
     }
 
     getTabFromUrl(url){
       let tab = url.split('/')[1]
       return tab
+    }
+
+    clickTab(tab){
+      switch (tab) {
+        case '':
+          setTimeout(() => this.home.nativeElement.click(), 1)
+          break
+        case 'send':
+          setTimeout(() => this.send.nativeElement.click(), 1)
+          break
+        case 'about':
+          setTimeout(() => this.about.nativeElement.click(), 1)
+          break
+        case 'contact':
+          setTimeout(() => this.contact.nativeElement.click(), 1)
+          break
+      }
     }
 }
