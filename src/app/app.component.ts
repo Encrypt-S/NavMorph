@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { Router, NavigationStart } from '@angular/router';
 
-import { TitleChangeService } from './services/title-change';
+import { TitleChangeService } from './services/title-change/title-change';
 
 @Component({
   selector: 'app-root',
@@ -10,14 +10,14 @@ import { TitleChangeService } from './services/title-change';
   providers: [TitleChangeService]
 })
 export class AppComponent {
-  
+
   constructor (
     private _router: Router,
     private titleChangeService: TitleChangeService ) {
-		_router.events.subscribe ( event => {
-			if( event instanceof NavigationStart ){
-        titleChangeService.updateTitle(event);
-      }
-		} );
-	}
+      _router.events.subscribe ( event => {
+        if( event instanceof NavigationStart ){
+          titleChangeService.updateTitle(event);
+        }
+      });
+    }
 }
