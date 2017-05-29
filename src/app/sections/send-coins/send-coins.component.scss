@@ -1,0 +1,13 @@
+@import "../../styles/base.scss";
+
+#send-coin-sect {
+  height: auto; /* Overrides the 500px height that the parallax class applies */
+}
+
+#paragraph-container {
+  color: $white;
+}
+
+.send-buttons {
+  text-align: right;
+}
