@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed, inject } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed, inject, fakeAsync, tick } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 
@@ -15,9 +15,9 @@ const fakeData  = [
     { ticker: 'LTC', name: 'Litecoin' }
 ]
 
-class mockCurrServ extends CurrenciesService{
-  getCurrencies(): Observable<Object[]> {
-    return Observable.of(fakeData)
+class MockCurrServ {
+  getCurrencies = function(){
+      return Observable.of(fakeData)
     }
   }
 
@@ -38,7 +38,7 @@ describe('SendCoinsSection', () => {
     .overrideComponent(SendCoinsSection, {
       set: {
         providers: [
-          { provide: CurrenciesService, useClass: mockCurrServ }
+          { provide: CurrenciesService, useClass: MockCurrServ }
         ]
       }
     })
@@ -56,12 +56,11 @@ describe('SendCoinsSection', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should get the currency data', inject([SendCoinsSection], (sendCoinsSection: SendCoinsSection) => {
-    //@TODO Mock the CurrenciesProvider
-    //@TODO Test the data is set into this.currencies
+  it('should get the currency data', inject([SendCoinsSection], ( sendCoinsSection: SendCoinsSection) => {
+    fakeAsync(() => {
       sendCoinsSection.getCurrencies()
+      tick()
       expect(sendCoinsSection.currencies).toBe(fakeData)
+    })
   }))
-
-
 });

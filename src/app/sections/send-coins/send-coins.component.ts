@@ -23,10 +23,9 @@ export class SendCoinsSection implements OnInit {
     this.currenciesService.getCurrencies()
       .subscribe(
         currencies => {
-          //@TODO check data for correct format and display view error if wrong
-          this.currencies = currencies
+          // @TODO check data for correct format and display view error if wrong
+          this.currencies = currencies;
         },
         error => this.errorMessage = <any>error)
   }
-
 }
