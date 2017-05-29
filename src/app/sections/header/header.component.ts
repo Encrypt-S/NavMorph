@@ -37,16 +37,16 @@ export class HeaderSection implements OnInit  {
     clickTab(tab){
       switch (tab) {
         case '':
-          setTimeout(() => this.home.nativeElement.click(), 1)
+          setTimeout(() => this.home.nativeElement.click(), 100)
           break
         case 'send':
-          setTimeout(() => this.send.nativeElement.click(), 1)
+          setTimeout(() => this.send.nativeElement.click(), 100)
           break
         case 'about':
-          setTimeout(() => this.about.nativeElement.click(), 1)
+          setTimeout(() => this.about.nativeElement.click(), 100)
           break
         case 'contact':
-          setTimeout(() => this.contact.nativeElement.click(), 1)
+          setTimeout(() => this.contact.nativeElement.click(), 100)
           break
       }
     }
