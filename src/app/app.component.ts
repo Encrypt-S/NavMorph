@@ -16,6 +16,7 @@ export class AppComponent {
     private titleChangeService: TitleChangeService ) {
       _router.events.subscribe ( event => {
         if( event instanceof NavigationStart ){
+          scroll(0,0)
           titleChangeService.updateTitle(event);
         }
       });
