@@ -13,7 +13,6 @@ export class HeaderSection implements OnInit  {
   @ViewChild('HOME') home;
   @ViewChild('SEND') send;
   @ViewChild('ABOUT') about;
-  @ViewChild('CONTACT') contact;
 
   constructor (
     private router: Router,
@@ -44,9 +43,6 @@ export class HeaderSection implements OnInit  {
           break
         case 'about':
           setTimeout(() => this.about.nativeElement.click(), 100)
-          break
-        case 'contact':
-          setTimeout(() => this.contact.nativeElement.click(), 100)
           break
       }
     }

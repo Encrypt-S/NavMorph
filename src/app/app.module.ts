@@ -10,7 +10,6 @@ import { routes } from './app.routes';
 
 import { DemoPage } from './pages/demo/demo.component';
 import { AboutPage } from './pages/about/about.component';
-import { ContactPage } from './pages/contact/contact.component';
 import { HomePage } from './pages/home/home.component';
 import { SendPage } from './pages/send/send.component';
 
@@ -34,7 +33,6 @@ import { CurrenciesService } from './services/currencies';
     SendPage,
     DemoPage,
     AboutPage,
-    ContactPage,
     HeaderSection,
     FooterSection,
     SellingPointsSection,
