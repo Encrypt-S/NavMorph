@@ -1,14 +1,16 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 
 import { CurrenciesService } from '../../services/currencies';
 
 @Component({
-  selector: 'send-coins-section',
-  templateUrl: './send-coins.component.html',
-  styleUrls: ['./send-coins.component.scss'],
+  selector: 'send-coins-form-component',
+  templateUrl: './send-coins-form.component.html',
+  styleUrls: ['./send-coins-form.component.scss'],
   providers: [ CurrenciesService ],
 })
-export class SendCoinsSection implements OnInit {
+export class SendCoinsFormComponent implements OnInit {
+
+  @Input() lightTheme: boolean;
 
   currencies: object;
   errorMessage: string;

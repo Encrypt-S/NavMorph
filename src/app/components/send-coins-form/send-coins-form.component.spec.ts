@@ -2,7 +2,7 @@ import { async, ComponentFixture, TestBed, inject, fakeAsync, tick } from '@angu
 import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 
-import { SendCoinsSection } from './send-coins.component';
+import { SendCoinsFormComponent } from './send-coins-form.component';
 import { CurrenciesService } from './../../services/currencies';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/of';
@@ -22,20 +22,20 @@ class MockCurrServ {
   }
 
 
-describe('SendCoinsSection', () => {
-  let component: SendCoinsSection;
-  let fixture: ComponentFixture<SendCoinsSection>;
+describe('SendCoinsFormComponent', () => {
+  let component: SendCoinsFormComponent;
+  let fixture: ComponentFixture<SendCoinsFormComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ SendCoinsSection ],
+      declarations: [ SendCoinsFormComponent ],
       imports: [FormsModule, HttpModule],
       providers: [
-        SendCoinsSection, CurrenciesService
+        SendCoinsFormComponent, CurrenciesService
       ],
     })
 
-    .overrideComponent(SendCoinsSection, {
+    .overrideComponent(SendCoinsFormComponent, {
       set: {
         providers: [
           { provide: CurrenciesService, useClass: MockCurrServ }
@@ -47,7 +47,7 @@ describe('SendCoinsSection', () => {
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(SendCoinsSection);
+    fixture = TestBed.createComponent(SendCoinsFormComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
@@ -56,7 +56,7 @@ describe('SendCoinsSection', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should get the currency data', inject([SendCoinsSection], ( sendCoinsSection: SendCoinsSection) => {
+  it('should get the currency data', inject([SendCoinsFormComponent], ( sendCoinsSection: SendCoinsFormComponent) => {
     fakeAsync(() => {
       sendCoinsSection.getCurrencies()
       tick()
