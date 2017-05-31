@@ -25,6 +25,9 @@ import { TileComponent } from './components/tile/tile.component';
 import { SendCoinsFormComponent } from './components/send-coins-form/send-coins-form.component';
 
 import { CurrenciesService } from './services/currencies/currencies';
+import { GenericNodeApiService }  from './services/generic-node-api/generic-node-api';
+import { ChangellyApiService }  from './services/changelly-api/changelly-api';
+
 
 
 @NgModule({
@@ -52,7 +55,7 @@ import { CurrenciesService } from './services/currencies/currencies';
     JsonpModule,
     RouterModule.forRoot(routes)
   ],
-  providers: [CurrenciesService],
+  providers: [CurrenciesService, GenericNodeApiService, ChangellyApiService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
