@@ -11,7 +11,7 @@ export class TileComponent implements OnInit {
   @Input() text: string;
   @Input() buttonText: string;
   @Input() icon: string;
-  @Input() theme: object;
+  @Input() theme: string;
 
   constructor() { }
 
