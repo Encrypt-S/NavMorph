@@ -10,12 +10,16 @@ import { CurrenciesService } from '../../services/currencies';
 })
 export class SendCoinsFormComponent implements OnInit {
 
-  @Input() lightTheme: boolean;
+  @Input() theme: string;
 
   currencies: object;
   errorMessage: string;
 
-  constructor(private currenciesService: CurrenciesService) { }
+  constructor(private currenciesService: CurrenciesService) {
+    if(!this.theme){
+      this.theme = 'form-dark'
+    }
+  }
 
   ngOnInit() {
     this.getCurrencies()
