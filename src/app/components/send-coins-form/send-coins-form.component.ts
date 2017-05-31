@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 
-import { CurrenciesService } from '../../services/currencies';
+import { CurrenciesService } from '../../services/currencies/currencies';
 
 @Component({
   selector: 'send-coins-form-component',

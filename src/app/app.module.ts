@@ -24,7 +24,7 @@ import { HeroBannerSection } from './sections/hero-banner/hero-banner.component'
 import { TileComponent } from './components/tile/tile.component';
 import { SendCoinsFormComponent } from './components/send-coins-form/send-coins-form.component';
 
-import { CurrenciesService } from './services/currencies';
+import { CurrenciesService } from './services/currencies/currencies';
 
 
 @NgModule({

@@ -3,7 +3,7 @@ import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 
 import { SendCoinsFormComponent } from './send-coins-form.component';
-import { CurrenciesService } from './../../services/currencies';
+import { CurrenciesService } from './../../services/currencies/currencies';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/of';
 
