@@ -5,11 +5,13 @@ import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/map';
 
-
 @Injectable()
 export class CurrenciesService {
 
-  private currenciesApiUrl = 'http://localhost:4200/assets/coins.json';
+  // private currenciesApiUrl = 'http://localhost:3000/assets/coins.json';
+
+  private currenciesApiUrl = 'http://localhost:3000/api/changelly/coins';
+
 
   constructor(private http: Http) { }
 
