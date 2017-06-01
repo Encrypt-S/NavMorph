@@ -5,8 +5,8 @@
       <label for="enter-text-ex">Enter amount</label>
     </div>
     <div class="input-field col s3 no-hoz-spacing">
-      <select materialize="material_select" [(ngModel)]="selectedOrigin" name="selectedOrigin" class="">
-        <option *ngFor="let currency of currencies" [value]="currency.ticker">{{currency.ticker}}</option>
+      <select materialize="material_select"  [materializeSelectOptions]="currencies" [(ngModel)]="selectedOrigin" name="selectedOrigin" class="">
+        <option *ngFor="let currency of currencies" [value]="currency">{{currency | uppercase}}</option>
       </select>
       <label>Source Coin</label>
     </div>
@@ -17,8 +17,8 @@
       <label for="enter-text-ex">Enter Destination Address</label>
     </div>
     <div class="input-field col s3 no-hoz-spacing">
-      <select materialize="material_select" [(ngModel)]="selectedDest" name="selectedDest" class="">
-        <option *ngFor="let currency of currencies" [value]="currency.ticker">{{currency.ticker}}</option>
+      <select materialize="material_select"  [materializeSelectOptions]="currencies" [(ngModel)]="selectedDest" name="selectedDest" class="">
+        <option *ngFor="let currency of currencies" [value]="currency">{{currency | uppercase}}</option>
       </select>
       <label>Dest. Coin</label>
     </div>

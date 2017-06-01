@@ -8,10 +8,7 @@ import 'rxjs/add/operator/map';
 @Injectable()
 export class CurrenciesService {
 
-  // private currenciesApiUrl = 'http://localhost:3000/assets/coins.json';
-
   private currenciesApiUrl = 'http://localhost:3000/api/changelly/coins';
-
 
   constructor(private http: Http) { }
 
@@ -23,7 +20,7 @@ export class CurrenciesService {
 
   private extractData(res: Response) {
     let body = res.json();
-    return body.data || { };
+    return body.result || { };
   }
 
   private handleError (error: Response | any) {
