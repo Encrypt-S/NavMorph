@@ -11,6 +11,12 @@ router.get('/db/transaction/:id', TransactionCtrl.getTransaction)
 router.get('/db/transaction', TransactionCtrl.getTransaction)
 router.post('/db/transaction', TransactionCtrl.createTransaction)
 
-router.get('/changelly/coins', (req, res) => res.send(Changelly.getCurrencies()))
+router.get('/changelly/coins', (req, res) => Changelly.getCurrencies(function (err, data) {
+  if (err) {
+    console.log('Error: ', err)
+  } else {
+    res.send(data)
+  }
+}))
 
 module.exports = router
