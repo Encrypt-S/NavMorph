@@ -8,19 +8,19 @@ import 'rxjs/add/operator/map';
 @Injectable()
 export class GenericNodeApiService {
 
-  baseApiUrl: string = 'localhost:3000/api/'
+  baseApiUrl: string = 'http://localhost:3000/api/'
 
   constructor(private http: Http) { }
 
   getRequest(url): Observable<Object[]> {
-    return this.http.get(url)
+    return this.http.get(this.baseApiUrl + url)
                     .map(this.extractData)
                     .catch(this.handleError);
   }
 
   private extractData(res: Response) {
     let body = res.json();
-    return body.data || { };
+    return body.result || { };
   }
 
   private handleError (error: Response | any) {
@@ -32,7 +32,6 @@ export class GenericNodeApiService {
     } else {
       errMsg = error.message ? error.message : error.toString();
     }
-    console.error(errMsg);
     return Observable.throw(errMsg);
   }
 }

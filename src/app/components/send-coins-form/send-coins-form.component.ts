@@ -1,12 +1,12 @@
 import { Component, OnInit, Input } from '@angular/core';
 
-import { CurrenciesService } from '../../services/currencies/currencies';
+import { ChangellyApiService } from '../../services/changelly-api/changelly-api';
 
 @Component({
   selector: 'send-coins-form-component',
   templateUrl: './send-coins-form.component.html',
   styleUrls: ['./send-coins-form.component.scss'],
-  providers: [ CurrenciesService ],
+  providers: [ ChangellyApiService ],
 })
 export class SendCoinsFormComponent implements OnInit {
 
@@ -15,7 +15,7 @@ export class SendCoinsFormComponent implements OnInit {
   currencies: object;
   errorMessage: string;
 
-  constructor(private currenciesService: CurrenciesService) {
+  constructor(private changellyApi: ChangellyApiService) {
     if(!this.theme){
       this.theme = 'form-dark'
     }
@@ -26,7 +26,7 @@ export class SendCoinsFormComponent implements OnInit {
   }
 
   getCurrencies() {
-    this.currenciesService.getCurrencies()
+    this.changellyApi.getCurrencies()
       .subscribe(
         currencies => {
           // @TODO check data for correct format and display view error if wrong
