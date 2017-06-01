@@ -2,19 +2,19 @@ const configData = require('../../config')
 const crypto = require('crypto')
 const jayson = require('jayson')
 
-const URL = 'https://api.changelly.com'
+const URL = configData.changellyUrl
 const client = jayson.client.https(URL)
 
 const Changelly = {}
 
 Changelly.id = () => {
-  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
     const r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8)
     return v.toString(16)
   })
 }
 
-Changelly.sign =  (message) => {
+Changelly.sign = (message) => {
   return crypto
     .createHmac('sha512', configData.changellySecretKey)
     .update(JSON.stringify(message))
@@ -34,7 +34,7 @@ Changelly.request = (method, options, callback) => {
 }
 
 Changelly.getCurrencies = (callback) => {
-  return Changelly.request('getCurrencies', {}, callback)
+  return Changelly.request(configData.changellyApiEndPoints.getCurrencies, {}, callback)
 }
 
 module.exports = Changelly
