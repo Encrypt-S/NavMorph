@@ -1,34 +1,40 @@
 <div [ngClass]="theme">
-  <div class="row">
-    <div class="input-field col s9 no-hoz-spacing">
-      <input type="text" name="enter-text-ex" class="input-with-select" />
-      <label for="enter-text-ex">Enter amount</label>
+  <div class="">
+    <div class="row error-message" *ngIf="errorMessage">
+      {{errorMessage}}
     </div>
-    <div class="input-field col s3 no-hoz-spacing">
-      <select materialize="material_select"  [materializeSelectOptions]="currencies" [(ngModel)]="selectedOrigin" name="selectedOrigin" class="">
-        <option *ngFor="let currency of currencies" [value]="currency">{{currency | uppercase}}</option>
-      </select>
-      <label>Source Coin</label>
+
+    <div class="row" >
+      <div class="input-field col s9 no-hoz-spacing">
+        <input type="text" name="enter-text-ex" class="input-with-select" />
+        <label for="enter-text-ex">Enter amount</label>
+      </div>
+      <div class="input-field col s3 no-hoz-spacing">
+        <select materialize="material_select"  [materializeSelectOptions]="currencies" [(ngModel)]="selectedOrigin" name="selectedOrigin" class="">
+          <option *ngFor="let currency of currencies" [value]="currency">{{currency | uppercase}}</option>
+        </select>
+        <label>Source Coin</label>
+      </div>
+    </div>
+    <div class="row">
+      <div class="input-field col s9 no-hoz-spacing">
+        <input type="text" name="enter-text-ex" class="input-with-select" />
+        <label for="enter-text-ex">Enter Destination Address</label>
+      </div>
+      <div class="input-field col s3 no-hoz-spacing">
+        <select materialize="material_select"  [materializeSelectOptions]="currencies" [(ngModel)]="selectedDest" name="selectedDest" class="">
+          <option *ngFor="let currency of currencies" [value]="currency">{{currency | uppercase}}</option>
+        </select>
+        <label>Dest. Coin</label>
+      </div>
     </div>
   </div>
   <div class="row">
-    <div class="input-field col s9 no-hoz-spacing">
-      <input type="text" name="enter-text-ex" class="input-with-select" />
-      <label for="enter-text-ex">Enter Destination Address</label>
+    <div class="send-buttons col s12 no-hoz-spacing">
+      <button class="btn waves-effect waves-light btn-small bg-blue" type="submit" name="action">Clear</button>
+      <button class="btn waves-effect waves-light bg-fuschia lighten-1" type="submit" name="action">Send
+          <i class="material-icons right">send</i>
+      </button>
     </div>
-    <div class="input-field col s3 no-hoz-spacing">
-      <select materialize="material_select"  [materializeSelectOptions]="currencies" [(ngModel)]="selectedDest" name="selectedDest" class="">
-        <option *ngFor="let currency of currencies" [value]="currency">{{currency | uppercase}}</option>
-      </select>
-      <label>Dest. Coin</label>
-    </div>
-  </div>
-</div>
-<div class="row">
-  <div class="send-buttons col s12 no-hoz-spacing">
-    <button class="btn waves-effect waves-light btn-small bg-blue" type="submit" name="action">Clear</button>
-    <button class="btn waves-effect waves-light bg-fuschia lighten-1" type="submit" name="action">Send
-        <i class="material-icons right">send</i>
-    </button>
   </div>
 </div>

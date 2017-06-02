@@ -30,8 +30,18 @@ export class SendCoinsFormComponent implements OnInit {
       .subscribe(
         currencies => {
           // @TODO check data for correct format and display view error if wrong
+          // this.checkData(currencies)
+          console.log('curr ', currencies)
           this.currencies = currencies;
         },
-        error => this.errorMessage = <any>error)
+        error => {
+          console.log(error)
+          this.errorMessage = <any>error
+        })
   }
+
+  checkData(data){
+
+  }
+
 }
