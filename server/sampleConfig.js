@@ -1,4 +1,4 @@
-//actual config file is named config.js
+// actual config file is named config.js
 const configData = {
 
   changellyApiEndPoints: {
