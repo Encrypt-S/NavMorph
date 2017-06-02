@@ -29,19 +29,37 @@ export class SendCoinsFormComponent implements OnInit {
     this.changellyApi.getCurrencies()
       .subscribe(
         currencies => {
-          // @TODO check data for correct format and display view error if wrong
-          // this.checkData(currencies)
-          console.log('curr ', currencies)
-          this.currencies = currencies;
+          if(this.checkData(currencies))
+            this.currencies = currencies
         },
         error => {
-          console.log(error)
-          this.errorMessage = <any>error
+          console.log('err', error)
+          this.displayError(error)
         })
   }
 
-  checkData(data){
+  displayError(error){
+    let errMsg = ''
+    switch(error.slice(0,3)){
+      case('404'):
+        errMsg = 'Unable to load available currencies from Changelly'
+        break
+      case('400'):
+        errMsg = 'Recevied incorrectly formatted data from Changelly'
+      default:
+        errMsg = 'Error displaying available currencies'
+        break
+    }
+    this.errorMessage = errMsg
+  }
 
+
+  checkData(data){
+    if(data instanceof Array && data[0] instanceof String ){
+      this.displayError('400')
+      return false
+    }
+    return true
   }
 
 }
