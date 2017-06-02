@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
 
+import { changellyNodeApiEndPoints } from "./config";
+
 import {GenericNodeApiService}  from '../generic-node-api/generic-node-api';
 
 @Injectable()
@@ -8,7 +10,7 @@ export class ChangellyApiService {
   constructor( private genServ:GenericNodeApiService) { }
 
   getCurrencies() {
-    return this.getApiRequest( 'currencies', '')
+    return this.getApiRequest( changellyNodeApiEndPoints.getCurrencies, '')
   }
 
   getApiRequest(endpoint, params){
