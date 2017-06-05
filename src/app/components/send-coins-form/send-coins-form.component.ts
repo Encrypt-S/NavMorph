@@ -11,8 +11,8 @@ import { ChangellyApiService } from '../../services/changelly-api/changelly-api'
 export class SendCoinsFormComponent implements OnInit {
 
   @Input() theme: string;
-
-  currencies: object = ['Loading'];
+  isDisabled: boolean = true
+  currencies: object = ['Loading']
   errorMessage: string;
 
   constructor(private changellyApi: ChangellyApiService) {
@@ -31,6 +31,7 @@ export class SendCoinsFormComponent implements OnInit {
         currencies => {
           if(this.checkData(currencies))
             this.currencies = currencies
+            this.isDisabled = false
         },
         error => {
           console.log('err', error)
@@ -51,6 +52,7 @@ export class SendCoinsFormComponent implements OnInit {
         break
     }
     this.errorMessage = errMsg
+    this.isDisabled = true
   }
 
 
