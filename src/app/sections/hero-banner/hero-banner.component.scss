@@ -7,3 +7,11 @@
 #paragraph-container {
   color: $white;
 }
+
+.parallax-container {
+  overflow: visible !important;
+}
+
+.parallax {
+  overflow: hidden !important;
+}
