@@ -12,7 +12,7 @@ export class SendCoinsFormComponent implements OnInit {
 
   @Input() theme: string;
 
-  currencies: object;
+  currencies: object = ['Loading'];
   errorMessage: string;
 
   constructor(private changellyApi: ChangellyApiService) {
