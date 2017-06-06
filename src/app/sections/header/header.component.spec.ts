@@ -3,14 +3,21 @@ import { MaterializeModule } from 'angular2-materialize';
 
 import { HeaderSection } from './header.component';
 
+import {RouterTestingModule}  from "@angular/router/testing";
+
 describe('HeaderSection', () => {
   let component: HeaderSection;
   let fixture: ComponentFixture<HeaderSection>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [ MaterializeModule ],
-      declarations: [ HeaderSection ]
+      imports: [
+        MaterializeModule,
+        RouterTestingModule
+       ],
+      declarations: [
+        HeaderSection,  
+       ]
     })
     .compileComponents();
   }));

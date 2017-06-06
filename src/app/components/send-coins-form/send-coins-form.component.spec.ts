@@ -1,21 +1,20 @@
 import { async, ComponentFixture, TestBed, inject, fakeAsync, tick } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
+import { MaterializeModule } from 'angular2-materialize';
+
 
 import { SendCoinsFormComponent } from './send-coins-form.component';
-import { CurrenciesService } from './../../services/currencies/currencies';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/of';
 
+import { ChangellyApiService } from './../../services/changelly-api/changelly-api';
+import { GenericNodeApiService } from './../../services/generic-node-api/generic-node-api';
 
-const fakeData  = [
-    { ticker: 'NAV', name: 'Nav Coin' },
-    { ticker: 'BTC', name: 'Bitcoin' },
-    { ticker: 'ETH', name: 'Ethereum' },
-    { ticker: 'LTC', name: 'Litecoin' }
-]
 
-class MockCurrServ {
+const fakeData  = ['NAV', 'BTC', 'ETH', 'LTC']
+
+class MockChangellyServ {
   getCurrencies = function(){
       return Observable.of(fakeData)
     }
@@ -29,16 +28,22 @@ describe('SendCoinsFormComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ SendCoinsFormComponent ],
-      imports: [FormsModule, HttpModule],
+      imports: [
+        FormsModule,
+        HttpModule,
+        MaterializeModule,
+    ] ,
       providers: [
-        SendCoinsFormComponent, CurrenciesService
+        SendCoinsFormComponent,
+        ChangellyApiService,
+        GenericNodeApiService,
       ],
     })
 
     .overrideComponent(SendCoinsFormComponent, {
       set: {
         providers: [
-          { provide: CurrenciesService, useClass: MockCurrServ }
+          { provide: ChangellyApiService, useClass: MockChangellyServ }
         ]
       }
     })
