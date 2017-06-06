@@ -5,10 +5,13 @@ import { Observable } from 'rxjs/Rx';
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/map';
 
+import { nodeApiBaseUrl } from "../config";
+
+
 @Injectable()
 export class GenericNodeApiService {
 
-  baseApiUrl: string = 'http://localhost:3000/api/'
+  baseApiUrl: string = nodeApiBaseUrl
 
   constructor(private http: Http) { }
 
@@ -24,6 +27,7 @@ export class GenericNodeApiService {
       return body.result || { };
     } catch (e) {
       console.error('Error extracting api data: ' + e )
+      return ['Error']
     }
   }
 
