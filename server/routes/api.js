@@ -11,7 +11,7 @@ router.get('/db/transaction/:id', TransactionCtrl.getTransaction)
 router.get('/db/transaction', TransactionCtrl.getTransaction)
 router.post('/db/transaction', TransactionCtrl.createTransaction)
 
-router.get('/changelly/getCurrencies', (req, res) => Changelly.getCurrencies(res))
+router.get('/changelly/getCurrencies', ChangellyCtrl.getCurrencies)
 
 router.all('/*', (req, res) => {
   res.status(404).json({ error: ' - API Endpoint ' + req.url + ' does not exist' })
