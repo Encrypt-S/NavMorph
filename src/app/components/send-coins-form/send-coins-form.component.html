@@ -1,7 +1,6 @@
 <div [ngClass]="theme">
   <div class="">
-    <!-- <div class="row error-message" *ngIf="errorMessage"> -->
-    <div class="row error-message" >
+    <div class="row error-message" *ngIf="errorMessage">
       Error displaying currencies:
       <span *ngIf="error.notFound">Unable to load available currencies from Changelly</span>
       <span *ngIf="error.dataFormat">Recevied incorrectly formatted data from Changelly</span>
