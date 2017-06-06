@@ -42,6 +42,10 @@
  right: 10px;
 }
 
+input[type=text]:disabled:not([readonly]), textarea:disabled:not([readonly]),
+.input-field /deep/ .select-wrapper input.select-dropdown:disabled {
+  border-bottom: 1px solid #9e9e9e;
+}
 /**** FORM LIGHT *******/
 
 .form-light {
@@ -54,7 +58,7 @@
     label:not(.label-icon).active {
       color: $ice;
     }
-    input[type=text]:focus:not([readonly]), textarea:focus:not([readonly]) {
+    input[type=text]:focus:not([readonly]), textarea:focus:not([readonly]){
       border-bottom: 1px solid $ice;
     }
   }
@@ -90,6 +94,10 @@
     }
     label {
       color: $black;
+    }
+
+    input[type=text]:disabled + label {
+      color: rgba(0, 0, 0, 0.26);
     }
 
     label:not(.label-icon).active {

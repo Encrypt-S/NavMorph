@@ -13,7 +13,12 @@ export class SendCoinsFormComponent implements OnInit {
   @Input() theme: string;
   isDisabled: boolean = true
   currencies: object = ['Loading']
-  errorMessage: string;
+
+  error = {
+    'notFound': false,
+    'dataFormat': false,
+    'default': false,
+  }
 
   constructor(private changellyApi: ChangellyApiService) {
     if(!this.theme){
@@ -34,24 +39,29 @@ export class SendCoinsFormComponent implements OnInit {
             this.isDisabled = false
         },
         error => {
+          this.isDisabled = true
           console.log('err', error)
-          this.displayError(error)
         })
   }
 
+  toggleFormState(){
+  setTimeout(() => {
+      this.isDisabled = !this.isDisabled
+    }, 100)
+
+  }
+
   displayError(error){
-    let errMsg = ''
     switch(error.slice(0,3)){
       case('404'):
-        errMsg = 'Unable to load available currencies from Changelly'
+        this.error.notFound = true
         break
       case('400'):
-        errMsg = 'Recevied incorrectly formatted data from Changelly'
+        this.error.dataFormat = true
       default:
-        errMsg = 'Error displaying available currencies'
+        this.error.default = true
         break
     }
-    this.errorMessage = errMsg
     this.isDisabled = true
   }
 
