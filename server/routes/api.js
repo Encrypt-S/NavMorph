@@ -3,7 +3,7 @@ const express = require('express')
 const router = express.Router()
 const Rpc = require('../lib/rpc')
 const TransactionCtrl = require('../lib/db/transaction.ctrl')
-const Changelly = require('../lib/changelly/changelly')
+const ChangellyCtrl = require('../lib/changelly/changelly.ctrl')
 
 router.get('/', (req, res) => res.send('api works'))
 router.get('/rpc/getinfo', Rpc.getInfo)
