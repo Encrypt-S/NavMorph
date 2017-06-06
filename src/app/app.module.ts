@@ -24,7 +24,9 @@ import { HeroBannerSection } from './sections/hero-banner/hero-banner.component'
 import { TileComponent } from './components/tile/tile.component';
 import { SendCoinsFormComponent } from './components/send-coins-form/send-coins-form.component';
 
-import { CurrenciesService } from './services/currencies';
+import { GenericNodeApiService }  from './services/generic-node-api/generic-node-api';
+import { ChangellyApiService }  from './services/changelly-api/changelly-api';
+
 
 
 @NgModule({
@@ -52,7 +54,7 @@ import { CurrenciesService } from './services/currencies';
     JsonpModule,
     RouterModule.forRoot(routes)
   ],
-  providers: [CurrenciesService],
+  providers: [GenericNodeApiService, ChangellyApiService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

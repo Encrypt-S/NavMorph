@@ -7,9 +7,13 @@ import { LegalSection } from '../../sections/legal/legal.component';
 import { HeaderSection } from '../../sections/header/header.component';
 import { FooterSection } from '../../sections/footer/footer.component';
 import { SellingPointsSection } from '../../sections/selling-points/selling-points.component';
-import { SendCoinsSection } from '../../sections/send-coins/send-coins.component';
+import { HeroBannerSection } from '../../sections/hero-banner/hero-banner.component';
+import { SendCoinsFormComponent } from '../../components/send-coins-form/send-coins-form.component';
 
 import { TileComponent } from '../../components/tile/tile.component';
+
+import { GenericNodeApiService } from './../../services/generic-node-api/generic-node-api';
+
 
 import { DemoPage } from './demo.component';
 
@@ -21,13 +25,17 @@ describe('DemoPage', () => {
     TestBed.configureTestingModule({
       imports: [ FormsModule, MaterializeModule, HttpModule],
       declarations: [
-        DemoPage,
         LegalSection,
         HeaderSection,
         FooterSection,
         SellingPointsSection,
+        HeroBannerSection,
+        SendCoinsFormComponent,
         TileComponent,
-        SendCoinsSection,
+        DemoPage,
+      ],
+      providers: [
+        GenericNodeApiService
       ]
     })
     .compileComponents();

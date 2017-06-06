@@ -1,30 +1,38 @@
 import { Injectable } from '@angular/core';
 import { Http, Response } from '@angular/http';
 
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs/Rx';
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/map';
 
+import { nodeApiBaseUrl } from "../config";
+
 
 @Injectable()
-export class CurrenciesService {
+export class GenericNodeApiService {
 
-  private currenciesApiUrl = 'http://localhost:4200/assets/coins.json';
+  baseApiUrl: string = nodeApiBaseUrl
 
   constructor(private http: Http) { }
 
-  getCurrencies(): Observable<Object[]> {
-    return this.http.get(this.currenciesApiUrl)
+  getRequest(apiRouteUrl): Observable<Object[]> {
+    return this.http.get(this.baseApiUrl + apiRouteUrl)
                     .map(this.extractData)
-                    .catch(this.handleError);
+                    .catch(this.handleError)
   }
 
   private extractData(res: Response) {
-    let body = res.json();
-    return body.data || { };
+    try{
+      let body = res.json();
+      return body.result || { };
+    } catch (e) {
+      console.error('Error extracting api data: ' + e )
+      return ['Error']
+    }
   }
 
   private handleError (error: Response | any) {
+    console.log(error)
     let errMsg: string;
     if (error instanceof Response) {
       const body = error.json() || '';
@@ -33,7 +41,6 @@ export class CurrenciesService {
     } else {
       errMsg = error.message ? error.message : error.toString();
     }
-    console.error(errMsg);
     return Observable.throw(errMsg);
   }
 }

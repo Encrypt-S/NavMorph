@@ -1,5 +1,4 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { FormsModule } from '@angular/forms';
 import { MaterializeModule } from 'angular2-materialize';
 import { HttpModule } from '@angular/http';
 
@@ -11,7 +10,11 @@ import { PartnersSection } from '../../sections/partners/partners.component';
 import { HeaderSection } from '../../sections/header/header.component';
 import { FooterSection } from '../../sections/footer/footer.component';
 import { SellingPointsSection } from '../../sections/selling-points/selling-points.component';
-import { SendCoinsSection } from '../../sections/send-coins/send-coins.component';
+import { SendCoinsFormComponent } from '../../components/send-coins-form/send-coins-form.component';
+import { HeroBannerSection } from '../../sections/hero-banner/hero-banner.component';
+
+import { GenericNodeApiService } from './../../services/generic-node-api/generic-node-api';
+
 
 import { TileComponent } from '../../components/tile/tile.component';
 
@@ -23,7 +26,6 @@ describe('HomePage', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [
-        FormsModule,
         MaterializeModule,
         HttpModule,
       ],
@@ -34,9 +36,13 @@ describe('HomePage', () => {
         FooterSection,
         SellingPointsSection,
         HowItWorksSection,
+        HeroBannerSection,
         PartnersSection,
         TileComponent,
-        SendCoinsSection,
+        SendCoinsFormComponent,
+      ],
+      providers: [
+        GenericNodeApiService
       ]
     })
     .compileComponents();

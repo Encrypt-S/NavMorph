@@ -3,3 +3,10 @@
 .send-buttons {
   text-align: right;
 }
+
+.error-message {
+  color: $red;
+  font-size: 32px;
+  text-align: center;
+  z-index: 10;
+}
