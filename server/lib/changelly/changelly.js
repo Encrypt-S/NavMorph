@@ -33,8 +33,14 @@ Changelly.request = (method, options, callback) => {
   })
 }
 
-Changelly.getCurrencies = (callback) => {
-  return Changelly.request(configData.changellyApiEndPoints.getCurrencies, {}, callback)
+Changelly.getCurrencies = (res) => {
+  Changelly.request(configData.changellyApiEndPoints.getCurrencies, {}, (err, data) => {
+    if (err) {
+      console.log('Error: ', err)
+    } else {
+      res.send(data)
+    }
+  })
 }
 
 module.exports = Changelly
