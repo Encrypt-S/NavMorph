@@ -9,7 +9,7 @@
 
     <div class="row" >
       <div class="input-field col s9 no-hoz-spacing">
-        <input type="text" name="enter-text-ex" class="input-with-select" [attr.disabled]="isDisabled?true:null"/>
+        <input type="text" name="enter-text-ex" class="input-with-select" [attr.disabled]="isDisabled?true:null" [(ngModel)]="transferAmount" />
         <label for="enter-text-ex">Enter amount</label>
       </div>
       <div class="input-field col s3 no-hoz-spacing">
@@ -21,7 +21,7 @@
     </div>
     <div class="row">
       <div class="input-field col s9 no-hoz-spacing">
-        <input type="text" name="enter-text-ex" class="input-with-select" [attr.disabled]="isDisabled?true:null"/>
+        <input type="text" name="enter-text-ex" class="input-with-select" [attr.disabled]="isDisabled?true:null" [(ngModel)]="destAddr" />
         <label for="enter-text-ex">Enter Destination Address</label>
       </div>
       <div class="input-field col s3 no-hoz-spacing">
@@ -35,7 +35,7 @@
   <div class="row">
     <div class="send-buttons col s12 no-hoz-spacing">
       <button class="btn waves-effect waves-light btn-small bg-blue" type="submit" name="action">Clear</button>
-      <button class="btn waves-effect waves-light bg-fuschia lighten-1" type="submit" name="action">Send
+      <button class="btn waves-effect waves-light bg-fuschia lighten-1" type="submit" name="action" routerLink="/send" (click)="setFormData()">Send
           <i class="material-icons right">send</i>
       </button>
     </div>

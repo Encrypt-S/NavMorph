@@ -8,6 +8,7 @@ import { SendCoinsFormComponent } from './send-coins-form.component';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/of';
 
+import { SendPageDataService } from '../../services/send-page-data/send-page-data';
 import { ChangellyApiService } from './../../services/changelly-api/changelly-api';
 import { GenericNodeApiService } from './../../services/generic-node-api/generic-node-api';
 
@@ -32,9 +33,10 @@ describe('SendCoinsFormComponent', () => {
         FormsModule,
         HttpModule,
         MaterializeModule,
-    ] ,
+    ],
       providers: [
         SendCoinsFormComponent,
+        SendPageDataService,
         ChangellyApiService,
         GenericNodeApiService,
       ],

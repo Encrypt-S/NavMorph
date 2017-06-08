@@ -1,12 +1,18 @@
 import { Component, OnInit, Input } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 
 import { ChangellyApiService } from '../../services/changelly-api/changelly-api';
+import { SendPageDataService } from '../../services/send-page-data/send-page-data';
 
 @Component({
   selector: 'send-coins-form-component',
   templateUrl: './send-coins-form.component.html',
   styleUrls: ['./send-coins-form.component.scss'],
-  providers: [ ChangellyApiService ],
+
+  providers: [
+    FormsModule,
+    ChangellyApiService,
+  ],
 })
 export class SendCoinsFormComponent implements OnInit {
 
@@ -14,27 +20,60 @@ export class SendCoinsFormComponent implements OnInit {
   isDisabled: boolean = true
   currencies: object = ['Loading']
 
+  transferAmount: number
+  selectedOrigin: string
+  selectedDest: string
+  destAddr: string
+
   error = {
     'notFound': false,
     'dataFormat': false,
     'default': false,
   }
 
-  constructor(private changellyApi: ChangellyApiService) {
+  formData: object = {}
+
+  constructor(private changellyApi: ChangellyApiService, private dataServ: SendPageDataService) {
     if(!this.theme){
       this.theme = 'form-dark'
     }
   }
 
-  ngOnInit() {
-    this.getCurrencies()
+  async ngOnInit() {
+    this.getCurrencies().then(()=> {
+      this.formData = this.getFormData()
+      this.fillForm(this.formData)
+    })
+  }
+
+  getFormData():object {
+    return this.dataServ.getData()
+  }
+
+  fillForm(data):void {
+    this.transferAmount = data.transferAmount
+    this.selectedOrigin = data.originCoin
+    this.selectedDest = data.destCoin
+    this.destAddr = data.destAddr
+  }
+
+  setFormData():void {
+    this.dataServ.storeData(this.transferAmount, this.selectedOrigin,
+      this.selectedDest, this.destAddr)
+  }
+
+  clearFormData():void {
+    this.transferAmount = undefined
+    this.selectedOrigin = undefined
+    this.selectedDest = undefined
+    this.destAddr = undefined
   }
 
   getCurrencies() {
     this.changellyApi.getCurrencies()
       .subscribe(
         currencies => {
-          if(this.checkData(currencies))
+          if(this.checkCurrData(currencies))
             this.currencies = currencies
             this.isDisabled = false
         },
@@ -42,16 +81,19 @@ export class SendCoinsFormComponent implements OnInit {
           this.isDisabled = true
           console.log('err', error)
         })
+    return new Promise((resolve, reject) => {
+      resolve()
+    })
   }
 
-  toggleFormState(){
+  toggleFormState() {
   setTimeout(() => {
       this.isDisabled = !this.isDisabled
     }, 100)
 
   }
 
-  displayError(error){
+  displayError(error) {
     switch(error.slice(0,3)){
       case('404'):
         this.error.notFound = true
@@ -66,12 +108,11 @@ export class SendCoinsFormComponent implements OnInit {
   }
 
 
-  checkData(data){
+  checkCurrData(data) {
     if(data instanceof Array && data[0] instanceof String ){
       this.displayError('400')
       return false
     }
     return true
   }
-
 }

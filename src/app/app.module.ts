@@ -26,6 +26,7 @@ import { SendCoinsFormComponent } from './components/send-coins-form/send-coins-
 
 import { GenericNodeApiService }  from './services/generic-node-api/generic-node-api';
 import { ChangellyApiService }  from './services/changelly-api/changelly-api';
+import { SendPageDataService } from './services/send-page-data/send-page-data';
 
 
 
@@ -54,7 +55,7 @@ import { ChangellyApiService }  from './services/changelly-api/changelly-api';
     JsonpModule,
     RouterModule.forRoot(routes)
   ],
-  providers: [GenericNodeApiService, ChangellyApiService],
+  providers: [GenericNodeApiService, ChangellyApiService, SendPageDataService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
