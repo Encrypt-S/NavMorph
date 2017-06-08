@@ -1,6 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-
 import { ChangellyApiService } from '../../services/changelly-api/changelly-api';
 import { SendPageDataService } from '../../services/send-page-data/send-page-data';
 
@@ -14,16 +13,17 @@ import { SendPageDataService } from '../../services/send-page-data/send-page-dat
     ChangellyApiService,
   ],
 })
+
 export class SendCoinsFormComponent implements OnInit {
 
   @Input() theme: string;
   isDisabled: boolean = true
   currencies: object = ['Loading']
-
   transferAmount: number
   selectedOrigin: string
   selectedDest: string
   destAddr: string
+  formDataSet: boolean = false
 
   error = {
     'notFound': false,
@@ -33,13 +33,15 @@ export class SendCoinsFormComponent implements OnInit {
 
   formData: object = {}
 
-  constructor(private changellyApi: ChangellyApiService, private dataServ: SendPageDataService) {
+  constructor(private changellyApi: ChangellyApiService, private dataServ: SendPageDataService
+    ) {
     if(!this.theme){
       this.theme = 'form-dark'
     }
   }
 
   async ngOnInit() {
+    this.clearFormData()
     this.getCurrencies().then(()=> {
       this.formData = this.getFormData()
       this.fillForm(this.formData)
@@ -55,6 +57,11 @@ export class SendCoinsFormComponent implements OnInit {
     this.selectedOrigin = data.originCoin
     this.selectedDest = data.destCoin
     this.destAddr = data.destAddr
+    if(this.dataServ.isDataSet) {
+      setTimeout(() => {
+        this.formDataSet = true
+      }, 50);
+    }
   }
 
   setFormData():void {
@@ -63,10 +70,8 @@ export class SendCoinsFormComponent implements OnInit {
   }
 
   clearFormData():void {
-    this.transferAmount = undefined
-    this.selectedOrigin = undefined
-    this.selectedDest = undefined
-    this.destAddr = undefined
+    this.formData = {}
+    this.fillForm({})
   }
 
   getCurrencies() {
@@ -79,7 +84,6 @@ export class SendCoinsFormComponent implements OnInit {
         },
         error => {
           this.isDisabled = true
-          console.log('err', error)
         })
     return new Promise((resolve, reject) => {
       resolve()
@@ -90,7 +94,6 @@ export class SendCoinsFormComponent implements OnInit {
   setTimeout(() => {
       this.isDisabled = !this.isDisabled
     }, 100)
-
   }
 
   displayError(error) {
@@ -106,7 +109,6 @@ export class SendCoinsFormComponent implements OnInit {
     }
     this.isDisabled = true
   }
-
 
   checkCurrData(data) {
     if(data instanceof Array && data[0] instanceof String ){

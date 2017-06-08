@@ -20,7 +20,6 @@ describe('SendPageDataService', () => {
   }));
 
   it('should be able to clear it\'s data', inject([SendPageDataService], (service: SendPageDataService) => {
-    console.log(this.testData)
     service.transferAmount = this.testData.transferAmount
     service.originCoin = this.testData.originCoin
     service.destCoin = this.testData.destCoin

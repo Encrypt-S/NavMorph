@@ -8,14 +8,16 @@ export class SendPageDataService {
   public destCoin: string
   public destAddr: string
 
-  constructor() { }
+  public isDataSet: boolean = false
 
+  constructor() { }
 
   clearData(): void {
     this.transferAmount = undefined
     this.originCoin = undefined
     this.destCoin = undefined
     this.destAddr = undefined
+    this.isDataSet = false
   }
 
   storeData(transferAmount, originCoin, destCoin, destAddr): void {
@@ -23,6 +25,7 @@ export class SendPageDataService {
     this.originCoin = originCoin
     this.destCoin = destCoin
     this.destAddr = destAddr
+    this.isDataSet = true
   }
 
   getData(): object {
