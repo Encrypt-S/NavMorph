@@ -13,7 +13,7 @@
         <label for="enter-text-ex" [ngClass]="{'active':formDataSet}">Enter amount</label>
       </div>
       <div class="input-field col s3 no-hoz-spacing">
-        <select materialize="material_select"  [materializeSelectOptions]="currencies" [(ngModel)]="selectedOrigin" name="selectedOrigin" [attr.disabled]="isDisabled?true:null">
+        <select materialize="material_select"  [materializeSelectOptions]="currencies" [(ngModel)]="originCoin" name="originCoin" [attr.disabled]="isDisabled?true:null">
           <option *ngFor="let currency of currencies" [value]="currency">{{currency | uppercase}}</option>
         </select>
         <label>Source Coin</label>
@@ -25,7 +25,7 @@
         <label for="enter-text-ex" [ngClass]="{'active':formDataSet}">Enter Destination Address</label>
       </div>
       <div class="input-field col s3 no-hoz-spacing">
-        <select materialize="material_select"  [materializeSelectOptions]="currencies" [(ngModel)]="selectedDest" name="selectedDest" [attr.disabled]="isDisabled?true:null">
+        <select materialize="material_select"  [materializeSelectOptions]="currencies" [(ngModel)]="destCoin" name="destCoin" [attr.disabled]="isDisabled?true:null">
           <option *ngFor="let currency of currencies" [value]="currency">{{currency | uppercase}}</option>
         </select>
         <label>Dest. Coin</label>
@@ -35,7 +35,7 @@
   <div class="row">
     <div class="send-buttons col s12 no-hoz-spacing">
       <button class="btn waves-effect waves-light btn-small bg-blue" type="submit" name="action" (click)="clearFormData()">Clear</button>
-      <button class="btn waves-effect waves-light bg-fuschia lighten-1" type="submit" name="action" routerLink="/send" (click)="setFormData()">Send
+      <button class="btn waves-effect waves-light bg-fuschia lighten-1" type="submit" name="action" routerLink="/send" (click)="storeFormData()">Send
           <i class="material-icons right">send</i>
       </button>
     </div>

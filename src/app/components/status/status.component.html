@@ -1,0 +1,34 @@
+<div id="status-container" >
+  <h4>Status:</h4>
+  <div *ngIf="!formDataSet">
+    <span>Fill out the form and press 'Send' to get started.</span>
+  </div>
+  <div *ngIf="formDataSet">
+    <div>
+      <span class="status-title">You are sending: </span><span class="status-data">1 {{originCoin | uppercase}} to {{destAddr}} in {{destCoin | uppercase}}</span>
+    </div>
+    <div>
+      <span class="status-title">Est. Time: </span><span class="status-data">10 minutes</span>
+    </div>
+    <div>
+      <span class="status-title">Est. Conversion: </span><span class="status-data">1 {{originCoin | uppercase}} to NAV {{estOriginToNav}}</span>
+    </div>
+    <div>
+      <span class="status-title">Est. Conversion: </span><span class="status-data">{{estConvToNav}} NAV to {{estConvFromNav}} {{destCoin | uppercase}}</span>
+    </div>
+    <div>
+      <div>
+        <span class="status-title">Est. Fees: </span>
+      </div>
+      <div>
+        <span class="status-title">Changelly Conversion ({{originCoin | uppercase}} to NAV): </span><span class="status-data">{{changellyFeeToNav}} {{originCoin | uppercase}}</span>
+      </div>
+      <div>
+        <span class="status-title">Changelly Conversion (NAV to {{destCoin | uppercase}}): </span><span class="status-data">{{changellyFeeFromNav}} Nav</span>
+      </div>
+      <div>
+        <span class="status-title">NavTech Transaction: </span><span class="status-data">{{navtechFee}} {{originCoin | uppercase}}</span>
+      </div>
+    </div>
+  </div>
+</div>

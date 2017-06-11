@@ -14,14 +14,15 @@ import { SendPageDataService } from '../../services/send-page-data/send-page-dat
   ],
 })
 
+
 export class SendCoinsFormComponent implements OnInit {
 
   @Input() theme: string;
   isDisabled: boolean = true
   currencies: object = ['Loading']
   transferAmount: number
-  selectedOrigin: string
-  selectedDest: string
+  originCoin: string
+  destCoin: string
   destAddr: string
   formDataSet: boolean = false
 
@@ -38,40 +39,42 @@ export class SendCoinsFormComponent implements OnInit {
     if(!this.theme){
       this.theme = 'form-dark'
     }
+    this.getFormDataStream()
   }
 
   async ngOnInit() {
-    this.clearFormData()
-    this.getCurrencies().then(()=> {
-      this.formData = this.getFormData()
+    this.getCurrencies()
+  }
+  getFormData():void {
+    this.dataServ.getData()
+  }
+
+  getFormDataStream() {
+    this.dataServ.getDataStream().subscribe(data => {
+      this.formData = data
       this.fillForm(this.formData)
     })
   }
 
-  getFormData():object {
-    return this.dataServ.getData()
-  }
-
   fillForm(data):void {
     this.transferAmount = data.transferAmount
-    this.selectedOrigin = data.originCoin
-    this.selectedDest = data.destCoin
+    this.originCoin = data.originCoin
+    this.destCoin = data.destCoin
     this.destAddr = data.destAddr
     if(this.dataServ.isDataSet) {
       setTimeout(() => {
         this.formDataSet = true
-      }, 50);
+      }, 50)
     }
   }
 
-  setFormData():void {
-    this.dataServ.storeData(this.transferAmount, this.selectedOrigin,
-      this.selectedDest, this.destAddr)
+  storeFormData():void {
+    this.dataServ.storeData(this.transferAmount, this.originCoin,
+      this.destCoin, this.destAddr)
   }
 
   clearFormData():void {
     this.formData = {}
-    this.fillForm({})
   }
 
   getCurrencies() {
@@ -81,9 +84,13 @@ export class SendCoinsFormComponent implements OnInit {
           if(this.checkCurrData(currencies))
             this.currencies = currencies
             this.isDisabled = false
+            this.originCoin = currencies['0']
+            this.destCoin = currencies['0']
+            this.getFormData()
         },
         error => {
           this.isDisabled = true
+          console.log('err', error)
         })
     return new Promise((resolve, reject) => {
       resolve()
@@ -94,6 +101,7 @@ export class SendCoinsFormComponent implements OnInit {
   setTimeout(() => {
       this.isDisabled = !this.isDisabled
     }, 100)
+
   }
 
   displayError(error) {
@@ -109,6 +117,7 @@ export class SendCoinsFormComponent implements OnInit {
     }
     this.isDisabled = true
   }
+
 
   checkCurrData(data) {
     if(data instanceof Array && data[0] instanceof String ){

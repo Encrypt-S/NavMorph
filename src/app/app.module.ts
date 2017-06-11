@@ -22,6 +22,7 @@ import { SellingPointsSection } from './sections/selling-points/selling-points.c
 import { HeroBannerSection } from './sections/hero-banner/hero-banner.component';
 
 import { TileComponent } from './components/tile/tile.component';
+import { StatusComponent } from './components/status/status.component';
 import { SendCoinsFormComponent } from './components/send-coins-form/send-coins-form.component';
 
 import { GenericNodeApiService }  from './services/generic-node-api/generic-node-api';
@@ -46,6 +47,7 @@ import { SendPageDataService } from './services/send-page-data/send-page-data';
     TileComponent,
     SendCoinsFormComponent,
     HeroBannerSection,
+    StatusComponent,
   ],
   imports: [
     FormsModule,

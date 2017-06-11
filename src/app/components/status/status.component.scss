@@ -1,0 +1,27 @@
+@import "../../styles/base.scss";
+
+#status-container{
+  margin-top: 14px;
+  border-bottom: 1px solid #9e9e9e;
+  background-color: #e6ecf9;
+  border-radius: 10px 10px 0 0;
+  padding: 10px;
+  @media (max-width: 600px){
+    padding: 10px 20px !important;
+  }
+}
+
+h4  {
+  margin-top: 5px;
+}
+
+@media (min-width: 600px) and (max-width: 992px ) {
+
+  .status-data {
+    display: block;
+  }
+}
+
+.status-title {
+  font-weight: bold;
+}
