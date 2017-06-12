@@ -1,7 +1,7 @@
 export const changellyNodeApiEndPoints = {
   getCurrencies: 'getCurrencies',
-  getMinExchange: 'getMinAmount',
-  getEstimatedExchange: 'getExchangeAmount',
+  getMinAmount: 'getMinAmount',
+  getExchangeAmount: 'getExchangeAmount',
   getGenerateAddress: 'generateAddress',
   getTransaction: 'getTransactions',
   getExchangeStatus: 'getStatus',

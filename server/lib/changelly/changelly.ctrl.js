@@ -43,4 +43,24 @@ ChangellyCtrl.getCurrencies = (req, res) => {
   })
 }
 
+ChangellyCtrl.getMinAmount = (req, res) => {
+  return ChangellyCtrl.request('getMinAmount', req.params, (err, data) => {
+    if (err) {
+      console.log('Error: ', err)
+    } else {
+      res.send(data)
+    }
+  })
+}
+
+ChangellyCtrl.getExchangeAmount = (req, res) => {
+  return ChangellyCtrl.request('getExchangeAmount', req.params, (err, data) => {
+    if (err) {
+      console.log('Error: ', err)
+    } else {
+      res.send(data)
+    }
+  })
+}
+
 module.exports = ChangellyCtrl
