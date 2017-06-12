@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs/Subscription';
 
 import { SendPageDataService } from '../../services/send-page-data/send-page-data';
+import { ChangellyApiService } from '../../services/changelly-api/changelly-api';
 
 
 @Component({
@@ -18,15 +19,14 @@ export class StatusComponent implements OnInit {
   formDataSet: boolean = false
 
   estTime: object
-  estConvToNav: number
-  estConvFromNav: number
+  estConvToNav
+  estConvFromNav
 
-  changellyFeeToNav: number
-  changellyFeeFromNav: number
-  exchRateToNav: number
-  exchRateFromNav: number
+  changellyFeeTotalToNav: number
+  changellyFeeTotalFromNav: number
   navtechFeeTotal: number
-  navFeeMultiplier: number = 0.990025 // 0.995 * 0.995
+  changellyFee: number = 0.995
+  navFeeMultiplier: number = 0.995
   MAX_NAV_PER_TRADE: number = 10000
 
   formData: object = {}
@@ -34,17 +34,12 @@ export class StatusComponent implements OnInit {
   formDataSubscrip: Subscription
 
 
-  constructor(private dataServ: SendPageDataService) {
+  constructor(private dataServ: SendPageDataService ) {
     this.getFormDataStream()
   }
 
   ngOnInit() {
     this.getFormData()
-
-    // TODO: these VVV
-    //getEstTime
-    //getEstFees
-    // this.updateComponent(this.formData)
   }
 
   getFormData() {
@@ -63,6 +58,11 @@ export class StatusComponent implements OnInit {
     this.originCoin = data.originCoin
     this.destCoin = data.destCoin
     this.destAddr = data.destAddr
+    this.estConvToNav = data.estConvToNav
+    this.estConvFromNav = data.estConvFromNav
+    this.changellyFeeTotalToNav= data.changellyFeeTotalToNav
+    this.navtechFeeTotal= data.navtechFeeTotal
+    this.changellyFeeTotalFromNav= data.changellyFeeTotalFromNav
     this.formDataSet = true
   }
 }

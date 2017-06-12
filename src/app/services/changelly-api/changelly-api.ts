@@ -14,18 +14,22 @@ export class ChangellyApiService {
   }
 
   getMinAmount(originCoin, destCoin) {
-    return this.getApiRequest( changellyNodeApiEndPoints.getMinAmount, {originCoin, destCoin})
+    return this.getApiRequest( changellyNodeApiEndPoints.getMinAmount, [originCoin, destCoin])
   }
 
   getExchangeAmount(originCoin, destCoin, amount) {
-    return this.getApiRequest( changellyNodeApiEndPoints.getExchangeAmount, {originCoin, destCoin, amount})
+    return this.getApiRequest( changellyNodeApiEndPoints.getExchangeAmount, [originCoin, destCoin, amount])
   }
 
   getApiRequest(endpoint, params){
-    let paramString = ''
+    let paramString = '/'
     if(params){ //if we have undefined this wont affect the request
-      params.forEach(param => {
-          paramString += '/' + param
+      params.forEach((param, i) => {
+          if( i > 0) {
+            paramString += '-' + param
+          } else {
+            paramString += param
+          }
       });
     }
     return this.genServ.getRequest('changelly/' + endpoint + paramString)

@@ -1,11 +1,20 @@
 import { TestBed, inject } from '@angular/core/testing';
+import { HttpModule } from '@angular/http';
 
 import { SendPageDataService } from './send-page-data';
+import { ChangellyApiService } from '../../services/changelly-api/changelly-api';
+import { GenericNodeApiService } from './../../services/generic-node-api/generic-node-api';
+
 
 describe('SendPageDataService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [SendPageDataService]
+      providers: [
+        SendPageDataService,
+        ChangellyApiService,
+        GenericNodeApiService,
+    ],
+    imports: [HttpModule]
     });
     this.testData = {
       'transferAmount': 50,
@@ -51,7 +60,7 @@ describe('SendPageDataService', () => {
     service.destAddr = this.testData.destAddr
 
     const returnedData = service.getData()
-
+    // This method works differently now so we need to update the test
     expect(returnedData).toEqual(this.testData);
   }));
 });
