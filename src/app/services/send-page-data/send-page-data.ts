@@ -10,6 +10,8 @@ import 'rxjs/add/operator/first';
 @Injectable()
 export class SendPageDataService {
 
+  dataStored: boolean = false
+
   dataBundle = {
     'transferAmount': undefined,
     'originCoin': undefined,
@@ -43,8 +45,10 @@ export class SendPageDataService {
 
   constructor(private changellyApi: ChangellyApiService) { }
 
-  getData() {
-    this.subject.next(this.dataBundle)
+  getData(): void {
+    if(this.dataStored){
+      this.subject.next(this.dataBundle)
+    }
   }
 
   getDataStream(): Observable<any> {
@@ -52,7 +56,7 @@ export class SendPageDataService {
   }
 
   clearData(): void {
-    this.dataBundle = blankDataBundle
+    this.dataBundle = Object.assign({}, blankDataBundle)
     this.isDataSet = false
     this.subject.next(this.dataBundle)
   }
@@ -62,11 +66,18 @@ export class SendPageDataService {
   }
 
   storeData(transferAmount, originCoin, destCoin, destAddr): void {
-    this.dataBundle.transferAmount = transferAmount
+    // this.dataBundle = Object.assign({}, blankDataBundle)
+    this.dataBundle.validData = true
+    this.dataBundle.transferAmount = Number(transferAmount)? Number(transferAmount): undefined
     this.dataBundle.originCoin = originCoin
     this.dataBundle.destCoin = destCoin
     this.dataBundle.destAddr = destAddr
-    this.validateFormData(this.dataBundle)
+    this.dataStored = true
+    if(!this.validateFormData(this.dataBundle)){
+      this.subject.next(this.dataBundle)
+      return //things are broken so return early
+    }
+    this.dataBundle.validData = true
 
     this.getEstimatedExchange(originCoin, 'nav', transferAmount)
       .then((data) => {
@@ -89,7 +100,7 @@ export class SendPageDataService {
 
   validateFormData(dataBundle):boolean {
     let isValid = true
-    if(!(dataBundle.transferAmount instanceof Number)){
+    if(!Number.isInteger(dataBundle.transferAmount)){
       dataBundle.errors.invalidTransferAmount = true
       isValid = false
       dataBundle.validData = false

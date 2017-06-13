@@ -4,30 +4,35 @@
     <span>Fill out the form and press 'Send' to get started.</span>
   </div>
   <div *ngIf="formDataSet">
-    <div>
-      <span class="status-title">You are sending: </span><span class="status-data">{{transferAmount}} {{originCoin | uppercase}} to {{destAddr}} in {{destCoin | uppercase}}</span>
+    <div *ngIf="!validData">
+      <span id="error-text">Error with form submission, see form for more detail.</span>
     </div>
-    <div>
-      <span class="status-title">Est. Time: </span><span class="status-data">~10 minutes</span>
-    </div>
-    <div>
-      <span class="status-title">First Conversion: </span><span class="status-data">{{transferAmount}} {{originCoin | uppercase}} to ~{{estConvToNav}} NAV</span>
-    </div>
-    <div>
-      <span class="status-title">Second Conversion: </span><span class="status-data">~{{estConvToNav}} NAV to ~{{estConvFromNav}} {{destCoin | uppercase}}</span>
-    </div>
-    <div>
+    <div *ngIf="validData">
       <div>
-        <span class="status-title">Est. Fees: </span>
+        <span class="status-title">You are sending: </span><span class="status-data">{{transferAmount}} {{originCoin | uppercase}} to {{destAddr}} in {{destCoin | uppercase}}</span>
       </div>
       <div>
-        <span class="status-title">Changelly Conversion ({{originCoin | uppercase}} to NAV): </span><span class="status-data">{{changellyFeeTotalToNav}} {{originCoin | uppercase}}</span>
+        <span class="status-title">Est. Time: </span><span class="status-data">~10 minutes</span>
       </div>
       <div>
-        <span class="status-title">Changelly Conversion (NAV to {{destCoin | uppercase}}): </span><span class="status-data">{{changellyFeeTotalFromNav}} Nav</span>
+        <span class="status-title">First Conversion: </span><span class="status-data">{{transferAmount}} {{originCoin | uppercase}} to ~{{estConvToNav}} NAV</span>
       </div>
       <div>
-        <span class="status-title">NavTech Transaction: </span><span class="status-data">{{navtechFeeTotal}} {{originCoin | uppercase}}</span>
+        <span class="status-title">Second Conversion: </span><span class="status-data">~{{estConvToNav}} NAV to ~{{estConvFromNav}} {{destCoin | uppercase}}</span>
+      </div>
+      <div>
+        <div>
+          <span class="status-title">Est. Fees: </span>
+        </div>
+        <div>
+          <span class="status-title">Changelly Conversion ({{originCoin | uppercase}} to NAV): </span><span class="status-data">{{changellyFeeTotalToNav}} {{originCoin | uppercase}}</span>
+        </div>
+        <div>
+          <span class="status-title">Changelly Conversion (NAV to {{destCoin | uppercase}}): </span><span class="status-data">{{changellyFeeTotalFromNav}} Nav</span>
+        </div>
+        <div>
+          <span class="status-title">NavTech Transaction: </span><span class="status-data">{{navtechFeeTotal}} {{originCoin | uppercase}}</span>
+        </div>
       </div>
     </div>
   </div>

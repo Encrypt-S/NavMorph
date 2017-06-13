@@ -4,7 +4,6 @@ import { Subscription } from 'rxjs/Subscription';
 import { SendPageDataService } from '../../services/send-page-data/send-page-data';
 import { ChangellyApiService } from '../../services/changelly-api/changelly-api';
 
-
 @Component({
   selector: 'status-component',
   templateUrl: './status.component.html',
@@ -19,16 +18,13 @@ export class StatusComponent implements OnInit {
   formDataSet: boolean = false
 
   estTime: object
-  estConvToNav
-  estConvFromNav
+  estConvToNav: any
+  estConvFromNav: any
 
   changellyFeeTotalToNav: number
   changellyFeeTotalFromNav: number
   navtechFeeTotal: number
-  changellyFee: number = 0.995
-  navFeeMultiplier: number = 0.995
-  MAX_NAV_PER_TRADE: number = 10000
-
+  validData:boolean
   formData: object = {}
 
   formDataSubscrip: Subscription
@@ -39,7 +35,6 @@ export class StatusComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.getFormData()
   }
 
   getFormData() {
@@ -53,16 +48,20 @@ export class StatusComponent implements OnInit {
     })
   }
 
-  updateComponent(data):void {
-    this.transferAmount = data.transferAmount
-    this.originCoin = data.originCoin
-    this.destCoin = data.destCoin
-    this.destAddr = data.destAddr
-    this.estConvToNav = data.estConvToNav
-    this.estConvFromNav = data.estConvFromNav
-    this.changellyFeeTotalToNav= data.changellyFeeTotalToNav
-    this.navtechFeeTotal= data.navtechFeeTotal
-    this.changellyFeeTotalFromNav= data.changellyFeeTotalFromNav
+  updateComponent(formData):void {
+
+    this.transferAmount = formData.transferAmount
+    this.originCoin = formData.originCoin
+    this.destCoin = formData.destCoin
+    this.destAddr = formData.destAddr
+    this.estConvToNav = formData.estConvToNav
+    this.estConvFromNav = formData.estConvFromNav
+    this.changellyFeeTotalToNav= formData.changellyFeeTotalToNav
+    this.navtechFeeTotal= formData.navtechFeeTotal
+    this.changellyFeeTotalFromNav= formData.changellyFeeTotalFromNav
+    this.validData = formData.validData
+    console.log(this.validData)
+    console.log('data set')
     this.formDataSet = true
   }
 }
