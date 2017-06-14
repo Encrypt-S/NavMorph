@@ -18,12 +18,10 @@ export class SendPageDataService {
     'destAddr': undefined,
     'estConvToNav': undefined,
     'estConvFromNav': undefined,
-    'estNavAfterNavtechFee': undefined,
     'estTime': undefined,
-    'changellyFeeTotalToNav': undefined,
-    'navtechFeeTotal': undefined,
-    'changellyFeeTotalFromNav': undefined,
-    'minTransferAmount': undefined,
+    'changellyFeeOne': undefined,
+    'navTechFee': undefined,
+    'changellyFeeTwo': undefined,
     'validData': false,
     'errors': {
       'invalidDestAddress': false,
@@ -69,12 +67,10 @@ export class SendPageDataService {
       'destAddr': undefined,
       'estConvToNav': undefined,
       'estConvFromNav': undefined,
-      'estNavAfterNavtechFee': undefined,
       'estTime': undefined,
-      'changellyFeeTotalToNav': undefined,
-      'navtechFeeTotal': undefined,
-      'changellyFeeTotalFromNav': undefined,
-      'minTransferAmount': undefined,
+      'changellyFeeOne': undefined,
+      'navTechFee': undefined,
+      'changellyFeeTwo': undefined,
       'validData': false,
       'errors': {
         'invalidDestAddress': false,
@@ -108,23 +104,27 @@ export class SendPageDataService {
 
     this.getEstimatedExchange(originCoin, 'nav', transferAmount)
       .then((data) => {
-        if(originCoin === 'nav'){
-          this.dataBundle.changellyFeeTotalToNav = 0
-        } else {
-          this.dataBundle.changellyFeeTotalToNav = transferAmount - transferAmount * this.CHANGELLY_FEE
-        }
-        this.dataBundle.estConvToNav = this.dataBundle.changellyFeeTotalToNav
-        this.dataBundle.navtechFeeTotal = this.dataBundle.estConvToNav - this.dataBundle.estConvToNav * this.NAVTECH_FEE
-        this.dataBundle.estNavAfterNavtechFee = this.dataBundle.estConvToNav - this.dataBundle.changellyFeeTotalToNav
+        this.dataBundle.estConvToNav = data
 
-        this.getEstimatedExchange('nav', destCoin, this.dataBundle.estNavAfterNavtechFee)
+        if(originCoin === 'nav'){
+          this.dataBundle.changellyFeeOne = 0
+        } else {
+          this.dataBundle.changellyFeeOne = this.dataBundle.estConvToNav * this.CHANGELLY_FEE
+        }
+
+        this.dataBundle.navTechFee = (this.dataBundle.estConvToNav - this.dataBundle.changellyFeeOne) * this.NAVTECH_FEE
+        const conversionAfterFees = this.dataBundle.estConvToNav - this.dataBundle.changellyFeeOne - this.dataBundle.navTechFee
+
+        this.getEstimatedExchange('nav', destCoin, conversionAfterFees)
         .then((data) => {
-          if(destCoin === 'nav'){
-            this.dataBundle.changellyFeeTotalFromNav = 0
-          } else {
-            this.dataBundle.changellyFeeTotalFromNav = this.dataBundle.estNavAfterNavtechFee - this.dataBundle.estNavAfterNavtechFee * this.CHANGELLY_FEE
-          }
           this.dataBundle.estConvFromNav = data
+
+          if(destCoin === 'nav'){
+            this.dataBundle.changellyFeeTwo = 0
+          } else {
+            this.dataBundle.changellyFeeTwo = this.dataBundle.estConvFromNav * this.CHANGELLY_FEE
+          }
+
           this.isDataSet = true
 
           this.validateDataBundle(this.dataBundle)
@@ -155,7 +155,7 @@ export class SendPageDataService {
 
   validateDataBundle(dataBundle) {
     return new Promise<any>( resolve => {
-      if(dataBundle.estNavAfterNavtechFee > this.MAX_NAV_PER_TRADE) {
+      if((dataBundle.estConvToNav - dataBundle.changellyFeeOne ) > this.MAX_NAV_PER_TRADE) {
         dataBundle.errors.transferTooLarge = true
         dataBundle.validData = false
       }

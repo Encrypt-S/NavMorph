@@ -21,23 +21,23 @@
         <span class="status-title">Est. Time: </span><span class="status-data">20~40 minutes</span>
       </div>
       <div>
-        <span class="status-title">First Conversion: </span><span class="status-data">{{transferAmount}} {{originCoin | uppercase}} to ~{{estConvToNav}} NAV</span>
+        <span class="status-title">First Conversion: </span><span class="status-data">{{transferAmount}} {{originCoin | uppercase}} to ~{{estConvToNav - changellyFeeOne}} NAV</span>
       </div>
       <div>
-        <span class="status-title">Second Conversion: </span><span class="status-data">~{{estConvToNav}} NAV to ~{{estConvFromNav}} {{destCoin | uppercase}}</span>
+        <span class="status-title">Second Conversion: </span><span class="status-data">~{{estConvToNav - navTechFee - changellyFeeOne}} NAV to ~{{estConvFromNav - changellyFeeTwo}} {{destCoin | uppercase}}</span>
       </div>
       <div>
         <div>
           <span class="status-title">Est. Fees: </span>
         </div>
         <div>
-          <span class="status-title">Changelly Conversion ({{originCoin | uppercase}} to NAV): </span><span class="status-data">~{{changellyFeeTotalToNav}} {{originCoin | uppercase}}</span>
+          <span class="status-title">Changelly Conversion ({{originCoin | uppercase}} to NAV): </span><span class="status-data">~{{changellyFeeOne}} NAV</span>
         </div>
         <div>
-          <span class="status-title">Changelly Conversion (NAV to {{destCoin | uppercase}}): </span><span class="status-data">~{{changellyFeeTotalFromNav}} Nav</span>
+          <span class="status-title">Changelly Conversion (NAV to {{destCoin | uppercase}}): </span><span class="status-data">~{{changellyFeeTwo}} {{destCoin | uppercase}}</span>
         </div>
         <div>
-          <span class="status-title">NavTech Transaction: </span><span class="status-data">~{{navtechFeeTotal}} {{originCoin | uppercase}}</span>
+          <span class="status-title">NavTech Fee: </span><span class="status-data">~{{navTechFee}} NAV</span>
         </div>
       </div>
     </div>

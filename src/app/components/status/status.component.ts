@@ -23,9 +23,9 @@ export class StatusComponent implements OnInit {
   estConvToNav: any
   estConvFromNav: any
 
-  changellyFeeTotalToNav: number
-  changellyFeeTotalFromNav: number
-  navtechFeeTotal: number
+  changellyFeeOne: number
+  changellyFeeTwo: number
+  navTechFee: number
   validData:boolean
   formData: object = {}
   MAX_NAV_PER_TRADE = changellyConstData.MAX_NAV_PER_TRADE
@@ -51,7 +51,6 @@ export class StatusComponent implements OnInit {
   getDataStatusStream() {
     this.dataServ.getDataStatusStream().subscribe(dataIsSet => {
       this.formDataSet = dataIsSet
-      console.log('data set as', dataIsSet)
     })
   }
 
@@ -62,11 +61,10 @@ export class StatusComponent implements OnInit {
     this.destAddr = formData.destAddr
     this.estConvToNav = formData.estConvToNav
     this.estConvFromNav = formData.estConvFromNav
-    this.changellyFeeTotalToNav= formData.changellyFeeTotalToNav
-    this.navtechFeeTotal= formData.navtechFeeTotal
-    this.changellyFeeTotalFromNav= formData.changellyFeeTotalFromNav
+    this.changellyFeeOne = formData.changellyFeeOne
+    this.navTechFee = formData.navTechFee
+    this.changellyFeeTwo= formData.changellyFeeTwo
     this.validData = formData.validData
     this.formDataSet = true
-    console.log('dataset true')
   }
 }
