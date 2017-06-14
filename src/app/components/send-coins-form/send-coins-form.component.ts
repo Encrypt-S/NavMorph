@@ -28,18 +28,21 @@ export class SendCoinsFormComponent implements OnInit {
 
   minTransferAmount: number
 
-  error = {
-    'notFound': false,
-    'dataFormat': false,
-    'default': false,
-  }
+  errors = {
+      'notFound': false,
+      'dataFormat': false,
+      'default': false,
+      'invalidDestAddress': false,
+      'invalidTransferAmount': false,
+      'navToNavTransfer': false,
+      'changellyError': false,
+    }
 
   formData: object = {}
 
   constructor(
     private changellyApi: ChangellyApiService,
     private dataServ: SendPageDataService,
-    private router: Router,
   ) {
     if(!this.theme){
       this.theme = 'form-dark'
@@ -57,7 +60,9 @@ export class SendCoinsFormComponent implements OnInit {
 
   getFormDataStream() {
     this.dataServ.getDataStream().subscribe(data => {
+      this.resetErrors(this.errors)
       this.formData = data
+      this.checkErrors(data.errors)
       this.fillForm(this.formData)
     })
   }
@@ -92,7 +97,11 @@ export class SendCoinsFormComponent implements OnInit {
   }
 
   clearFormData():void {
-    this.formData = {}
+    this.transferAmount = undefined
+    this.destAddr = undefined
+    this.originCoin = this.currencies[0]
+    this.destCoin = this.currencies[0]
+    this.errors = undefined
   }
 
   getCurrencies() {
@@ -116,15 +125,40 @@ export class SendCoinsFormComponent implements OnInit {
     }, 100)
   }
 
+  checkErrors(errorBundle) {
+    if(errorBundle.invalidDestAddress) {
+      this.errors.invalidDestAddress = true
+    }
+    if(errorBundle.invalidTransferAmount || errorBundle.transferTooSmall || errorBundle.transferTooLarge ) {
+      this.errors.invalidTransferAmount = true
+    }
+    if(errorBundle.navToNavTransfer) {
+      this.errors.navToNavTransfer = true
+    }
+    if(errorBundle.changellyError) {
+      this.errors.changellyError = true
+    }
+  }
+
+  resetErrors(errors) {
+    errors.notFound = false
+    errors.dataFormat = false
+    errors.default = false
+    errors.invalidDestAddress = false
+    errors.invalidTransferAmount = false
+    errors.navToNavTransfer = false
+    errors.changellyError = false
+  }
+
   displayError(error) {
     switch(error.slice(0,3)){
       case('404'):
-        this.error.notFound = true
+        this.errors.notFound = true
         break
       case('400'):
-        this.error.dataFormat = true
+        this.errors.dataFormat = true
       default:
-        this.error.default = true
+        this.errors.default = true
         break
     }
     this.isDisabled = true

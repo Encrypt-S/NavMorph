@@ -4,6 +4,8 @@ import { Subscription } from 'rxjs/Subscription';
 import { SendPageDataService } from '../../services/send-page-data/send-page-data';
 import { ChangellyApiService } from '../../services/changelly-api/changelly-api';
 
+import { changellyConstData } from "../../services/config";
+
 @Component({
   selector: 'status-component',
   templateUrl: './status.component.html',
@@ -26,11 +28,13 @@ export class StatusComponent implements OnInit {
   navtechFeeTotal: number
   validData:boolean
   formData: object = {}
+  MAX_NAV_PER_TRADE = changellyConstData.MAX_NAV_PER_TRADE
 
   formDataSubscrip: Subscription
 
 
   constructor(private dataServ: SendPageDataService ) {
+    this.getDataStatusStream()
     this.getFormDataStream()
   }
 
@@ -48,8 +52,14 @@ export class StatusComponent implements OnInit {
     })
   }
 
-  updateComponent(formData):void {
+  getDataStatusStream() {
+    this.dataServ.getDataStatusStream().subscribe(dataIsSet => {
+      this.formDataSet = dataIsSet
+      console.log('data set as', dataIsSet)
+    })
+  }
 
+  updateComponent(formData):void {
     this.transferAmount = formData.transferAmount
     this.originCoin = formData.originCoin
     this.destCoin = formData.destCoin
@@ -60,8 +70,7 @@ export class StatusComponent implements OnInit {
     this.navtechFeeTotal= formData.navtechFeeTotal
     this.changellyFeeTotalFromNav= formData.changellyFeeTotalFromNav
     this.validData = formData.validData
-    console.log(this.validData)
-    console.log('data set')
     this.formDataSet = true
+    console.log('dataset true')
   }
 }

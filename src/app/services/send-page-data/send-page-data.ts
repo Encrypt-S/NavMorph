@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 
 import { ChangellyApiService } from '../../services/changelly-api/changelly-api';
-import { blankDataBundle, changellyConstData } from "../config";
+import { changellyConstData } from "../config";
 
 import { Observable } from 'rxjs';
 import { Subject } from 'rxjs/Subject';
@@ -12,7 +12,7 @@ export class SendPageDataService {
 
   dataStored: boolean = false
 
-  dataBundle = {
+  dataBundle =  {
     'transferAmount': undefined,
     'originCoin': undefined,
     'destCoin': undefined,
@@ -31,7 +31,7 @@ export class SendPageDataService {
       'transferTooSmall': false,
       'transferTooLarge': false,
       'navToNavTransfer': false,
-      'changellyError': false
+      'changellyError': false,
     }
   }
 
@@ -39,7 +39,9 @@ export class SendPageDataService {
   NAVTECH_FEE: number = changellyConstData.NAVTECH_FEE
   MAX_NAV_PER_TRADE: number = changellyConstData.MAX_NAV_PER_TRADE
 
-  subject = new Subject<any>()
+  dataSubject = new Subject<any>()
+
+  dataSetSubject = new Subject<any>()
 
   isDataSet: boolean = false
 
@@ -47,18 +49,42 @@ export class SendPageDataService {
 
   getData(): void {
     if(this.dataStored){
-      this.subject.next(this.dataBundle)
+      this.dataSubject.next(this.dataBundle)
     }
   }
 
   getDataStream(): Observable<any> {
-    return this.subject.asObservable()
+    return this.dataSubject.asObservable()
+  }
+
+  getDataStatusStream(): Observable<any> {
+    return this.dataSetSubject.asObservable()
   }
 
   clearData(): void {
-    this.dataBundle = Object.assign({}, blankDataBundle)
-    this.isDataSet = false
-    this.subject.next(this.dataBundle)
+    this.dataBundle =  {
+      'transferAmount': undefined,
+      'originCoin': undefined,
+      'destCoin': undefined,
+      'destAddr': undefined,
+      'estConvToNav': undefined,
+      'estConvFromNav': undefined,
+      'estTime': undefined,
+      'changellyFeeTotalToNav': undefined,
+      'navtechFeeTotal': undefined,
+      'changellyFeeTotalFromNav': undefined,
+      'minTransferAmount': undefined,
+      'validData': false,
+      'errors': {
+        'invalidDestAddress': false,
+        'invalidTransferAmount': false,
+        'transferTooSmall': false,
+        'transferTooLarge': false,
+        'navToNavTransfer': false,
+        'changellyError': false,
+      }
+    }
+    this.dataSubject.next(this.dataBundle)
   }
 
   checkIsDataSet():boolean {
@@ -66,18 +92,18 @@ export class SendPageDataService {
   }
 
   storeData(transferAmount, originCoin, destCoin, destAddr): void {
-    // this.dataBundle = Object.assign({}, blankDataBundle)
-    this.dataBundle.validData = true
-    this.dataBundle.transferAmount = Number(transferAmount)? Number(transferAmount): undefined
+    this.dataSetSubject.next(false)
+    this.resetDataBundleErrors(this.dataBundle)
+    this.dataStored = false
+    this.dataBundle.transferAmount = Number(transferAmount) ? Number(transferAmount): undefined
     this.dataBundle.originCoin = originCoin
     this.dataBundle.destCoin = destCoin
     this.dataBundle.destAddr = destAddr
     this.dataStored = true
-    if(!this.validateFormData(this.dataBundle)){
-      this.subject.next(this.dataBundle)
-      return //things are broken so return early
+    if(!this.validateFormData(this.dataBundle)) {
+      this.dataSubject.next(this.dataBundle)
+      return //validation errors, so return early
     }
-    this.dataBundle.validData = true
 
     this.getEstimatedExchange(originCoin, 'nav', transferAmount)
       .then((data) => {
@@ -92,30 +118,29 @@ export class SendPageDataService {
           this.isDataSet = true
 
           this.validateDataBundle(this.dataBundle)
-          .then(() => this.subject.next(this.dataBundle))
+          .then(() => this.dataSubject.next(this.dataBundle))
         })
     })
-
   }
 
   validateFormData(dataBundle):boolean {
-    let isValid = true
+    let validData = true
     if(!Number.isInteger(dataBundle.transferAmount)){
       dataBundle.errors.invalidTransferAmount = true
-      isValid = false
       dataBundle.validData = false
+      validData = false
     }
     if(dataBundle.originCoin === 'nav' && dataBundle.destCoin === 'nav') {
       dataBundle.errors.navToNavTransfer = true
-      isValid = false
       dataBundle.validData = false
+      validData = false
     }
     if(dataBundle.transferAmount < this.getMinTransferAmount(dataBundle.originCoin, 'nav')) {
       dataBundle.errors.transferTooSmall = true
-      isValid = false
       dataBundle.validData = false
+      validData = false
     }
-    return isValid
+    return validData
   }
 
   validateDataBundle(dataBundle) {
@@ -124,14 +149,29 @@ export class SendPageDataService {
         dataBundle.errors.transferTooLarge = true
         dataBundle.validData = false
       }
-      // if( !checkAddress(dataBundle.destAddr)) {
-        // dataBundle.errors.invalidDestAddress  = true
-      // }
+      if(!this.checkAddressIsValid(dataBundle.destAddr)) {
+        dataBundle.errors.invalidDestAddress  = true
+        dataBundle.validData = false
+      }
       // if(changellyError () {
         // dataBundle.errors.changellyError = true
       // }
       resolve()
     })
+  }
+
+  resetDataBundleErrors(bundle) {
+    bundle.validData = true
+    bundle.errors.invalidDestAddress = false
+    bundle.errors.invalidTransferAmount = false
+    bundle.errors.transferTooSmall = false
+    bundle.errors.transferTooLarge = false
+    bundle.errors.navToNavTransfer = false
+    bundle.errors.changellyError = false
+  }
+
+  checkAddressIsValid(address) {
+    return address ?  true : false
   }
 
   getEstimatedExchange(originCoin, destCoin, transferAmount) {
