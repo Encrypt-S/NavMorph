@@ -5,7 +5,6 @@ import { changellyConstData } from "../config";
 
 import { Observable } from 'rxjs';
 import { Subject } from 'rxjs/Subject';
-import 'rxjs/add/operator/first';
 
 @Injectable()
 export class SendPageDataService {
