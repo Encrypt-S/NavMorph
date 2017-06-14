@@ -26,7 +26,7 @@ export class ChangellyApiService {
     if(params){ //if we have undefined this wont affect the request
       params.forEach((param, i) => {
           if( i > 0) {
-            paramString += '-' + param
+            paramString += '/' + param
           } else {
             paramString += param
           }
