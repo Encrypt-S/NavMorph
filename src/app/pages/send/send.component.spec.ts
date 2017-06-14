@@ -1,13 +1,16 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { MaterializeModule } from 'angular2-materialize';
 import { HttpModule } from '@angular/http';
-
+import { FormsModule } from '@angular/forms';
 
 import { SendPage } from './send.component';
 
 import { SendCoinsFormComponent } from '../../components/send-coins-form/send-coins-form.component';
+import { StatusComponent } from '../../components/status/status.component';
 
 import { GenericNodeApiService } from './../../services/generic-node-api/generic-node-api';
+import { SendPageDataService } from '../../services/send-page-data/send-page-data';
+import { ChangellyApiService } from '../../services/changelly-api/changelly-api';
 
 
 describe('SendPage', () => {
@@ -18,15 +21,18 @@ describe('SendPage', () => {
     TestBed.configureTestingModule({
       imports:[
         MaterializeModule,
-        HttpModule
-
+        HttpModule,
+        FormsModule,
       ],
       declarations: [
         SendPage,
         SendCoinsFormComponent,
+        StatusComponent,
       ],
       providers: [
         GenericNodeApiService,
+        SendPageDataService,
+        ChangellyApiService,
       ]
     })
     .compileComponents();

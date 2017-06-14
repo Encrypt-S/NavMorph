@@ -1,6 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { MaterializeModule } from 'angular2-materialize';
 import { HttpModule } from '@angular/http';
+import { FormsModule } from '@angular/forms';
 
 import { HomePage } from './home.component';
 
@@ -14,6 +15,8 @@ import { SendCoinsFormComponent } from '../../components/send-coins-form/send-co
 import { HeroBannerSection } from '../../sections/hero-banner/hero-banner.component';
 
 import { GenericNodeApiService } from './../../services/generic-node-api/generic-node-api';
+import { SendPageDataService } from '../../services/send-page-data/send-page-data';
+import { ChangellyApiService } from '../../services/changelly-api/changelly-api';
 
 
 import { TileComponent } from '../../components/tile/tile.component';
@@ -28,6 +31,7 @@ describe('HomePage', () => {
       imports: [
         MaterializeModule,
         HttpModule,
+        FormsModule,
       ],
       declarations: [
         HomePage,
@@ -42,7 +46,9 @@ describe('HomePage', () => {
         SendCoinsFormComponent,
       ],
       providers: [
-        GenericNodeApiService
+        GenericNodeApiService,
+        SendPageDataService,
+        ChangellyApiService,
       ]
     })
     .compileComponents();
