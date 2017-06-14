@@ -1,10 +1,16 @@
 export const changellyNodeApiEndPoints = {
   getCurrencies: 'getCurrencies',
-  getMinExchange: 'getMinAmount',
-  getEstimatedExchange: 'getExchangeAmount',
+  getMinAmount: 'getMinAmount',
+  getExchangeAmount: 'getExchangeAmount',
   getGenerateAddress: 'generateAddress',
   getTransaction: 'getTransactions',
   getExchangeStatus: 'getStatus',
 }
 
 export const nodeApiBaseUrl = 'http://localhost:3000/api/'
+
+export const changellyConstData = {
+  'CHANGELLY_FEE': 0.995,
+  'NAVTECH_FEE': 0.995,
+  'MAX_NAV_PER_TRADE': 10000,
+}

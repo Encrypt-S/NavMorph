@@ -14,64 +14,94 @@ import { SendPageDataService } from '../../services/send-page-data/send-page-dat
   ],
 })
 
+
 export class SendCoinsFormComponent implements OnInit {
 
   @Input() theme: string;
   isDisabled: boolean = true
   currencies: object = ['Loading']
   transferAmount: number
-  selectedOrigin: string
-  selectedDest: string
+  originCoin: any
+  destCoin: any
   destAddr: string
   formDataSet: boolean = false
 
-  error = {
-    'notFound': false,
-    'dataFormat': false,
-    'default': false,
-  }
+  minTransferAmount: number
+
+  errors = {
+      'notFound': false,
+      'dataFormat': false,
+      'default': false,
+      'invalidDestAddress': false,
+      'invalidTransferAmount': false,
+      'navToNavTransfer': false,
+      'changellyError': false,
+    }
 
   formData: object = {}
 
-  constructor(private changellyApi: ChangellyApiService, private dataServ: SendPageDataService
-    ) {
+  constructor(
+    private changellyApi: ChangellyApiService,
+    private dataServ: SendPageDataService,
+  ) {
     if(!this.theme){
       this.theme = 'form-dark'
     }
+    this.getFormDataStream()
   }
 
-  async ngOnInit() {
-    this.clearFormData()
-    this.getCurrencies().then(()=> {
-      this.formData = this.getFormData()
+  ngOnInit() {
+    this.getCurrencies()
+  }
+
+  getFormData():void {
+    this.dataServ.getData()
+  }
+
+  getFormDataStream() {
+    this.dataServ.getDataStream().subscribe(data => {
+      this.resetErrors(this.errors)
+      this.formData = data
+      this.checkErrors(data.errors)
       this.fillForm(this.formData)
     })
   }
 
-  getFormData():object {
-    return this.dataServ.getData()
+  sendForm():void {
+    this.storeFormData()
+  }
+
+  storeFormData():void {
+    let originCoin = this.originCoin
+    let destCoin = this.destCoin
+
+    if (!originCoin) {
+        originCoin = this.currencies['0']
+    }
+    if (!destCoin) {
+        destCoin = this.currencies['0']
+    }
+    this.dataServ.storeData(this.transferAmount, originCoin, destCoin, this.destAddr)
   }
 
   fillForm(data):void {
     this.transferAmount = data.transferAmount
-    this.selectedOrigin = data.originCoin
-    this.selectedDest = data.destCoin
+    this.originCoin = data.originCoin
+    this.destCoin = data.destCoin
     this.destAddr = data.destAddr
     if(this.dataServ.isDataSet) {
       setTimeout(() => {
         this.formDataSet = true
-      }, 50);
+      }, 50)
     }
   }
 
-  setFormData():void {
-    this.dataServ.storeData(this.transferAmount, this.selectedOrigin,
-      this.selectedDest, this.destAddr)
-  }
-
   clearFormData():void {
-    this.formData = {}
-    this.fillForm({})
+    this.transferAmount = undefined
+    this.destAddr = undefined
+    this.originCoin = this.currencies[0]
+    this.destCoin = this.currencies[0]
+    this.errors = undefined
   }
 
   getCurrencies() {
@@ -81,30 +111,54 @@ export class SendCoinsFormComponent implements OnInit {
           if(this.checkCurrData(currencies))
             this.currencies = currencies
             this.isDisabled = false
+            this.getFormData()
         },
         error => {
           this.isDisabled = true
+          console.log('err', error)
         })
-    return new Promise((resolve, reject) => {
-      resolve()
-    })
   }
 
   toggleFormState() {
-  setTimeout(() => {
+    setTimeout(() => {
       this.isDisabled = !this.isDisabled
     }, 100)
+  }
+
+  checkErrors(errorBundle) {
+    if(errorBundle.invalidDestAddress) {
+      this.errors.invalidDestAddress = true
+    }
+    if(errorBundle.invalidTransferAmount || errorBundle.transferTooSmall || errorBundle.transferTooLarge ) {
+      this.errors.invalidTransferAmount = true
+    }
+    if(errorBundle.navToNavTransfer) {
+      this.errors.navToNavTransfer = true
+    }
+    if(errorBundle.changellyError) {
+      this.errors.changellyError = true
+    }
+  }
+
+  resetErrors(errors) {
+    errors.notFound = false
+    errors.dataFormat = false
+    errors.default = false
+    errors.invalidDestAddress = false
+    errors.invalidTransferAmount = false
+    errors.navToNavTransfer = false
+    errors.changellyError = false
   }
 
   displayError(error) {
     switch(error.slice(0,3)){
       case('404'):
-        this.error.notFound = true
+        this.errors.notFound = true
         break
       case('400'):
-        this.error.dataFormat = true
+        this.errors.dataFormat = true
       default:
-        this.error.default = true
+        this.errors.default = true
         break
     }
     this.isDisabled = true

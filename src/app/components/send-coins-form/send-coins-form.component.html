@@ -2,40 +2,44 @@
   <div class="">
     <div class="row error-message" *ngIf="errorMessage">
       Error displaying currencies: <br>
-      <span *ngIf="error.notFound">Unable to load available currencies from Changelly</span>
-      <span *ngIf="error.dataFormat">Recevied incorrectly formatted data from Changelly</span>
-      <span *ngIf="error.Default">Error displaying available currencies</span>
+      <span *ngIf="errors.notFound">Unable to load available currencies from Changelly</span>
+      <span *ngIf="errors.dataFormat">Recevied incorrectly formatted data from Changelly</span>
+      <span *ngIf="errors.Default">Error displaying available currencies</span>
     </div>
 
     <div class="row" >
       <div class="input-field col s9 no-hoz-spacing">
-        <input type="text" name="enter-text-ex" class="input-with-select" [attr.disabled]="isDisabled?true:null" [(ngModel)]="transferAmount" />
-        <label for="enter-text-ex" [ngClass]="{'active':formDataSet}">Enter amount</label>
+        <input type="text" name="enter-text-ex" class="input-with-select" [ngClass]="{'invalid': errors.invalidTransferAmount}" [attr.disabled]="isDisabled?true:null" [(ngModel)]="transferAmount" />
+        <label for="enter-text-ex" [ngClass]="{'active': formDataSet}" >Enter amount</label>
       </div>
+
       <div class="input-field col s3 no-hoz-spacing">
-        <select materialize="material_select"  [materializeSelectOptions]="currencies" [(ngModel)]="selectedOrigin" name="selectedOrigin" [attr.disabled]="isDisabled?true:null">
+        <select materialize="material_select"  [ngClass]="{'invalid': errors.navToNavTransfer}" [materializeSelectOptions]="currencies" [(ngModel)]="originCoin" name="originCoin" [attr.disabled]="isDisabled?true:null">
           <option *ngFor="let currency of currencies" [value]="currency">{{currency | uppercase}}</option>
         </select>
         <label>Source Coin</label>
       </div>
     </div>
+
     <div class="row">
       <div class="input-field col s9 no-hoz-spacing">
-        <input type="text" name="enter-text-ex" class="input-with-select" [attr.disabled]="isDisabled?true:null" [(ngModel)]="destAddr" />
+        <input type="text" name="enter-text-ex" class="input-with-select"  [ngClass]="{'invalid': errors.invalidDestAddress}" [attr.disabled]="isDisabled?true:null" [(ngModel)]="destAddr" />
         <label for="enter-text-ex" [ngClass]="{'active':formDataSet}">Enter Destination Address</label>
       </div>
+
       <div class="input-field col s3 no-hoz-spacing">
-        <select materialize="material_select"  [materializeSelectOptions]="currencies" [(ngModel)]="selectedDest" name="selectedDest" [attr.disabled]="isDisabled?true:null">
+        <select materialize="material_select"  [materializeSelectOptions]="currencies" [ngClass]="{'invalid': errors.navToNavTransfer}" [(ngModel)]="destCoin" name="destCoin" [attr.disabled]="isDisabled?true:null">
           <option *ngFor="let currency of currencies" [value]="currency">{{currency | uppercase}}</option>
         </select>
         <label>Dest. Coin</label>
       </div>
     </div>
   </div>
+
   <div class="row">
     <div class="send-buttons col s12 no-hoz-spacing">
       <button class="btn waves-effect waves-light btn-small bg-blue" type="submit" name="action" (click)="clearFormData()">Clear</button>
-      <button class="btn waves-effect waves-light bg-fuschia lighten-1" type="submit" name="action" routerLink="/send" (click)="setFormData()">Send
+      <button class="btn waves-effect waves-light bg-fuschia lighten-1" type="submit" name="action" routerLink="/send" (click)="storeFormData()">Send
           <i class="material-icons right">send</i>
       </button>
     </div>
