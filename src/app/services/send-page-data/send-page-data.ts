@@ -22,15 +22,7 @@ export class SendPageDataService {
     'changellyFeeOne': undefined,
     'navTechFee': undefined,
     'changellyFeeTwo': undefined,
-    'validData': false,
-    'errors': {
-      'invalidDestAddress': false,
-      'invalidTransferAmount': false,
-      'transferTooSmall': false,
-      'transferTooLarge': false,
-      'navToNavTransfer': false,
-      'changellyError': false,
-    }
+    'errors': []
   }
 
   CHANGELLY_FEE: number = changellyConstData.CHANGELLY_FEE
@@ -71,15 +63,7 @@ export class SendPageDataService {
       'changellyFeeOne': undefined,
       'navTechFee': undefined,
       'changellyFeeTwo': undefined,
-      'validData': false,
-      'errors': {
-        'invalidDestAddress': false,
-        'invalidTransferAmount': false,
-        'transferTooSmall': false,
-        'transferTooLarge': false,
-        'navToNavTransfer': false,
-        'changellyError': false,
-      }
+      'errors': []
     }
     this.dataSubject.next(this.dataBundle)
   }
@@ -97,7 +81,8 @@ export class SendPageDataService {
     this.dataBundle.destCoin = destCoin
     this.dataBundle.destAddr = destAddr
     this.dataStored = true
-    if(!this.validateFormData(this.dataBundle)) {
+    this.validateFormData(this.dataBundle)
+    if(this.dataBundle.errors.length > 0) {
       this.dataSubject.next(this.dataBundle)
       return //validation errors, so return early
     }
@@ -133,51 +118,35 @@ export class SendPageDataService {
     })
   }
 
-  validateFormData(dataBundle):boolean {
-    let validData = true
+  validateFormData(dataBundle):void {
     if(!Number.isInteger(dataBundle.transferAmount)){
-      dataBundle.errors.invalidTransferAmount = true
-      dataBundle.validData = false
-      validData = false
+      dataBundle.errors.push('invalidTransferAmount')
     }
     if(dataBundle.originCoin === 'nav' && dataBundle.destCoin === 'nav') {
-      dataBundle.errors.navToNavTransfer = true
-      dataBundle.validData = false
-      validData = false
+      dataBundle.errors.push('navToNavTransfer')
     }
     if(dataBundle.transferAmount < this.getMinTransferAmount(dataBundle.originCoin, 'nav')) {
-      dataBundle.errors.transferTooSmall = true
-      dataBundle.validData = false
-      validData = false
+      dataBundle.errors.push('transferTooSmall')
     }
-    return validData
   }
 
   validateDataBundle(dataBundle) {
     return new Promise<any>( resolve => {
       if((dataBundle.estConvToNav - dataBundle.changellyFeeOne ) > this.MAX_NAV_PER_TRADE) {
-        dataBundle.errors.transferTooLarge = true
-        dataBundle.validData = false
+        dataBundle.errors.push('transferTooLarge')
       }
       if(!this.checkAddressIsValid(dataBundle.destAddr)) {
-        dataBundle.errors.invalidDestAddress  = true
-        dataBundle.validData = false
+        dataBundle.errors.push('invalidDestAddress')
       }
       // if(changellyError () {
-        // dataBundle.errors.changellyError = true
+        // dataBundle.errors.push.('changellyError')
       // }
       resolve()
     })
   }
 
   resetDataBundleErrors(bundle) {
-    bundle.validData = true
-    bundle.errors.invalidDestAddress = false
-    bundle.errors.invalidTransferAmount = false
-    bundle.errors.transferTooSmall = false
-    bundle.errors.transferTooLarge = false
-    bundle.errors.navToNavTransfer = false
-    bundle.errors.changellyError = false
+    bundle.errors = []
   }
 
   checkAddressIsValid(address) {

@@ -126,16 +126,16 @@ export class SendCoinsFormComponent implements OnInit {
   }
 
   checkErrors(errorBundle) {
-    if(errorBundle.invalidDestAddress) {
+    if(errorBundle.indexOf('invalidDestAddress') > -1) {
       this.errors.invalidDestAddress = true
     }
-    if(errorBundle.invalidTransferAmount || errorBundle.transferTooSmall || errorBundle.transferTooLarge ) {
+    if(errorBundle.indexOf('invalidTransferAmount') > -1 || errorBundle.indexOf('transferTooSmall') > -1 || errorBundle.indexOf('transferTooLarge') > -1 ) {
       this.errors.invalidTransferAmount = true
     }
-    if(errorBundle.navToNavTransfer) {
+    if(errorBundle.indexOf('navToNavTransfer') > -1) {
       this.errors.navToNavTransfer = true
     }
-    if(errorBundle.changellyError) {
+    if(errorBundle.indexOf('changellyError') > -1) {
       this.errors.changellyError = true
     }
   }

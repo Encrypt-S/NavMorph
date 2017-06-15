@@ -20,13 +20,12 @@ export class StatusComponent implements OnInit {
   formDataSet: boolean = false
 
   estTime: object
-  estConvToNav: any
-  estConvFromNav: any
+  estConvToNav: number
+  estConvFromNav: number
 
   changellyFeeOne: number
   changellyFeeTwo: number
   navTechFee: number
-  validData:boolean
   formData: object = {}
   MAX_NAV_PER_TRADE = changellyConstData.MAX_NAV_PER_TRADE
 
@@ -64,7 +63,6 @@ export class StatusComponent implements OnInit {
     this.changellyFeeOne = formData.changellyFeeOne
     this.navTechFee = formData.navTechFee
     this.changellyFeeTwo= formData.changellyFeeTwo
-    this.validData = formData.validData
     this.formDataSet = true
   }
 }
