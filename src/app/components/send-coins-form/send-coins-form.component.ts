@@ -97,11 +97,9 @@ export class SendCoinsFormComponent implements OnInit {
   }
 
   clearFormData():void {
-    this.transferAmount = undefined
-    this.destAddr = undefined
+    this.dataServ.clearData(true)
     this.originCoin = this.currencies[0]
     this.destCoin = this.currencies[0]
-    this.errors = undefined
   }
 
   getCurrencies() {

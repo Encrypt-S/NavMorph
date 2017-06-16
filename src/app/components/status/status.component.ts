@@ -63,6 +63,5 @@ export class StatusComponent implements OnInit {
     this.changellyFeeOne = formData.changellyFeeOne
     this.navTechFee = formData.navTechFee
     this.changellyFeeTwo= formData.changellyFeeTwo
-    this.formDataSet = true
   }
 }

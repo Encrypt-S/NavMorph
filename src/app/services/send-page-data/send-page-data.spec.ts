@@ -35,22 +35,6 @@ describe('SendPageDataService', () => {
       'errors': []
     }
 
-    this.blankBundle = {
-      'transferAmount': undefined,
-      'originCoin': undefined,
-      'destCoin': undefined,
-      'destAddr': undefined,
-      'estConvToNav': undefined,
-      'estConvFromNav': undefined,
-      'estNavAfterNavtechFee': undefined,
-      'estTime': undefined,
-      'changellyFeeTotalToNav': undefined,
-      'navtechFeeTotal': undefined,
-      'changellyFeeTotalFromNav': undefined,
-      'minTransferAmount': undefined,
-      'errors': []
-    }
-
   });
 
   it('should be created', inject([SendPageDataService], (service: SendPageDataService) => {
@@ -64,15 +48,15 @@ describe('SendPageDataService', () => {
 
     service.clearData()
 
-    expect(service.dataBundle).toEqual(this.blankBundle)
+    expect(service.dataBundle).toEqual({errors: []})
     expect(service.dataSubject.next).toHaveBeenCalledWith(service.dataBundle)
   }));
 
   // it('should be store data', inject([SendPageDataService], (service: SendPageDataService) => {
-  //
+
   //   service.storeData(this.testData.transferAmount, this.testData.originCoin,
   //     this.testData.destCoin, this.testData.destAddr)
-  //
+
   //   expect(service.transferAmount).toBe(this.testData.transferAmount);
   //   expect(service.originCoin).toBe(this.testData.originCoin);
   //   expect(service.destCoin).toBe(this.testData.destCoin);
@@ -160,4 +144,15 @@ it('should validate the transferAmount in the formData is big enough', inject([S
   expect(this.testDataBundle.errors.indexOf('transferTooSmall')).toBe(0)
 }));
 
+// validateFormData()
+
+// resetDataBundleErrors()
+
+// checkAddressIsValid()
+
+// getMinTransferAmount()
+
+// getEstimatedExchange()
+
+// storeData()
 });
