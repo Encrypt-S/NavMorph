@@ -69,17 +69,13 @@ export class SendPageDataService {
     if(this.dataBundle.errors.length > 0) {
       this.dataSubject.next(this.dataBundle)
       this.setIsDataSet(true)
-
       return //validation errors, so return early
     }
 
-    // do first estimate
+    this.estimateFirstExchange(originCoin, destCoin, transferAmount)
+  }
 
-    // do second estimate
-
-    // validate data
-
-    //set data
+  estimateFirstExchange(originCoin, destCoin, transferAmount) {
     this.getEstimatedExchange(originCoin, 'nav', transferAmount)
       .then((data) => {
         this.dataBundle.estConvToNav = data
@@ -93,22 +89,24 @@ export class SendPageDataService {
         this.dataBundle.navTechFee = (this.dataBundle.estConvToNav - this.dataBundle.changellyFeeOne) * this.NAVTECH_FEE
         const conversionAfterFees = this.dataBundle.estConvToNav - this.dataBundle.changellyFeeOne - this.dataBundle.navTechFee
 
-        this.getEstimatedExchange('nav', destCoin, conversionAfterFees)
-        .then((data) => {
-          this.dataBundle.estConvFromNav = data
+        this.estimateSecondExchange(destCoin, conversionAfterFees)
+    })
+  }
 
-          if(destCoin === 'nav'){
-            this.dataBundle.changellyFeeTwo = 0
-          } else {
-            this.dataBundle.changellyFeeTwo = this.dataBundle.estConvFromNav * this.CHANGELLY_FEE
-          }
+  estimateSecondExchange(destCoin, conversionAfterFees) {
+    this.getEstimatedExchange('nav', destCoin, conversionAfterFees)
+    .then((data) => {
+      this.dataBundle.estConvFromNav = data
 
-          this.validateDataBundle(this.dataBundle)
-          .then(() => {
-            this.dataSubject.next(this.dataBundle)
-            this.setIsDataSet(true)
-          })
-        })
+      if(destCoin === 'nav'){
+        this.dataBundle.changellyFeeTwo = 0
+      } else {
+        this.dataBundle.changellyFeeTwo = this.dataBundle.estConvFromNav * this.CHANGELLY_FEE
+      }
+
+      this.validateDataBundle(this.dataBundle)
+      this.dataSubject.next(this.dataBundle)
+      this.setIsDataSet(true)
     })
   }
 
@@ -125,18 +123,15 @@ export class SendPageDataService {
   }
 
   validateDataBundle(dataBundle) {
-    return new Promise<any>( resolve => {
-      if((dataBundle.estConvToNav - dataBundle.changellyFeeOne ) > this.MAX_NAV_PER_TRADE) {
-        this.pushError(dataBundle, 'transferTooLarge')
-      }
-      if(!this.checkAddressIsValid(dataBundle.destAddr)) {
-        this.pushError(dataBundle, 'invalidDestAddress')
-      }
-      // if(changellyError () {
-        // this.pushError(dataBundle, 'changellyError')
-      // }
-      resolve()
-    })
+    if((dataBundle.estConvToNav - dataBundle.changellyFeeOne ) > this.MAX_NAV_PER_TRADE) {
+      this.pushError(dataBundle, 'transferTooLarge')
+    }
+    if(!this.checkAddressIsValid(dataBundle.destAddr)) {
+      this.pushError(dataBundle, 'invalidDestAddress')
+    }
+    // if(changellyError () {
+      // this.pushError(dataBundle, 'changellyError')
+    // }
   }
 
  pushError(dataBundle, error):void {
