@@ -21,8 +21,8 @@ export class SendCoinsFormComponent implements OnInit {
   isDisabled: boolean = true
   currencies: object = ['Loading']
   transferAmount: number
-  originCoin: any
-  destCoin: any
+  originCoin: string
+  destCoin: string
   destAddr: string
   formDataSet: boolean = false
 

@@ -46,7 +46,7 @@ describe('SendPageDataService', () => {
     service.dataBundle = this.testDataBundle //fill with data
     spyOn(service.dataSubject, 'next').and.stub()
 
-    service.clearData()
+    service.clearData(true)
 
     expect(service.dataBundle).toEqual({errors: []})
     expect(service.dataSubject.next).toHaveBeenCalledWith(service.dataBundle)

@@ -46,7 +46,7 @@ export class SendPageDataService {
     this.dataSetSubject.next(this.isDataSet)
   }
 
-  clearData(broadcastChanges): void {
+  clearData(broadcastChanges:boolean ): void {
     this.dataBundle =  {errors: []}
     this.setIsDataSet(false)
     if(broadcastChanges)
