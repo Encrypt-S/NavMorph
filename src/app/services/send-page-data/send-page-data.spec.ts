@@ -1,10 +1,22 @@
-import { TestBed, inject } from '@angular/core/testing';
+import { TestBed, inject, fakeAsync, tick } from '@angular/core/testing';
 import { HttpModule } from '@angular/http';
 import { changellyConstData } from "../config";
+import { Observable } from 'rxjs/Observable';
 
 import { SendPageDataService } from './send-page-data';
 import { ChangellyApiService } from '../../services/changelly-api/changelly-api';
 import { GenericNodeApiService } from './../../services/generic-node-api/generic-node-api';
+
+const fakeAmount = 5
+
+class MockChangellyServ {
+  getExchangeAmount = function(){
+      return Observable.of(fakeAmount)
+    }
+    getMinAmount = function(){
+        return Observable.of(fakeAmount)
+      }
+  }
 
 describe('SendPageDataService', () => {
   beforeEach(() => {
@@ -15,9 +27,16 @@ describe('SendPageDataService', () => {
         GenericNodeApiService,
     ],
     imports: [HttpModule]
-    });
-    this.falsePromise = () => {return new Promise(resolve => resolve(false))}
-    this.truePromise = () => {return new Promise(resolve => resolve(true))}
+    })
+
+    .overrideComponent(SendPageDataService, {
+      set: {
+        providers: [
+          { provide: ChangellyApiService, useClass: MockChangellyServ }
+        ]
+      }
+    })
+    // .compileComponents();
 
     this.testDataBundle  = {
       'transferAmount': 1,
@@ -35,6 +54,8 @@ describe('SendPageDataService', () => {
       'errors': []
     }
 
+
+
   });
 
   it('should be created', inject([SendPageDataService], (service: SendPageDataService) => {
@@ -50,6 +71,17 @@ describe('SendPageDataService', () => {
 
     expect(service.dataBundle).toEqual({errors: []})
     expect(service.dataSubject.next).toHaveBeenCalledWith(service.dataBundle)
+  }));
+
+  it('shouldn\'t broadcast data after clearing if told not to', inject([SendPageDataService], (service: SendPageDataService) => {
+    this.blankBundle = service.dataBundle
+    service.dataBundle = this.testDataBundle //fill with data
+    spyOn(service.dataSubject, 'next').and.stub()
+
+    service.clearData(false)
+
+    expect(service.dataBundle).toEqual({errors: []})
+    expect(service.dataSubject.next).not.toHaveBeenCalled()
   }));
 
   // it('should be store data', inject([SendPageDataService], (service: SendPageDataService) => {
@@ -76,83 +108,223 @@ describe('SendPageDataService', () => {
     expect(service.dataSubject.next).toHaveBeenCalledWith(service.dataBundle)
   }));
 
-it('should return dataSubject as an Observable', inject([SendPageDataService], (service: SendPageDataService) => {
-  this.testDataStream = service.dataSubject.asObservable()
-  this.dataStream = service.getDataStream()
-  expect(this.dataStream).toEqual(this.testDataStream)
-}));
+  it('should return dataSubject as an Observable', inject([SendPageDataService], (service: SendPageDataService) => {
+    this.testDataStream = service.dataSubject.asObservable()
+    this.dataStream = service.getDataStream()
+    expect(this.dataStream).toEqual(this.testDataStream)
+  }));
 
-it('should return getDataStatusStream as an Observable', inject([SendPageDataService], (service: SendPageDataService) => {
-  this.testDataStream = service.dataSetSubject.asObservable()
-  this.dataStream = service.getDataStream()
-  expect(this.dataStream).toEqual(this.testDataStream)
-}));
+  it('should return getDataStatusStream as an Observable', inject([SendPageDataService], (service: SendPageDataService) => {
+    this.testDataStream = service.dataSetSubject.asObservable()
+    this.dataStream = service.getDataStream()
+    expect(this.dataStream).toEqual(this.testDataStream)
+  }));
 
-it('should tell us if data is set', inject([SendPageDataService], (service: SendPageDataService) => {
-  service.isDataSet = true
-  expect(service.checkIsDataSet()).toBe(true)
-  service.isDataSet = false
-  expect(service.checkIsDataSet()).toBe(false)
-}));
+  it('should tell us if data is set', inject([SendPageDataService], (service: SendPageDataService) => {
+    service.isDataSet = true
+    expect(service.checkIsDataSet()).toBe(true)
+    service.isDataSet = false
+    expect(service.checkIsDataSet()).toBe(false)
+  }));
 
-it('should validate the transferAmount in a the formData is a number', inject([SendPageDataService], (service: SendPageDataService) => {
-  spyOn(service, 'getMinTransferAmount').and.returnValue(0)
+  it('should validate the transferAmount in a the formData is a number', inject([SendPageDataService], (service: SendPageDataService) => {
+    spyOn(service, 'getMinTransferAmount').and.returnValue(0)
 
-  //Is a number
-  this.testDataBundle.transferAmount = 1
-  service.validateFormData(this.testDataBundle)
-  expect(this.testDataBundle.errors.indexOf('invalidTransferAmount')).toBe(-1)
+    //Is a number
+    this.testDataBundle.transferAmount = 1
+    service.validateFormData(this.testDataBundle)
+    expect(this.testDataBundle.errors.indexOf('invalidTransferAmount')).toBe(-1)
 
-  //Not a number
-  this.testDataBundle.transferAmount = 'five'
-  service.validateFormData(this.testDataBundle)
-  expect(this.testDataBundle.errors.indexOf('invalidTransferAmount')).toBe(0)
-}));
+    //Not a number
+    this.testDataBundle.transferAmount = 'five'
+    service.validateFormData(this.testDataBundle)
+    expect(this.testDataBundle.errors.indexOf('invalidTransferAmount')).toBe(0)
+  }));
 
-it('should validate if the the formData has a NAV to NAV transfer', inject([SendPageDataService], (service: SendPageDataService) => {
-  spyOn(service, 'getMinTransferAmount').and.returnValue(0)
+  it('should validate if the the formData has a NAV to NAV transfer', inject([SendPageDataService], (service: SendPageDataService) => {
+    spyOn(service, 'getMinTransferAmount').and.returnValue(0)
 
-  //NAV to something
-  this.testDataBundle.originCoin = 'nav'
-  this.testDataBundle.destCoin = 'doge'
-  service.validateFormData(this.testDataBundle)
-  expect(this.testDataBundle.errors.indexOf('navToNavTransfer')).toBe(-1)
+    //NAV to something
+    this.testDataBundle.originCoin = 'nav'
+    this.testDataBundle.destCoin = 'doge'
+    service.validateFormData(this.testDataBundle)
+    expect(this.testDataBundle.errors.indexOf('navToNavTransfer')).toBe(-1)
 
-  //something to NAV
-  this.testDataBundle.originCoin = 'doge'
-  this.testDataBundle.originCoin = 'nav'
-  service.validateFormData(this.testDataBundle)
-  expect(this.testDataBundle.errors.indexOf('navToNavTransfer')).toBe(-1)
+    //something to NAV
+    this.testDataBundle.originCoin = 'doge'
+    this.testDataBundle.originCoin = 'nav'
+    service.validateFormData(this.testDataBundle)
+    expect(this.testDataBundle.errors.indexOf('navToNavTransfer')).toBe(-1)
 
-  //NAV to NAV
-  this.testDataBundle.originCoin = 'nav'
-  this.testDataBundle.destCoin = 'nav'
-  service.validateFormData(this.testDataBundle)
-  expect(this.testDataBundle.errors.indexOf('navToNavTransfer')).toBe(0)
-}));
+    //NAV to NAV
+    this.testDataBundle.originCoin = 'nav'
+    this.testDataBundle.destCoin = 'nav'
+    service.validateFormData(this.testDataBundle)
+    expect(this.testDataBundle.errors.indexOf('navToNavTransfer')).toBe(0)
+  }));
 
-it('should validate the transferAmount in the formData is big enough', inject([SendPageDataService], (service: SendPageDataService) => {
-  //minTransferAmount is ok
-  spyOn(service, 'getMinTransferAmount').and.returnValue(5)
-  this.testDataBundle.transferAmount = 10
-  service.validateFormData(this.testDataBundle)
-  expect(this.testDataBundle.errors.indexOf('transferTooSmall')).toBe(-1)
+  it('should validate the transferAmount in the formData is big enough', inject([SendPageDataService], (service: SendPageDataService) => {
+    //minTransferAmount is ok
+    spyOn(service, 'getMinTransferAmount').and.returnValue(5)
+    this.testDataBundle.transferAmount = 10
+    service.validateFormData(this.testDataBundle)
+    expect(this.testDataBundle.errors.indexOf('transferTooSmall')).toBe(-1)
 
-  //minTransferAmount is not ok
-  this.testDataBundle.transferAmount = 1
-  service.validateFormData(this.testDataBundle)
-  expect(this.testDataBundle.errors.indexOf('transferTooSmall')).toBe(0)
-}));
+    //minTransferAmount is not ok
+    this.testDataBundle.transferAmount = 1
+    service.validateFormData(this.testDataBundle)
+    expect(this.testDataBundle.errors.indexOf('transferTooSmall')).toBe(0)
+  }));
 
-// validateFormData()
+  it('should validate if a databundle\'s transferAmount is too large', inject([SendPageDataService], (service: SendPageDataService) => {
+    //transfer amount IS NOT too large
+    spyOn(service, 'pushError').and.stub()
+    spyOn(service, 'checkAddressIsValid').and.returnValue(true)
 
-// resetDataBundleErrors()
+    let mockDataBundle = {
+      destAddr: 'NavHQ',
+      estConvToNav: 0,
+      changellyFeeOne: 0,
+      errors: []
+    }
 
-// checkAddressIsValid()
+    service.validateDataBundle(mockDataBundle)
+    expect(service.pushError).not.toHaveBeenCalled()
 
-// getMinTransferAmount()
+    //transfer amount IS too large
+    mockDataBundle.estConvToNav = 99999
 
-// getEstimatedExchange()
+    service.validateDataBundle(mockDataBundle)
+    expect(service.pushError).toHaveBeenCalledWith(mockDataBundle, 'transferTooLarge')
+  }));
 
-// storeData()
+  it('should validate if a databundle\'s address is valid', inject([SendPageDataService], (service: SendPageDataService) => {
+    spyOn(service, 'pushError').and.stub()
+    spyOn(service, 'checkAddressIsValid').and.callFake(
+      (str) => {return str ?  true : false})
+
+    let mockDataBundle = {
+      destAddr: 'to the moon!',
+      estConvToNav: 0,
+      changellyFeeOne: 0,
+      errors: []
+    }
+
+    // destAddr IS valid
+    service.validateDataBundle(mockDataBundle)
+    expect(service.pushError).not.toHaveBeenCalled()
+
+    // destAddr IS NOT valid
+    mockDataBundle.destAddr = undefined
+    service.validateDataBundle(mockDataBundle)
+    expect(service.pushError).toHaveBeenCalledWith(mockDataBundle, 'invalidDestAddress')
+  }));
+
+  it('should be able to push errors onto a databundle', inject([SendPageDataService], (service: SendPageDataService) => {
+    //dataBundle has an errors array
+    let mockDataBundle = {
+      errors: []
+    }
+    let errMsg = 'someone is pumping and dumping'
+
+    service.pushError(mockDataBundle, errMsg)
+    expect(mockDataBundle.errors[0]).toBe(errMsg)
+
+    //dataBundle doesn't have an errors array
+    mockDataBundle.errors = undefined
+    service.pushError(mockDataBundle, errMsg)
+    expect(mockDataBundle.errors[0]).toBe(errMsg)
+  }));
+
+  it('should be able to check if an address is valid', inject([SendPageDataService], (service: SendPageDataService) => {
+    // address is invalid
+    let addr = undefined
+
+    expect(service.checkAddressIsValid(addr)).toBe(false)
+
+    // address is valid
+    addr = 'NavHQ'
+    expect(service.checkAddressIsValid(addr)).toBe(true)
+  }));
+
+  it('should return if errors are found in the submitted form data', inject([SendPageDataService], (service: SendPageDataService) => {
+    spyOn(service, 'clearData').and.stub()
+    spyOn(service, 'validateFormData').and.stub()
+    spyOn(service.dataSubject, 'next').and.stub()
+    spyOn(service, 'setIsDataSet').and.callFake( () => service.isDataSet = true)
+    service.dataStored = false
+
+    service.dataBundle = {errors: ['error!']}
+    let dataBundleAfterStorage = {
+      errors: ['error!'],
+      transferAmount: 5000,
+      originCoin: 'nav',
+      destCoin: 'eth',
+      destAddr: 'Russia'
+    }
+
+    service.storeData( dataBundleAfterStorage.transferAmount, dataBundleAfterStorage.originCoin,
+      dataBundleAfterStorage.destCoin, dataBundleAfterStorage.destAddr)
+
+    expect(service.clearData).toHaveBeenCalled()
+    expect(service.validateFormData).toHaveBeenCalledWith(dataBundleAfterStorage)
+    expect(service.dataSubject.next).toHaveBeenCalledWith(dataBundleAfterStorage)
+    expect(service.setIsDataSet).toHaveBeenCalledWith(true)
+    expect(service.isDataSet).toBe(true)
+    expect(service.dataStored).toBe(true)
+  }));
+
+  it('should return if errors are found in the submitted form data', inject([SendPageDataService], (service: SendPageDataService) => {
+    spyOn(service, 'clearData').and.stub()
+    spyOn(service, 'validateFormData').and.stub()
+    spyOn(service, 'estimateFirstExchange').and.stub()
+
+    service.dataStored = false
+
+    service.dataBundle = {errors: []}
+    let dataBundleAfterStorage = {
+      errors: [],
+      transferAmount: 5000,
+      originCoin: 'nav',
+      destCoin: 'eth',
+      destAddr: 'Russia'
+    }
+
+    service.storeData( dataBundleAfterStorage.transferAmount, dataBundleAfterStorage.originCoin,
+      dataBundleAfterStorage.destCoin, dataBundleAfterStorage.destAddr)
+
+    expect(service.clearData).toHaveBeenCalled()
+    expect(service.validateFormData).toHaveBeenCalledWith(dataBundleAfterStorage)
+    expect(service.estimateFirstExchange).toHaveBeenCalledWith(dataBundleAfterStorage.originCoin,
+      dataBundleAfterStorage.destCoin, dataBundleAfterStorage.transferAmount)
+    expect(service.isDataSet).toBe(false)
+    expect(service.dataStored).toBe(false)
+  }));
+
+  // getEstimatedExchange()
+  it('should be able to get an estimated exchange amount', inject([SendPageDataService], (service: SendPageDataService) => {
+    let data = {}
+    fakeAsync(() => {
+      data = service.getEstimatedExchange('btc', 'nav', fakeAmount)
+      tick()
+      expect(data).toBe(fakeAmount)
+    })
+  }));
+
+  it('should be able to get an estimated exchange amount', inject([SendPageDataService], (service: SendPageDataService) => {
+    let data = {}
+    const navCoins = 10
+    fakeAsync(() => {
+      data = service.getEstimatedExchange('nav', 'nav', navCoins)
+      tick()
+      expect(data).toBe(navCoins)
+    })
+  }));
+
+  // getMinTransferAmount()
+
+  // estimateFirstExchange
+
+  // estimateSecondExchange
+
 });

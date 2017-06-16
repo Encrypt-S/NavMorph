@@ -64,9 +64,9 @@ export class SendPageDataService {
     this.dataBundle.originCoin = originCoin
     this.dataBundle.destCoin = destCoin
     this.dataBundle.destAddr = destAddr
-    this.dataStored = true
     this.validateFormData(this.dataBundle)
     if(this.dataBundle.errors.length > 0) {
+      this.dataStored = true
       this.dataSubject.next(this.dataBundle)
       this.setIsDataSet(true)
       return //validation errors, so return early
@@ -105,6 +105,7 @@ export class SendPageDataService {
       }
 
       this.validateDataBundle(this.dataBundle)
+      this.dataStored = true
       this.dataSubject.next(this.dataBundle)
       this.setIsDataSet(true)
     })
@@ -135,7 +136,7 @@ export class SendPageDataService {
   }
 
  pushError(dataBundle, error):void {
-   if( !dataBundle.errors) {
+   if(!dataBundle.errors) {
      dataBundle.errors = []
    }
    dataBundle.errors.push(error)
