@@ -272,9 +272,10 @@ describe('SendPageDataService', () => {
     expect(service.dataStored).toBe(false)
   }));
 
+// TODO: test error case for getEstimatedExchange
   it('should be able to get an estimated exchange amount', async(inject([SendPageDataService], (service: SendPageDataService) => {
     service.getEstimatedExchange('doge', 'btc', 2).then((data) => {
-      expect(data).toBe(5) // MockChangellyService returns 5 coins
+      expect(data).toBe(5) // MockChangellyService.getEstimatedExchange() returns 5 coins
     })
   })))
 
@@ -285,10 +286,15 @@ describe('SendPageDataService', () => {
     })
   })))
 
-  // getMinTransferAmount()
+// TODO: test error case getMinTransferAmount
+  it('should be able to get the minimum transfer amount', async(inject([SendPageDataService], (service: SendPageDataService) => {
+    service.getMinTransferAmount('doge', 'btc').then((data) => {
+      expect(data).toBe(5) // MockChangellyService.getMinTransferAmount() returns 5 coins
+    })
+  })))
 
+  // TODO:
   // estimateFirstExchange
-
   // estimateSecondExchange
 
 });
