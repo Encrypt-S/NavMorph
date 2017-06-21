@@ -24,19 +24,10 @@ export class SendCoinsFormComponent implements OnInit {
   originCoin: string
   destCoin: string
   destAddr: string
-  formDataSet: boolean = false
 
   minTransferAmount: number
 
-  errors = {
-      'notFound': false,
-      'dataFormat': false,
-      'default': false,
-      'invalidDestAddress': false,
-      'invalidTransferAmount': false,
-      'navToNavTransfer': false,
-      'changellyError': false,
-    }
+  errors = []
 
   formData: object = {}
 
@@ -60,7 +51,7 @@ export class SendCoinsFormComponent implements OnInit {
 
   getFormDataStream() {
     this.dataServ.getDataStream().subscribe(data => {
-      this.resetErrors(this.errors)
+      this.errors = []
       this.formData = data
       this.checkErrors(data.errors)
       this.fillForm(this.formData)
@@ -85,15 +76,10 @@ export class SendCoinsFormComponent implements OnInit {
   }
 
   fillForm(data):void {
-    this.transferAmount = data.transferAmount
-    this.originCoin = data.originCoin
+    this.transferAmount = data.transferAmount ? data.transferAmount : undefined
+    this.originCoin = data.originCoin ? data.originCoin : undefined
     this.destCoin = data.destCoin
     this.destAddr = data.destAddr
-    if(this.dataServ.isDataSet) {
-      setTimeout(() => {
-        this.formDataSet = true
-      }, 50)
-    }
   }
 
   clearFormData():void {
@@ -124,46 +110,39 @@ export class SendCoinsFormComponent implements OnInit {
   }
 
   checkErrors(errorBundle) {
+    console.log(errorBundle);
     if(errorBundle.indexOf('invalidDestAddress') > -1) {
-      this.errors.invalidDestAddress = true
+      this.errors.push('invalidDestAddress')
     }
     if(errorBundle.indexOf('invalidTransferAmount') > -1 || errorBundle.indexOf('transferTooSmall') > -1 || errorBundle.indexOf('transferTooLarge') > -1 ) {
-      this.errors.invalidTransferAmount = true
+      this.errors.push('invalidTransferAmount')
     }
     if(errorBundle.indexOf('navToNavTransfer') > -1) {
-      this.errors.navToNavTransfer = true
+      this.errors.push('navToNavTransfer')
     }
     if(errorBundle.indexOf('changellyError') > -1) {
-      this.errors.changellyError = true
+      this.errors.push('changellyError')
     }
-  }
-
-  resetErrors(errors) {
-    errors.notFound = false
-    errors.dataFormat = false
-    errors.default = false
-    errors.invalidDestAddress = false
-    errors.invalidTransferAmount = false
-    errors.navToNavTransfer = false
-    errors.changellyError = false
   }
 
   displayError(error) {
+    console.log(error);
     switch(error.slice(0,3)){
       case('404'):
-        this.errors.notFound = true
+        this.errors.push('notFound')
         break
       case('400'):
-        this.errors.dataFormat = true
+        this.errors.push('dataFormat')
       default:
-        this.errors.default = true
+        this.errors.push('default')
         break
     }
     this.isDisabled = true
   }
 
   checkCurrData(data) {
-    if(data instanceof Array && data[0] instanceof String ){
+    if(data instanceof Array && data[0] instanceof String ) {
+      console.log(data);
       this.displayError('400')
       return false
     }
