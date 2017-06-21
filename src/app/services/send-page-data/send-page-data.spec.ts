@@ -1,4 +1,4 @@
-import { TestBed, inject, fakeAsync, tick } from '@angular/core/testing';
+import { TestBed, inject, fakeAsync, tick, async } from '@angular/core/testing';
 import { HttpModule } from '@angular/http';
 import { changellyConstData } from "../config";
 import { Observable } from 'rxjs/Observable';
@@ -7,36 +7,21 @@ import { SendPageDataService } from './send-page-data';
 import { ChangellyApiService } from '../../services/changelly-api/changelly-api';
 import { GenericNodeApiService } from './../../services/generic-node-api/generic-node-api';
 
-const fakeAmount = 5
-
-class MockChangellyServ {
-  getExchangeAmount = function(){
-      return Observable.of(fakeAmount)
-    }
-    getMinAmount = function(){
-        return Observable.of(fakeAmount)
-      }
-  }
+import { MockChangellyService } from '../../mock-classes';
 
 describe('SendPageDataService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
         SendPageDataService,
-        ChangellyApiService,
         GenericNodeApiService,
+        { provide: ChangellyApiService, useClass: MockChangellyService },
+
     ],
     imports: [HttpModule]
     })
 
-    .overrideComponent(SendPageDataService, {
-      set: {
-        providers: [
-          { provide: ChangellyApiService, useClass: MockChangellyServ }
-        ]
-      }
-    })
-    // .compileComponents();
+    .compileComponents();
 
     this.testDataBundle  = {
       'transferAmount': 1,
@@ -53,10 +38,7 @@ describe('SendPageDataService', () => {
       'minTransferAmount': 0.00001,
       'errors': []
     }
-
-
-
-  });
+  })
 
   it('should be created', inject([SendPageDataService], (service: SendPageDataService) => {
     expect(service).toBeTruthy();
@@ -83,17 +65,6 @@ describe('SendPageDataService', () => {
     expect(service.dataBundle).toEqual({errors: []})
     expect(service.dataSubject.next).not.toHaveBeenCalled()
   }));
-
-  // it('should be store data', inject([SendPageDataService], (service: SendPageDataService) => {
-
-  //   service.storeData(this.testData.transferAmount, this.testData.originCoin,
-  //     this.testData.destCoin, this.testData.destAddr)
-
-  //   expect(service.transferAmount).toBe(this.testData.transferAmount);
-  //   expect(service.originCoin).toBe(this.testData.originCoin);
-  //   expect(service.destCoin).toBe(this.testData.destCoin);
-  //   expect(service.destAddr).toBe(this.testData.destAddr);
-  // }));
 
   it('should pass data into the dataSubject', inject([SendPageDataService], (service: SendPageDataService) => {
     spyOn(service.dataSubject, 'next').and.stub()
@@ -301,25 +272,18 @@ describe('SendPageDataService', () => {
     expect(service.dataStored).toBe(false)
   }));
 
-  // getEstimatedExchange()
-  it('should be able to get an estimated exchange amount', inject([SendPageDataService], (service: SendPageDataService) => {
-    let data = {}
-    fakeAsync(() => {
-      data = service.getEstimatedExchange('btc', 'nav', fakeAmount)
-      tick()
-      expect(data).toBe(fakeAmount)
+  it('should be able to get an estimated exchange amount', async(inject([SendPageDataService], (service: SendPageDataService) => {
+    service.getEstimatedExchange('doge', 'btc', 2).then((data) => {
+      expect(data).toBe(5) // MockChangellyService returns 5 coins
     })
-  }));
+  })))
 
-  it('should be able to get an estimated exchange amount', inject([SendPageDataService], (service: SendPageDataService) => {
-    let data = {}
+  it('should be able to get an estimated exchange amount', async(inject([SendPageDataService], (service: SendPageDataService) => {
     const navCoins = 10
-    fakeAsync(() => {
-      data = service.getEstimatedExchange('nav', 'nav', navCoins)
-      tick()
+    service.getEstimatedExchange('nav', 'nav', navCoins).then((data) => {
       expect(data).toBe(navCoins)
     })
-  }));
+  })))
 
   // getMinTransferAmount()
 

@@ -18,6 +18,7 @@ import { GenericNodeApiService } from './../../services/generic-node-api/generic
 import { SendPageDataService } from '../../services/send-page-data/send-page-data';
 import { ChangellyApiService } from '../../services/changelly-api/changelly-api';
 
+import { MockChangellyService } from '../../mock-classes';
 
 import { TileComponent } from '../../components/tile/tile.component';
 
@@ -48,9 +49,17 @@ describe('HomePage', () => {
       providers: [
         GenericNodeApiService,
         SendPageDataService,
-        ChangellyApiService,
+        ChangellyApiService
       ]
     })
+
+    .overrideComponent(SendCoinsFormComponent, {
+    set: {
+      providers: [
+        { provide: ChangellyApiService, useClass: MockChangellyService },
+      ]
+    }})
+
     .compileComponents();
   }));
 
