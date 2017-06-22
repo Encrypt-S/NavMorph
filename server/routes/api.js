@@ -1,12 +1,12 @@
 const express = require('express')
 
 const router = express.Router()
-const Rpc = require('../lib/rpc')
+const rpcGetInfo = require('../lib/rpc/get-info')
 const TransactionCtrl = require('../lib/db/transaction.ctrl')
 const ChangellyCtrl = require('../lib/changelly/changelly.ctrl')
 
 router.get('/', (req, res) => res.send('api works'))
-router.get('/rpc/getinfo', Rpc.getInfo)
+router.get('/rpc/getinfo', rpcGetInfo.getInfo)
 router.get('/db/transaction/:id', TransactionCtrl.getTransaction)
 router.get('/db/transaction', TransactionCtrl.getTransaction)
 router.post('/db/transaction', TransactionCtrl.createTransaction)
