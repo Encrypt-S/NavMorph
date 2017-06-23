@@ -65,4 +65,15 @@ ChangellyCtrl.getExchangeAmount = (req, res) => {
   })
 }
 
+ChangellyCtrl.generateAddress = (req, res) => {
+  return ChangellyCtrl.request('generateAddress', req.params, (err, data) => {
+    if (err) {
+      console.log('Error: ', err)
+      res.send(err)
+    } else {
+      res.send(data)
+    }
+  })
+}
+
 module.exports = ChangellyCtrl
