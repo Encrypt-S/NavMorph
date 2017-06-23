@@ -1,7 +1,10 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ChangellyApiService } from '../../services/changelly-api/changelly-api';
+import { OrderService } from '../../services/order/order';
 import { SendPageDataService } from '../../services/send-page-data/send-page-data';
+import {Router} from '@angular/router';
+
 
 @Component({
   selector: 'send-coins-form-component',
@@ -11,6 +14,7 @@ import { SendPageDataService } from '../../services/send-page-data/send-page-dat
   providers: [
     FormsModule,
     ChangellyApiService,
+    OrderService,
   ],
 })
 
@@ -24,8 +28,8 @@ export class SendCoinsFormComponent implements OnInit {
   originCoin: string
   destCoin: string
   destAddr: string
-
   minTransferAmount: number
+  estimateValid: boolean = false
 
   errors = []
 
@@ -34,6 +38,8 @@ export class SendCoinsFormComponent implements OnInit {
   constructor(
     private changellyApi: ChangellyApiService,
     private dataServ: SendPageDataService,
+    private orderServ: OrderService,
+    private router: Router,
   ) {
     if(!this.theme){
       this.theme = 'form-dark'
@@ -59,7 +65,19 @@ export class SendCoinsFormComponent implements OnInit {
   }
 
   sendForm():void {
-    this.storeFormData()
+      this.storeFormData()
+  }
+
+  createOrder(originCoin, destCoin, destAddr, transferAmount):void {
+    this.orderServ.createOrder(originCoin, destCoin, destAddr, transferAmount).subscribe(
+      data => {
+        const statusPageUrl = '/status/' + data['0'] + '/' + data['1']
+        this.router.navigateByUrl(statusPageUrl)
+      },
+      error => {
+        console.log('error creating order', error)
+        errors.push('orderCreationFailed')
+      })
   }
 
   storeFormData():void {
@@ -80,6 +98,14 @@ export class SendCoinsFormComponent implements OnInit {
     this.originCoin = data.originCoin ? data.originCoin : undefined
     this.destCoin = data.destCoin
     this.destAddr = data.destAddr
+    if( data.errors === [] ) {
+      this.estimateValid = true
+      setTimeout(() => {
+        this.estimateValid = false
+      }, 300000)
+    } else {
+      this.estimateValid = false
+    }
   }
 
   clearFormData():void {
