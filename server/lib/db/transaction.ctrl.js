@@ -16,7 +16,9 @@ TransactionCtrl.handleError = (err, res, code, message) => {
 }
 
 TransactionCtrl.createTransaction = (req, res) => {
-  const required = ['output_currency', 'output_address', 'changelly_address']
+  const required = ['output_currency', 'output_address', 'changelly_address',
+    'changelly_id', 'polymorph_id', 'polymorph_pass',
+    'changelly_address_one', 'nav_address_one']
   if (!req.body || lodash.intersection(Object.keys(req.body), required).length !== required.length) {
     TransactionCtrl.handleError('params_error', res, 'TC_001', 'Failed to receive params')
     return
@@ -25,9 +27,18 @@ TransactionCtrl.createTransaction = (req, res) => {
   TransactionCtrl.runtime = { res, req }
 
   TransactionCtrl.runtime.transaction = new TransactionModel({
+    changelly_id: req.body.changelly_id,
+    polymorph_id: req.body.polymorph_id,
+    polymorph_pass: req.body.polymorph_pass,
+    changelly_address_one: req.body.changelly_address_one,
+    // changelly_address_two: req.body.changelly_address_two,
+    nav_address_one: req.body.nav_address_one,
+    // nav_address_two: req.body.nav_address_two,
+    source_currency: req.body.source_currency,
     output_currency: req.body.output_currency,
     output_address: req.body.output_address,
     changelly_address: req.body.changelly_address,
+    order_status: 'created',
     delay: req.body.delay || 0,
     created: new Date(),
   })
