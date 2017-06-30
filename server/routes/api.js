@@ -21,7 +21,7 @@ router.get('/changelly/getExchangeAmount/:from/:to/:amount', ChangellyCtrl.getEx
 
 router.get('/changelly/generateAddress/:from/:to/:address/:extraId', ChangellyCtrl.generateAddress)
 
-router.get('/order/createOrder/:from/:to/:address/:extraId', OrderCtrl.createOrder)
+router.get('/order/createOrder/:from/:to/:address/:amount/:extraId', OrderCtrl.createOrder)
 router.get('/order/getOrder/orderId:/orderPassword:', OrderCtrl.getOrder)
 router.get('/order/getOrderStatus/orderId:/orderPassword:', OrderCtrl.getOrderStatus)
 router.get('/order/abandonOrder/orderId:/orderPassword:', OrderCtrl.abandonOrder)
