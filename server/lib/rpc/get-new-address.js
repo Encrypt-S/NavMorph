@@ -28,4 +28,12 @@ Rpc.getNewAddress = (req, res) => {
   }
 }
 
+Rpc.internal.getNewAddress = () => {
+  try {
+    return Rpc.navClient.getNewAddress()
+  } catch (e) {
+    return e
+  }
+}
+
 module.exports = Rpc
