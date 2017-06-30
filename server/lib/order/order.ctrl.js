@@ -86,9 +86,8 @@ OrderCtrl.handleError = (error, res) => {
     status: 400,
     type: 'FAIL',
     code: 'ORDER_CTRL',
-    message: 'something went wrong',
+    message: 'Unable to create Polymorph Order',
     error,
-    data: ['test', 'test'],
   }))
   console.log('sent error response')
 }
