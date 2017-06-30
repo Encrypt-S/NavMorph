@@ -1,11 +1,12 @@
 const configData = require('../../config')
 const crypto = require('crypto')
 const jayson = require('jayson')
+const Promise = require('promise')
 
 const URL = configData.changellyUrl
 const client = jayson.client.https(URL)
 
-const ChangellyCtrl = {}
+const ChangellyCtrl = { internal: {} }
 
 ChangellyCtrl.id = () => {
   return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
@@ -59,6 +60,7 @@ ChangellyCtrl.getExchangeAmount = (req, res) => {
   return ChangellyCtrl.request('getExchangeAmount', req.params, (err, data) => {
     if (err) {
       console.log('Error: ', err)
+      res.send(err)
     } else {
       res.send(data)
     }
@@ -73,6 +75,18 @@ ChangellyCtrl.generateAddress = (req, res) => {
     } else {
       res.send(data)
     }
+  })
+}
+
+ChangellyCtrl.internal.generateAddress = (params) => {
+  return new Promise((fulfill, reject) => {
+    ChangellyCtrl.request('generateAddress', params, (err, data) => {
+      if (data.err) {
+        console.log('Error: ', data.err)
+        reject(new Error(data.err))
+      }
+      fulfill(data)
+    })
   })
 }
 
