@@ -65,18 +65,18 @@ export class SendCoinsFormComponent implements OnInit {
   }
 
   sendForm():void {
-      this.storeFormData()
+    this.storeFormData()
   }
 
   createOrder(originCoin, destCoin, destAddr, transferAmount):void {
     this.orderServ.createOrder(originCoin, destCoin, destAddr, transferAmount).subscribe(
-      data => {
-        const statusPageUrl = '/status/' + data['0'] + '/' + data['1']
+      result => {
+        const statusPageUrl = '/status/' + result['0'] + '/' + result['1']
         this.router.navigateByUrl(statusPageUrl)
       },
       error => {
         console.log('error creating order', error)
-        errors.push('orderCreationFailed')
+        this.errors.push('orderCreationFailed')
       })
   }
 
@@ -98,7 +98,8 @@ export class SendCoinsFormComponent implements OnInit {
     this.originCoin = data.originCoin ? data.originCoin : undefined
     this.destCoin = data.destCoin
     this.destAddr = data.destAddr
-    if( data.errors === [] ) {
+
+    if( data.errors.length === 0 ) {
       this.estimateValid = true
       setTimeout(() => {
         this.estimateValid = false
