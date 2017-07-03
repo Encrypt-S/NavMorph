@@ -6,6 +6,7 @@ const bodyParser = require('body-parser')
 
 // Get our API routes
 const api = require('./server/routes/api')
+const Logger = require('./server/lib/logger')
 
 const app = express()
 
@@ -38,4 +39,7 @@ const server = http.createServer(app)
 /**
  * Listen on provided port, on all network interfaces.
  */
-server.listen(port, () => console.log(`API running on localhost:${port}`))
+server.listen(port, () => {
+  console.log(`API running on localhost:${port}`)
+  Logger.sendMail('errorCode', 'errorMessage', { data: 'data' })
+})
