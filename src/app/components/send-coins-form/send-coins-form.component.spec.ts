@@ -2,6 +2,7 @@ import { async, ComponentFixture, TestBed, inject, fakeAsync, tick } from '@angu
 import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 import { MaterializeModule } from 'angular2-materialize';
+import { RouterTestingModule } from '@angular/router/testing';
 
 import { SendCoinsFormComponent } from './send-coins-form.component';
 import { Observable } from 'rxjs/Observable';
@@ -10,6 +11,7 @@ import 'rxjs/add/observable/of';
 import { SendPageDataService } from '../../services/send-page-data/send-page-data';
 import { ChangellyApiService } from './../../services/changelly-api/changelly-api';
 import { GenericNodeApiService } from './../../services/generic-node-api/generic-node-api';
+import { OrderService } from '../../services/order/order';
 
 import { MockChangellyService, fakeData } from '../../mock-classes';
 
@@ -24,11 +26,13 @@ describe('SendCoinsFormComponent', () => {
         FormsModule,
         HttpModule,
         MaterializeModule,
+        RouterTestingModule,
     ],
     providers: [
       SendCoinsFormComponent,
       GenericNodeApiService,
       SendPageDataService,
+      OrderService,
       { provide: ChangellyApiService, useClass: MockChangellyService },
     ]
   })
