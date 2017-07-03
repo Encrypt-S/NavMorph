@@ -3,12 +3,12 @@
 const expect = require('expect')
 const rewire = require('rewire')
 
-let Rpc = rewire('../server/lib/rpc')
+let Rpc = rewire('../server/lib/rpc/get-info')
 
 describe('[Rpc]', () => {
   describe('(getInfo)', () => {
     beforeEach(() => { // reset the rewired functions
-      Rpc = rewire('../server/lib/rpc')
+      Rpc = rewire('../server/lib/rpc/get-info')
     })
     it('should run getinfo and fail the rpc call', (done) => {
       Rpc.navClient = {
