@@ -22,10 +22,12 @@ import { SellingPointsSection } from './sections/selling-points/selling-points.c
 import { HeroBannerSection } from './sections/hero-banner/hero-banner.component';
 
 import { TileComponent } from './components/tile/tile.component';
+import { StatusComponent } from './components/status/status.component';
 import { SendCoinsFormComponent } from './components/send-coins-form/send-coins-form.component';
 
 import { GenericNodeApiService }  from './services/generic-node-api/generic-node-api';
 import { ChangellyApiService }  from './services/changelly-api/changelly-api';
+import { SendPageDataService } from './services/send-page-data/send-page-data';
 
 
 
@@ -45,6 +47,7 @@ import { ChangellyApiService }  from './services/changelly-api/changelly-api';
     TileComponent,
     SendCoinsFormComponent,
     HeroBannerSection,
+    StatusComponent,
   ],
   imports: [
     FormsModule,
@@ -54,7 +57,7 @@ import { ChangellyApiService }  from './services/changelly-api/changelly-api';
     JsonpModule,
     RouterModule.forRoot(routes)
   ],
-  providers: [GenericNodeApiService, ChangellyApiService],
+  providers: [GenericNodeApiService, ChangellyApiService, SendPageDataService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

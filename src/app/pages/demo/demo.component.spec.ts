@@ -13,6 +13,9 @@ import { SendCoinsFormComponent } from '../../components/send-coins-form/send-co
 import { TileComponent } from '../../components/tile/tile.component';
 
 import { GenericNodeApiService } from './../../services/generic-node-api/generic-node-api';
+import { SendPageDataService } from '../../services/send-page-data/send-page-data';
+import { ChangellyApiService } from '../../services/changelly-api/changelly-api';
+import { MockChangellyService } from '../../mock-classes';
 
 
 import { DemoPage } from './demo.component';
@@ -35,9 +38,19 @@ describe('DemoPage', () => {
         DemoPage,
       ],
       providers: [
-        GenericNodeApiService
+        GenericNodeApiService,
+        SendPageDataService,
+        ChangellyApiService,
       ]
     })
+
+    .overrideComponent(SendCoinsFormComponent, {
+    set: {
+      providers: [
+        { provide: ChangellyApiService, useClass: MockChangellyService },
+      ]
+    }})
+
     .compileComponents();
   }));
 

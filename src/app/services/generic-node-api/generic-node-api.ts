@@ -32,7 +32,6 @@ export class GenericNodeApiService {
   }
 
   private handleError (error: Response | any) {
-    console.log(error)
     let errMsg: string;
     if (error instanceof Response) {
       const body = error.json() || '';

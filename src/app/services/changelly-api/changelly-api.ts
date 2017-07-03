@@ -10,13 +10,28 @@ export class ChangellyApiService {
   constructor( private genServ:GenericNodeApiService) { }
 
   getCurrencies() {
-    return this.getApiRequest( changellyNodeApiEndPoints.getCurrencies, '')
+    return this.getApiRequest( changellyNodeApiEndPoints.getCurrencies, undefined)
+  }
+
+  getMinAmount(originCoin, destCoin) {
+    return this.getApiRequest( changellyNodeApiEndPoints.getMinAmount, [originCoin, destCoin])
+  }
+
+  getExchangeAmount(originCoin, destCoin, amount) {
+    return this.getApiRequest( changellyNodeApiEndPoints.getExchangeAmount, [originCoin, destCoin, amount])
   }
 
   getApiRequest(endpoint, params){
-    if(params){ //if we have an empty string this wont affect the request
-      params = '/' + params
+    let paramString = '/'
+    if(params){ //if we have undefined this wont affect the request
+      params.forEach((param, i) => {
+          if( i > 0) {
+            paramString += '/' + param
+          } else {
+            paramString += param
+          }
+      });
     }
-    return this.genServ.getRequest('changelly/' + endpoint + params)
+    return this.genServ.getRequest('changelly/' + endpoint + paramString)
   }
 }

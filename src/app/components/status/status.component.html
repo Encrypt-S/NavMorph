@@ -1,0 +1,45 @@
+<div id="status-container" >
+  <h4>Status:</h4>
+  <div *ngIf="!formDataSet">
+    <span>Fill out the form and press 'Send' to get started.</span>
+  </div>
+  <div *ngIf="formDataSet">
+    <div *ngIf="formData.errors.length > 0">
+      <div class="error-text">Error with form submission:</div>
+      <div class="error-text" *ngIf="formData.errors.indexOf('invalidDestAddress') > -1">You're attempting to send to an invalid destination address, please double check you've entered the correct address.</div>
+      <div class="error-text" *ngIf="formData.errors.indexOf('invalidTransferAmount') > -1">You're attempting to send to an invalid transfer amount, please double check you've entered a valid number.</div>
+      <div class="error-text" *ngIf="formData.errors.indexOf('transferTooSmall') > -1">You're attempting to send too few coins. Changelly requires at least {{formData.minTransferAmount}} {{formData.originCoin | uppercase}} </div>
+      <div class="error-text" *ngIf="formData.errors.indexOf('transferTooLarge') > -1">You're attempting to send too many coins at once, our current limit is {{MAX_NAV_PER_TRADE}} NAV per trade. You're attempting to send {{formData.estConvToNav}} NAV.</div>
+      <div class="error-text" *ngIf="formData.errors.indexOf('navToNavTransfer') > -1">You're attempting a NAV to NAV anonymous transfer, please use NavTech wallet's built in anon transaction feature for this.</div>
+      <div class="error-text" *ngIf="formData.errors.indexOf('changellyError') > -1">There was an error contacting Changelly servers, please try again.</div>
+    </div>
+    <div *ngIf="formData.errors.length <= 0">
+      <div>
+        <span class="status-title">You are sending: </span><span class="status-data">{{transferAmount}} {{originCoin | uppercase}} to {{destAddr}} in {{destCoin | uppercase}}</span>
+      </div>
+      <div>
+        <span class="status-title">Est. Time: </span><span class="status-data">20~40 minutes</span>
+      </div>
+      <div>
+        <span class="status-title">First Conversion: </span><span class="status-data">{{transferAmount}} {{originCoin | uppercase}} to ~{{estConvToNav - changellyFeeOne}} NAV</span>
+      </div>
+      <div>
+        <span class="status-title">Second Conversion: </span><span class="status-data">~{{estConvToNav - navTechFee - changellyFeeOne}} NAV to ~{{estConvFromNav - changellyFeeTwo}} {{destCoin | uppercase}}</span>
+      </div>
+      <div>
+        <div>
+          <span class="status-title">Est. Fees: </span>
+        </div>
+        <div>
+          <span class="status-title">Changelly Conversion ({{originCoin | uppercase}} to NAV): </span><span class="status-data">~{{changellyFeeOne}} NAV</span>
+        </div>
+        <div>
+          <span class="status-title">Changelly Conversion (NAV to {{destCoin | uppercase}}): </span><span class="status-data">~{{changellyFeeTwo}} {{destCoin | uppercase}}</span>
+        </div>
+        <div>
+          <span class="status-title">NavTech Fee: </span><span class="status-data">~{{navTechFee}} NAV</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

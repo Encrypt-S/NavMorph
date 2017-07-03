@@ -1,42 +1,101 @@
 import { Component, OnInit, Input } from '@angular/core';
-
+import { FormsModule } from '@angular/forms';
 import { ChangellyApiService } from '../../services/changelly-api/changelly-api';
+import { SendPageDataService } from '../../services/send-page-data/send-page-data';
 
 @Component({
   selector: 'send-coins-form-component',
   templateUrl: './send-coins-form.component.html',
   styleUrls: ['./send-coins-form.component.scss'],
-  providers: [ ChangellyApiService ],
+
+  providers: [
+    FormsModule,
+    ChangellyApiService,
+  ],
 })
+
+
 export class SendCoinsFormComponent implements OnInit {
 
   @Input() theme: string;
   isDisabled: boolean = true
   currencies: object = ['Loading']
+  transferAmount: number
+  originCoin: string
+  destCoin: string
+  destAddr: string
 
-  error = {
-    'notFound': false,
-    'dataFormat': false,
-    'default': false,
-  }
+  minTransferAmount: number
 
-  constructor(private changellyApi: ChangellyApiService) {
+  errors = []
+
+  formData: object = {}
+
+  constructor(
+    private changellyApi: ChangellyApiService,
+    private dataServ: SendPageDataService,
+  ) {
     if(!this.theme){
       this.theme = 'form-dark'
     }
+    this.getFormDataStream()
   }
 
   ngOnInit() {
     this.getCurrencies()
   }
 
+  getFormData():void {
+    this.dataServ.getData()
+  }
+
+  getFormDataStream() {
+    this.dataServ.getDataStream().subscribe(data => {
+      this.errors = []
+      this.formData = data
+      this.checkErrors(data.errors)
+      this.fillForm(this.formData)
+    })
+  }
+
+  sendForm():void {
+    this.storeFormData()
+  }
+
+  storeFormData():void {
+    let originCoin = this.originCoin
+    let destCoin = this.destCoin
+
+    if (!originCoin) {
+        originCoin = this.currencies['0']
+    }
+    if (!destCoin) {
+        destCoin = this.currencies['0']
+    }
+    this.dataServ.storeData(this.transferAmount, originCoin, destCoin, this.destAddr)
+  }
+
+  fillForm(data):void {
+    this.transferAmount = data.transferAmount ? data.transferAmount : undefined
+    this.originCoin = data.originCoin ? data.originCoin : undefined
+    this.destCoin = data.destCoin
+    this.destAddr = data.destAddr
+  }
+
+  clearFormData():void {
+    this.dataServ.clearData(true)
+    this.originCoin = this.currencies[0]
+    this.destCoin = this.currencies[0]
+  }
+
   getCurrencies() {
     this.changellyApi.getCurrencies()
       .subscribe(
         currencies => {
-          if(this.checkData(currencies))
+          if(this.checkCurrData(currencies))
             this.currencies = currencies
             this.isDisabled = false
+            this.getFormData()
         },
         error => {
           this.isDisabled = true
@@ -44,34 +103,49 @@ export class SendCoinsFormComponent implements OnInit {
         })
   }
 
-  toggleFormState(){
-  setTimeout(() => {
+  toggleFormState() {
+    setTimeout(() => {
       this.isDisabled = !this.isDisabled
     }, 100)
-
   }
 
-  displayError(error){
+  checkErrors(errorBundle) {
+    console.log(errorBundle);
+    if(errorBundle.indexOf('invalidDestAddress') > -1) {
+      this.errors.push('invalidDestAddress')
+    }
+    if(errorBundle.indexOf('invalidTransferAmount') > -1 || errorBundle.indexOf('transferTooSmall') > -1 || errorBundle.indexOf('transferTooLarge') > -1 ) {
+      this.errors.push('invalidTransferAmount')
+    }
+    if(errorBundle.indexOf('navToNavTransfer') > -1) {
+      this.errors.push('navToNavTransfer')
+    }
+    if(errorBundle.indexOf('changellyError') > -1) {
+      this.errors.push('changellyError')
+    }
+  }
+
+  displayError(error) {
+    console.log(error);
     switch(error.slice(0,3)){
       case('404'):
-        this.error.notFound = true
+        this.errors.push('notFound')
         break
       case('400'):
-        this.error.dataFormat = true
+        this.errors.push('dataFormat')
       default:
-        this.error.default = true
+        this.errors.push('default')
         break
     }
     this.isDisabled = true
   }
 
-
-  checkData(data){
-    if(data instanceof Array && data[0] instanceof String ){
+  checkCurrData(data) {
+    if(data instanceof Array && data[0] instanceof String ) {
+      console.log(data);
       this.displayError('400')
       return false
     }
     return true
   }
-
 }
