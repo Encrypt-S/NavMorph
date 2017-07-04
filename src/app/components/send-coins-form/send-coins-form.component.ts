@@ -117,6 +117,7 @@ export class SendCoinsFormComponent implements OnInit {
 
   clearFormData():void {
     this.dataServ.clearData(true)
+    this.estimateValid = false
     this.originCoin = this.currencies[0]
     this.destCoin = this.currencies[0]
   }
