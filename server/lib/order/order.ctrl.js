@@ -9,7 +9,7 @@ const OrderCtrl = {}
 OrderCtrl.createOrder = (req, res) => {
   OrderCtrl.getNavAddress(res)
   .then((address) => {
-    req.params.navAddressOne = address
+    req.params.navAddress = address
     OrderCtrl.getFirstChangellyAddress(req, res)
   })
   .catch((error) => {
@@ -18,7 +18,7 @@ OrderCtrl.createOrder = (req, res) => {
 }
 
 OrderCtrl.getFirstChangellyAddress = (req, res) => {
-  OrderCtrl.getChangellyAddress(req.params.from, 'nav', req.params.navAddressOne)
+  OrderCtrl.getChangellyAddress(req.params.from, 'nav', req.params.navAddress)
   .then((address) => {
     req.params.changellyAddressOne = address
     OrderCtrl.prepForDb(req, res)
@@ -47,8 +47,7 @@ OrderCtrl.getNavAddress = () => {
   return new Promise((fulfill, reject) => {
     getNewAddress.internal.getNewAddress()
     .then((newAddress) => {
-      reject(new Error('rejcted'))
-      // fulfill(newAddress)
+      fulfill(newAddress)
     })
     .catch((error) => {
       // const err = new Error('Couldn\'t get a new address from Nav daemon')
