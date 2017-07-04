@@ -94,15 +94,13 @@ OrderCtrl.abandonOrder = (req, res) => {
 }
 
 OrderCtrl.handleError = (error, res) => {
-  // res.send(JSON.stringify({
-  //   status: 400,
-  //   type: 'FAIL',
-  //   code: 'ORDER_CTRL',
-  //   message: 'Unable to create Polymorph Order',
-  //   error,
-  // }))
-  res.status(500).send('err')
-  console.log(res)
+  res.send(JSON.stringify({
+    statusCode: 200,
+    type: 'FAIL',
+    code: 'ORDER_CTRL',
+    statusMessage: 'Unable to create Polymorph Order',
+    error,
+  }))
   console.log('sent error response')
 }
 module.exports = OrderCtrl

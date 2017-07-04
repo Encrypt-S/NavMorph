@@ -71,8 +71,13 @@ export class SendCoinsFormComponent implements OnInit {
   createOrder(originCoin, destCoin, destAddr, transferAmount):void {
     this.orderServ.createOrder(originCoin, destCoin, destAddr, transferAmount).subscribe(
       result => {
+        if (result.type && result.type === "FAIL" ){
+          this.errors.push('orderCreationFailed')
+          return
+        }
         const statusPageUrl = '/status/' + result['0'] + '/' + result['1']
-        this.router.navigateByUrl(statusPageUrl)
+        console.log(statusPageUrl)
+        // this.router.navigateByUrl(statusPageUrl)
       },
       error => {
         console.log('error creating order', error)
@@ -137,7 +142,6 @@ export class SendCoinsFormComponent implements OnInit {
   }
 
   checkErrors(errorBundle) {
-    console.log(errorBundle);
     if(errorBundle.indexOf('invalidDestAddress') > -1) {
       this.errors.push('invalidDestAddress')
     }
