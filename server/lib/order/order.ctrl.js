@@ -44,12 +44,17 @@ OrderCtrl.prepForDb = (req, res) => {
 }
 
 OrderCtrl.getNavAddress = () => {
-  const newAddress = getNewAddress.internal.getNewAddress()
-  if (newAddress instanceof Error) {
-    const err = new Error('Couldn\'t get a new address from Nav daemon')
-    return err
-  }
-  return newAddress
+  return new Promise((fulfill, reject) => {
+    getNewAddress.internal.getNewAddress()
+    .then((newAddress) => {
+      reject(new Error('rejcted'))
+      // fulfill(newAddress)
+    })
+    .catch((error) => {
+      // const err = new Error('Couldn\'t get a new address from Nav daemon')
+      reject(error)
+    })
+  })
 }
 
 OrderCtrl.getChangellyAddress = (inputCurrency, outputCurrency, destAddress) => {
@@ -89,13 +94,15 @@ OrderCtrl.abandonOrder = (req, res) => {
 }
 
 OrderCtrl.handleError = (error, res) => {
-  res.send(JSON.stringify({
-    status: 400,
-    type: 'FAIL',
-    code: 'ORDER_CTRL',
-    message: 'Unable to create Polymorph Order',
-    error,
-  }))
+  // res.send(JSON.stringify({
+  //   status: 400,
+  //   type: 'FAIL',
+  //   code: 'ORDER_CTRL',
+  //   message: 'Unable to create Polymorph Order',
+  //   error,
+  // }))
+  res.status(500).send('err')
+  console.log(res)
   console.log('sent error response')
 }
 module.exports = OrderCtrl

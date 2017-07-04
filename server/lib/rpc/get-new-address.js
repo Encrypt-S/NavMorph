@@ -29,11 +29,36 @@ Rpc.getNewAddress = (req, res) => {
 }
 
 Rpc.internal.getNewAddress = () => {
-  try {
-    return Rpc.navClient.getNewAddress()
-  } catch (e) {
-    return e
-  }
+  return new Promise((fulfill, reject) => {
+    try {
+      const address = Rpc.navClient.getNewAddress()
+      fulfill(address)
+    } catch (firstGetAddressError) {
+      Rpc.internal.keypoolRefill()
+      .then(() => {
+        try {
+          const address = Rpc.navClient.getNewAddress()
+          fulfill(address)
+        } catch (secondGetAddressError) {
+          reject(secondGetAddressError)
+        }
+      })
+      .catch((keypoolError) => {
+        reject(keypoolError)
+      })
+    }
+  })
+}
+
+Rpc.internal.keypoolRefill = () => {
+  return new Promise((fulfill, reject) => {
+    try {
+      Rpc.navClient.getNewAddress()
+      fulfill()
+    } catch (error) {
+      reject(error)
+    }
+  })
 }
 
 module.exports = Rpc
