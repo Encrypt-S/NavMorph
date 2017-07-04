@@ -1,5 +1,7 @@
 const Rpc = require('./client')
 
+const config = require('../../config')
+
 Rpc.getNewAddress = (req, res) => {
   try {
     Rpc.navClient.getNewAddress().then((data) => {
@@ -34,18 +36,22 @@ Rpc.internal.getNewAddress = () => {
       const address = Rpc.navClient.getNewAddress()
       fulfill(address)
     } catch (firstGetAddressError) {
-      Rpc.internal.keypoolRefill()
-      .then(() => {
-        try {
-          const address = Rpc.navClient.getNewAddress()
-          fulfill(address)
-        } catch (secondGetAddressError) {
-          reject(secondGetAddressError)
-        }
-      })
-      .catch((keypoolError) => {
-        reject(keypoolError)
-      })
+      if (firstGetAddressError.code === -12) {
+        Rpc.internal.keypoolRefill()
+        .then(() => {
+          try {
+            const address = Rpc.navClient.getNewAddress()
+            fulfill(address)
+          } catch (secondGetAddressError) {
+            reject(secondGetAddressError)
+          }
+        })
+        .catch((keypoolError) => {
+          reject(keypoolError)
+        })
+      } else {
+        reject(firstGetAddressError)
+      }
     }
   })
 }
@@ -53,9 +59,12 @@ Rpc.internal.getNewAddress = () => {
 Rpc.internal.keypoolRefill = () => {
   return new Promise((fulfill, reject) => {
     try {
-      Rpc.navClient.getNewAddress()
+      Rpc.navClient.walletPassphrase(config.walletKey, 5)
+      Rpc.navClient.keypoolRefill()
+      Rpc.navClient.walletLock()
       fulfill()
     } catch (error) {
+      Rpc.navClient.walletLock()
       reject(error)
     }
   })
