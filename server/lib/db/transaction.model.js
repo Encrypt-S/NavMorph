@@ -1,5 +1,7 @@
 const mongoose = require('mongoose')
 
+mongoose.Promise = global.Promise
+
 const mongoDB = 'mongodb://127.0.0.1/polymorph'
 mongoose.connect(mongoDB)
 const db = mongoose.connection
@@ -15,8 +17,7 @@ const Transaction = new Schema({
   polymorph_pass: { type: String, required: true },
   changelly_address_one: { type: String, required: true },
   // changelly_address_two: { type: String, required: true },
-  nav_address_one: { type: String, required: true },
-  // nav_address_two: { type: String, required: true },
+  nav_address: { type: String, required: true },
   input_currency: { type: String, required: true },
   output_currency: { type: String, required: true },
   order_status: { type: String, required: true },
