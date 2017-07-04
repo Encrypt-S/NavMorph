@@ -108,6 +108,7 @@ export class SendCoinsFormComponent implements OnInit {
       this.estimateValid = true
       setTimeout(() => {
         this.estimateValid = false
+        this.errors.push('expiredEst')
       }, 300000)
     } else {
       this.estimateValid = false
@@ -145,7 +146,8 @@ export class SendCoinsFormComponent implements OnInit {
     if(errorBundle.indexOf('invalidDestAddress') > -1) {
       this.errors.push('invalidDestAddress')
     }
-    if(errorBundle.indexOf('invalidTransferAmount') > -1 || errorBundle.indexOf('transferTooSmall') > -1 || errorBundle.indexOf('transferTooLarge') > -1 ) {
+    if(errorBundle.indexOf('invalidTransferAmount') > -1 || errorBundle.indexOf('transferTooSmall') > -1
+      || errorBundle.indexOf('transferTooLarge') > -1 ) {
       this.errors.push('invalidTransferAmount')
     }
     if(errorBundle.indexOf('navToNavTransfer') > -1) {
