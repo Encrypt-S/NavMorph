@@ -7,35 +7,39 @@ const TransactionCtrl = require('../db/transaction.ctrl')
 const OrderCtrl = {}
 
 OrderCtrl.createOrder = (req, res) => {
-  OrderCtrl.getNavAddress(res).then((address) => {
-    if (address instanceof Error) {
-      OrderCtrl.handleError(address, res)
-    }
+  OrderCtrl.getNavAddress(res)
+  .then((address) => {
     req.params.navAddressOne = address
     OrderCtrl.getFirstChangellyAddress(req, res)
   })
+  .catch((error) => {
+    OrderCtrl.handleError(error, res)
+  })
 }
 
-OrderCtrl.getFirstChangellyAddress = async (req, res) => {
-  const address = await OrderCtrl.getChangellyAddress(req.params.from, 'nav', req.params.navAddressOne)
-  if (address instanceof Error) {
-    OrderCtrl.handleError(address, res)
-  }
-  req.params.changellyAddressOne = address
-  OrderCtrl.prepForDb(req, res)
+OrderCtrl.getFirstChangellyAddress = (req, res) => {
+  OrderCtrl.getChangellyAddress(req.params.from, 'nav', req.params.navAddressOne)
+  .then((address) => {
+    req.params.changellyAddressOne = address
+    OrderCtrl.prepForDb(req, res)
+  })
+  .catch((error) => {
+    OrderCtrl.handleError(error, res)
+  })
 }
 
-OrderCtrl.prepForDb = async (req, res) => {
+OrderCtrl.prepForDb = (req, res) => {
   req.params.polymorphPass = keygen.generateKey(16)
   req.params.polymorphId = '001'
   req.params.changellyId = '001'
-  const errorExists = await TransactionCtrl.internal.createTransaction(req, res)
-  if (errorExists instanceof Error) {
-    OrderCtrl.handleError(errorExists, res)
-    return
-  }
-  res.send({
-    result: [req.params.polymorphId, req.params.polymorphPass],
+  TransactionCtrl.internal.createTransaction(req, res)
+  .then(() => {
+    res.send({
+      result: [req.params.polymorphId, req.params.polymorphPass],
+    })
+  })
+  .catch((error) => {
+    OrderCtrl.handleError(error, res)
   })
 }
 
@@ -48,19 +52,22 @@ OrderCtrl.getNavAddress = () => {
   return newAddress
 }
 
-OrderCtrl.getChangellyAddress = async (inputCurrency, outputCurrency, destAddress) => {
-  const data = await ChangellyCtrl.internal.generateAddress({
-    from: inputCurrency,
-    to: outputCurrency,
-    address: destAddress,
-    extraId: null,
+OrderCtrl.getChangellyAddress = (inputCurrency, outputCurrency, destAddress) => {
+  return new Promise((fulfill, reject) => {
+    ChangellyCtrl.internal.generateAddress({
+      from: inputCurrency,
+      to: outputCurrency,
+      address: destAddress,
+      extraId: null,
+    })
+    .then((data) => {
+      if (data instanceof Error) {
+        console.log(data, 'Couldn\'t get address from Changelly')
+        reject(data)
+      }
+      fulfill(data.result.address)
+    })
   })
-  if (data instanceof Error) {
-    console.log(data, 'Couldn\'t get address from Changelly')
-    data.message = 'Couldn\'t get address from Changelly'
-    return data
-  }
-  return data.result.address
 }
 
 OrderCtrl.getOrder = (req, res) => {
