@@ -1,13 +1,4 @@
-const Client = require('bitcoin-core')
-
-let Rpc = { //eslint-disable-line
-  navClient: new Client({
-    username: 'navpi',
-    password: 'securepass',
-    port: 44444,
-    host: '127.0.0.1',
-  }),
-}
+const Rpc = require('./client')
 
 Rpc.getInfo = (req, res) => {
   try {

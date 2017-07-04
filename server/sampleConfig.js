@@ -12,6 +12,12 @@ const configData = {
   changellyUrl: 'https://api.changelly.com',
   changellyKey: '32 char long',
   changellySecretKey: '64 char long',
+  navClient: {
+    username: 'user',
+    password: 'password',
+    port: 44444,
+    host: '127.0.0.1',
+  },
 }
 
 module.exports = configData
