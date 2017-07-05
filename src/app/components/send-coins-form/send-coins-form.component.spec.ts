@@ -61,4 +61,35 @@ describe('SendCoinsFormComponent', () => {
     sendCoinsSection.getCurrencies()
     expect(sendCoinsSection.currencies).toBe(fakeData)
   })))
+
+  it('should invalidate estimate data', (inject([SendCoinsFormComponent], (sendCoinsSection: SendCoinsFormComponent) => {
+      sendCoinsSection.estimateValid = true
+      sendCoinsSection.invalidateEstimate()
+      expect(sendCoinsSection.estimateValid).toBe(false)
+  })))
+
+  it('should clear form data', ( inject([SendCoinsFormComponent], (sendCoinsSection: SendCoinsFormComponent) => {
+    // TODO: Figure out how to test private function call to dataServ
+
+    sendCoinsSection.currencies[0] = 'nav'
+    sendCoinsSection.estimateValid = true
+    sendCoinsSection.originCoin = 'doge'
+    sendCoinsSection.destCoin = 'doge'
+
+    sendCoinsSection.clearFormData()
+
+    expect(sendCoinsSection.estimateValid).toBe(false)
+    expect(sendCoinsSection.originCoin).toBe('nav')
+    expect(sendCoinsSection.destCoin).toBe('nav')
+  })))
+
+  it('toggle form state after a certain time', async(inject([SendCoinsFormComponent], ( sendCoinsSection: SendCoinsFormComponent) => {
+    jasmine.clock().install()
+    sendCoinsSection.isDisabled = true
+    sendCoinsSection.toggleFormState()
+    expect(sendCoinsSection.isDisabled).toBe(true)
+    jasmine.clock().tick(101)
+    expect(sendCoinsSection.isDisabled).toBe(false)
+    jasmine.clock().uninstall()
+  })))
 });
