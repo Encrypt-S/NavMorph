@@ -4,7 +4,7 @@
       <li *ngIf="errors.indexOf('notFound') > -1">Unable to load available currencies from Changelly</li>
       <li *ngIf="errors.indexOf('dataFormat') > -1">Recevied incorrectly formatted data from Changelly</li>
       <li *ngIf="errors.indexOf('orderCreationFailed') > -1">Failed to create a Polymorph order</li>
-      <li *ngIf="errors.indexOf('expiredEst') > -1">Your estimates have expired, click send to fetch a new one</li>
+      <li *ngIf="errors.indexOf('expiredEst') > -1">Your estimate has expired, click send to fetch a new one</li>
       <li *ngIf="errors.indexOf('default') > -1">Error displaying available currencies</li>
     </ul>
 
