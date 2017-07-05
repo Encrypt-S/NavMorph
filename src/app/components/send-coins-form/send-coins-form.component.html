@@ -10,13 +10,13 @@
 
     <div class="row" >
       <div class="input-field col s9 no-hoz-spacing">
-        <input type="text" name="enter-text-ex" class="input-with-select" [ngClass]="{'invalid': errors.indexOf('invalidTransferAmount') > -1}" [attr.disabled]="isDisabled?true:null" [(ngModel)]="transferAmount" />
+        <input type="text" name="enter-text-ex" class="input-with-select" [ngClass]="{'invalid': errors.indexOf('invalidTransferAmount') > -1}" [attr.disabled]="isDisabled?true:null" [(ngModel)]="transferAmount" (change)="invalidateEstimate()" />
         <label for="enter-text-ex" [ngClass]="{'active': transferAmount}" >Enter amount</label>
       </div>
 
       <div class="input-field col s3 no-hoz-spacing">
         <!-- TODO: add error indicator when nav to nav transfer detected. Bug with materialize css select stops us from doing this atm -->
-        <select materialize="material_select"  [materializeSelectOptions]="currencies" [(ngModel)]="originCoin" name="originCoin" [attr.disabled]="isDisabled?true:null">
+        <select materialize="material_select"  [materializeSelectOptions]="currencies" [(ngModel)]="originCoin" (change)="invalidateEstimate()" name="originCoin" [attr.disabled]="isDisabled?true:null">
           <option *ngFor="let currency of currencies" [value]="currency">{{currency | uppercase}}</option>
         </select>
         <label>Source Coin</label>
@@ -25,12 +25,12 @@
 
     <div class="row">
       <div class="input-field col s9 no-hoz-spacing">
-        <input type="text" name="enter-text-ex" class="input-with-select"  [ngClass]="{'invalid': errors.indexOf('invalidDestAddress') > -1}" [attr.disabled]="isDisabled?true:null" [(ngModel)]="destAddr" />
+        <input type="text" name="enter-text-ex" class="input-with-select"  [ngClass]="{'invalid': errors.indexOf('invalidDestAddress') > -1}" [attr.disabled]="isDisabled?true:null" [(ngModel)]="destAddr" (change)="invalidateEstimate()" />
         <label for="enter-text-ex" [ngClass]="{'active': destAddr}">Enter Destination Address</label>
       </div>
 
       <div class="input-field col s3 no-hoz-spacing">
-        <select materialize="material_select"  [materializeSelectOptions]="currencies" [ngClass]="{'invalid': errors.indexOf('navToNavTransfer') > -1}" [(ngModel)]="destCoin" name="destCoin" [attr.disabled]="isDisabled?true:null">
+        <select materialize="material_select"  [materializeSelectOptions]="currencies" [ngClass]="{'invalid': errors.indexOf('navToNavTransfer') > -1}" [(ngModel)]="destCoin" (change)="invalidateEstimate()" name="destCoin" [attr.disabled]="isDisabled?true:null">
           <option *ngFor="let currency of currencies" [value]="currency">{{currency | uppercase}}</option>
         </select>
         <label>Dest. Coin</label>

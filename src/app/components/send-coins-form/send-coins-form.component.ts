@@ -64,6 +64,10 @@ export class SendCoinsFormComponent implements OnInit {
     })
   }
 
+  invalidateEstimate() {
+    this.estimateValid = false
+  }
+
   sendForm():void {
     this.storeFormData()
   }
