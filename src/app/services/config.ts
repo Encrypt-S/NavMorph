@@ -28,11 +28,3 @@ export interface dataBundleTemplate {
   changellyFeeTwo?: number,
   errors?: Array<string>
 }
-
-export const mailSettings = {
-  smtp: {
-    user: '@gmail.com',
-    pass: 'pass',
-  },
-  notificationEmail: '@gmail.com',
-}

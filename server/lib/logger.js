@@ -1,28 +1,14 @@
 const nodemailer = require('nodemailer')
 const config = require('../config')
 
-// let globalSettings = config.get('GLOBAL') // eslint-disable-line
+const settings = config.mailSettings
 
-let settings = false
-settings = config.mailSettings
-
-// const emailAuth = encodeURIComponent(settings.smtp.user) + ':' + encodeURIComponent(settings.smtp.pass)
+const emailAuth = encodeURIComponent(settings.smtp.user) + ':' + encodeURIComponent(settings.smtp.pass)
 
 const Logger = {}
 
-Logger.transporter = nodemailer.createTransport({
-    host: 'smtp.gmail.com',
-    port: 465,
-    secure: true,
-    auth: {
-        type: 'OAuth2',
-        user: '',
-        accessToken: ''
-    }
-})
+Logger.transporter = nodemailer.createTransport('smtps://' + emailAuth + '@' + settings.smtp.server)  // eslint-disable-line
 
-
-// 'smtps://' + emailAuth + '@' + settings.smtp.server
 
 Logger.writeLog = (errorCode, errorMessage, data, email) => {
   if (email) {
@@ -47,10 +33,9 @@ Logger.writeLog = (errorCode, errorMessage, data, email) => {
 
 Logger.sendMail = (errorCode, errorMessage, data) => {
   const mailOptions = {
-    from: '"Polymorph System" <mathewp.94@gmail.com>',
-    to: '.com',
-    subject: 'Polymorph System Message - ' + errorCode,
-    // subject: 'Polymorph System Message - ' + settings.local.ipAddress + ' (' + globalSettings.serverType + ') ' + errorCode,
+    from: '"Polymorph System" <' + settings.smtp.user + '>',
+    to: settings.notificationEmail,
+    subject: 'Polymorph System Message - Error' + errorCode,
     text: errorCode + ' - ' + errorMessage,
     attachments: [
       {

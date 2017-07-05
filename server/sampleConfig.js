@@ -12,6 +12,14 @@ const configData = {
   changellyUrl: 'https://api.changelly.com',
   changellyKey: '32 char long',
   changellySecretKey: '64 char long',
+  mailSettings: {
+    smtp: {
+      user: '__@__.com',
+      pass: 'password',
+      server: 'smtp.gmail.com',
+    },
+    notificationEmail: '__@__.com',
+  },
 }
 
 module.exports = configData
