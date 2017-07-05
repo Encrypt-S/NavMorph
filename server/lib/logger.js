@@ -7,7 +7,7 @@ const emailAuth = encodeURIComponent(settings.smtp.user) + ':' + encodeURICompon
 
 const Logger = {}
 
-Logger.transporter = nodemailer.createTransport('smtps://' + emailAuth + '@' + settings.smtp.server)  // eslint-disable-line
+Logger.transporter = nodemailer.createTransport('smtps://' + emailAuth + '@' + settings.smtp.server)
 
 
 Logger.writeLog = (errorCode, errorMessage, data, email) => {
@@ -44,7 +44,7 @@ Logger.sendMail = (errorCode, errorMessage, data) => {
         filename: 'data.json',
         content: JSON.stringify(data),
       },
-    ],
+    ]
   }
 
   Logger.transporter.sendMail(mailOptions, (error, info) => {
