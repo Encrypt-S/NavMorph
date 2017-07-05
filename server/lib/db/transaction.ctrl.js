@@ -16,7 +16,7 @@ TransactionCtrl.handleError = (err, res, code, message) => {
 }
 
 TransactionCtrl.internal.createTransaction = (req, res) => {
-  return new Promise((resolve, reject) => {
+  return new Promise((fulfill, reject) => {
     const required = ['from', 'to', 'address', 'amount', 'extraId', 'changellyId',
       'polymorphId', 'polymorphPass', 'changellyAddressOne', 'navAddress']
     if (!req || lodash.intersection(Object.keys(req.params), required).length !== required.length) {
@@ -31,7 +31,7 @@ TransactionCtrl.internal.createTransaction = (req, res) => {
       polymorph_pass: req.params.polymorphPass,
       changelly_address_one: req.params.changellyAddressOne,
       // changelly_address_two: req.params.changelly_address_two,
-      na_address_one: req.params.navAddress,
+      nav_address: req.params.navAddress,
       input_currency: req.params.from,
       output_currency: req.params.to,
       output_address: req.params.address,
@@ -41,6 +41,7 @@ TransactionCtrl.internal.createTransaction = (req, res) => {
     })
     try {
       TransactionCtrl.runtime.transaction.save()
+      .then(fulfill())
       .catch((result) => {
         if (result instanceof Error) {
           reject(result)

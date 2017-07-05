@@ -7,7 +7,7 @@ const TransactionCtrl = require('../db/transaction.ctrl')
 const OrderCtrl = {}
 
 OrderCtrl.createOrder = (req, res) => {
-  OrderCtrl.validateParams(res)
+  OrderCtrl.validateParams(req)
   .then(() => {
     OrderCtrl.beginOrderCreation(req, res)
   })
@@ -17,7 +17,7 @@ OrderCtrl.createOrder = (req, res) => {
 }
 
 OrderCtrl.beginOrderCreation = (req, res) => {
-  OrderCtrl.getNavAddress(res)
+  OrderCtrl.getNavAddress()
   .then((address) => {
     req.params.navAddress = address
     OrderCtrl.getFirstChangellyAddress(req, res)
@@ -57,8 +57,9 @@ OrderCtrl.prepForDb = (req, res) => {
 
 OrderCtrl.validateParams = (req) => {
   return new Promise((fulfill, reject) => {
-    if (req.params.from instanceof String && req.params.to instanceof String && req.params.address instanceof String &&
-      !isNaN(parseFloat(req.params.amount))) { // TODO: Add validation for extraId
+    // TODO: Add validation for extraId
+    if (typeof req.params.from === typeof 'string' && typeof req.params.to === typeof 'string'
+    && typeof req.params.address === typeof 'string' && !isNaN(parseFloat(req.params.amount))) {
       fulfill()
     }
     reject(new Error('Incorrect parameters'))
@@ -123,6 +124,6 @@ OrderCtrl.handleError = (error, res, code) => {
     statusMessage: 'Unable to create Polymorph Order',
     error,
   }))
-  console.log('Error: ' + error)
+  console.log(error)
 }
 module.exports = OrderCtrl
