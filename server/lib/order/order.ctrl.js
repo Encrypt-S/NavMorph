@@ -7,13 +7,23 @@ const TransactionCtrl = require('../db/transaction.ctrl')
 const OrderCtrl = {}
 
 OrderCtrl.createOrder = (req, res) => {
+  OrderCtrl.validateParams(res)
+  .then(() => {
+    OrderCtrl.beginOrderCreation(req, res)
+  })
+  .catch((error) => {
+    OrderCtrl.handleError(error, res, '002')
+  })
+}
+
+OrderCtrl.beginOrderCreation = (req, res) => {
   OrderCtrl.getNavAddress(res)
   .then((address) => {
     req.params.navAddress = address
     OrderCtrl.getFirstChangellyAddress(req, res)
   })
   .catch((error) => {
-    OrderCtrl.handleError(error, res)
+    OrderCtrl.handleError(error, res, '003')
   })
 }
 
@@ -24,7 +34,7 @@ OrderCtrl.getFirstChangellyAddress = (req, res) => {
     OrderCtrl.prepForDb(req, res)
   })
   .catch((error) => {
-    OrderCtrl.handleError(error, res)
+    OrderCtrl.handleError(error, res, '004')
   })
 }
 
@@ -34,12 +44,24 @@ OrderCtrl.prepForDb = (req, res) => {
   req.params.changellyId = '001'
   TransactionCtrl.internal.createTransaction(req, res)
   .then(() => {
-    res.send({
-      result: [req.params.polymorphId, req.params.polymorphPass],
-    })
+    res.send(JSON.stringify({
+      status: 200,
+      type: 'SUCCESS',
+      data: [req.params.polymorphId, req.params.polymorphPass],
+    }))
   })
   .catch((error) => {
-    OrderCtrl.handleError(error, res)
+    OrderCtrl.handleError(error, res, '005')
+  })
+}
+
+OrderCtrl.validateParams = (req) => {
+  return new Promise((fulfill, reject) => {
+    if (req.params.from instanceof String && req.params.to instanceof String && req.params.address instanceof String &&
+      !isNaN(parseFloat(req.params.amount))) { // TODO: Add validation for extraId
+      fulfill()
+    }
+    reject(new Error('Incorrect parameters'))
   })
 }
 
@@ -67,6 +89,7 @@ OrderCtrl.getChangellyAddress = (inputCurrency, outputCurrency, destAddress) => 
     .then((data) => {
       if (data instanceof Error) {
         console.log(data, 'Couldn\'t get address from Changelly')
+        // data.tag = 'CHANGELLY_ERR'
         reject(data)
       }
       fulfill(data.result.address)
@@ -92,14 +115,14 @@ OrderCtrl.abandonOrder = (req, res) => {
   res.send()
 }
 
-OrderCtrl.handleError = (error, res) => {
+OrderCtrl.handleError = (error, res, code) => {
   res.send(JSON.stringify({
     statusCode: 200,
     type: 'FAIL',
-    code: 'ORDER_CTRL',
+    code: 'ORDER_CTRL_' + code || '001',
     statusMessage: 'Unable to create Polymorph Order',
     error,
   }))
-  console.log('sent error response')
+  console.log('Error: ' + error)
 }
 module.exports = OrderCtrl
