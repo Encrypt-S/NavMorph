@@ -12,6 +12,7 @@ const configData = {
   changellyUrl: 'https://api.changelly.com',
   changellyKey: '32 char long',
   changellySecretKey: '64 char long',
+  walletKey: 'walletKey',
   navClient: {
     username: 'user',
     password: 'password',
