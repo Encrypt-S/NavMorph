@@ -37,7 +37,9 @@ Logger.sendMail = (errorCode, errorMessage, data) => {
     to: settings.notificationEmail,
     subject: 'Polymorph System Message - Error' + errorCode,
     text: errorCode + ' - ' + errorMessage,
-    attachments: [
+  }
+  if (data) {
+    mailOptions.attachments = [
       {
         filename: 'data.json',
         content: JSON.stringify(data),

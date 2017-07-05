@@ -8,6 +8,9 @@ const bodyParser = require('body-parser')
 const api = require('./server/routes/api')
 const Logger = require('./server/lib/logger')
 
+// Get Config data
+const config = require('./server/config')
+
 const app = express()
 
 // Parsers for POST data
@@ -41,5 +44,6 @@ const server = http.createServer(app)
  */
 server.listen(port, () => {
   console.log(`API running on localhost:${port}`)
-  Logger.sendMail('errorCode', 'errorMessage', { data: 'data' })
+  console.log('Sending start up notification email.')
+  Logger.sendMail('Server Start Up', 'Start Up Complete @' + new Date().toISOString() + ', Polymorph Version: ' + config.version)
 })

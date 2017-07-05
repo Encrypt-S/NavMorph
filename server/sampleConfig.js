@@ -1,5 +1,6 @@
 // actual config file is named config.js
 const configData = {
+  version: '0.0.1',
 
   changellyApiEndPoints: {
     getCurrencies: 'getCurrencies',
