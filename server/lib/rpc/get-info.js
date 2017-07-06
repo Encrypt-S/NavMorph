@@ -1,4 +1,5 @@
 const Rpc = require('./client')
+const Logger = require('../logger')
 
 Rpc.getInfo = (req, res) => {
   try {
@@ -8,23 +9,29 @@ Rpc.getInfo = (req, res) => {
         type: 'SUCCESS',
         data,
       }))
-    }).catch((e) => {
+    }).catch((error) => {
+      const code = 'RPC_002'
+      const message = 'something went wrong'
       res.send(JSON.stringify({
         status: 200,
         type: 'FAIL',
-        code: 'RPC_002',
-        message: 'something went wrong',
-        error: e,
+        code,
+        message,
+        error,
       }))
+      Logger.writeLog(code, message, error, false)
     })
-  } catch (e) {
+  } catch (error) {
+    const code = 'RPC_001'
+    const message = 'something went wrong'
     res.send(JSON.stringify({
       status: 200,
       type: 'FAIL',
-      code: 'RPC_001',
-      message: 'something went wrong',
-      error: e,
+      code,
+      message,
+      error,
     }))
+    Logger.writeLog(code, message, error, false)
   }
 }
 
