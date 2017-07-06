@@ -35,7 +35,7 @@ Logger.sendMail = (errorCode, errorMessage, data) => {
   const mailOptions = {
     from: '"Polymorph System" <' + settings.smtp.user + '>',
     to: settings.notificationEmail,
-    subject: 'Polymorph System Message - Error' + errorCode,
+    subject: 'Polymorph System Message - ' + errorCode,
     text: errorCode + ' - ' + errorMessage,
   }
   if (data) {
