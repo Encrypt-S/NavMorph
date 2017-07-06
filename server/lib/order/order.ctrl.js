@@ -73,7 +73,6 @@ OrderCtrl.getNavAddress = () => {
       fulfill(newAddress)
     })
     .catch((error) => {
-      // const err = new Error('Couldn\'t get a new address from Nav daemon')
       reject(error)
     })
   })
@@ -90,7 +89,6 @@ OrderCtrl.getChangellyAddress = (inputCurrency, outputCurrency, destAddress) => 
     .then((data) => {
       if (data instanceof Error) {
         console.log(data, 'Couldn\'t get address from Changelly')
-        // data.tag = 'CHANGELLY_ERR'
         reject(data)
       }
       fulfill(data.result.address)
