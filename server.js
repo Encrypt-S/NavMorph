@@ -35,8 +35,10 @@ app.set('port', port)
  * Create HTTPS server.
  */
 
-pem.createCertificate({ days: 1, selfSigned: true }, (err, keys) => {
-  console.log(err)
+pem.createCertificate({ days: 1, selfSigned: true }, (error, keys) => {
+  if (error) {
+    console.log('pem error: ' + error)
+  }
   const sslOptions = {
     key: keys.serviceKey,
     cert: keys.certificate,

@@ -7,7 +7,7 @@ export const changellyNodeApiEndPoints = {
   getExchangeStatus: 'getStatus',
 }
 
-export const nodeApiBaseUrl = 'http://localhost:3000/api/'
+export const nodeApiBaseUrl = 'https://localhost:3000/api/'
 
 export const changellyConstData = {
   'CHANGELLY_FEE': 0.005,
