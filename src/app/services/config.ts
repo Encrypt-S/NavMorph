@@ -7,6 +7,13 @@ export const changellyNodeApiEndPoints = {
   getExchangeStatus: 'getStatus',
 }
 
+export const orderNodeApiEndPoints = {
+  createOrder: 'createOrder',
+  getOrder: 'getOrder',
+  getOrderStatus: 'getOrderStatus',
+  abandonOrder: 'abandonOrder',
+}
+
 export const nodeApiBaseUrl = 'http://localhost:3000/api/'
 
 export const changellyConstData = {

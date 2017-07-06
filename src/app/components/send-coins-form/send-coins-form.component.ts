@@ -1,7 +1,10 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ChangellyApiService } from '../../services/changelly-api/changelly-api';
+import { OrderService } from '../../services/order/order';
 import { SendPageDataService } from '../../services/send-page-data/send-page-data';
+import {Router} from '@angular/router';
+
 
 @Component({
   selector: 'send-coins-form-component',
@@ -11,6 +14,7 @@ import { SendPageDataService } from '../../services/send-page-data/send-page-dat
   providers: [
     FormsModule,
     ChangellyApiService,
+    OrderService,
   ],
 })
 
@@ -24,8 +28,8 @@ export class SendCoinsFormComponent implements OnInit {
   originCoin: string
   destCoin: string
   destAddr: string
-
   minTransferAmount: number
+  estimateValid: boolean = false
 
   errors = []
 
@@ -34,6 +38,8 @@ export class SendCoinsFormComponent implements OnInit {
   constructor(
     private changellyApi: ChangellyApiService,
     private dataServ: SendPageDataService,
+    private orderServ: OrderService,
+    private router: Router,
   ) {
     if(!this.theme){
       this.theme = 'form-dark'
@@ -58,8 +64,31 @@ export class SendCoinsFormComponent implements OnInit {
     })
   }
 
+  invalidateEstimate() {
+    this.estimateValid = false
+  }
+
   sendForm():void {
     this.storeFormData()
+  }
+
+  createOrder(originCoin, destCoin, destAddr, transferAmount):void {
+    this.orderServ.createOrder(originCoin, destCoin, destAddr, transferAmount).subscribe(
+      result => {
+        if (result.type === "FAIL" ){
+          this.errors.push('orderCreationFailed')
+          return
+        }
+
+        const statusPageUrl = '/status/' + result.data['0'] + '/' + result.data['1']
+        // TODO: Turn on this routing
+        console.log(statusPageUrl)
+        // this.router.navigateByUrl(statusPageUrl)
+      },
+      error => {
+        console.log('error creating order', error)
+        this.errors.push('orderCreationFailed')
+      })
   }
 
   storeFormData():void {
@@ -80,10 +109,21 @@ export class SendCoinsFormComponent implements OnInit {
     this.originCoin = data.originCoin ? data.originCoin : undefined
     this.destCoin = data.destCoin
     this.destAddr = data.destAddr
+
+    if( data.errors.length === 0 ) {
+      this.estimateValid = true
+      setTimeout(() => {
+        this.estimateValid = false
+        this.errors.push('expiredEst')
+      }, 300000)
+    } else {
+      this.estimateValid = false
+    }
   }
 
   clearFormData():void {
     this.dataServ.clearData(true)
+    this.estimateValid = false
     this.originCoin = this.currencies[0]
     this.destCoin = this.currencies[0]
   }
@@ -110,11 +150,11 @@ export class SendCoinsFormComponent implements OnInit {
   }
 
   checkErrors(errorBundle) {
-    console.log(errorBundle);
     if(errorBundle.indexOf('invalidDestAddress') > -1) {
       this.errors.push('invalidDestAddress')
     }
-    if(errorBundle.indexOf('invalidTransferAmount') > -1 || errorBundle.indexOf('transferTooSmall') > -1 || errorBundle.indexOf('transferTooLarge') > -1 ) {
+    if(errorBundle.indexOf('invalidTransferAmount') > -1 || errorBundle.indexOf('transferTooSmall') > -1
+      || errorBundle.indexOf('transferTooLarge') > -1 ) {
       this.errors.push('invalidTransferAmount')
     }
     if(errorBundle.indexOf('navToNavTransfer') > -1) {

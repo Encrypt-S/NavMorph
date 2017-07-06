@@ -2,6 +2,12 @@
 const configData = {
   version: '0.0.1',
 
+  navClient: {
+    username: 'user',
+    password: 'password',
+    port: 44444,
+    host: '127.0.0.1',
+  },
   changellyApiEndPoints: {
     getCurrencies: 'getCurrencies',
     getMinExchange: 'getMinAmount',
