@@ -1,0 +1,36 @@
+<div class="container">
+  <div class="">
+    <h3>Order Not Found</h3>
+    <div>Either the Order ID, Password, or both, are incorrect. Please ensure you have the correct Order ID and Password</div>
+  </div>
+  <div class="">
+    <h2>Order Status</h2>
+    <div class="row">
+      <div class="col s12 m6">
+        <div class="">
+          Please transfer EXACTLY {{orderAmount}} in ONE transaction to the following address.<br>
+          Transferring an incorrect amount may result in lost currency!
+        </div>
+        <a href="#">
+          <div>{{changellyAddress}}</div>
+          <div class="">Click to copy address</div>
+        </a>
+        <qr-code>{{changellyAddress}}</qr-code>
+      </div>
+
+
+      <div class="col s12 m6">
+        <div class="">Status: {{orderStatus}}</div>
+        <div class="">Amount Due: {{orderAmount}}</div>
+        <div class="">Est. wait time: {{waitTimeLow}}~{{waitTimeHigh}}</div>
+        <div class="">Est. Fee: {{estFee}}</div>
+        <div *ngIf="sourceCurrency === destCurrency">Currency: {{sourceCurrency}}</div>
+        <div *ngIf="sourceCurrency !== destCurrency">
+          <div class="">Source Currency: {{sourceCurrency}}</div>
+          <div class="">Dest Currency: {{destCurrency}}</div>
+        </div>
+        <button type="button" name="button">Cancel Order</button>
+      </div>
+    </div>
+  </div>
+</div>

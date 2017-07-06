@@ -10,5 +10,6 @@ export const routes: Routes = [
   { path: '', component: HomePage},
   { path: 'send', component: SendPage},
   { path: 'about', component: AboutPage},
+  { path: 'status/:id/:password', component: StatusPage},
   { path: '**', redirectTo: ''},
 ];
