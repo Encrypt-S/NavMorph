@@ -1,9 +1,10 @@
 <div class="container">
-  <div class="">
+  <div *ngIf="!order">
     <h3>Order Not Found</h3>
     <div>Either the Order ID, Password, or both, are incorrect. Please ensure you have the correct Order ID and Password</div>
   </div>
-  <div class="">
+  
+  <div class="" *ngIf="order">
     <h2>Order Status</h2>
     <div class="row">
       <div class="col s12 m6">
@@ -30,6 +31,10 @@
           <div class="">Dest Currency: {{destCurrency}}</div>
         </div>
         <button type="button" name="button">Cancel Order</button>
+      </div>
+
+      <div class="">
+        <a href="mailto:subject=feedback">Click here to send orderID and Password to an email address</a>
       </div>
     </div>
   </div>
