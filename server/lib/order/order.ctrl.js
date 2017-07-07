@@ -134,24 +134,6 @@ OrderCtrl.generateOrderId = () => {
   })
 }
 
-OrderCtrl.getOrder = (req, res) => {
-  const polymorphId = req.params.orderId
-  console.log('Get Order ', polymorphId)
-  res.send()
-}
-
-OrderCtrl.getOrderStatus = (req, res) => {
-  const polymorphId = req.params.orderId
-  console.log('Order Status', polymorphId)
-  res.send()
-}
-
-OrderCtrl.abandonOrder = (req, res) => {
-  const polymorphId = req.params.orderId
-  console.log('Abandon Order', polymorphId)
-  res.send()
-}
-
 OrderCtrl.handleError = (error, res, code) => {
   res.send(JSON.stringify({
     statusCode: 200,

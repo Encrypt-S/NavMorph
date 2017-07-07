@@ -110,6 +110,7 @@ TransactionCtrl.internal.getOrder = (id, pass) => {
   })
 }
 
+// TODO
 TransactionCtrl.internal.updateOrderStatus = (id, pass, status) => {
   return new Promise((fulfill, reject) => {
     const query = TransactionModel.find()

@@ -6,6 +6,7 @@ const rpcGetNewAddress = require('../lib/rpc/get-new-address')
 const TransactionCtrl = require('../lib/db/transaction.ctrl')
 const ChangellyCtrl = require('../lib/changelly/changelly.ctrl')
 const OrderCtrl = require('../lib/order/order.ctrl')
+const OrderStatusCtrl = require('../lib/order/status.ctrl')
 
 router.get('/', (req, res) => res.send('api works'))
 router.get('/rpc/getinfo', rpcGetInfo.getInfo)
@@ -17,14 +18,13 @@ router.post('/db/transaction', TransactionCtrl.createTransaction)
 router.get('/changelly/getCurrencies', ChangellyCtrl.getCurrencies)
 router.get('/changelly/getMinAmount/:from/:to', ChangellyCtrl.getMinAmount)
 router.get('/changelly/getExchangeAmount/:from/:to/:amount', ChangellyCtrl.getExchangeAmount)
-router.get('/changelly/getExchangeAmount/:from/:to/:amount', ChangellyCtrl.getExchangeAmount)
 
 router.get('/changelly/generateAddress/:from/:to/:address/:extraId', ChangellyCtrl.generateAddress)
 
 router.get('/order/createOrder/:from/:to/:address/:amount/:extraId', OrderCtrl.createOrder)
-router.get('/order/getOrder/orderId:/orderPassword:', OrderCtrl.getOrder)
-router.get('/order/getOrderStatus/orderId:/orderPassword:', OrderCtrl.getOrderStatus)
-router.get('/order/abandonOrder/orderId:/orderPassword:', OrderCtrl.abandonOrder)
+router.get('/order/getOrder/:orderId/:orderPassword', OrderStatusCtrl.getOrder)
+router.get('/order/updateOrderStatus/:orderId/:orderPassword/:status', OrderStatusCtrl.updateOrderStatus)
+router.get('/order/abandonOrder/:orderId/:orderPassword', OrderStatusCtrl.abandonOrder)
 
 router.all('/*', (req, res) => {
   res.status(404).json({ error: ' - API Endpoint ' + req.url + ' does not exist' })
