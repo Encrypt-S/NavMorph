@@ -7,7 +7,12 @@ OrderStatusCtrl.getOrder = (req, res) => {
   const orderPassword = req.params.orderPassword
   console.log('Get Order ', polymorphId)
   TransactionCtrl.internal.getOrder(polymorphId, orderPassword)
-  .then((order) => { res.send(order) })
+  .then((order) => {
+    if (order[0].order_status === 'abandoned') {
+      res.send([])
+    }
+    res.send(order)
+  })
   .catch((error) => { OrderStatusCtrl.handleError(error, res, '001') })
 }
 
