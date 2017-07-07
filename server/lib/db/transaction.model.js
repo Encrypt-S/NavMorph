@@ -12,11 +12,11 @@ db.on('error', console.error.bind(console, 'MongoDB connection error:'))
 const Schema = mongoose.Schema
 
 const Transaction = new Schema({
-  changelly_id: { type: String, required: true },
+  // changelly_id: { type: String, required: true },
   polymorph_id: { type: String, required: true },
   polymorph_pass: { type: String, required: true },
   changelly_address_one: { type: String, required: true },
-  // changelly_address_two: { type: String, required: true },
+  changelly_address_two: { type: String, required: true },
   nav_address: { type: String, required: true },
   input_currency: { type: String, required: true },
   output_currency: { type: String, required: true },
