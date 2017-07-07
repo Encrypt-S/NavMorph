@@ -17,8 +17,8 @@ TransactionCtrl.handleError = (err, res, code, message) => {
 
 TransactionCtrl.internal.createTransaction = (req, res) => {
   return new Promise((fulfill, reject) => {
-    const required = ['from', 'to', 'address', 'amount', 'extraId', 'changellyId',
-      'polymorphId', 'polymorphPass', 'changellyAddressOne', 'navAddress']
+    const required = ['from', 'to', 'address', 'amount', 'extraId', 'polymorphId',
+      'polymorphPass', 'changellyAddressOne', 'changellyAddressTwo', 'navAddress']
     if (!req || lodash.intersection(Object.keys(req.params), required).length !== required.length) {
       reject(new Error('params_error', 'TC_001', 'Failed to receive params'))
     }
@@ -30,7 +30,7 @@ TransactionCtrl.internal.createTransaction = (req, res) => {
       polymorph_id: req.params.polymorphId,
       polymorph_pass: req.params.polymorphPass,
       changelly_address_one: req.params.changellyAddressOne,
-      // changelly_address_two: req.params.changelly_address_two,
+      changelly_address_two: req.params.changellyAddressTwo,
       nav_address: req.params.navAddress,
       input_currency: req.params.from,
       output_currency: req.params.to,
@@ -54,8 +54,8 @@ TransactionCtrl.internal.createTransaction = (req, res) => {
 }
 
 TransactionCtrl.createTransaction = (req, res) => {
-  const required = ['from', 'to', 'address', 'amount', 'extraId', 'changellyId',
-    'polymorphId', 'polymorphPass', 'changellyAddressOne', 'navAddress']
+  const required = ['from', 'to', 'address', 'amount', 'extraId', 'polymorphId',
+    'polymorphPass', 'changellyAddressOne', 'changellyAddressTwo', 'navAddress']
   if (!req.body || lodash.intersection(Object.keys(req.body), required).length !== required.length) {
     TransactionCtrl.handleError('params_error', res, 'TC_001', 'Failed to receive params')
     return
@@ -64,11 +64,11 @@ TransactionCtrl.createTransaction = (req, res) => {
   TransactionCtrl.runtime = { res, req }
 
   TransactionCtrl.runtime.transaction = new TransactionModel({
-    changelly_id: req.body.changelly_id,
+    // changelly_id: req.body.changelly_id,
     polymorph_id: req.body.polymorph_id,
     polymorph_pass: req.body.polymorph_pass,
     changelly_address_one: req.body.changellyAddressOne,
-    // changelly_address_two: req.body.changelly_address_two,
+    changelly_address_two: req.body.changellyAddressTwo,
     nav_address_one: req.body.navAddress,
     input_currency: req.body.source_currency,
     output_currency: req.body.output_currency,
@@ -115,6 +115,26 @@ TransactionCtrl.gotTransaction = (err, transactions) => {
     type: 'SUCCESS',
     data: transactions,
   }))
+}
+
+TransactionCtrl.internal.checkIfIdExists = (polymorphId) => {
+  return new Promise((fulfill, reject) => {
+    const query = TransactionModel.find()
+    try {
+      if (polymorphId) {
+        query.where('polymorph_id').equals(polymorphId)
+      }
+      query.exec()
+      .then((result) => {
+        if (result.length !== 0) {
+          fulfill(true)
+        }
+        fulfill(false)
+      })
+    } catch (error) {
+      reject(error)
+    }
+  })
 }
 
 module.exports = TransactionCtrl

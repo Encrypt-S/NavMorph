@@ -31,17 +31,39 @@ OrderCtrl.getFirstChangellyAddress = (req, res) => {
   OrderCtrl.getChangellyAddress(req.params.from, 'nav', req.params.navAddress)
   .then((address) => {
     req.params.changellyAddressOne = address
-    OrderCtrl.prepForDb(req, res)
+    OrderCtrl.getSecondChangellyAddress(req, res)
   })
   .catch((error) => {
     OrderCtrl.handleError(error, res, '004')
   })
 }
 
+OrderCtrl.getSecondChangellyAddress = (req, res) => {
+  OrderCtrl.getChangellyAddress('nav', req.params.to, req.params.address)
+  .then((address) => {
+    req.params.changellyAddressTwo = address
+    OrderCtrl.prepForDb(req, res)
+  })
+  .catch((error) => {
+    OrderCtrl.handleError(error, res, '005')
+  })
+}
+
 OrderCtrl.prepForDb = (req, res) => {
   req.params.polymorphPass = keygen.generateKey(16)
-  req.params.polymorphId = '001'
-  req.params.changellyId = '001'
+  // req.params.changellyId = '001'
+
+  OrderCtrl.generateOrderId()
+  .then((polymorphId) => {
+    req.params.polymorphId = polymorphId
+    OrderCtrl.storeOrder(req, res)
+  })
+  .catch((error) => {
+    OrderCtrl.handleError(error, res, '006')
+  })
+}
+
+OrderCtrl.storeOrder = (req, res) => {
   TransactionCtrl.internal.createTransaction(req, res)
   .then(() => {
     res.send(JSON.stringify({
@@ -51,7 +73,7 @@ OrderCtrl.prepForDb = (req, res) => {
     }))
   })
   .catch((error) => {
-    OrderCtrl.handleError(error, res, '005')
+    OrderCtrl.handleError(error, res, '007')
   })
 }
 
@@ -93,6 +115,22 @@ OrderCtrl.getChangellyAddress = (inputCurrency, outputCurrency, destAddress) => 
       }
       fulfill(data.result.address)
     })
+  })
+}
+
+OrderCtrl.generateOrderId = () => {
+  return new Promise((fulfill, reject) => {
+    const polymorphId = keygen.generateKey(16)
+    TransactionCtrl.internal.checkIfIdExists(polymorphId)
+    .then((existsInDb) => {
+      if (existsInDb) {
+        OrderCtrl.generateOrderId()
+        .then((newId) => { fulfill(newId) })
+        .catch((error) => { reject(error) })
+      }
+      fulfill(polymorphId)
+    })
+    .catch((error) => { reject(error) })
   })
 }
 
