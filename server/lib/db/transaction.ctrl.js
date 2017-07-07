@@ -96,6 +96,34 @@ TransactionCtrl.savedTransaction = (err) => {
   }))
 }
 
+TransactionCtrl.internal.getOrder = (id, pass) => {
+  return new Promise((fulfill, reject) => {
+    const query = TransactionModel.find()
+    if (!id || !pass) {
+      reject(new Error('Id or Password missing. Id: ' + id + '. Pass: ' + pass))
+    }
+    query.and([{ polymorph_id: id }, { polymorph_pass: pass }])
+    .select('-_id polymorph_id polymorph_pass changelly_address_one input_currency output_currency order_status')
+    .exec()
+    .then((order) => { fulfill(order) })
+    .catch((error) => { reject(error) })
+  })
+}
+
+TransactionCtrl.internal.updateOrderStatus = (id, pass, status) => {
+  return new Promise((fulfill, reject) => {
+    const query = TransactionModel.find()
+    if (!id || !pass) {
+      reject(new Error('Id or Password missing. Id: ' + id + '. Pass: ' + pass))
+    }
+    query.and([{ polymorph_id: id }, { polymorph_pass: pass }])
+    .select('-_id polymorph_id polymorph_pass changelly_address_one input_currency output_currency order_status')
+    .exec()
+    .then((order) => { fulfill(order) })
+    .catch((error) => { reject(error) })
+  })
+}
+
 TransactionCtrl.getTransaction = (req, res) => {
   TransactionCtrl.runtime = { res, req }
   const query = TransactionModel.find()
