@@ -110,17 +110,16 @@ TransactionCtrl.internal.getOrder = (id, pass) => {
   })
 }
 
-// TODO
-TransactionCtrl.internal.updateOrderStatus = (id, pass, status) => {
+TransactionCtrl.internal.updateOrderStatus = (id, pass, newStatus) => {
   return new Promise((fulfill, reject) => {
     const query = TransactionModel.find()
-    if (!id || !pass) {
-      reject(new Error('Id or Password missing. Id: ' + id + '. Pass: ' + pass))
+    if (!id || !pass || !newStatus) {
+      reject(new Error('Id, Password or Status missing. Id: ' + id + '. Pass: ' + pass + '. Status: ' + newStatus))
     }
     query.and([{ polymorph_id: id }, { polymorph_pass: pass }])
-    .select('-_id polymorph_id polymorph_pass changelly_address_one input_currency output_currency order_status')
+    .update({ status: newStatus })
     .exec()
-    .then((order) => { fulfill(order) })
+    .then(() => { fulfill() })
     .catch((error) => { reject(error) })
   })
 }
