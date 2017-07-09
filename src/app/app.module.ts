@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { HttpModule, JsonpModule } from '@angular/http';
 import { RouterModule } from '@angular/router';
 import { MaterializeModule } from 'angular2-materialize';
+import { QRCodeModule } from 'angular2-qrcode';
 
 import { AppComponent } from './app.component';
 import { routes } from './app.routes';
@@ -12,6 +13,7 @@ import { DemoPage } from './pages/demo/demo.component';
 import { AboutPage } from './pages/about/about.component';
 import { HomePage } from './pages/home/home.component';
 import { SendPage } from './pages/send/send.component';
+import { StatusPage } from './pages/status/status.component';
 
 import { HowItWorksSection } from './sections/how-it-works/how-it-works.component';
 import { LegalSection } from './sections/legal/legal.component';
@@ -38,6 +40,7 @@ import { SendPageDataService } from './services/send-page-data/send-page-data';
     SendPage,
     DemoPage,
     AboutPage,
+    StatusPage,
     HeaderSection,
     FooterSection,
     SellingPointsSection,
@@ -51,6 +54,7 @@ import { SendPageDataService } from './services/send-page-data/send-page-data';
   ],
   imports: [
     FormsModule,
+    QRCodeModule,
     MaterializeModule,
     BrowserModule,
     HttpModule,
