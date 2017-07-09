@@ -1,9 +1,10 @@
-import { Routes } from '@angular/router';
+import { Routes } from '@angular/router'
 
-import { DemoPage } from './pages/demo/demo.component';
-import { AboutPage } from './pages/about/about.component';
-import { HomePage } from './pages/home/home.component';
-import { SendPage } from './pages/send/send.component';
+import { DemoPage } from './pages/demo/demo.component'
+import { AboutPage } from './pages/about/about.component'
+import { HomePage } from './pages/home/home.component'
+import { SendPage } from './pages/send/send.component'
+import { StatusPage } from './pages/status/status.component'
 
 export const routes: Routes = [
   { path: 'demo', component: DemoPage},
@@ -12,4 +13,4 @@ export const routes: Routes = [
   { path: 'about', component: AboutPage},
   { path: 'status/:id/:password', component: StatusPage},
   { path: '**', redirectTo: ''},
-];
+]
