@@ -40,6 +40,7 @@
     "lodash": "^4.17.4",
     "materialize-css": "^0.98.2",
     "mongoose": "^4.9.9",
+    "ngx-clipboard": "^8.0.3",
     "promise": "^8.0.0",
     "rxjs": "^5.1.0",
     "zone.js": "^0.8.4"

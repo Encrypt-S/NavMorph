@@ -20,6 +20,22 @@ export class StatusPage implements OnInit {
   orderPass: string
   orderData: object
 
+  orderSuccess: boolean
+  orderFail: boolean
+  beginAbandonOrder: boolean
+
+  orderAmount: string
+  changellyAddress: string
+  orderStatus: string
+  estFee: string
+  sourceCurrency: string
+  destCurrency: string
+  abandonStatus: string
+  isCopied: boolean
+
+  waitTimeLow: string
+  waitTimeHigh: string
+
   constructor(
     private OrderService: OrderService,
     private router: Router,
@@ -41,8 +57,40 @@ export class StatusPage implements OnInit {
     .subscribe(data => {
       console.log(data)
       console.log(data[0])
-      this.orderData = data[0]
+      if (data[0]) {
+        this.orderData = data[0]
+        this.orderSuccess = true
+        this.fillData(this.orderData)
+      } else {
+        this.orderFail = true
+      }
       this.isLoading = false
+    })
+  }
+
+  fillData(data) {
+    this.orderAmount = data.order_amount
+    this.changellyAddress = data.changelly_address_one
+    this.orderStatus = data.order_status
+    this.estFee = "10 NAV"
+    this.sourceCurrency = data.input_currency
+    this.destCurrency = data.output_currency
+  }
+
+  abandonOrder() {
+    this.beginAbandonOrder = true
+    this.orderSuccess = false
+    this.abandonStatus = 'Pending'
+
+    this.OrderService.abandonOrder(this.orderId, this.orderPass)
+    .subscribe(data => {
+      console.log(data)
+      if (data.status === 'SUCCESS') {
+        this.abandonStatus = 'Order sucessfully abandoned. Redirecting to Home Page in 3 seconds'
+        setTimeout(()=>{ this.router.navigateByUrl('/') } , 3000)
+      } else {
+        this.abandonStatus = 'Failed to Abandon Order'
+      }
     })
   }
 }

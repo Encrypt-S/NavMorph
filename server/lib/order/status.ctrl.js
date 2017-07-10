@@ -9,8 +9,9 @@ OrderStatusCtrl.getOrder = (req, res) => {
   .then((order) => {
     if (order[0].order_status === 'abandoned') {
       res.send([])
+    } else {
+      res.send(order)
     }
-    res.send(order)
   })
   .catch((error) => { OrderStatusCtrl.handleError(error, res, '001') })
 }
@@ -30,7 +31,7 @@ OrderStatusCtrl.abandonOrder = (req, res) => {
   const polymorphId = req.params.orderId
   const orderPassword = req.params.orderPassword
   TransactionCtrl.internal.updateOrderStatus(polymorphId, orderPassword, 'abandoned')
-  .then(() => { res.send('SUCCESS') })
+  .then(() => { res.send({ status: 'SUCCESS' }) })
   .catch((error) => { OrderStatusCtrl.handleError(error, res, '005') })
 }
 

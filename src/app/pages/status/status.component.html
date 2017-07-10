@@ -1,41 +1,53 @@
-<div class="container">
-  <div *ngIf="!order">
-    <h3>Order Not Found</h3>
-    <div>Either the Order ID, Password, or both, are incorrect. Please ensure you have the correct Order ID and Password</div>
-  </div>
-  
-  <div class="" *ngIf="order">
-    <h2>Order Status</h2>
-    <div class="row">
-      <div class="col s12 m6">
+<div class="container content">
+  <div *ngIf="isLoading">Page Loading</div>
+  <div *ngIf="!isLoading">
+    <div *ngIf="orderFail">
+      <h3>Order Not Found</h3>
+      <div>Either the Order ID, Password, or both, are incorrect. Please ensure you have the correct Order ID and Password</div>
+    </div>
+
+    <div class="" *ngIf="orderSuccess">
+      <h2>Order Status</h2>
+      <div class="row">
+        <div class="col s12 m6">
+          <div class="">
+            Please transfer EXACTLY {{orderAmount}} {{sourceCurrency | uppercase}} in ONE transaction to the following address.<br>
+            Transferring an incorrect amount may result in lost currency!
+          </div>
+          <div>
+            <a ngxClipboard [cbContent]="changellyAddress" (cbOnSuccess)="isCopied = true">
+              {{changellyAddress}}<br>
+              Click to copy address
+            </a> <span *ngIf="isCopied">Copied to clipboard!</span>
+          </div>
+          <qr-code [value]="changellyAddress" [size]="250"></qr-code>
+        </div>
+
+
+        <div class="col s12 m6">
+          <div class="">Status: {{orderStatus}}</div>
+          <div class="">Amount Due: {{orderAmount}} {{sourceCurrency | uppercase}}</div>
+          <div class="">Est. wait time: {{waitTimeLow}}~{{waitTimeHigh}}</div>
+          <div class="">Est. Fee: {{estFee}}</div>
+          <div *ngIf="sourceCurrency === destCurrency">Currency: {{sourceCurrency | uppercase}}</div>
+          <div *ngIf="sourceCurrency !== destCurrency">
+            <div class="">Source Currency: {{sourceCurrency | uppercase}}</div>
+            <div class="">Dest Currency: {{destCurrency | uppercase}}</div>
+          </div>
+          <button class="btn waves-effect waves-light bg-blue" type="submit" name="action" (click)=abandonOrder()>Cancel Order</button>
+
+        </div>
+
         <div class="">
-          Please transfer EXACTLY {{orderAmount}} in ONE transaction to the following address.<br>
-          Transferring an incorrect amount may result in lost currency!
+          <a href="mailto:subject=feedback">Click here to send orderID and Password to an email address</a>
         </div>
-        <a href="#">
-          <div>{{changellyAddress}}</div>
-          <div class="">Click to copy address</div>
-        </a>
-        <qr-code>{{changellyAddress}}</qr-code>
-      </div>
-
-
-      <div class="col s12 m6">
-        <div class="">Status: {{orderStatus}}</div>
-        <div class="">Amount Due: {{orderAmount}}</div>
-        <div class="">Est. wait time: {{waitTimeLow}}~{{waitTimeHigh}}</div>
-        <div class="">Est. Fee: {{estFee}}</div>
-        <div *ngIf="sourceCurrency === destCurrency">Currency: {{sourceCurrency}}</div>
-        <div *ngIf="sourceCurrency !== destCurrency">
-          <div class="">Source Currency: {{sourceCurrency}}</div>
-          <div class="">Dest Currency: {{destCurrency}}</div>
-        </div>
-        <button type="button" name="button">Cancel Order</button>
-      </div>
-
-      <div class="">
-        <a href="mailto:subject=feedback">Click here to send orderID and Password to an email address</a>
       </div>
     </div>
+
+    <div *ngIf="beginAbandonOrder">
+      Attempting to abandon order: {{orderId}}<br>
+      {{abandonStatus}}
+    </div>
+
   </div>
 </div>
