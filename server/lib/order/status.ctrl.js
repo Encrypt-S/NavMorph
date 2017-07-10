@@ -1,4 +1,5 @@
 const TransactionCtrl = require('../db/transaction.ctrl')
+const configData = require('../../config')
 
 const OrderStatusCtrl = {}
 
@@ -16,12 +17,13 @@ OrderStatusCtrl.getOrder = (req, res) => {
   .catch((error) => { OrderStatusCtrl.handleError(error, res, '001') })
 }
 
-// TODO
 OrderStatusCtrl.updateOrderStatus = (req, res) => {
   const polymorphId = req.params.orderId
   const orderPassword = req.params.orderPassword
   const newStatus = req.params.status
-  // check status is valid
+  if (configData.validOrderStatuses.indexOf(newStatus) === -1) {
+    OrderStatusCtrl.handleError(new Error('Invalid order status'), res, '006')
+  }
   TransactionCtrl.internal.updateOrderStatus(polymorphId, orderPassword, newStatus)
   .then((order) => { res.send(order) })
   .catch((error) => { OrderStatusCtrl.handleError(error, res, '004') })
