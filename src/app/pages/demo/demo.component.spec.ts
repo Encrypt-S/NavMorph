@@ -2,6 +2,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { MaterializeModule } from 'angular2-materialize';
 import { HttpModule } from '@angular/http';
+import { RouterTestingModule } from '@angular/router/testing';
 
 import { LegalSection } from '../../sections/legal/legal.component';
 import { HeaderSection } from '../../sections/header/header.component';
@@ -14,6 +15,7 @@ import { TileComponent } from '../../components/tile/tile.component';
 
 import { GenericNodeApiService } from './../../services/generic-node-api/generic-node-api';
 import { SendPageDataService } from '../../services/send-page-data/send-page-data';
+import { OrderService } from '../../services/order/order';
 import { ChangellyApiService } from '../../services/changelly-api/changelly-api';
 import { MockChangellyService } from '../../mock-classes';
 
@@ -26,7 +28,12 @@ describe('DemoPage', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [ FormsModule, MaterializeModule, HttpModule],
+      imports: [
+        FormsModule,
+        MaterializeModule,
+        HttpModule,
+        RouterTestingModule
+      ],
       declarations: [
         LegalSection,
         HeaderSection,
@@ -41,6 +48,7 @@ describe('DemoPage', () => {
         GenericNodeApiService,
         SendPageDataService,
         ChangellyApiService,
+        OrderService,
       ]
     })
 
