@@ -28,9 +28,9 @@ OrderStatusCtrl.updateOrderStatus = (req, res) => {
 
 OrderStatusCtrl.abandonOrder = (req, res) => {
   const polymorphId = req.params.orderId
-  const orderPassword = req.params.password
+  const orderPassword = req.params.orderPassword
   TransactionCtrl.internal.updateOrderStatus(polymorphId, orderPassword, 'abandoned')
-  .then((order) => { res.send(order) })
+  .then(() => { res.send('SUCCESS') })
   .catch((error) => { OrderStatusCtrl.handleError(error, res, '005') })
 }
 
