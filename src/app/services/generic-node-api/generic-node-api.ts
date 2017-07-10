@@ -1,11 +1,11 @@
-import { Injectable } from '@angular/core';
-import { Http, Response } from '@angular/http';
+import { Injectable } from '@angular/core'
+import { Http, Response } from '@angular/http'
 
-import { Observable } from 'rxjs/Rx';
-import 'rxjs/add/operator/catch';
-import 'rxjs/add/operator/map';
+import { Observable } from 'rxjs/Rx'
+import 'rxjs/add/operator/catch'
+import 'rxjs/add/operator/map'
 
-import { nodeApiBaseUrl } from "../config";
+import { nodeApiBaseUrl } from "../config"
 
 
 @Injectable()
@@ -15,7 +15,7 @@ export class GenericNodeApiService {
 
   constructor(private http: Http) { }
 
-  getRequest(apiRouteUrl): Observable<Object[]> {
+  getRequest(apiRouteUrl): Observable<any> {
     return this.http.get(this.baseApiUrl + apiRouteUrl)
                     .map(this.extractData)
                     .catch(this.handleError)
@@ -23,23 +23,23 @@ export class GenericNodeApiService {
 
   private extractData(res: Response) {
     try{
-      let body = res.json();
-      return body.result || { };
-    } catch (e) {
-      console.error('Error extracting api data: ' + e )
+      let body = res.json()
+      return body.result || body
+    } catch (error) {
+      console.error('Error extracting api data: ' + error )
       return ['Error']
     }
   }
 
   private handleError (error: Response | any) {
-    let errMsg: string;
+    let errMsg: string
     if (error instanceof Response) {
-      const body = error.json() || '';
-      const err = body.error || JSON.stringify(body);
-      errMsg = `${error.status} - ${error.statusText || ''} ${err}`;
+      const body = error.json() || ''
+      const err = body.error || JSON.stringify(body)
+      errMsg = `${error.status} - ${error.statusText || ''} ${err}`
     } else {
-      errMsg = error.message ? error.message : error.toString();
+      errMsg = error.message ? error.message : error.toString()
     }
-    return Observable.throw(errMsg);
+    return Observable.throw(errMsg)
   }
 }
