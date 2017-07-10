@@ -33,8 +33,8 @@ export class StatusPage implements OnInit {
   abandonStatus: string
   isCopied: boolean
 
-  waitTimeLow: string
-  waitTimeHigh: string
+  waitTimeLow: number
+  waitTimeHigh: number
 
   constructor(
     private OrderService: OrderService,
@@ -90,5 +90,10 @@ export class StatusPage implements OnInit {
         this.abandonStatus = 'Failed to Abandon Order'
       }
     })
+  }
+
+  calculateOrderEst() {
+    this.waitTimeLow = 20
+    this.waitTimeHigh = 40
   }
 }
