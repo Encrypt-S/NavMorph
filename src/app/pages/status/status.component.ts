@@ -55,8 +55,6 @@ export class StatusPage implements OnInit {
   getOrderData() {
     this.OrderService.getOrder(this.orderId, this.orderPass)
     .subscribe(data => {
-      console.log(data)
-      console.log(data[0])
       if (data[0]) {
         this.orderData = data[0]
         this.orderSuccess = true
