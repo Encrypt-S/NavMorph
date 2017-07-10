@@ -81,9 +81,7 @@ export class SendCoinsFormComponent implements OnInit {
         }
 
         const statusPageUrl = '/status/' + result.data['0'] + '/' + result.data['1']
-        // TODO: Turn on this routing
-        console.log(statusPageUrl)
-        // this.router.navigateByUrl(statusPageUrl)
+        this.router.navigateByUrl(statusPageUrl)
       },
       error => {
         console.log('error creating order', error)
