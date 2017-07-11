@@ -53,8 +53,10 @@ pem.createCertificate({ days: 1, selfSigned: true }, (error, keys) => {
   app.use(bodyParser.urlencoded({
     extended: true,
   }))
-  https.createServer(sslOptions, app).listen(port, () =>
-    console.log(`API running on https://localhost:${port}`))
-    console.log('Sending start up notification email.')
-    Logger.sendMail('Server Start Up', 'Start Up Complete @' + new Date().toISOString() + ', Polymorph Version: ' + config.version)
+  https.createServer(sslOptions, app).listen(port, () => {
+    Logger.writeLog('n/a', `API running on https://localhost:${port}`, null, false)
+    Logger.writeLog('n/a', 'Sending start up notification email.', null, false)
+    Logger.writeLog('Server Start Up', 'Start Up Complete @' + new Date().toISOString() +
+      ', Polymorph Version: ' + config.version, null, true)
+  })
 })
