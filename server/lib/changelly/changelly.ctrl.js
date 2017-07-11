@@ -1,6 +1,7 @@
 const configData = require('../../config')
 const crypto = require('crypto')
 const jayson = require('jayson')
+const Logger = require('../Logger')
 
 const URL = configData.changellyUrl
 const client = jayson.client.https(URL)
@@ -36,7 +37,7 @@ ChangellyCtrl.request = (method, options, callback) => {
 ChangellyCtrl.getCurrencies = (req, res) => {
   ChangellyCtrl.request(configData.changellyApiEndPoints.getCurrencies, {}, (err, data) => {
     if (err) {
-      console.log('Error: ', err)
+      Logger.writeLog('CHNGLLY_001', 'Failed to getCurrencies', err, true)
       res.send(err)
     } else {
       res.send(data)
@@ -47,7 +48,7 @@ ChangellyCtrl.getCurrencies = (req, res) => {
 ChangellyCtrl.getMinAmount = (req, res) => {
   return ChangellyCtrl.request('getMinAmount', req.params, (err, data) => {
     if (err) {
-      console.log('Error: ', err)
+      Logger.writeLog('CHNGLLY_002', 'Failed to getMinAmount', err, true)
       res.send(err)
     } else {
       res.send(data)
@@ -58,7 +59,7 @@ ChangellyCtrl.getMinAmount = (req, res) => {
 ChangellyCtrl.getExchangeAmount = (req, res) => {
   return ChangellyCtrl.request('getExchangeAmount', req.params, (err, data) => {
     if (err) {
-      console.log('Error: ', err)
+      Logger.writeLog('CHNGLLY_003', 'Failed to getExchangeAmount', err, true)
       res.send(err)
     } else {
       res.send(data)
@@ -69,7 +70,7 @@ ChangellyCtrl.getExchangeAmount = (req, res) => {
 ChangellyCtrl.generateAddress = (req, res) => {
   return ChangellyCtrl.request('generateAddress', req.params, (err, data) => {
     if (err) {
-      console.log('Error: ', err)
+      Logger.writeLog('CHNGLLY_004', 'Failed to generateAddress (external)', err, true)
       res.send(err)
     } else {
       res.send(data)
@@ -81,7 +82,7 @@ ChangellyCtrl.internal.generateAddress = (params) => {
   return new Promise((fulfill, reject) => {
     ChangellyCtrl.request('generateAddress', params, (err, data) => {
       if (data.err) {
-        console.log('Error: ', data.err)
+        Logger.writeLog('CHNGLLY_005', 'Failed to generateAddress (internal)', err, false)
         reject(new Error(data.err))
         return
       }

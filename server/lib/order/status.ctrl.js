@@ -1,5 +1,6 @@
 const TransactionCtrl = require('../db/transaction.ctrl')
 const configData = require('../../config')
+const Logger = require('../logger')
 
 const OrderStatusCtrl = {}
 
@@ -38,14 +39,15 @@ OrderStatusCtrl.abandonOrder = (req, res) => {
 }
 
 OrderStatusCtrl.handleError = (error, res, code) => {
+  const statusMessage = 'Unable to fetch/update Polymorph Order'
   res.send(JSON.stringify({
     statusCode: 200,
     type: 'FAIL',
     code: 'ORDER_STATUS_CTRL_' + code || '000',
-    statusMessage: 'Unable to fetch/update Polymorph Order',
+    statusMessage,
     error,
   }))
-  console.log(error)
+  Logger.writeLog(code, statusMessage, error, true)
 }
 
 module.exports = OrderStatusCtrl

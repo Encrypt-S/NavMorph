@@ -1,8 +1,9 @@
-const keygen = require('generate-key')
+const Keygen = require('generate-key')
 
-const getNewAddress = require('../rpc/get-new-address')
+const GetNewAddress = require('../rpc/get-new-address')
 const ChangellyCtrl = require('../changelly/changelly.ctrl')
 const TransactionCtrl = require('../db/transaction.ctrl')
+const Logger = require('../logger')
 
 const OrderCtrl = {}
 
@@ -50,7 +51,7 @@ OrderCtrl.getSecondChangellyAddress = (req, res) => {
 }
 
 OrderCtrl.prepForDb = (req, res) => {
-  req.params.polymorphPass = keygen.generateKey(16)
+  req.params.polymorphPass = Keygen.generateKey(16)
   // req.params.changellyId = '001'
 
   OrderCtrl.generateOrderId()
@@ -90,7 +91,7 @@ OrderCtrl.validateParams = (req) => {
 
 OrderCtrl.getNavAddress = () => {
   return new Promise((fulfill, reject) => {
-    getNewAddress.internal.getNewAddress()
+    GetNewAddress.internal.getNewAddress()
     .then((newAddress) => {
       fulfill(newAddress)
     })
@@ -120,7 +121,7 @@ OrderCtrl.getChangellyAddress = (inputCurrency, outputCurrency, destAddress) => 
 
 OrderCtrl.generateOrderId = () => {
   return new Promise((fulfill, reject) => {
-    const polymorphId = keygen.generateKey(16)
+    const polymorphId = Keygen.generateKey(16)
     TransactionCtrl.internal.checkIfIdExists(polymorphId)
     .then((existsInDb) => {
       if (existsInDb) {
@@ -135,13 +136,14 @@ OrderCtrl.generateOrderId = () => {
 }
 
 OrderCtrl.handleError = (error, res, code) => {
+  const statusMessage = 'Unable to create Polymorph Order'
   res.send(JSON.stringify({
     statusCode: 200,
     type: 'FAIL',
     code: 'ORDER_CTRL_' + code || '001',
-    statusMessage: 'Unable to create Polymorph Order',
+    statusMessage,
     error,
   }))
-  console.log(error)
+  Logger.writeLog(code, statusMessage, error, true)
 }
 module.exports = OrderCtrl

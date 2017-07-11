@@ -7,6 +7,10 @@ const pem = require('pem')
 
 // Get our API routes
 const api = require('./server/routes/api')
+const Logger = require('./server/lib/logger')
+
+// Get Config data
+const config = require('./server/config')
 
 const app = express()
 
@@ -32,7 +36,7 @@ const port = process.env.PORT || '3000'
 app.set('port', port)
 
 /**
- * Create HTTPS server.
+ * Create HTTPS server and listen on all network interfaces
  */
 
 pem.createCertificate({ days: 1, selfSigned: true }, (error, keys) => {
@@ -49,6 +53,10 @@ pem.createCertificate({ days: 1, selfSigned: true }, (error, keys) => {
   app.use(bodyParser.urlencoded({
     extended: true,
   }))
-  https.createServer(sslOptions, app).listen(port, () =>
-    console.log(`API running on https://localhost:${port}`))
+  https.createServer(sslOptions, app).listen(port, () => {
+    Logger.writeLog('n/a', `API running on https://localhost:${port}`, null, false)
+    Logger.writeLog('n/a', 'Sending start up notification email.', null, false)
+    Logger.writeLog('Server Start Up', 'Start Up Complete @' + new Date().toISOString() +
+      ', Polymorph Version: ' + config.version, null, true)
+  })
 })

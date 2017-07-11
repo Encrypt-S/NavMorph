@@ -1,18 +1,20 @@
 const lodash = require('lodash')
+const Logger = require('../logger')
 
 // Compile model from schema
 const TransactionModel = require('./transaction.model')
 
 const TransactionCtrl = { internal: {} }
 
-TransactionCtrl.handleError = (err, res, code, message) => {
+TransactionCtrl.handleError = (error, res, code, message) => {
   res.send(JSON.stringify({
     status: 200,
     type: 'FAIL',
     code,
     message,
-    error: err,
+    error,
   }))
+  Logger.writeLog(code, message, error, false)
 }
 
 TransactionCtrl.internal.createTransaction = (req, res) => {
