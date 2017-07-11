@@ -51,7 +51,7 @@ OrderCtrl.getSecondChangellyAddress = (req, res) => {
 }
 
 OrderCtrl.prepForDb = (req, res) => {
-  req.params.polymorphPass = keygen.generateKey(16)
+  req.params.polymorphPass = Keygen.generateKey(16)
   // req.params.changellyId = '001'
 
   OrderCtrl.generateOrderId()
@@ -121,7 +121,7 @@ OrderCtrl.getChangellyAddress = (inputCurrency, outputCurrency, destAddress) => 
 
 OrderCtrl.generateOrderId = () => {
   return new Promise((fulfill, reject) => {
-    const polymorphId = keygen.generateKey(16)
+    const polymorphId = Keygen.generateKey(16)
     TransactionCtrl.internal.checkIfIdExists(polymorphId)
     .then((existsInDb) => {
       if (existsInDb) {
