@@ -83,6 +83,7 @@ ChangellyCtrl.internal.generateAddress = (params) => {
       if (data.err) {
         console.log('Error: ', data.err)
         reject(new Error(data.err))
+        return
       }
       fulfill(data)
     })
