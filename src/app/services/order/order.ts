@@ -13,17 +13,17 @@ export class OrderService {
     return this.getApiRequest( orderNodeApiEndPoints.createOrder, [originCoin, destCoin, destAddr, transferAmount, 'null'])
   }
 
-  getOrderStatus(orderId, password) {
-    return this.getApiRequest( orderNodeApiEndPoints.getOrderStatus, [orderId, password])
+  getOrder(orderId, password) {
+    return this.getApiRequest( orderNodeApiEndPoints.getOrder, [orderId, password])
   }
 
-    getOrder(orderId, password) {
-      return this.getApiRequest( orderNodeApiEndPoints.getOrder, [orderId, password])
-    }
+  updateOrderStatus(orderId, password, newStatus) {
+    return this.getApiRequest( orderNodeApiEndPoints.getOrderStatus, [orderId, password, newStatus])
+  }
 
-    abandonOrder(orderId, password) {
-      return this.getApiRequest( orderNodeApiEndPoints.abandonOrder, [orderId, password])
-    }
+  abandonOrder(orderId, password) {
+    return this.getApiRequest( orderNodeApiEndPoints.abandonOrder, [orderId, password])
+  }
 
   getApiRequest(endpoint, params){
     let paramString = '/'

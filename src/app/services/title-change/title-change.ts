@@ -19,7 +19,8 @@ export class TitleChangeService {
       return newTitle + 'Home';
     }
 
-    newTitle = newTitle + url.slice(1,2).toUpperCase() + url.slice(2);
+    newTitle = newTitle + url.slice(1,2).toUpperCase() + url.slice(2)
+    newTitle = newTitle.split('/')[0] // This removes any trailing url params e.g. url is status/id/pass
     return newTitle;
   }
 
