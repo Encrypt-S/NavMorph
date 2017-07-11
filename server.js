@@ -1,8 +1,9 @@
 // Get dependencies
 const express = require('express')
 const path = require('path')
-const http = require('http')
+const https = require('https')
 const bodyParser = require('body-parser')
+const pem = require('pem')
 
 // Get our API routes
 const api = require('./server/routes/api')
@@ -35,15 +36,25 @@ const port = process.env.PORT || '3000'
 app.set('port', port)
 
 /**
- * Create HTTP server.
+ * Create HTTPS server and listen on all network interfaces
  */
-const server = http.createServer(app)
 
-/**
- * Listen on provided port, on all network interfaces.
- */
-server.listen(port, () => {
-  console.log(`API running on localhost:${port}`)
-  console.log('Sending start up notification email.')
-  Logger.sendMail('Server Start Up', 'Start Up Complete @' + new Date().toISOString() + ', Polymorph Version: ' + config.version)
+pem.createCertificate({ days: 1, selfSigned: true }, (error, keys) => {
+  if (error) {
+    console.log('pem error: ' + error)
+  }
+  const sslOptions = {
+    key: keys.serviceKey,
+    cert: keys.certificate,
+    requestCert: false,
+    rejectUnauthorized: false,
+  }
+  app.use(bodyParser.json())
+  app.use(bodyParser.urlencoded({
+    extended: true,
+  }))
+  https.createServer(sslOptions, app).listen(port, () =>
+    console.log(`API running on https://localhost:${port}`))
+    console.log('Sending start up notification email.')
+    Logger.sendMail('Server Start Up', 'Start Up Complete @' + new Date().toISOString() + ', Polymorph Version: ' + config.version)
 })
