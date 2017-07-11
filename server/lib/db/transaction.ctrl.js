@@ -23,6 +23,7 @@ TransactionCtrl.internal.createTransaction = (req, res) => {
       'polymorphPass', 'changellyAddressOne', 'changellyAddressTwo', 'navAddress']
     if (!req || lodash.intersection(Object.keys(req.params), required).length !== required.length) {
       reject(new Error('params_error', 'TC_001', 'Failed to receive params'))
+      return
     }
 
     TransactionCtrl.runtime = { req, res }
@@ -33,6 +34,7 @@ TransactionCtrl.internal.createTransaction = (req, res) => {
       polymorph_pass: req.params.polymorphPass,
       changelly_address_one: req.params.changellyAddressOne,
       changelly_address_two: req.params.changellyAddressTwo,
+      order_amount: req.params.amount,
       nav_address: req.params.navAddress,
       input_currency: req.params.from,
       output_currency: req.params.to,
@@ -71,6 +73,7 @@ TransactionCtrl.createTransaction = (req, res) => {
     polymorph_pass: req.body.polymorph_pass,
     changelly_address_one: req.body.changellyAddressOne,
     changelly_address_two: req.body.changellyAddressTwo,
+    order_amount: req.body.amount,
     nav_address_one: req.body.navAddress,
     input_currency: req.body.source_currency,
     output_currency: req.body.output_currency,
@@ -130,6 +133,7 @@ TransactionCtrl.internal.checkIfIdExists = (polymorphId) => {
       .then((result) => {
         if (result.length !== 0) {
           fulfill(true)
+          return
         }
         fulfill(false)
       })

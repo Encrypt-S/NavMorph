@@ -17,6 +17,7 @@ const Transaction = new Schema({
   polymorph_pass: { type: String, required: true },
   changelly_address_one: { type: String, required: true },
   changelly_address_two: { type: String, required: true },
+  order_amount: { type: String, required: true },
   nav_address: { type: String, required: true },
   input_currency: { type: String, required: true },
   output_currency: { type: String, required: true },

@@ -84,6 +84,7 @@ ChangellyCtrl.internal.generateAddress = (params) => {
       if (data.err) {
         logger.writeLog('CHNGLLY_005', 'Failed to generateAddress (internal)', err, false)
         reject(new Error(data.err))
+        return
       }
       fulfill(data)
     })
