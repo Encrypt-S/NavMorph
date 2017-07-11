@@ -3,7 +3,7 @@
 const expect = require('expect')
 const rewire = require('rewire')
 
-let Rpc = rewire('../server/lib/rpc/client')
+let Rpc = rewire('../server/lib/rpc/get-new-address')
 
 describe('[Rpc]', () => {
   describe('(getNewAddress)', () => {
