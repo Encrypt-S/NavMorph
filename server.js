@@ -50,5 +50,5 @@ pem.createCertificate({ days: 1, selfSigned: true }, (error, keys) => {
     extended: true,
   }))
   https.createServer(sslOptions, app).listen(port, () =>
-    console.log(`API running on localhost:${port}`))
+    console.log(`API running on https://localhost:${port}`))
 })
