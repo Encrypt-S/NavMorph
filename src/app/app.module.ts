@@ -24,6 +24,7 @@ import { FooterSection } from './sections/footer/footer.component'
 import { SellingPointsSection } from './sections/selling-points/selling-points.component'
 import { HeroBannerSection } from './sections/hero-banner/hero-banner.component'
 
+import { LoaderComponent } from './components/loader/loader.component'
 import { TileComponent } from './components/tile/tile.component'
 import { StatusComponent } from './components/status/status.component'
 import { SendCoinsFormComponent } from './components/send-coins-form/send-coins-form.component'
@@ -49,6 +50,7 @@ import { SendPageDataService } from './services/send-page-data/send-page-data'
     LegalSection,
     PartnersSection,
     TileComponent,
+    LoaderComponent,
     SendCoinsFormComponent,
     HeroBannerSection,
     StatusComponent,
