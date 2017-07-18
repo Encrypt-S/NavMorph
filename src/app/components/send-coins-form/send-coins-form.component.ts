@@ -3,14 +3,12 @@ import { FormsModule } from '@angular/forms';
 import { ChangellyApiService } from '../../services/changelly-api/changelly-api';
 import { OrderService } from '../../services/order/order';
 import { SendPageDataService } from '../../services/send-page-data/send-page-data';
-import {Router} from '@angular/router';
-
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'send-coins-form-component',
   templateUrl: './send-coins-form.component.html',
   styleUrls: ['./send-coins-form.component.scss'],
-
   providers: [
     FormsModule,
     ChangellyApiService,
@@ -22,6 +20,7 @@ import {Router} from '@angular/router';
 export class SendCoinsFormComponent implements OnInit {
 
   @Input() theme: string;
+  @Input() loaderTheme: string
   isDisabled: boolean = true
   currencies: object = ['Loading']
   transferAmount: number
@@ -30,6 +29,7 @@ export class SendCoinsFormComponent implements OnInit {
   destAddr: string
   minTransferAmount: number
   estimateValid: boolean = false
+  pageLoading: boolean
 
   errors = []
 
@@ -49,6 +49,10 @@ export class SendCoinsFormComponent implements OnInit {
 
   ngOnInit() {
     this.getCurrencies()
+  }
+
+  setLoadingState(state):void {
+    this.pageLoading = state
   }
 
   getFormData():void {
@@ -127,6 +131,7 @@ export class SendCoinsFormComponent implements OnInit {
   }
 
   getCurrencies() {
+    this.setLoadingState(true)
     this.changellyApi.getCurrencies()
       .subscribe(
         currencies => {
@@ -134,10 +139,12 @@ export class SendCoinsFormComponent implements OnInit {
             this.currencies = currencies
             this.isDisabled = false
             this.getFormData()
+            this.setLoadingState(false)
         },
         error => {
           this.isDisabled = true
           console.log('err', error)
+          this.setLoadingState(false)
         })
   }
 

@@ -9,6 +9,7 @@ Layout is controlled by the parent.
 | Option | Value | Type | Required |
 |:-----------|:-----------|
 | theme | `` | `String(Theme)` | false |
+| loaderTheme | `` | `String(Theme)` | false |
 
 ## Themes
 
@@ -17,7 +18,10 @@ Layout is controlled by the parent.
 | form-dark | Black text with an opaque grey background | true |
 | form-light | Grey text with transparent grey background | false |
 
+## Loader Themes
+See the loader components documention for details on the availible theming options
+
 #### Example Usage
 ```html
-<send-coins-form-component theme="form-light"></send-coins-form-component>
+<send-coins-form-component theme="form-light" loaderTheme="loader-white"></send-coins-form-component>
 ```
