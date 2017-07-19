@@ -3,8 +3,10 @@ import { MaterializeModule } from 'angular2-materialize';
 import { HttpModule } from '@angular/http';
 import { FormsModule } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
+import { QRCodeModule } from 'angular2-qrcode';
+import { ClipboardModule } from 'ngx-clipboard'
 
-import { StatusPage } from './send.component';
+import { StatusPage } from './status.component';
 
 import { SendCoinsFormComponent } from '../../components/send-coins-form/send-coins-form.component';
 import { StatusComponent } from '../../components/status/status.component';
@@ -28,7 +30,9 @@ describe('StatusPage', () => {
         MaterializeModule,
         HttpModule,
         FormsModule,
-        RouterTestingModule
+        RouterTestingModule,
+        QRCodeModule,
+        ClipboardModule,
       ],
       declarations: [
         StatusPage,
@@ -39,7 +43,7 @@ describe('StatusPage', () => {
         GenericNodeApiService,
         SendPageDataService,
         ChangellyApiService,
-        OrderService
+        OrderService,
       ]
     })
 
