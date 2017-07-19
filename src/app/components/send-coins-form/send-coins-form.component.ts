@@ -37,7 +37,7 @@ export class SendCoinsFormComponent implements OnInit {
 
   constructor(
     private changellyApi: ChangellyApiService,
-    private dataServ: SendPageDataService,
+    public dataServ: SendPageDataService,
     private orderServ: OrderService,
     private router: Router,
   ) {

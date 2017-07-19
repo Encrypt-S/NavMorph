@@ -83,6 +83,54 @@ describe('SendCoinsFormComponent', () => {
     expect(sendCoinsSection.destCoin).toBe('nav')
   })))
 
+  it('should storeFormData', ( inject([SendCoinsFormComponent], (sendCoinsSection: SendCoinsFormComponent) => { 
+    spyOn(sendCoinsSection.dataServ, 'storeData')
+
+    sendCoinsSection.currencies['0'] = 'cat'
+    sendCoinsSection.transferAmount = 100
+    sendCoinsSection.originCoin = 'doge'
+    sendCoinsSection.destCoin = 'doge'
+    sendCoinsSection.destAddr = 'dog house'
+
+    sendCoinsSection.storeFormData()
+
+    expect(sendCoinsSection.dataServ.storeData).toHaveBeenCalledWith(
+      sendCoinsSection.transferAmount, sendCoinsSection.originCoin,
+      sendCoinsSection.destCoin, sendCoinsSection.destAddr)
+  })))
+
+  it('should storeFormData when theres an undefined origin coin', ( inject([SendCoinsFormComponent], (sendCoinsSection: SendCoinsFormComponent) => {
+    spyOn(sendCoinsSection.dataServ, 'storeData')
+
+    sendCoinsSection.currencies['0'] = 'cat'
+    sendCoinsSection.transferAmount = 100
+    sendCoinsSection.originCoin = undefined
+    sendCoinsSection.destCoin = 'doge'
+    sendCoinsSection.destAddr = 'dog house'
+
+    sendCoinsSection.storeFormData()
+
+    expect(sendCoinsSection.dataServ.storeData).toHaveBeenCalledWith(
+      sendCoinsSection.transferAmount, sendCoinsSection.currencies['0'],
+      sendCoinsSection.destCoin, sendCoinsSection.destAddr)    
+  })))
+
+  it('should storeFormData when theres an undefined dest coin', ( inject([SendCoinsFormComponent], (sendCoinsSection: SendCoinsFormComponent) => {
+    spyOn(sendCoinsSection.dataServ, 'storeData')
+
+    sendCoinsSection.currencies['0'] = 'cat'
+    sendCoinsSection.transferAmount = 100
+    sendCoinsSection.originCoin = 'doge'
+    sendCoinsSection.destCoin = undefined
+    sendCoinsSection.destAddr = 'dog house'
+
+    sendCoinsSection.storeFormData()
+
+    expect(sendCoinsSection.dataServ.storeData).toHaveBeenCalledWith(
+      sendCoinsSection.transferAmount, sendCoinsSection.originCoin,
+      sendCoinsSection.currencies['0'], sendCoinsSection.destAddr)    
+  })))
+
   it('toggle form state after a certain time', async(inject([SendCoinsFormComponent], ( sendCoinsSection: SendCoinsFormComponent) => {
     jasmine.clock().install()
     sendCoinsSection.isDisabled = true
