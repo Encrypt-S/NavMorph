@@ -14,7 +14,7 @@ OrderStatusCtrl.getOrder = (req, res) => {
   .then((isBlocked) => {
     if (isBlocked) {
       LoginCtrl.insertAttempt(ipAddress, polymorphId, params)
-      .then(OrderStatusCtrl.sendEmptyResponse(res))
+      .then(OrderStatusCtrl.sendBlockedResponse(res))
       .catch(error => OrderStatusCtrl.handleError(error, res, '002'))
     } else {
       OrderStatusCtrl.getOrderFromDb(params, ipAddress, polymorphId, orderPassword, res)
@@ -43,7 +43,7 @@ OrderStatusCtrl.checkForSuspiciousActivity = (ipAddress, polymorphId, params, re
     .then((isSuspicious) => {
       if (isSuspicious) {
         LoginCtrl.blackListIp(ipAddress)
-        .then(OrderStatusCtrl.sendEmptyResponse(res))
+        .then(OrderStatusCtrl.sendBlockedResponse(res))
         .catch(error => OrderStatusCtrl.handleError(error, res, '004'))
       } else {
         OrderStatusCtrl.sendEmptyResponse(res)              
@@ -56,6 +56,10 @@ OrderStatusCtrl.checkForSuspiciousActivity = (ipAddress, polymorphId, params, re
 
 OrderStatusCtrl.sendEmptyResponse = (res) => {
   res.send([])
+}
+
+OrderStatusCtrl.sendBlockedResponse = (res) => {
+  res.send(['blocked'])
 }
 
 
