@@ -11,7 +11,6 @@ const LoginCtrl = {}
 LoginCtrl.insertAttempt = (ipAddress, polymorphId, params) => {
   return new Promise((fulfill, reject) => {
     LoginCtrl.runtime = { }
-
     LoginCtrl.runtime.transaction = new FailedLoginsModel(
     {
       ip_address: ipAddress,
@@ -20,6 +19,7 @@ LoginCtrl.insertAttempt = (ipAddress, polymorphId, params) => {
       params: JSON.stringify(params),
     })
     try {
+
       LoginCtrl.runtime.transaction.save()
       .then(fulfill())
       .catch((result) => {
@@ -37,16 +37,16 @@ LoginCtrl.insertAttempt = (ipAddress, polymorphId, params) => {
 LoginCtrl.blackListIp = (ipAddress) => {
   return new Promise((fulfill, reject) => {
     LoginCtrl.runtime = { }
-
-    LoginCtrl.runtime.transaction = new BlackListModel({
+    LoginCtrl.runtime.transaction = new BlackListModel(
+    {
       ip_address: ipAddress,
       timestamp: new Date(),
     })
-
     try {
       LoginCtrl.runtime.transaction.save()
       .then(() => {
         fulfill()
+        return
       })
       .catch((result) => {
         if (result instanceof Error) {
@@ -65,10 +65,12 @@ LoginCtrl.checkIpBlocked = (ipAddress) => {
   return new Promise((fulfill, reject) => {
     const query = BlackListModel.find()
     
-    query.find({timestamp: {
+    query.and([
+      { ip_address: ipAddress }, 
+      {timestamp: {
       '$gte': new Date(new Date().getTime() - 10 * 60000),
-      '$lte': new Date()
-    }})
+      }}
+    ])
     .select('ip_address timestamp')
     .exec()
     .then((result) => { 
@@ -85,11 +87,12 @@ LoginCtrl.checkIpBlocked = (ipAddress) => {
 LoginCtrl.checkIfSuspicious = (ipAddress) => {
   return new Promise((fulfill, reject) => {
     const query = FailedLoginsModel.find()
-    
-    query.find({timestamp: {
+    query.and([
+      { ip_address: ipAddress }, 
+      {timestamp: {
       '$gte': new Date(new Date().getTime() - 10 * 60000),
-      '$lte': new Date()
-    }})
+      }}
+    ])
     .select('ip_address timestamp')
     .exec()
     .then((result) => { 
