@@ -7,7 +7,7 @@ const OrderStatusCtrl = {}
 
 OrderStatusCtrl.getOrder = (req, res) => {
   const params = req.params
-  const ipAddress = req.connection.remoteAddress
+  const ipAddress = req.ip
   const polymorphId = req.params.orderId
   const orderPassword = req.params.orderPassword
     LoginCtrl.checkIpBlocked(ipAddress)
