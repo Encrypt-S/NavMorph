@@ -7,8 +7,8 @@ Layout: It absolutely positions to the middle of the parent component, but the p
 ## Options
 
 | Option | Value | Type | Required |
-|:-----------|:-----------|
-| theme | `` | `String(Theme)` | false |
+|:-----------|:-----------|:-----------|:-----------|
+| theme | | `String(Theme)` | false |
 
 ## Themes
 

@@ -7,9 +7,9 @@ Layout is controlled by the parent.
 ## Options
 
 | Option | Value | Type | Required |
-|:-----------|:-----------|
-| theme | `` | `String(Theme)` | false |
-| loaderTheme | `` | `String(Theme)` | false |
+|:-----------|:-----------|:-----------|:-----------|
+| theme | | `String(Theme)` | false |
+| loaderTheme | | `String(Theme)` | false |
 
 ## Themes
 
