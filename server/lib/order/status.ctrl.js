@@ -1,4 +1,5 @@
 const TransactionCtrl = require('../db/transaction.ctrl')
+const EtaCtrl = require('eta.ctrl')
 const configData = require('../../config')
 const Logger = require('../logger')
 
@@ -9,10 +10,10 @@ OrderStatusCtrl.getOrder = (req, res) => {
   const orderPassword = req.params.orderPassword
   TransactionCtrl.internal.getOrder(polymorphId, orderPassword)
   .then((order) => {
-    if (order[0].order_status === 'abandoned') {
-      res.send([])
+    if (order[0].order_status === 'abandoned' || !order[0]) {
+      res.send([[],[]])
     } else {
-      res.send(order)
+      res.send([order, EtaCtrl.getEta(order[0].order_status, order[0].sent)])
     }
   })
   .catch((error) => { OrderStatusCtrl.handleError(error, res, '001') })
