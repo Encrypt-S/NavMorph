@@ -42,6 +42,7 @@ TransactionCtrl.internal.createTransaction = (req, res) => {
       order_status: 'created',
       delay: req.params.delay || 0,
       created: new Date(),
+      sent: null,
     })
     try {
       TransactionCtrl.runtime.transaction.save()
