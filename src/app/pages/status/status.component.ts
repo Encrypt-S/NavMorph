@@ -56,9 +56,8 @@ export class StatusPage implements OnInit {
     this.OrderService.getOrder(this.orderId, this.orderPass)
     .subscribe(data => {
       if (data[0]) {
-        this.orderData = data[0]
         this.orderSuccess = true
-        this.fillData(this.orderData)
+        this.fillData(data)
       } else {
         this.orderFail = true
       }
@@ -67,12 +66,16 @@ export class StatusPage implements OnInit {
   }
 
   fillData(data) {
-    this.orderAmount = data.order_amount
-    this.changellyAddress = data.changelly_address_one
-    this.orderStatus = data.order_status
+    const mainData = data[0][0]
+    const minMax = data[1]
+    this.orderAmount = mainData.order_amount
+    this.changellyAddress = mainData.changelly_address_one
+    this.orderStatus = mainData.order_status
     this.estFee = "10 NAV"
-    this.sourceCurrency = data.input_currency
-    this.destCurrency = data.output_currency
+    this.sourceCurrency = mainData.input_currency
+    this.destCurrency = mainData.output_currency
+    this.waitTimeLow = minMax[0]
+    this.waitTimeHigh = minMax[1]
   }
 
   abandonOrder() {

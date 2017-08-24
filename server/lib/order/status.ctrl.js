@@ -1,5 +1,5 @@
 const TransactionCtrl = require('../db/transaction.ctrl')
-const EtaCtrl = require('eta.ctrl')
+const EtaCtrl = require('./eta.ctrl')
 const configData = require('../../config')
 const Logger = require('../logger')
 
@@ -13,7 +13,11 @@ OrderStatusCtrl.getOrder = (req, res) => {
     if (order[0].order_status === 'abandoned' || !order[0]) {
       res.send([[],[]])
     } else {
-      res.send([order, EtaCtrl.getEta(order[0].order_status, order[0].sent)])
+      EtaCtrl.getEta(order[0].order_status, order[0].sent)
+      .then((eta) => {
+        res.send([order, eta])
+      })
+      .catch(((error) => { OrderStatusCtrl.handleError(error, res, '007') }))
     }
   })
   .catch((error) => { OrderStatusCtrl.handleError(error, res, '001') })
