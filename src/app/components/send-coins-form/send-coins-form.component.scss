@@ -1,5 +1,9 @@
 @import "../../styles/base.scss";
 
+#container {
+  position: relative;
+}
+
 .send-buttons {
   text-align: right;
 }
