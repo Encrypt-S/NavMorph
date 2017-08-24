@@ -82,6 +82,7 @@ TransactionCtrl.createTransaction = (req, res) => {
     order_status: 'created',
     delay: req.body.delay || 0,
     created: new Date(),
+    sent: undefined,
   })
   try {
     TransactionCtrl.runtime.transaction.save(TransactionCtrl.savedTransaction)
