@@ -5,6 +5,7 @@ export const changellyNodeApiEndPoints = {
   getGenerateAddress: 'generateAddress',
   getTransaction: 'getTransactions',
   getExchangeStatus: 'getStatus',
+  getEta: 'getEta',
 }
 
 export const orderNodeApiEndPoints = {
@@ -12,6 +13,7 @@ export const orderNodeApiEndPoints = {
   getOrder: 'getOrder',
   getOrderStatus: 'getOrderStatus',
   abandonOrder: 'abandonOrder',
+  getEta: 'getEta',
 }
 
 export const nodeApiBaseUrl = 'https://localhost:3000/api/'
@@ -29,7 +31,7 @@ export interface dataBundleTemplate {
   destAddr?: string,
   estConvToNav?: number,
   estConvFromNav?: number,
-  estTime?: any,
+  eta?: any,
   changellyFeeOne?: number,
   navTechFee?: number,
   changellyFeeTwo?: number,
