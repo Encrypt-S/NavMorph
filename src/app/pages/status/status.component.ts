@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { OrderService } from '../../services/order/order'
 import { QRCodeModule } from 'angular2-qrcode';
+import { GenericFunctionsService } from '../../services/generic-functions/generic-functions'
 
 
 @Component({
@@ -11,6 +12,7 @@ import { QRCodeModule } from 'angular2-qrcode';
 
   providers: [
     OrderService,
+    GenericFunctionsService,
   ],
 })
 export class StatusPage implements OnInit {
@@ -33,11 +35,12 @@ export class StatusPage implements OnInit {
   abandonStatus: string
   isCopied: boolean
 
-  waitTimeLow: number
-  waitTimeHigh: number
+  waitTimeLow: Date
+  waitTimeHigh: Date
 
   constructor(
     private OrderService: OrderService,
+    private GenericFuncs: GenericFunctionsService,
     private router: Router,
    ) {}
 
@@ -68,14 +71,16 @@ export class StatusPage implements OnInit {
   fillData(data) {
     const mainData = data[0][0]
     const minMax = data[1]
+    console.log(data[0])
+    console.log(mainData)
     this.orderAmount = mainData.order_amount
     this.changellyAddress = mainData.changelly_address_one
     this.orderStatus = mainData.order_status
     this.estFee = "10 NAV"
     this.sourceCurrency = mainData.input_currency
     this.destCurrency = mainData.output_currency
-    this.waitTimeLow = minMax[0]
-    this.waitTimeHigh = minMax[1]
+    this.waitTimeLow = this.GenericFuncs.calculateOrderEst(minMax[0])
+    this.waitTimeHigh = this.GenericFuncs.calculateOrderEst(minMax[1])
   }
 
   abandonOrder() {
@@ -93,10 +98,5 @@ export class StatusPage implements OnInit {
         this.abandonStatus = 'Failed to Abandon Order'
       }
     })
-  }
-
-  calculateOrderEst() {
-    this.waitTimeLow = 20
-    this.waitTimeHigh = 40
   }
 }

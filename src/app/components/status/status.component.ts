@@ -3,6 +3,7 @@ import { Subscription } from 'rxjs/Subscription';
 
 import { SendPageDataService } from '../../services/send-page-data/send-page-data';
 import { ChangellyApiService } from '../../services/changelly-api/changelly-api';
+import { GenericFunctionsService } from '../../services/generic-functions/generic-functions';
 
 import { changellyConstData } from "../../services/config";
 
@@ -19,7 +20,8 @@ export class StatusComponent implements OnInit {
   destAddr: string
   formDataSet: boolean = false
 
-  estTime: object
+  etaMin: string
+  etaMax: string
   estConvToNav: number
   estConvFromNav: number
 
@@ -32,7 +34,10 @@ export class StatusComponent implements OnInit {
   formDataSubscrip: Subscription
 
 
-  constructor(private dataServ: SendPageDataService ) {
+  constructor(
+    private dataServ: SendPageDataService,
+    private genFuncs: GenericFunctionsService,
+   ) {
     this.getDataStatusStream()
     this.getFormDataStream()
   }
@@ -53,7 +58,7 @@ export class StatusComponent implements OnInit {
     })
   }
 
-  updateComponent(formData):void {
+  updateComponent(formData): void {
     this.transferAmount = formData.transferAmount
     this.originCoin = formData.originCoin
     this.destCoin = formData.destCoin
@@ -63,5 +68,7 @@ export class StatusComponent implements OnInit {
     this.changellyFeeOne = formData.changellyFeeOne
     this.navTechFee = formData.navTechFee
     this.changellyFeeTwo= formData.changellyFeeTwo
+    this.etaMin = this.genFuncs.calculateOrderEst(formData.eta[0]).toLocaleString()
+    this.etaMax = this.genFuncs.calculateOrderEst(formData.eta[1]).toLocaleString()
   }
 }

@@ -18,7 +18,7 @@
         <span class="status-title">You are sending: </span><span class="status-data">{{transferAmount}} {{originCoin | uppercase}} to {{destAddr}} in {{destCoin | uppercase}}</span>
       </div>
       <div>
-        <span class="status-title">Est. Time: </span><span class="status-data">20~40 minutes</span>
+        <span class="status-title">Est. Time: </span><span class="status-data">{{etaMin}} ~ {{etaMax}}</span>
       </div>
       <div>
         <span class="status-title">First Conversion: </span><span class="status-data">{{transferAmount}} {{originCoin | uppercase}} to ~{{estConvToNav - changellyFeeOne}} NAV</span>
