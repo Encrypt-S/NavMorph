@@ -23,9 +23,7 @@ export class StatusComponent implements OnInit {
   estConvToNav: number
   estConvFromNav: number
 
-  changellyFeeOne: number
-  changellyFeeTwo: number
-  navTechFee: number
+  estimatedFees: number
   formData: object = {}
   MAX_NAV_PER_TRADE = changellyConstData.MAX_NAV_PER_TRADE
 
@@ -60,8 +58,6 @@ export class StatusComponent implements OnInit {
     this.destAddr = formData.destAddr
     this.estConvToNav = formData.estConvToNav
     this.estConvFromNav = formData.estConvFromNav
-    this.changellyFeeOne = formData.changellyFeeOne
-    this.navTechFee = formData.navTechFee
-    this.changellyFeeTwo= formData.changellyFeeTwo
+    this.estimatedFees= formData.estimatedFees
   }
 }

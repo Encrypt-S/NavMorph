@@ -1,3 +1,5 @@
+import * as BigNumber from 'bignumber.js'
+
 export const changellyNodeApiEndPoints = {
   getCurrencies: 'getCurrencies',
   getMinAmount: 'getMinAmount',
@@ -19,19 +21,18 @@ export const nodeApiBaseUrl = 'https://localhost:3000/api/'
 export const changellyConstData = {
   'CHANGELLY_FEE': 0.005,
   'NAVTECH_FEE': 0.005,
+
   'MAX_NAV_PER_TRADE': 10000,
 }
 
 export interface dataBundleTemplate {
-  transferAmount?: number,
+  transferAmount?: BigNumber,
   originCoin?: string,
   destCoin?: string,
   destAddr?: string,
-  estConvToNav?: number,
-  estConvFromNav?: number,
+  estConvToNav?: BigNumber,
+  estConvFromNav?: BigNumber,
   estTime?: any,
-  changellyFeeOne?: number,
-  navTechFee?: number,
-  changellyFeeTwo?: number,
+  estimatedFees?: BigNumber,
   errors?: Array<string>
 }

@@ -6,6 +6,7 @@ import { changellyConstData, dataBundleTemplate } from "../config";
 import { Observable } from 'rxjs';
 import { Subject } from 'rxjs/Subject';
 
+import * as BigNumber from 'bignumber.js'
 
 
 @Injectable()
@@ -72,43 +73,52 @@ export class SendPageDataService {
       return //validation errors, so return early
     }
 
+    this.estimateFees(originCoin, destCoin, transferAmount)
+  }
+
+  estimateFees(originCoin, destCoin, transferAmount) {
+
+    if (originCoin === 'nav' || destCoin === 'nav') {
+      this.dataBundle.estimatedFees = new BigNumber(transferAmount) * (1 - this.NAVTECH_FEE) * (1 - this.CHANGELLY_FEE)
+    } else {
+      this.dataBundle.estimatedFees = new BigNumber(transferAmount) * (1 - this.NAVTECH_FEE) * (1 - this.CHANGELLY_FEE) * (1 - this.CHANGELLY_FEE)
+    }
+
     this.estimateFirstExchange(originCoin, destCoin, transferAmount)
   }
 
+
   estimateFirstExchange(originCoin, destCoin, transferAmount) {
-    this.getEstimatedExchange(originCoin, 'nav', transferAmount)
-      .then((data) => {
-        this.dataBundle.estConvToNav = data
+    if (originCoin === 'nav') {
+      this.dataBundle.estConvToNav = new BigNumber(transferAmount)
+      const conversionAfterFees = new BigNumber(this.dataBundle.estConvToNav) * (1 - this.NAVTECH_FEE)
+      this.estimateSecondExchange(destCoin, conversionAfterFees)
+    } else {
+      this.getEstimatedExchange(originCoin, 'nav', transferAmount)
+        .then((data) => {
+          this.dataBundle.estConvToNav = new BigNumber(data)
 
-        if(originCoin === 'nav'){
-          this.dataBundle.changellyFeeOne = 0
-        } else {
-          this.dataBundle.changellyFeeOne = this.dataBundle.estConvToNav * this.CHANGELLY_FEE
-        }
+          const conversionAfterFees = new BigNumber(this.dataBundle.estConvToNav) * (1 - this.NAVTECH_FEE)
 
-        this.dataBundle.navTechFee = (this.dataBundle.estConvToNav - this.dataBundle.changellyFeeOne) * this.NAVTECH_FEE
-        const conversionAfterFees = this.dataBundle.estConvToNav - this.dataBundle.changellyFeeOne - this.dataBundle.navTechFee
-
-        this.estimateSecondExchange(destCoin, conversionAfterFees)
-    })
+          this.estimateSecondExchange(destCoin, conversionAfterFees)
+      })
+    }      
   }
 
   estimateSecondExchange(destCoin, conversionAfterFees) {
-    this.getEstimatedExchange('nav', destCoin, conversionAfterFees)
-    .then((data) => {
-      this.dataBundle.estConvFromNav = data
-
-      if(destCoin === 'nav'){
-        this.dataBundle.changellyFeeTwo = 0
-      } else {
-        this.dataBundle.changellyFeeTwo = this.dataBundle.estConvFromNav * this.CHANGELLY_FEE
-      }
+    if (destCoin === 'nav') {
+      this.dataBundle.estConvFromNav = new BigNumber(conversionAfterFees)
+    } else {
+     this.getEstimatedExchange('nav', destCoin, conversionAfterFees)
+      .then((data) => {
+        this.dataBundle.estConvFromNav = new BigNumber(data)
+      })
 
       this.validateDataBundle(this.dataBundle)
       this.dataStored = true
       this.dataSubject.next(this.dataBundle)
       this.setIsDataSet(true)
-    })
+    }
   }
 
   validateFormData(dataBundle):void {
