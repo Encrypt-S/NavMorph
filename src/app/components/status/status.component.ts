@@ -5,6 +5,8 @@ import { SendPageDataService } from '../../services/send-page-data/send-page-dat
 import { ChangellyApiService } from '../../services/changelly-api/changelly-api';
 
 import { changellyConstData } from "../../services/config";
+import * as BigNumber from 'bignumber.js'
+
 
 @Component({
   selector: 'status-component',
@@ -13,17 +15,18 @@ import { changellyConstData } from "../../services/config";
 })
 export class StatusComponent implements OnInit {
 
-  transferAmount: number
+  transferAmount: string
   originCoin: string
   destCoin: string
   destAddr: string
-  formDataSet: boolean = false
+  formDataStatus: string = 'unset'
+  statusUntouched: boolean = true
 
   estTime: object
-  estConvToNav: number
-  estConvFromNav: number
+  estConvToNav: string
+  estConvFromNav: string
 
-  estimatedFees: number
+  estimatedFees: string
   formData: object = {}
   MAX_NAV_PER_TRADE = changellyConstData.MAX_NAV_PER_TRADE
 
@@ -46,18 +49,46 @@ export class StatusComponent implements OnInit {
   }
 
   getDataStatusStream() {
-    this.dataServ.getDataStatusStream().subscribe(dataIsSet => {
-      this.formDataSet = dataIsSet
+    this.dataServ.getDataStatusStream().subscribe(dataStatus => {
+      this.formDataStatus = dataStatus
     })
   }
 
   updateComponent(formData):void {
-    this.transferAmount = formData.transferAmount
+
+    this.transferAmount = this.formatNumber(formData.transferAmount.toString())
     this.originCoin = formData.originCoin
     this.destCoin = formData.destCoin
     this.destAddr = formData.destAddr
     this.estConvToNav = formData.estConvToNav
-    this.estConvFromNav = formData.estConvFromNav
-    this.estimatedFees= formData.estimatedFees
+    this.estConvFromNav = this.formatNumber(formData.estConvFromNav)
+    this.estimatedFees = this.formatNumber(formData.estimatedFees)
+  }
+
+  formatNumber(numberStr) {
+    if( numberStr.indexOf('.') > -1) {
+      const splitArr = numberStr.split('.')
+
+      let firstString = splitArr[0].toString()  
+      let secondString = splitArr[1].toString()
+
+      firstString = this.insertComma(firstString)
+      
+      return firstString + '.' + secondString
+    } else {
+      return this.insertComma(numberStr)
+    }
+  }
+
+  insertComma(str) {
+    const length = str.length
+    let modifiedStr = str
+    for (var i = length; i >= 1; i = i-3) {
+      if (i <= 3) {
+        break
+      } 
+      modifiedStr =  modifiedStr.slice(0, i-3) + ',' +  modifiedStr.slice(i-3)  
+    }
+    return modifiedStr
   }
 }
