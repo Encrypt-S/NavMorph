@@ -34,5 +34,6 @@ export interface dataBundleTemplate {
   estConvFromNav?: BigNumber,
   estTime?: any,
   estimatedFees?: BigNumber,
+  changellyFeeOne?: BigNumber,
   errors?: Array<string>
 }
