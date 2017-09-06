@@ -1,9 +1,11 @@
 <div id="status-container" >
+  <loader-component *ngIf="formDataStatus ==='loading'" theme="light-theme"></loader-component>
+
   <h4>Status:</h4>
-  <div *ngIf="!formDataSet">
+  <div *ngIf="formDataStatus ==='unset'">
     <span>Fill out the form and press 'Send' to get started.</span>
   </div>
-  <div *ngIf="formDataSet">
+  <div *ngIf="formDataStatus ==='set'">
     <div *ngIf="formData.errors.length > 0">
       <div class="error-text">Error with form submission:</div>
       <div class="error-text" *ngIf="formData.errors.indexOf('invalidDestAddress') > -1">You're attempting to send to an invalid destination address, please double check you've entered the correct address.</div>
