@@ -24,7 +24,7 @@ EtaCtrl.getEta = (status, timeSent, originCoin, destCoin) => {
     if(!EtaCtrl.validStatus(status)) {
       reject(new Error('Invalid order status'))
       return
-    } else if (status === 'sent' && !(timeSent instanceof Date)) {
+    } else if (status === 'finished' && !(timeSent instanceof Date)) {
       reject(new Error('Invalid sending time'))
       return
     }
