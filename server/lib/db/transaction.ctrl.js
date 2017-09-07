@@ -29,7 +29,7 @@ TransactionCtrl.internal.createTransaction = (req, res) => {
     TransactionCtrl.runtime = { req, res }
 
     TransactionCtrl.runtime.transaction = new TransactionModel({
-      changelly_id: req.params.changellyId,
+      changelly_id: req.params.changellyId || '123123123',
       polymorph_id: req.params.polymorphId,
       polymorph_pass: req.params.polymorphPass,
       changelly_address_one: req.params.changellyAddressOne,
@@ -69,7 +69,7 @@ TransactionCtrl.createTransaction = (req, res) => {
   TransactionCtrl.runtime = { res, req }
 
   TransactionCtrl.runtime.transaction = new TransactionModel({
-    // changelly_id: req.body.changelly_id,
+    changelly_id: req.body.changelly_id || '123123123',
     polymorph_id: req.body.polymorph_id,
     polymorph_pass: req.body.polymorph_pass,
     changelly_address_one: req.body.changellyAddressOne,
@@ -110,7 +110,7 @@ TransactionCtrl.internal.getOrder = (id, pass) => {
       reject(new Error('Id or Password missing. Id: ' + id + '. Pass: ' + pass))
     }
     query.and([{ polymorph_id: id }, { polymorph_pass: pass }])
-    .select('-_id polymorph_id polymorph_pass changelly_address_one order_amount input_currency output_currency order_status')
+    .select('-_id polymorph_id polymorph_pass changelly_address_one changelly_id order_amount input_currency output_currency order_status')
     .exec()
     .then((order) => { fulfill(order) })
     .catch((error) => { reject(error) })

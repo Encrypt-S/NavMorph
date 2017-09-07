@@ -28,6 +28,7 @@ export class StatusPage implements OnInit {
 
   orderAmount: string
   changellyAddress: string
+  orderChangellyId: string
   orderStatus: string
   estFee: string
   sourceCurrency: string
@@ -76,6 +77,7 @@ export class StatusPage implements OnInit {
     this.orderAmount = mainData.order_amount
     this.changellyAddress = mainData.changelly_address_one
     this.orderStatus = mainData.order_status
+    this.orderChangellyId = mainData.changelly_id
     this.estFee = "10 NAV"
     this.sourceCurrency = mainData.input_currency
     this.destCurrency = mainData.output_currency
