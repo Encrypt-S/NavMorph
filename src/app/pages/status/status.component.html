@@ -9,7 +9,7 @@
     <div class="" *ngIf="orderSuccess">
       <h2>Order Status</h2>
       <div class="row">
-        <div class="col s12 m6">
+        <div class="col s12 m6" *ngIf="orderStatus === 'created'">
           <div class="">
             Please transfer EXACTLY {{orderAmount}} {{sourceCurrency | uppercase}} in ONE transaction to the following address.<br>
             Transferring an incorrect amount may result in lost currency!
@@ -25,7 +25,8 @@
 
 
         <div class="col s12 m6">
-          <div class="">Status: {{orderStatus}}</div>
+          <div class="">Status: {{interpretStatus(orderStatus)}}</div>
+          <div class="">Order Number: {{orderNumber}}</div>
           <div class="">Amount Due: {{orderAmount}} {{sourceCurrency | uppercase}}</div>
           <div class=""><span *ngIf="orderStatus === 'created'">(If sent now) </span>Should arrive at: {{waitTimeLow.toLocaleString()}} ~ {{waitTimeHigh.toLocaleString()}}</div>
           <div class="">Est. Fee: {{estFee}}</div>
@@ -43,7 +44,7 @@
         <div class="">
           <a href="https://polymorph.freshdesk.com/support/login" target="_blank">If you have any issues, click here for our help desk.</a>
         </div>
-        
+
         <div class="">
           <a [href]="'mailto:example@email.com&subject=Polymorph%20Order%20ID%20and%20Password&body=Polymorph%20ID:'
           + orderId + '.%20Polymorph%20Password:%20' + orderPass + '%20.'">Click here to send orderID and Password to an email address</a>
