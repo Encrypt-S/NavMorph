@@ -26,7 +26,7 @@
 
         <div class="col s12 m6">
           <div class="">Status: {{interpretStatus(orderStatus)}}</div>
-          <div class="">Order Number: {{orderNumber}}</div>
+          <div class="">Changelly Order Number: {{changellyOrderNumber}}</div>
           <div class="">Amount Due: {{orderAmount}} {{sourceCurrency | uppercase}}</div>
           <div class=""><span *ngIf="orderStatus === 'created'">(If sent now) </span>Should arrive at: {{waitTimeLow.toLocaleString()}} ~ {{waitTimeHigh.toLocaleString()}}</div>
           <div class="">Est. Fee: {{estFee}}</div>
