@@ -46,6 +46,9 @@ EtaCtrl.buildEta = (status, timeSent, originCoin, destCoin) => {
   switch(status) {
     case 'completed': 
     case 'abandoned':
+    case 'failed':
+    case 'refunded':
+    case 'expired':
       break
     case 'created':
     case 'estimate':
@@ -56,7 +59,7 @@ EtaCtrl.buildEta = (status, timeSent, originCoin, destCoin) => {
         etaMax -= timeConsts.changelly[1]
       }
       break
-    case 'received':
+    case 'confirming':
       etaMin = timeConsts.navTech[0] + timeConsts.changelly[0]
       etaMax = timeConsts.navTech[1] + timeConsts.changelly[1]
       if (destCoin === 'nav') {
@@ -64,12 +67,21 @@ EtaCtrl.buildEta = (status, timeSent, originCoin, destCoin) => {
         etaMax -= timeConsts.changelly[1]
       }
       break
-    case 'sent':
+    case 'exchanging':
+    case 'sending':
+      etaMin = timeConsts.navTech[0] + timeConsts.changelly[0]
+      etaMax = timeConsts.navTech[1] + timeConsts.changelly[1]
+      if (destCoin === 'nav') {
+        etaMin -= timeConsts.changelly[0]
+        etaMax -= timeConsts.changelly[1]
+      }
+      break
+    case 'finished':
       etaMin = timeConsts.navTech[0] + timeConsts.changelly[0]
       etaMax = timeConsts.navTech[1] + timeConsts.changelly[1]
       const modifiedMinMax = EtaCtrl.factorTimeSinceSending(min, max, timeSent)
       etaMin = modifiedMinMax[0] 
-      etaMax = modifiedMinMax[1] 
+      etaMax = modifiedMinMax[1]
       if (destCoin === 'nav') {
         etaMin -= timeConsts.changelly[0]
         etaMax -= timeConsts.changelly[1]
