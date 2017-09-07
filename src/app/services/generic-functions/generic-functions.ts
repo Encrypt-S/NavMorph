@@ -8,8 +8,6 @@ export class GenericFunctionsService {
   constructor() { }
 
   calculateOrderEst(minutes) {
-    jasmine.clock().install();
-
     let estimate = new Date()
     estimate.setMinutes(estimate.getMinutes() + minutes)
     return estimate
