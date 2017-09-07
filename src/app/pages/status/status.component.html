@@ -34,10 +34,16 @@
             <div class="">Source Currency: {{sourceCurrency | uppercase}}</div>
             <div class="">Dest Currency: {{destCurrency | uppercase}}</div>
           </div>
-          <button class="btn waves-effect waves-light bg-blue" type="submit" name="action" (click)=abandonOrder()>Cancel Order</button>
+          <button class="btn waves-effect waves-light bg-blue" type="submit" 
+            name="action" (click)=abandonOrder() *ngIf="orderStatus === 'created'">
+            Cancel Order
+          </button>
 
         </div>
-
+        <div class="">
+          <a href="https://polymorph.freshdesk.com/support/login" target="_blank">If you have any issues, click here for our help desk.</a>
+        </div>
+        
         <div class="">
           <a [href]="'mailto:example@email.com&subject=Polymorph%20Order%20ID%20and%20Password&body=Polymorph%20ID:'
           + orderId + '.%20Polymorph%20Password:%20' + orderPass + '%20.'">Click here to send orderID and Password to an email address</a>
