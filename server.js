@@ -4,6 +4,7 @@ const path = require('path')
 const https = require('https')
 const bodyParser = require('body-parser')
 const pem = require('pem')
+const socketCtrl = require('./server/lib/socket/socketCtrl')
 
 // Get our API routes
 const api = require('./server/routes/api')
@@ -36,8 +37,11 @@ const port = process.env.PORT || '3000'
 app.set('port', port)
 
 /**
- * Create HTTPS server and listen on all network interfaces
+ * Create HTTPS server, set up sockets and listen on all network interfaces
  */
+
+var server
+var io
 
 pem.createCertificate({ days: 1, selfSigned: true }, (error, keys) => {
   if (error) {
@@ -53,10 +57,25 @@ pem.createCertificate({ days: 1, selfSigned: true }, (error, keys) => {
   app.use(bodyParser.urlencoded({
     extended: true,
   }))
-  https.createServer(sslOptions, app).listen(port, () => {
+  server = https.createServer(sslOptions, app)
+  io = require('socket.io')(server);
+
+  socketCtrl.setupTestSocket(io)
+  .then(() => {
+    Logger.writeLog('n/a', 'Test Socket Running', null, false)
+  })
+  .error((err) => {
+    Logger.writeLog('001', 'Failed to start up Test Socket', err, true)
+  })
+
+  server.listen(port, () => {
     Logger.writeLog('n/a', `API running on https://localhost:${port}`, null, false)
     Logger.writeLog('n/a', 'Sending start up notification email.', null, false)
     Logger.writeLog('Server Start Up', 'Start Up Complete @' + new Date().toISOString() +
       ', Polymorph Version: ' + config.version, null, true)
   })
 })
+
+
+
+
