@@ -24,6 +24,7 @@ export class StatusPage implements OnInit {
 
   orderSuccess: boolean
   orderFail: boolean
+  ipBlocked: boolean
   beginAbandonOrder: boolean
 
   orderAmount: string
@@ -59,8 +60,13 @@ export class StatusPage implements OnInit {
     this.OrderService.getOrder(this.orderId, this.orderPass)
     .subscribe(data => {
       if (data[0]) {
-        this.orderSuccess = true
-        this.fillData(data)
+        if (data[0] === 'blocked') {
+          this.ipBlocked = true
+        } else {
+          this.orderData = data[0]
+          this.orderSuccess = true
+          this.fillData(this.orderData)
+        }
       } else {
         this.orderFail = true
       }

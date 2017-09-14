@@ -1,38 +1,86 @@
 const TransactionCtrl = require('../db/transaction.ctrl')
 const EtaCtrl = require('./eta.ctrl')
 const configData = require('../../config')
+const LoginCtrl = require('../db/login.ctrl')
+const ConfigData = require('../../config')
 const Logger = require('../logger')
 
 const OrderStatusCtrl = {}
 
 OrderStatusCtrl.getOrder = (req, res) => {
+  const params = req.params
+  const ipAddress = req.ip
   const polymorphId = req.params.orderId
   const orderPassword = req.params.orderPassword
+    LoginCtrl.checkIpBlocked(ipAddress)
+  .then((isBlocked) => {
+    if (isBlocked) {
+      LoginCtrl.insertAttempt(ipAddress, polymorphId, params)
+      .then(OrderStatusCtrl.sendBlockedResponse(res))
+      .catch(error => OrderStatusCtrl.handleError(error, res, '002'))
+    } else {
+      OrderStatusCtrl.getOrderFromDb(params, ipAddress, polymorphId, orderPassword, res)
+    }
+  })  
+  .catch((error) => { OrderStatusCtrl.handleError(error, res, '001') })
+}
+
+OrderStatusCtrl.getOrderFromDb = (params, ipAddress, polymorphId, orderPassword, res) => {
   TransactionCtrl.internal.getOrder(polymorphId, orderPassword)
   .then((order) => {
     if (order[0].order_status === 'abandoned' || !order[0]) {
       res.send([[],[]])
+    } else if (order.length === 0) { 
+      OrderStatusCtrl.checkForSuspiciousActivity(ipAddress, polymorphId, params, res)  
+    } else if (order[0].order_status === 'abandoned') {
+      OrderStatusCtrl.sendEmptyResponse(res)
     } else {
       EtaCtrl.getEta(order[0].order_status, order[0].sent, order.input_currency, order.output_currency)
       .then((eta) => {
         res.send([order, eta])
       })
-      .catch(((error) => { OrderStatusCtrl.handleError(error, res, '007') }))
-    }
-  })
-  .catch((error) => { OrderStatusCtrl.handleError(error, res, '001') })
+      .catch(((error) => { OrderStatusCtrl.handleError(error, res, '007') 
+    }))
+  }})
+  .catch(error => OrderStatusCtrl.handleError(error, res, '003'))
 }
+
+OrderStatusCtrl.checkForSuspiciousActivity = (ipAddress, polymorphId, params, res) => {
+  LoginCtrl.insertAttempt(ipAddress, polymorphId, params)
+  .then(LoginCtrl.checkIfSuspicious(ipAddress)
+    .then((isSuspicious) => {
+      if (isSuspicious) {
+        LoginCtrl.blackListIp(ipAddress)
+        .then(OrderStatusCtrl.sendBlockedResponse(res))
+        .catch(error => OrderStatusCtrl.handleError(error, res, '004'))
+      } else {
+        OrderStatusCtrl.sendEmptyResponse(res)              
+      }
+    })
+    .catch(error => OrderStatusCtrl.handleError(error, res, '005'))
+  )
+  .catch(error => OrderStatusCtrl.handleError(error, res, '006'))
+}
+
+OrderStatusCtrl.sendEmptyResponse = (res) => {
+  res.send([])
+}
+
+OrderStatusCtrl.sendBlockedResponse = (res) => {
+  res.send(['blocked'])
+}
+
 
 OrderStatusCtrl.updateOrderStatus = (req, res) => {
   const polymorphId = req.params.orderId
   const orderPassword = req.params.orderPassword
   const newStatus = req.params.status
-  if (configData.validOrderStatuses.indexOf(newStatus) === -1) {
-    OrderStatusCtrl.handleError(new Error('Invalid order status'), res, '006')
+  if (ConfigData.validOrderStatuses.indexOf(newStatus) === -1) {
+    OrderStatusCtrl.handleError(new Error('Invalid order status'), res, '007')
   }
   TransactionCtrl.internal.updateOrderStatus(polymorphId, orderPassword, newStatus)
   .then((order) => { res.send(order) })
-  .catch((error) => { OrderStatusCtrl.handleError(error, res, '004') })
+  .catch((error) => { OrderStatusCtrl.handleError(error, res, '008') })
 }
 
 OrderStatusCtrl.abandonOrder = (req, res) => {
@@ -40,7 +88,7 @@ OrderStatusCtrl.abandonOrder = (req, res) => {
   const orderPassword = req.params.orderPassword
   TransactionCtrl.internal.updateOrderStatus(polymorphId, orderPassword, 'abandoned')
   .then(() => { res.send({ status: 'SUCCESS' }) })
-  .catch((error) => { OrderStatusCtrl.handleError(error, res, '005') })
+  .catch((error) => { OrderStatusCtrl.handleError(error, res, '009') })
 }
 
 OrderStatusCtrl.handleError = (error, res, code) => {
