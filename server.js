@@ -4,6 +4,7 @@ const path = require('path')
 const https = require('https')
 const bodyParser = require('body-parser')
 const pem = require('pem')
+const mongoose = require('mongoose')
 
 // Get our API routes
 const api = require('./server/routes/api')
@@ -58,5 +59,19 @@ pem.createCertificate({ days: 1, selfSigned: true }, (error, keys) => {
     Logger.writeLog('n/a', 'Sending start up notification email.', null, false)
     Logger.writeLog('Server Start Up', 'Start Up Complete @' + new Date().toISOString() +
       ', Polymorph Version: ' + config.version, null, true)
+
+    /**
+    * Connect to mongoose
+    */
+    
+    mongoose.Promise = global.Promise
+    
+    const mongoDB = 'mongodb://127.0.0.1/polymorph'
+    mongoose.connect(mongoDB)
+    const db = mongoose.connection
+    db.on('error', console.error.bind(console, 'MongoDB connection error:'))
+    
+    Logger.writeLog('MongoDB Connect', `Conected to MongoDB on ${mongoDB}`, null, false)
   })
 })
+
