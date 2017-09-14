@@ -64,7 +64,7 @@ pem.createCertificate({ days: 1, selfSigned: true }, (error, keys) => {
   .then(() => {
     Logger.writeLog('n/a', 'Test Socket Running', null, false)
   })
-  .error((err) => {
+  .catch((err) => {
     Logger.writeLog('001', 'Failed to start up Test Socket', err, true)
   })
 
