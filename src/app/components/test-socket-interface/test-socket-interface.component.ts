@@ -14,7 +14,7 @@ export class TestSocketInterfaceComponent implements OnInit, OnDestroy {
 
   private socket;
 
-  messages: any = [{text: 'sample'}]
+  messages: any = [{text: 'sample message'}]
   connection
   message
 
