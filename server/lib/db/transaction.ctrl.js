@@ -109,7 +109,7 @@ TransactionCtrl.internal.getOrder = (id, pass) => {
     if (!id || !pass) {
       reject(new Error('Id or Password missing. Id: ' + id + '. Pass: ' + pass))
     }
-    query.and([{ polymorph_id: id }, { polymorph_pass: pass }])
+    query.and([{ polymorph_id: id, polymorph_pass: pass }])
     .select('-_id polymorph_id polymorph_pass changelly_address_one order_amount input_currency output_currency order_status')
     .exec()
     .then((order) => { fulfill(order) })

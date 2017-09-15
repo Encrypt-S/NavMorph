@@ -19,24 +19,40 @@ OrderStatusCtrl.getOrder = (req, res) => {
       .then(OrderStatusCtrl.sendBlockedResponse(res))
       .catch(error => OrderStatusCtrl.handleError(error, res, '002'))
     } else {
-      OrderStatusCtrl.getOrderFromDb(params, ipAddress, polymorphId, orderPassword, res)
+      OrderStatusCtrl.checkOrderExists(params, ipAddress, polymorphId, orderPassword, res)
     }
   })  
   .catch((error) => { OrderStatusCtrl.handleError(error, res, '001') })
 }
 
+
+
+OrderStatusCtrl.checkOrderExists = (params, ipAddress, polymorphId, orderPassword, res) => {
+  TransactionCtrl.internal.checkIfIdExists(polymorphId)
+  .then((orderExists) => {
+    console.log(orderExists)
+    if (orderExists) {
+      OrderStatusCtrl.getOrderFromDb(params, ipAddress, polymorphId, orderPassword, res)
+    } else if (orderArr[0].length === 0) { 
+      res.send([[],[]])
+      return
+    }
+  })
+  .catch(error => OrderStatusCtrl.handleError(error, res, '003'))
+}
+
+
 OrderStatusCtrl.getOrderFromDb = (params, ipAddress, polymorphId, orderPassword, res) => {
   TransactionCtrl.internal.getOrder(polymorphId, orderPassword)
   .then((orderArr) => {
     const order = orderArr[0]
-    if (order.order_status === 'abandoned' || !order) {
-      res.send([[],[]])
-    } else if (order.length === 0) { 
+    console.log(orderArr)
+    if (!order) { 
       OrderStatusCtrl.checkForSuspiciousActivity(ipAddress, polymorphId, params, res)  
     } else if (order.order_status === 'abandoned') {
       OrderStatusCtrl.sendEmptyResponse(res)
     } else {
-      EtaCtrl.getEta(order.order_status, order.sent, order.input_currency, order.output_currency)
+      EtaCtrl.getEta(order.order_status, order.sent, order.input_currency, orderArr.output_currency)
       .then((eta) => {
         res.send([order, eta])
       })
