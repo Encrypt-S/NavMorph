@@ -27,21 +27,22 @@ OrderStatusCtrl.getOrder = (req, res) => {
 
 OrderStatusCtrl.getOrderFromDb = (params, ipAddress, polymorphId, orderPassword, res) => {
   TransactionCtrl.internal.getOrder(polymorphId, orderPassword)
-  .then((order) => {
-    if (order[0].order_status === 'abandoned' || !order[0]) {
+  .then((orderArr) => {
+    const order = orderArr[0]
+    if (order.order_status === 'abandoned' || !order) {
       res.send([[],[]])
     } else if (order.length === 0) { 
       OrderStatusCtrl.checkForSuspiciousActivity(ipAddress, polymorphId, params, res)  
-    } else if (order[0].order_status === 'abandoned') {
+    } else if (order.order_status === 'abandoned') {
       OrderStatusCtrl.sendEmptyResponse(res)
     } else {
-      EtaCtrl.getEta(order[0].order_status, order[0].sent, order.input_currency, order.output_currency)
+      EtaCtrl.getEta(order.order_status, order.sent, order.input_currency, order.output_currency)
       .then((eta) => {
         res.send([order, eta])
       })
-      .catch(((error) => { OrderStatusCtrl.handleError(error, res, '007') 
-    }))
-  }})
+      .catch(error => OrderStatusCtrl.handleError(error, res, '010'))
+    }
+  })
   .catch(error => OrderStatusCtrl.handleError(error, res, '003'))
 }
 

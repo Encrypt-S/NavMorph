@@ -65,7 +65,7 @@ export class StatusPage implements OnInit {
         } else {
           this.orderData = data[0]
           this.orderSuccess = true
-          this.fillData(this.orderData)
+          this.fillData(data)
         }
       } else {
         this.orderFail = true
@@ -75,10 +75,8 @@ export class StatusPage implements OnInit {
   }
 
   fillData(data) {
-    const mainData = data[0][0]
+    const mainData = data[0]
     const minMax = data[1]
-    console.log(data[0])
-    console.log(mainData)
     this.orderAmount = mainData.order_amount
     this.changellyAddress = mainData.changelly_address_one
     this.orderStatus = mainData.order_status
