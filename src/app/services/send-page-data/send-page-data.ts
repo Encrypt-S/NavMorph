@@ -98,6 +98,7 @@ export class SendPageDataService implements OnInit {
       this.dataBundle.changellyFeeOne = new BigNumber(transferAmount, 10)
                                         .minus((new BigNumber(transferAmount, 10).times(new BigNumber(1 - this.NAVTECH_FEE))
                                         .times(new BigNumber(1 - this.CHANGELLY_FEE))))
+                                        .round(8)
 
       this.dataBundle.estimatedFees = (new BigNumber(transferAmount, 10)
                                         .minus((new BigNumber(transferAmount, 10).times(new BigNumber(1 - this.NAVTECH_FEE))
@@ -120,14 +121,14 @@ export class SendPageDataService implements OnInit {
   estimateFirstExchange(originCoin, destCoin, transferAmount) {
     if (originCoin === 'nav') {
       this.dataBundle.estConvToNav = new BigNumber(transferAmount, 10)
-      const conversionAfterFees = new BigNumber(this.dataBundle.estConvToNav, 10).times(1 - this.NAVTECH_FEE)
+      const conversionAfterFees = new BigNumber(this.dataBundle.estConvToNav, 10).times(1 - this.NAVTECH_FEE).round(8)
       this.estimateSecondExchange(destCoin, conversionAfterFees)
     } else {
       this.getEstimatedExchange(originCoin, 'nav', transferAmount)
         .then((data) => {
-          this.dataBundle.estConvToNav = new BigNumber(data, 10)
+          this.dataBundle.estConvToNav = new BigNumber(data, 10).round(8)
 
-          const conversionAfterFees = new BigNumber(this.dataBundle.estConvToNav, 10).times(1 - this.NAVTECH_FEE)
+          const conversionAfterFees = new BigNumber(this.dataBundle.estConvToNav, 10).times(1 - this.NAVTECH_FEE).round(8)
 
           this.estimateSecondExchange(destCoin, conversionAfterFees)
       })
@@ -141,7 +142,7 @@ export class SendPageDataService implements OnInit {
     } else {
      this.getEstimatedExchange('nav', destCoin, conversionAfterFees.toString())
       .then((data) => {
-        this.dataBundle.estConvFromNav = new BigNumber(data, 10).toString()
+        this.dataBundle.estConvFromNav = new BigNumber(data, 10).round(8).toString()
         this.sendData()
       })
     }
@@ -168,7 +169,7 @@ export class SendPageDataService implements OnInit {
     .then((minAmount) => {
       if(new BigNumber(dataBundle.transferAmount, 10).lessThan(new BigNumber(minAmount, 10))) {
         this.pushError(dataBundle, 'transferTooSmall')
-        dataBundle.minTransferAmount = minAmount
+        dataBundle.minTransferAmount = new BigNumber(minAmount, 10).round(8).toString()
       }
     })
   }
