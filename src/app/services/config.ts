@@ -1,4 +1,4 @@
-import * as BigNumber from 'bignumber.js'
+import BigNumber from 'bignumber.js'
 
 export const changellyNodeApiEndPoints = {
   getCurrencies: 'getCurrencies',
@@ -28,14 +28,14 @@ export const changellyConstData = {
 }
 
 export interface dataBundleTemplate {
-  transferAmount?: BigNumber,
+  transferAmount?: string,
   originCoin?: string,
   destCoin?: string,
   destAddr?: string,
-  estConvToNav?: BigNumber,
-  estConvFromNav?: BigNumber,
+  estConvToNav?: any,
+  estConvFromNav?: string,
   estTime?: any,
-  estimatedFees?: BigNumber,
-  changellyFeeOne?: BigNumber,
+  estimatedFees?: string,
+  changellyFeeOne?: any,
   errors?: Array<string>
 }
