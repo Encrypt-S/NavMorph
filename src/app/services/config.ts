@@ -7,6 +7,7 @@ export const changellyNodeApiEndPoints = {
   getGenerateAddress: 'generateAddress',
   getTransaction: 'getTransactions',
   getExchangeStatus: 'getStatus',
+  getEta: 'getEta',
 }
 
 export const orderNodeApiEndPoints = {
@@ -14,6 +15,7 @@ export const orderNodeApiEndPoints = {
   getOrder: 'getOrder',
   getOrderStatus: 'getOrderStatus',
   abandonOrder: 'abandonOrder',
+  getEta: 'getEta',
 }
 
 export const nodeApiBaseUrl = 'https://localhost:3000/api/'

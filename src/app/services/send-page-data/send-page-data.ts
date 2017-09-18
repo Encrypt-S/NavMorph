@@ -1,13 +1,13 @@
 import { Injectable, OnInit } from '@angular/core';
 
-import { ChangellyApiService } from '../../services/changelly-api/changelly-api';
-import { changellyConstData, dataBundleTemplate } from "../config";
+import { ChangellyApiService } from '../../services/changelly-api/changelly-api'
+import { GenericFunctionsService } from '../../services/generic-functions/generic-functions'
+import { changellyConstData, dataBundleTemplate } from "../config"
 
-import { Observable } from 'rxjs';
-import { Subject } from 'rxjs/Subject';
+import { Observable } from 'rxjs'
+import { Subject } from 'rxjs/Subject'
 
-import * as BigNumber from 'bignumber.js'
-
+import BigNumber from 'bignumber.js'
 
 @Injectable()
 export class SendPageDataService implements OnInit {
@@ -105,11 +105,18 @@ export class SendPageDataService implements OnInit {
                                         .times((1 - this.CHANGELLY_FEE)))))
                                         .round(8).toString()
       }
-
-    this.estimateFirstExchange(originCoin, destCoin, transferAmount)
+    this.estimateArrivalTime(originCoin, destCoin, transferAmount)
   }
+  
+  estimateArrivalTime(originCoin, destCoin, transferAmount) {
+    this.getEta(originCoin, destCoin)
+      .then((data) => {
+        this.dataBundle.estTime = data
 
-
+      this.estimateFirstExchange(originCoin, destCoin, transferAmount)
+    })
+  }
+  
   estimateFirstExchange(originCoin, destCoin, transferAmount) {
     if (originCoin === 'nav') {
       this.dataBundle.estConvToNav = new BigNumber(transferAmount, 10)
@@ -140,8 +147,11 @@ export class SendPageDataService implements OnInit {
     }
   }
 
+
   sendData(){
     this.validateDataBundle(this.dataBundle)
+    this.dataBundle.changellyFeeOne = this.dataBundle.changellyFeeOne.toString()
+    this.dataBundle.estConvToNav = this.dataBundle.estConvToNav.toString()
     this.dataStored = true
     this.dataSubject.next(this.dataBundle)
     this.setDataStatus('set')
@@ -209,4 +219,16 @@ export class SendPageDataService implements OnInit {
       })
     })
   }
+
+  getEta(originCoin, destCoin) {
+    return new Promise<any>( resolve => {
+      this.changellyApi.getEta(originCoin, destCoin)
+      .subscribe( data => {
+        resolve(data)
+      }, (err) => {
+        resolve (err)
+      })
+    })
+  }
+
 }

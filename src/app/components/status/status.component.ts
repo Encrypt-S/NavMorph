@@ -3,9 +3,10 @@ import { Subscription } from 'rxjs/Subscription';
 
 import { SendPageDataService } from '../../services/send-page-data/send-page-data';
 import { ChangellyApiService } from '../../services/changelly-api/changelly-api';
+import { GenericFunctionsService } from '../../services/generic-functions/generic-functions';
 
 import { changellyConstData } from "../../services/config";
-import * as BigNumber from 'bignumber.js'
+import BigNumber from 'bignumber.js'
 
 
 @Component({
@@ -22,9 +23,10 @@ export class StatusComponent implements OnInit {
   formDataStatus: string = 'unset'
   statusUntouched: boolean = true
 
-  estTime: object
   estConvToNav: string
   estConvFromNav: string
+  etaMin: string
+  etaMax: string
 
   estimatedFees: string
   formData: object = {}
@@ -33,7 +35,10 @@ export class StatusComponent implements OnInit {
   formDataSubscrip: Subscription
 
 
-  constructor(private dataServ: SendPageDataService ) {
+  constructor(
+    private dataServ: SendPageDataService,
+    private genFuncs: GenericFunctionsService,
+   ) {
     this.getDataStatusStream()
     this.getFormDataStream()
   }
@@ -55,7 +60,6 @@ export class StatusComponent implements OnInit {
   }
 
   updateComponent(formData):void {
-
     this.transferAmount = this.formatNumber(formData.transferAmount.toString())
     this.originCoin = formData.originCoin
     this.destCoin = formData.destCoin
@@ -63,6 +67,8 @@ export class StatusComponent implements OnInit {
     this.estConvToNav = formData.estConvToNav
     this.estConvFromNav = this.formatNumber(formData.estConvFromNav)
     this.estimatedFees = this.formatNumber(formData.estimatedFees)
+    this.etaMin = this.genFuncs.calculateOrderEst(formData.estTime[0]).toLocaleString()
+    this.etaMax = this.genFuncs.calculateOrderEst(formData.estTime[1]).toLocaleString()
   }
 
   formatNumber(numberStr) {
