@@ -1,4 +1,6 @@
 const TransactionCtrl = require('../db/transaction.ctrl')
+const EtaCtrl = require('./eta.ctrl')
+const configData = require('../../config')
 const LoginCtrl = require('../db/login.ctrl')
 const ConfigData = require('../../config')
 const Logger = require('../logger')
@@ -17,21 +19,44 @@ OrderStatusCtrl.getOrder = (req, res) => {
       .then(OrderStatusCtrl.sendBlockedResponse(res))
       .catch(error => OrderStatusCtrl.handleError(error, res, '002'))
     } else {
-      OrderStatusCtrl.getOrderFromDb(params, ipAddress, polymorphId, orderPassword, res)
+      OrderStatusCtrl.checkOrderExists(params, ipAddress, polymorphId, orderPassword, res)
     }
   })  
   .catch((error) => { OrderStatusCtrl.handleError(error, res, '001') })
 }
 
+
+
+OrderStatusCtrl.checkOrderExists = (params, ipAddress, polymorphId, orderPassword, res) => {
+  TransactionCtrl.internal.checkIfIdExists(polymorphId)
+  .then((orderExists) => {
+    console.log(orderExists)
+    if (orderExists) {
+      OrderStatusCtrl.getOrderFromDb(params, ipAddress, polymorphId, orderPassword, res)
+    } else if (orderArr[0].length === 0) { 
+      res.send([[],[]])
+      return
+    }
+  })
+  .catch(error => OrderStatusCtrl.handleError(error, res, '003'))
+}
+
+
 OrderStatusCtrl.getOrderFromDb = (params, ipAddress, polymorphId, orderPassword, res) => {
   TransactionCtrl.internal.getOrder(polymorphId, orderPassword)
-  .then((order) => {
-    if (order.length === 0) { 
+  .then((orderArr) => {
+    const order = orderArr[0]
+    console.log(orderArr)
+    if (!order) { 
       OrderStatusCtrl.checkForSuspiciousActivity(ipAddress, polymorphId, params, res)  
-    } else if (order[0].order_status === 'abandoned') {
+    } else if (order.order_status === 'abandoned') {
       OrderStatusCtrl.sendEmptyResponse(res)
     } else {
-      res.send(order)
+      EtaCtrl.getEta(order.order_status, order.sent, order.input_currency, orderArr.output_currency)
+      .then((eta) => {
+        res.send([order, eta])
+      })
+      .catch(error => OrderStatusCtrl.handleError(error, res, '010'))
     }
   })
   .catch(error => OrderStatusCtrl.handleError(error, res, '003'))

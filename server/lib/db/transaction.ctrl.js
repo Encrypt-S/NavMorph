@@ -42,6 +42,7 @@ TransactionCtrl.internal.createTransaction = (req, res) => {
       order_status: 'created',
       delay: req.params.delay || 0,
       created: new Date(),
+      sent: null,
     })
     try {
       TransactionCtrl.runtime.transaction.save()
@@ -81,6 +82,7 @@ TransactionCtrl.createTransaction = (req, res) => {
     order_status: 'created',
     delay: req.body.delay || 0,
     created: new Date(),
+    sent: undefined,
   })
   try {
     TransactionCtrl.runtime.transaction.save(TransactionCtrl.savedTransaction)
@@ -107,7 +109,7 @@ TransactionCtrl.internal.getOrder = (id, pass) => {
     if (!id || !pass) {
       reject(new Error('Id or Password missing. Id: ' + id + '. Pass: ' + pass))
     }
-    query.and([{ polymorph_id: id }, { polymorph_pass: pass }])
+    query.and([{ polymorph_id: id, polymorph_pass: pass }])
     .select('-_id polymorph_id polymorph_pass changelly_address_one order_amount input_currency output_currency order_status')
     .exec()
     .then((order) => { fulfill(order) })

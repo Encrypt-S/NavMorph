@@ -1,11 +1,11 @@
-import { Injectable } from '@angular/core';
+import { Injectable } from '@angular/core'
 
-import { ChangellyApiService } from '../../services/changelly-api/changelly-api';
-import { changellyConstData, dataBundleTemplate } from "../config";
+import { ChangellyApiService } from '../../services/changelly-api/changelly-api'
+import { GenericFunctionsService } from '../../services/generic-functions/generic-functions'
+import { changellyConstData, dataBundleTemplate } from "../config"
 
-import { Observable } from 'rxjs';
-import { Subject } from 'rxjs/Subject';
-
+import { Observable } from 'rxjs'
+import { Subject } from 'rxjs/Subject'
 
 
 @Injectable()
@@ -72,9 +72,18 @@ export class SendPageDataService {
       return //validation errors, so return early
     }
 
-    this.estimateFirstExchange(originCoin, destCoin, transferAmount)
+    this.estimateArrivalTime(originCoin, destCoin, transferAmount)
   }
+  
+  estimateArrivalTime(originCoin, destCoin, transferAmount) {
+    this.getEta(originCoin, destCoin)
+      .then((data) => {
+        this.dataBundle.eta = data
 
+      this.estimateFirstExchange(originCoin, destCoin, transferAmount)
+    })
+  }
+  
   estimateFirstExchange(originCoin, destCoin, transferAmount) {
     this.getEstimatedExchange(originCoin, 'nav', transferAmount)
       .then((data) => {
@@ -170,4 +179,16 @@ export class SendPageDataService {
       })
     })
   }
+
+  getEta(originCoin, destCoin) {
+    return new Promise<any>( resolve => {
+      this.changellyApi.getEta(originCoin, destCoin)
+      .subscribe( data => {
+        resolve(data)
+      }, (err) => {
+        resolve (err)
+      })
+    })
+  }
+
 }
