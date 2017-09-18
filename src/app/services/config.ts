@@ -37,5 +37,6 @@ export interface dataBundleTemplate {
   estTime?: any,
   estimatedFees?: string,
   changellyFeeOne?: any,
+  minTransferAmount?:string
   errors?: Array<string>
 }

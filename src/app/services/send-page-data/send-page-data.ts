@@ -168,6 +168,7 @@ export class SendPageDataService implements OnInit {
     .then((minAmount) => {
       if(new BigNumber(dataBundle.transferAmount, 10).lessThan(new BigNumber(minAmount, 10))) {
         this.pushError(dataBundle, 'transferTooSmall')
+        dataBundle.minTransferAmount = minAmount
       }
     })
   }
