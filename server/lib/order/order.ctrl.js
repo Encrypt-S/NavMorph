@@ -48,25 +48,36 @@ OrderCtrl.beginOrderCreation = (req, res) => {
 }
 
 OrderCtrl.getFirstChangellyAddress = (req, res) => {
-  OrderCtrl.getChangellyAddress(req.params.from, 'nav', req.params.navAddress)
-  .then((address) => {
-    req.params.changellyAddressOne = address
-    OrderCtrl.getSecondChangellyAddress(req, res)
-  })
-  .catch((error) => {
-    OrderCtrl.handleError(error, res, '004')
-  })
+  if (req.params.from === 'nav') {
+    req.params.changellyAddressOne = req.params.navAddress
+    OrderCtrl.getSecondChangellyAddress(req, res)  
+  } else {
+    OrderCtrl.getChangellyAddress(req.params.from, 'nav', req.params.navAddress)
+    .then((address) => {
+
+      req.params.changellyAddressOne = address
+      OrderCtrl.getSecondChangellyAddress(req, res)
+    })
+    .catch((error) => {
+      OrderCtrl.handleError(error, res, '004')
+    })    
+  }
 }
 
 OrderCtrl.getSecondChangellyAddress = (req, res) => {
-  OrderCtrl.getChangellyAddress('nav', req.params.to, req.params.address)
-  .then((address) => {
-    req.params.changellyAddressTwo = address
+  if (req.params.to === 'nav') {
+    req.params.changellyAddressTwo = req.params.address
     OrderCtrl.prepForDb(req, res)
-  })
-  .catch((error) => {
-    OrderCtrl.handleError(error, res, '005')
-  })
+  } else {
+    OrderCtrl.getChangellyAddress('nav', req.params.to, req.params.address)
+    .then((address) => {
+      req.params.changellyAddressTwo = address
+      OrderCtrl.prepForDb(req, res)
+    })
+    .catch((error) => {
+      OrderCtrl.handleError(error, res, '005')
+    })
+  }
 }
 
 OrderCtrl.prepForDb = (req, res) => {
@@ -137,6 +148,9 @@ OrderCtrl.getNavAddress = () => {
 
 OrderCtrl.getChangellyAddress = (inputCurrency, outputCurrency, destAddress) => {
   return new Promise((fulfill, reject) => {
+    if(outputCurrency === 'nav'){
+      fulfill(destAddress)
+    }
     ChangellyCtrl.internal.generateAddress({
       from: inputCurrency,
       to: outputCurrency,
@@ -145,7 +159,6 @@ OrderCtrl.getChangellyAddress = (inputCurrency, outputCurrency, destAddress) => 
     })
     .then((data) => {
       if (data instanceof Error) {
-        console.log(data, 'Couldn\'t get address from Changelly')
         reject(data)
       }
       fulfill(data.result.address)

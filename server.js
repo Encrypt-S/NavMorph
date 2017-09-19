@@ -7,6 +7,7 @@ const pem = require('pem')
 const mongoose = require('mongoose')
 const socketCtrl = require('./server/lib/socket/socketCtrl')
 
+
 // Get our API routes
 const api = require('./server/routes/api')
 const Logger = require('./server/lib/logger')
@@ -80,9 +81,6 @@ pem.createCertificate({ days: 1, selfSigned: true }, (error, keys) => {
 
   server.listen(port, () => {
     Logger.writeLog('n/a', `API running on https://localhost:${port}`, null, false)
-    Logger.writeLog('n/a', 'Sending start up notification email.', null, false)
-    Logger.writeLog('Server Start Up', 'Start Up Complete @' + new Date().toISOString() +
-      ', Polymorph Version: ' + config.version, null, true)
 
     /**
     * Connect to mongoose
@@ -96,6 +94,11 @@ pem.createCertificate({ days: 1, selfSigned: true }, (error, keys) => {
     db.on('error', console.error.bind(console, 'MongoDB connection error:'))
     
     Logger.writeLog('MongoDB Connect', `Conected to MongoDB on ${mongoDB}`, null, false)
+
+    Logger.writeLog('n/a', 'Sending start up notification email.', null, false)
+    Logger.writeLog('Server Start Up', 'Start Up Complete @' + new Date().toISOString() +
+      ', Polymorph Version: ' + config.version, null, true)
+
   })
 })
 

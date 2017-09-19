@@ -1,15 +1,20 @@
-import { Injectable } from '@angular/core';
+import { Injectable, OnInit } from '@angular/core';
 
-import { ChangellyApiService } from '../../services/changelly-api/changelly-api';
-import { changellyConstData, dataBundleTemplate } from "../config";
+import { ChangellyApiService } from '../../services/changelly-api/changelly-api'
+import { GenericFunctionsService } from '../../services/generic-functions/generic-functions'
+import { changellyConstData, dataBundleTemplate } from "../config"
 
-import { Observable } from 'rxjs';
-import { Subject } from 'rxjs/Subject';
+import { Observable } from 'rxjs'
+import { Subject } from 'rxjs/Subject'
 
-
+import BigNumber from 'bignumber.js'
 
 @Injectable()
-export class SendPageDataService {
+export class SendPageDataService implements OnInit {
+
+  ngOnInit() {
+    BigNumber.config({ DECIMAL_PLACES: 8 })
+  }
 
   dataStored: boolean = false
 
@@ -41,26 +46,31 @@ export class SendPageDataService {
     return this.dataSetSubject.asObservable()
   }
 
-  setIsDataSet(isSet):void {
+  setDataStatus(isSet): void {
     this.isDataSet = isSet
     this.dataSetSubject.next(this.isDataSet)
   }
 
-  clearData(broadcastChanges:boolean ): void {
+  clearData(broadcastChanges: boolean ): void {
     this.dataBundle =  {errors: []}
-    this.setIsDataSet(false)
+    this.setDataStatus('unset')
     if(broadcastChanges)
       this.dataSubject.next(this.dataBundle)
   }
 
-  checkIsDataSet():boolean {
+  checkIsDataSet(): boolean {
     return this.isDataSet
   }
 
   storeData(transferAmount, originCoin, destCoin, destAddr): void {
     this.clearData(false)
+    this.setDataStatus('loading')
     this.dataStored = false
-    this.dataBundle.transferAmount = Number(transferAmount) ? Number(transferAmount): undefined
+    try {
+      this.dataBundle.transferAmount = new BigNumber(transferAmount, 10).round(8).toString()
+    } catch (e) {
+      this.dataBundle.transferAmount = undefined
+    }
     this.dataBundle.originCoin = originCoin
     this.dataBundle.destCoin = destCoin
     this.dataBundle.destAddr = destAddr
@@ -68,63 +78,104 @@ export class SendPageDataService {
     if(this.dataBundle.errors.length > 0) {
       this.dataStored = true
       this.dataSubject.next(this.dataBundle)
-      this.setIsDataSet(true)
+      this.setDataStatus('set')
       return //validation errors, so return early
     }
-
-    this.estimateFirstExchange(originCoin, destCoin, transferAmount)
+    this.estimateFees(originCoin, destCoin, transferAmount)
   }
 
-  estimateFirstExchange(originCoin, destCoin, transferAmount) {
-    this.getEstimatedExchange(originCoin, 'nav', transferAmount)
+  estimateFees(originCoin, destCoin, transferAmount) {
+
+    if (originCoin === 'nav' || destCoin === 'nav') {
+      this.dataBundle.changellyFeeOne = new BigNumber(0)
+
+      this.dataBundle.estimatedFees = (new BigNumber(transferAmount, 10)
+                                        .minus((new BigNumber(transferAmount, 10)
+                                        .times(new BigNumber(1 - this.NAVTECH_FEE))
+                                        .times(new BigNumber(1 - this.CHANGELLY_FEE)))))
+                                        .round(8).toString()
+    } else {
+      this.dataBundle.changellyFeeOne = new BigNumber(transferAmount, 10)
+                                        .minus((new BigNumber(transferAmount, 10).times(new BigNumber(1 - this.NAVTECH_FEE))
+                                        .times(new BigNumber(1 - this.CHANGELLY_FEE))))
+                                        .round(8)
+
+      this.dataBundle.estimatedFees = (new BigNumber(transferAmount, 10)
+                                        .minus((new BigNumber(transferAmount, 10).times(new BigNumber(1 - this.NAVTECH_FEE))
+                                        .times(new BigNumber(1 - this.CHANGELLY_FEE))
+                                        .times((1 - this.CHANGELLY_FEE)))))
+                                        .round(8).toString()
+      }
+    this.estimateArrivalTime(originCoin, destCoin, transferAmount)
+  }
+  
+  estimateArrivalTime(originCoin, destCoin, transferAmount) {
+    this.getEta(originCoin, destCoin)
       .then((data) => {
-        this.dataBundle.estConvToNav = data
+        this.dataBundle.estTime = data
 
-        if(originCoin === 'nav'){
-          this.dataBundle.changellyFeeOne = 0
-        } else {
-          this.dataBundle.changellyFeeOne = this.dataBundle.estConvToNav * this.CHANGELLY_FEE
-        }
-
-        this.dataBundle.navTechFee = (this.dataBundle.estConvToNav - this.dataBundle.changellyFeeOne) * this.NAVTECH_FEE
-        const conversionAfterFees = this.dataBundle.estConvToNav - this.dataBundle.changellyFeeOne - this.dataBundle.navTechFee
-
-        this.estimateSecondExchange(destCoin, conversionAfterFees)
+      this.estimateFirstExchange(originCoin, destCoin, transferAmount)
     })
+  }
+  
+  estimateFirstExchange(originCoin, destCoin, transferAmount) {
+    if (originCoin === 'nav') {
+      this.dataBundle.estConvToNav = new BigNumber(transferAmount, 10)
+      const conversionAfterFees = new BigNumber(this.dataBundle.estConvToNav, 10).times(1 - this.NAVTECH_FEE).round(8)
+      this.estimateSecondExchange(destCoin, conversionAfterFees)
+    } else {
+      this.getEstimatedExchange(originCoin, 'nav', transferAmount)
+        .then((data) => {
+          this.dataBundle.estConvToNav = new BigNumber(data, 10).round(8)
+
+          const conversionAfterFees = new BigNumber(this.dataBundle.estConvToNav, 10).times(1 - this.NAVTECH_FEE).round(8)
+
+          this.estimateSecondExchange(destCoin, conversionAfterFees)
+      })
+    }      
   }
 
   estimateSecondExchange(destCoin, conversionAfterFees) {
-    this.getEstimatedExchange('nav', destCoin, conversionAfterFees)
-    .then((data) => {
-      this.dataBundle.estConvFromNav = data
-
-      if(destCoin === 'nav'){
-        this.dataBundle.changellyFeeTwo = 0
-      } else {
-        this.dataBundle.changellyFeeTwo = this.dataBundle.estConvFromNav * this.CHANGELLY_FEE
-      }
-
-      this.validateDataBundle(this.dataBundle)
-      this.dataStored = true
-      this.dataSubject.next(this.dataBundle)
-      this.setIsDataSet(true)
-    })
+    if (destCoin === 'nav') {
+      this.dataBundle.estConvFromNav = new BigNumber(conversionAfterFees, 10).toString()
+      this.sendData()
+    } else {
+     this.getEstimatedExchange('nav', destCoin, conversionAfterFees.toString())
+      .then((data) => {
+        this.dataBundle.estConvFromNav = new BigNumber(data, 10).round(8).toString()
+        this.sendData()
+      })
+    }
   }
 
-  validateFormData(dataBundle):void {
-    if(!Number.isInteger(dataBundle.transferAmount)){
+
+  sendData(){
+    this.validateDataBundle(this.dataBundle)
+    this.dataBundle.changellyFeeOne = this.dataBundle.changellyFeeOne.toString()
+    this.dataBundle.estConvToNav = this.dataBundle.estConvToNav.toString()
+    this.dataStored = true
+    this.dataSubject.next(this.dataBundle)
+    this.setDataStatus('set')
+  }
+
+  validateFormData(dataBundle): void {
+    if(dataBundle.transferAmount === undefined){
       this.pushError(dataBundle, 'invalidTransferAmount')
     }
     if(dataBundle.originCoin === 'nav' && dataBundle.destCoin === 'nav') {
       this.pushError(dataBundle, 'navToNavTransfer')
     }
-    if(dataBundle.transferAmount < this.getMinTransferAmount(dataBundle.originCoin, 'nav')) {
-      this.pushError(dataBundle, 'transferTooSmall')
-    }
+    this.getMinTransferAmount(dataBundle.originCoin, 'nav')
+    .then((minAmount) => {
+      if(new BigNumber(dataBundle.transferAmount, 10).lessThan(new BigNumber(minAmount, 10))) {
+        this.pushError(dataBundle, 'transferTooSmall')
+        dataBundle.minTransferAmount = new BigNumber(minAmount, 10).round(8).toString()
+      }
+    })
   }
 
   validateDataBundle(dataBundle) {
-    if((dataBundle.estConvToNav - dataBundle.changellyFeeOne ) > this.MAX_NAV_PER_TRADE) {
+    if((dataBundle.estConvToNav.minus(dataBundle.changellyFeeOne)).greaterThan(this.MAX_NAV_PER_TRADE)) {
       this.pushError(dataBundle, 'transferTooLarge')
     }
     if(!this.checkAddressIsValid(dataBundle.destAddr)) {
@@ -135,7 +186,7 @@ export class SendPageDataService {
     // }
   }
 
- pushError(dataBundle, error):void {
+ pushError(dataBundle, error): void {
    if(!dataBundle.errors) {
      dataBundle.errors = []
    }
@@ -170,4 +221,16 @@ export class SendPageDataService {
       })
     })
   }
+
+  getEta(originCoin, destCoin) {
+    return new Promise<any>( resolve => {
+      this.changellyApi.getEta(originCoin, destCoin)
+      .subscribe( data => {
+        resolve(data)
+      }, (err) => {
+        resolve (err)
+      })
+    })
+  }
+
 }

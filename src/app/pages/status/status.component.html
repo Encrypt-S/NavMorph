@@ -32,7 +32,7 @@
         <div class="col s12 m6">
           <div class="">Status: {{orderStatus}}</div>
           <div class="">Amount Due: {{orderAmount}} {{sourceCurrency | uppercase}}</div>
-          <div class="">Est. wait time: {{waitTimeLow}}~{{waitTimeHigh}}</div>
+          <div class=""><span *ngIf="orderStatus === 'created'">(If sent now) </span>Should arrive in: {{waitTimeLow.toLocaleString()}} ~ {{waitTimeHigh.toLocaleString()}}</div>
           <div class="">Est. Fee: {{estFee}}</div>
           <div *ngIf="sourceCurrency === destCurrency">Currency: {{sourceCurrency | uppercase}}</div>
           <div *ngIf="sourceCurrency !== destCurrency">
