@@ -35,8 +35,6 @@ import { ChangellyApiService }  from './services/changelly-api/changelly-api'
 import { SendPageDataService } from './services/send-page-data/send-page-data'
 import { GenericSocketService }  from './services/generic-socket/generic-socket'
 import { GenericFunctionsService } from './services/generic-functions/generic-functions'
-import { TestSocketInterfaceComponent } from './components/test-socket-interface/test-socket-interface.component'
-
 
 @NgModule({
   declarations: [
