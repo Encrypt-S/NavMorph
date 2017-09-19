@@ -6,6 +6,8 @@ import { ChangellyApiService } from '../../services/changelly-api/changelly-api'
 import { GenericFunctionsService } from '../../services/generic-functions/generic-functions';
 
 import { changellyConstData } from "../../services/config";
+import BigNumber from 'bignumber.js'
+
 
 @Component({
   selector: 'status-component',
@@ -14,20 +16,19 @@ import { changellyConstData } from "../../services/config";
 })
 export class StatusComponent implements OnInit {
 
-  transferAmount: number
+  transferAmount: string
   originCoin: string
   destCoin: string
   destAddr: string
-  formDataSet: boolean = false
+  formDataStatus: string = 'unset'
+  statusUntouched: boolean = true
 
+  estConvToNav: string
+  estConvFromNav: string
   etaMin: string
   etaMax: string
-  estConvToNav: number
-  estConvFromNav: number
 
-  changellyFeeOne: number
-  changellyFeeTwo: number
-  navTechFee: number
+  estimatedFees: string
   formData: object = {}
   MAX_NAV_PER_TRADE = changellyConstData.MAX_NAV_PER_TRADE
 
@@ -53,22 +54,21 @@ export class StatusComponent implements OnInit {
   }
 
   getDataStatusStream() {
-    this.dataServ.getDataStatusStream().subscribe(dataIsSet => {
-      this.formDataSet = dataIsSet
+    this.dataServ.getDataStatusStream().subscribe(dataStatus => {
+      this.formDataStatus = dataStatus
     })
   }
 
-  updateComponent(formData): void {
+  updateComponent(formData):void {
     this.transferAmount = formData.transferAmount
     this.originCoin = formData.originCoin
     this.destCoin = formData.destCoin
     this.destAddr = formData.destAddr
     this.estConvToNav = formData.estConvToNav
     this.estConvFromNav = formData.estConvFromNav
-    this.changellyFeeOne = formData.changellyFeeOne
-    this.navTechFee = formData.navTechFee
-    this.changellyFeeTwo= formData.changellyFeeTwo
-    this.etaMin = this.genFuncs.calculateOrderEst(formData.eta[0]).toLocaleString()
-    this.etaMax = this.genFuncs.calculateOrderEst(formData.eta[1]).toLocaleString()
+    this.estimatedFees = formData.estimatedFees
+    console.log(formData.estTime[0])
+    this.etaMin = formData.estTime[0]
+    this.etaMax = formData.estTime[1]
   }
 }

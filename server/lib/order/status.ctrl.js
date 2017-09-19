@@ -30,7 +30,6 @@ OrderStatusCtrl.getOrder = (req, res) => {
 OrderStatusCtrl.checkOrderExists = (params, ipAddress, polymorphId, orderPassword, res) => {
   TransactionCtrl.internal.checkIfIdExists(polymorphId)
   .then((orderExists) => {
-    console.log(orderExists)
     if (orderExists) {
       OrderStatusCtrl.getOrderFromDb(params, ipAddress, polymorphId, orderPassword, res)
     } else if (orderArr[0].length === 0) { 
@@ -46,7 +45,6 @@ OrderStatusCtrl.getOrderFromDb = (params, ipAddress, polymorphId, orderPassword,
   TransactionCtrl.internal.getOrder(polymorphId, orderPassword)
   .then((orderArr) => {
     const order = orderArr[0]
-    console.log(orderArr)
     if (!order) { 
       OrderStatusCtrl.checkForSuspiciousActivity(ipAddress, polymorphId, params, res)  
     } else if (order.order_status === 'abandoned') {
