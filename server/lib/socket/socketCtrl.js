@@ -48,7 +48,7 @@ socketCtrl = {}
     setInterval(() => {
       serverModeCtrl.checkMode()
       .then((mode) => {
-        socket.emit('message', {type:'server-mode', text: mode})
+        socket.emit('server-mode', mode[0].server_mode)
       })
     }, 1000)
   }
