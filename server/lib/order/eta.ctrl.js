@@ -9,7 +9,7 @@ const EtaCtrl = {}
 
 
 EtaCtrl.generateEstimate = (req, res) => {
-  EtaCtrl.getEta('estimate', undefined, req.params.originCoin, req.params.destCoin)
+  EtaCtrl.getEta('estimate', undefined, req.params.from, req.params.to)
     .then((eta) => {
       res.send(eta)
     })

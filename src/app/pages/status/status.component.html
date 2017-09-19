@@ -1,6 +1,11 @@
 <div class="container content">
   <div *ngIf="isLoading">Page Loading</div>
   <div *ngIf="!isLoading">
+    <div *ngIf="ipBlocked">
+      <h3>IP Address Blocked</h3>
+      <div>We've detected suspicious behaviour from your IP Address, so we have temporarily blocked any requests from this address.</div>
+    </div>
+    
     <div *ngIf="orderFail">
       <h3>Order Not Found</h3>
       <div>Either the Order ID, Password, or both, are incorrect. Please ensure you have the correct Order ID and Password</div>
