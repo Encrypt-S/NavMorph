@@ -68,6 +68,15 @@ pem.createCertificate({ days: 1, selfSigned: true }, (error, keys) => {
   .catch((err) => {
     Logger.writeLog('001', 'Failed to start up Test Socket', err, true)
   })
+  .then(() => {
+    socketCtrl.setupServerModeSocket(io)
+  })
+  .then(() => {
+    Logger.writeLog('n/a', 'Server Mode Socket Running', null, false)
+  })
+  .catch((err) => {
+    Logger.writeLog('001', 'Failed to start up Test Socket', err, true)
+  })
 
   server.listen(port, () => {
     Logger.writeLog('n/a', `API running on https://localhost:${port}`, null, false)

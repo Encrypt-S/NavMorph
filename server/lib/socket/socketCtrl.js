@@ -1,10 +1,30 @@
 socketIo =  require('socket.io')
+serverModeCtrl = require('../db/serverMode.ctrl')
 
 
 socketCtrl = {}
   socketCtrl.testSocketLoop = true
 
   socketCtrl.setupTestSocket = (socket) => {
+    return new Promise((fufill, reject) => {    
+      try {
+        // socket.on('connection', function(socket){
+        //   console.log('a user connected')
+        //   socket.on('disconnect', function(){
+        //     console.log('USER DISCONNECTED')
+        //   })
+        //   socket.on('add-message', (message) => {
+        //     socket.emit('message', {type:'new-message', text: message})
+        //   })
+        // })
+        fufill()
+      } catch (e) {
+        reject(e)
+      }
+    })
+  }
+
+  socketCtrl.setupServerModeSocket = (socket) => {
     return new Promise((fufill, reject) => {    
       try {
         socket.on('connection', function(socket){
@@ -16,7 +36,7 @@ socketCtrl = {}
             socket.emit('message', {type:'new-message', text: message})
           })
         })
-        socketCtrl.startWatch(socket)
+        socketCtrl.startServerModeWatch(socket)
         fufill()
       } catch (e) {
         reject(e)
@@ -24,12 +44,13 @@ socketCtrl = {}
     })
   }
 
-  socketCtrl.startWatch = (socket) => {
+  socketCtrl.startServerModeWatch = (socket) => {
     setInterval(() => {
-      if (socketCtrl.testSocketLoop) {
-        //socket.emit('message', {type:'new-message', text: new Date().toString()})
-      }
-    }, 1000, socketCtrl.testSocketLoop)
+      serverModeCtrl.checkMode()
+      .then((mode) => {
+        socket.emit('message', {type:'server-mode', text: mode})
+      })
+    }, 1000)
   }
 
 module.exports = socketCtrl
