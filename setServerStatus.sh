@@ -5,10 +5,15 @@
 set_status () { 
   echo "Updating server status to $1"
   
-  mongo polymorph --eval "db.servermodes.update({}, {'server_mode': $1})"
-  mongo polymorph --eval "db.servermodes.update({}, {'server_mode': $1})"
-  
+  echo "Calling: mongo polymorph --eval \"db.servermodes.update({}, {'server_mode': '$1'})\""
+  echo "--------"
+  mongo polymorph --eval "db.servermodes.update({}, {'server_mode': '$1'})" 
+  echo "--------"
   echo "Server status updated"
+  echo "Fetching server mode"
+  echo "--------"
+  mongo polymorph --eval "db.servermodes.find({})" 
+  echo "--------"
   exit
 }
 
@@ -19,5 +24,6 @@ elif [ $# -gt 1 ]; then
     echo "You have used too many arguments."
     echo "Usage: setServerStatus <status>"
 else 
-  set_status
+  echo $1
+  set_status $1
 fi 
