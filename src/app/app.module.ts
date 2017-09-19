@@ -28,12 +28,12 @@ import { LoaderComponent } from './components/loader/loader.component'
 import { TileComponent } from './components/tile/tile.component'
 import { StatusComponent } from './components/status/status.component'
 import { SendCoinsFormComponent } from './components/send-coins-form/send-coins-form.component'
+import { TestSocketInterfaceComponent } from './components/test-socket-interface/test-socket-interface.component'
 
 import { GenericNodeApiService }  from './services/generic-node-api/generic-node-api'
 import { ChangellyApiService }  from './services/changelly-api/changelly-api'
 import { SendPageDataService } from './services/send-page-data/send-page-data'
-import { TestSocketInterfaceComponent } from './components/test-socket-interface/test-socket-interface.component'
-
+import { GenericSocketService }  from './services/generic-socket/generic-socket'
 
 
 @NgModule({
@@ -67,7 +67,12 @@ import { TestSocketInterfaceComponent } from './components/test-socket-interface
     ClipboardModule,
     RouterModule.forRoot(routes)
   ],
-  providers: [GenericNodeApiService, ChangellyApiService, SendPageDataService],
+  providers: [
+    GenericNodeApiService, 
+    ChangellyApiService, 
+    SendPageDataService,
+    GenericSocketService,
+  ],    
   bootstrap: [AppComponent]
 })
 export class AppModule { }
