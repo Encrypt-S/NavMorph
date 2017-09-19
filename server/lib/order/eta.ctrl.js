@@ -9,7 +9,7 @@ const EtaCtrl = {}
 
 
 EtaCtrl.generateEstimate = (req, res) => {
-  EtaCtrl.getEta('estimate', undefined, req.params.from, req.params.to)
+  EtaCtrl.getEta('ESTIMATE', undefined, req.params.from, req.params.to)
     .then((eta) => {
       res.send(eta)
     })
@@ -24,7 +24,7 @@ EtaCtrl.getEta = (status, timeSent, originCoin, destCoin) => {
     if(!EtaCtrl.validStatus(status)) {
       reject(new Error('Invalid order status'))
       return
-    } else if (status === 'finished' && !(timeSent instanceof Date)) {
+    } else if (status === 'FINISHED' && !(timeSent instanceof Date)) {
       reject(new Error('Invalid sending time'))
       return
     }
@@ -44,14 +44,14 @@ EtaCtrl.buildEta = (status, timeSent, originCoin, destCoin) => {
   let etaMax = 0
 
   switch(status) {
-    case 'completed': 
-    case 'abandoned':
-    case 'failed':
-    case 'refunded':
-    case 'expired':
+    case 'COMPLETED': 
+    case 'ABANDONED':
+    case 'FAILED':
+    case 'REFUNDED':
+    case 'EXPIRED':
       break
-    case 'created':
-    case 'estimate':
+    case 'CREATED':
+    case 'ESTIMATE':
       etaMin = timeConsts.navTech[0] + timeConsts.changelly[0]*2
       etaMax = timeConsts.navTech[1] + timeConsts.changelly[1]*2
       if (originCoin === 'nav' || destCoin === 'nav') {
@@ -59,7 +59,7 @@ EtaCtrl.buildEta = (status, timeSent, originCoin, destCoin) => {
         etaMax -= timeConsts.changelly[1]
       }
       break
-    case 'confirming':
+    case 'CONFIRMING':
       etaMin = timeConsts.navTech[0] + timeConsts.changelly[0]
       etaMax = timeConsts.navTech[1] + timeConsts.changelly[1]
       if (destCoin === 'nav') {
@@ -67,8 +67,8 @@ EtaCtrl.buildEta = (status, timeSent, originCoin, destCoin) => {
         etaMax -= timeConsts.changelly[1]
       }
       break
-    case 'exchanging':
-    case 'sending':
+    case 'EXCHANGING':
+    case 'SENDING':
       etaMin = timeConsts.navTech[0] + timeConsts.changelly[0]
       etaMax = timeConsts.navTech[1] + timeConsts.changelly[1]
       if (destCoin === 'nav') {
@@ -76,7 +76,7 @@ EtaCtrl.buildEta = (status, timeSent, originCoin, destCoin) => {
         etaMax -= timeConsts.changelly[1]
       }
       break
-    case 'finished':
+    case 'FINISHED':
       etaMin = timeConsts.navTech[0] + timeConsts.changelly[0]
       etaMax = timeConsts.navTech[1] + timeConsts.changelly[1]
       const modifiedMinMax = EtaCtrl.factorTimeSinceSending(min, max, timeSent)
