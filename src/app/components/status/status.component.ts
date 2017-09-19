@@ -60,41 +60,15 @@ export class StatusComponent implements OnInit {
   }
 
   updateComponent(formData):void {
-    this.transferAmount = this.formatNumber(formData.transferAmount.toString())
+    this.transferAmount = formData.transferAmount
     this.originCoin = formData.originCoin
     this.destCoin = formData.destCoin
     this.destAddr = formData.destAddr
     this.estConvToNav = formData.estConvToNav
-    this.estConvFromNav = this.formatNumber(formData.estConvFromNav)
-    this.estimatedFees = this.formatNumber(formData.estimatedFees)
-    this.etaMin = this.genFuncs.calculateOrderEst(formData.estTime[0]).toLocaleString()
-    this.etaMax = this.genFuncs.calculateOrderEst(formData.estTime[1]).toLocaleString()
-  }
-
-  formatNumber(numberStr) {
-    if( numberStr.indexOf('.') > -1) {
-      const splitArr = numberStr.split('.')
-
-      let firstString = splitArr[0].toString()  
-      let secondString = splitArr[1].toString()
-
-      firstString = this.insertComma(firstString)
-      
-      return firstString + '.' + secondString
-    } else {
-      return this.insertComma(numberStr)
-    }
-  }
-
-  insertComma(str) {
-    const length = str.length
-    let modifiedStr = str
-    for (var i = length; i >= 1; i = i-3) {
-      if (i <= 3) {
-        break
-      } 
-      modifiedStr =  modifiedStr.slice(0, i-3) + ',' +  modifiedStr.slice(i-3)  
-    }
-    return modifiedStr
+    this.estConvFromNav = formData.estConvFromNav
+    this.estimatedFees = formData.estimatedFees
+    console.log(formData.estTime[0])
+    this.etaMin = formData.estTime[0]
+    this.etaMax = formData.estTime[1]
   }
 }
