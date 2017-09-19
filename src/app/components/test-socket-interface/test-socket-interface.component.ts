@@ -1,7 +1,9 @@
-import { Component, OnInit, OnDestroy} from '@angular/core';
-import { Observable } from 'rxjs/Observable';
+import { Component, OnInit, OnDestroy} from '@angular/core'
+import { Observable } from 'rxjs/Observable'
 
-import * as io from 'socket.io-client';
+import * as io from 'socket.io-client'
+
+import { GenericSocketService } from '../../services/generic-socket/generic-socket'
 
 @Component({
   selector: 'test-socket-interface',
@@ -10,44 +12,35 @@ import * as io from 'socket.io-client';
 })
 export class TestSocketInterfaceComponent implements OnInit, OnDestroy {
 
-  private url = 'https://localhost:3000';
+  private socketUrl = 'https://localhost:3000'
 
-  private socket;
+  private socket
 
   messages: any = [{text: 'sample message'}]
   connection
   message
 
-  constructor() { }
+  constructor(private genericSocket: GenericSocketService ) {}
 
   ngOnInit() {
-    this.connection = this.getMessages().subscribe(message => {
-      this.messages.push(message);
+    this.connection = this.genericSocket.getMessages(this.socketUrl, 'message').subscribe((message) => {
+      console.log(message)
+      if(this.messages.length > 5) {
+        this.messages = []
+      }
+      this.messages.push(message)
     })
   }
 
   ngOnDestroy() {
-    this.connection.unsubscribe();
+    this.connection.unsubscribe()
   }
 
-  sendMessage(message) {
-    this.socket.emit('add-message', message);
-    console.log("MESSAGE SENT", message);
-    this.message = '';  
-  }
-
-  getMessages() {
-
-    let observable = new Observable(observer => {
-      this.socket = io(this.url);
-      this.socket.on('message', (data) => {
-        observer.next(data);
-      });
-      return () => {
-        this.socket.disconnect();
-      }
-    })
-    return observable;
+  sendMessage(messageType, messageContent) {
+    this.genericSocket.sendMessage(messageType, messageContent)
+    console.log("MESSAGE SENT", messageContent)
+    this.message = ''  
   }
 
 }
+
