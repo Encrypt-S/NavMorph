@@ -16,8 +16,8 @@ fi
 set_status () { 
   echo "Updating server status to $1"
   
-  mongo polymorph --eval "db.server_mode.update({}, {'server_mode': $1})"
-  mongo polymorph --eval "db.server_mode.update({}, {'server_mode': $1})"
+  mongo polymorph --eval "db.serverModes.update({}, {'server_mode': $1})"
+  mongo polymorph --eval "db.serverModes.update({}, {'server_mode': $1})"
   
   echo "Server status updated"
   exit
