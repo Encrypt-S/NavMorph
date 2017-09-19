@@ -108,23 +108,23 @@ export class StatusPage implements OnInit {
 
   interpretStatus(status: string): string {
     switch (status) {
-      case 'completed':
+      case 'COMPLETED':
         return 'Completed'
-      case 'abandoned':
+      case 'ABANDONED':
         return 'Abandoned'
-      case 'expired':
+      case 'EXPIRED':
          return 'Expired'
-      case 'created':
+      case 'CREATED':
         return 'Created'
-      case 'confirming':
+      case 'CONFIRMING':
        return 'Received'
-      case 'exchanging':
-      case 'sending':
+      case 'EXCHANGING':
+      case 'SENDING':
         return 'Exchanging'
-      case 'finished':
+      case 'FINISHED':
         return 'Sent'
-      case 'failed':
-      case 'refunded':
+      case 'FAILED':
+      case 'REFUNDED':
       default:
         return 'Error'
     }
