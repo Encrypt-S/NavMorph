@@ -1,12 +1,5 @@
 const mongoose = require('mongoose')
 
-mongoose.Promise = global.Promise
-
-const mongoDB = 'mongodb://127.0.0.1/polymorph'
-mongoose.connect(mongoDB)
-const db = mongoose.connection
-db.on('error', console.error.bind(console, 'MongoDB connection error:'))
-
 // Define schema
 
 const Schema = mongoose.Schema
@@ -24,6 +17,7 @@ const Transaction = new Schema({
   order_status: { type: String, required: true },
   delay: { type: Number, min: 0, max: 604800 }, // 1 week max delay
   created: { type: Date, required: true },
+  sent: { type: Date, required: false },
 })
 
 // Compile model from schema

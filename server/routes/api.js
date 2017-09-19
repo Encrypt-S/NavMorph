@@ -6,6 +6,7 @@ const rpcGetNewAddress = require('../lib/rpc/get-new-address')
 const TransactionCtrl = require('../lib/db/transaction.ctrl')
 const ChangellyCtrl = require('../lib/changelly/changelly.ctrl')
 const OrderCtrl = require('../lib/order/order.ctrl')
+const EtaCtrl = require('../lib/order/eta.ctrl')
 const OrderStatusCtrl = require('../lib/order/status.ctrl')
 
 router.get('/', (req, res) => res.send('api works'))
@@ -20,6 +21,8 @@ router.get('/changelly/getMinAmount/:from/:to', ChangellyCtrl.getMinAmount)
 router.get('/changelly/getExchangeAmount/:from/:to/:amount', ChangellyCtrl.getExchangeAmount)
 
 router.get('/changelly/generateAddress/:from/:to/:address/:extraId', ChangellyCtrl.generateAddress)
+
+router.get('/changelly/getEta/:from/:to/', EtaCtrl.generateEstimate)
 
 router.get('/order/createOrder/:from/:to/:address/:amount/:extraId', OrderCtrl.createOrder)
 router.get('/order/getOrder/:orderId/:orderPassword', OrderStatusCtrl.getOrder)

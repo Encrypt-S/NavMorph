@@ -32,6 +32,7 @@ import { SendCoinsFormComponent } from './components/send-coins-form/send-coins-
 import { GenericNodeApiService }  from './services/generic-node-api/generic-node-api'
 import { ChangellyApiService }  from './services/changelly-api/changelly-api'
 import { SendPageDataService } from './services/send-page-data/send-page-data'
+import { GenericFunctionsService } from './services/generic-functions/generic-functions'
 import { TestSocketInterfaceComponent } from './components/test-socket-interface/test-socket-interface.component'
 
 
@@ -67,7 +68,12 @@ import { TestSocketInterfaceComponent } from './components/test-socket-interface
     ClipboardModule,
     RouterModule.forRoot(routes)
   ],
-  providers: [GenericNodeApiService, ChangellyApiService, SendPageDataService],
+  providers: [
+    GenericNodeApiService,
+    ChangellyApiService,
+    SendPageDataService,
+    GenericFunctionsService,
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

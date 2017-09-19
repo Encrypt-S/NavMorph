@@ -1,3 +1,5 @@
+import BigNumber from 'bignumber.js'
+
 export const changellyNodeApiEndPoints = {
   getCurrencies: 'getCurrencies',
   getMinAmount: 'getMinAmount',
@@ -5,6 +7,7 @@ export const changellyNodeApiEndPoints = {
   getGenerateAddress: 'generateAddress',
   getTransaction: 'getTransactions',
   getExchangeStatus: 'getStatus',
+  getEta: 'getEta',
 }
 
 export const orderNodeApiEndPoints = {
@@ -12,6 +15,7 @@ export const orderNodeApiEndPoints = {
   getOrder: 'getOrder',
   getOrderStatus: 'getOrderStatus',
   abandonOrder: 'abandonOrder',
+  getEta: 'getEta',
 }
 
 export const nodeApiBaseUrl = 'https://localhost:3000/api/'
@@ -19,19 +23,20 @@ export const nodeApiBaseUrl = 'https://localhost:3000/api/'
 export const changellyConstData = {
   'CHANGELLY_FEE': 0.005,
   'NAVTECH_FEE': 0.005,
+
   'MAX_NAV_PER_TRADE': 10000,
 }
 
 export interface dataBundleTemplate {
-  transferAmount?: number,
+  transferAmount?: string,
   originCoin?: string,
   destCoin?: string,
   destAddr?: string,
-  estConvToNav?: number,
-  estConvFromNav?: number,
+  estConvToNav?: any,
+  estConvFromNav?: string,
   estTime?: any,
-  changellyFeeOne?: number,
-  navTechFee?: number,
-  changellyFeeTwo?: number,
+  estimatedFees?: string,
+  changellyFeeOne?: any,
+  minTransferAmount?:string
   errors?: Array<string>
 }
