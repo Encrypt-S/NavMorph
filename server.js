@@ -62,21 +62,12 @@ pem.createCertificate({ days: 1, selfSigned: true }, (error, keys) => {
   server = https.createServer(sslOptions, app)
   io = require('socket.io')(server);
 
-  socketCtrl.setupTestSocket(io)
-  .then(() => {
-    Logger.writeLog('n/a', 'Test Socket Running', null, false)
-  })
-  .catch((err) => {
-    Logger.writeLog('001', 'Failed to start up Test Socket', err, true)
-  })
-  .then(() => {
-    socketCtrl.setupServerModeSocket(io)
-  })
+  socketCtrl.setupServerModeSocket(io)
   .then(() => {
     Logger.writeLog('n/a', 'Server Mode Socket Running', null, false)
   })
   .catch((err) => {
-    Logger.writeLog('001', 'Failed to start up Test Socket', err, true)
+    Logger.writeLog('001', 'Failed to start up Server Mode Socket', err, true)
   })
 
   server.listen(port, () => {
