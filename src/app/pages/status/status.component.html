@@ -14,7 +14,7 @@
     <div class="" *ngIf="orderSuccess">
       <h2>Order Status</h2>
       <div class="row">
-        <div class="col s12 m6">
+        <div class="col s12 m6" *ngIf="orderStatus === 'created'">
           <div class="">
             Please transfer EXACTLY {{orderAmount}} {{sourceCurrency | uppercase}} in ONE transaction to the following address.<br>
             Transferring an incorrect amount may result in lost currency!
@@ -30,7 +30,8 @@
 
 
         <div class="col s12 m6">
-          <div class="">Status: {{orderStatus}}</div>
+          <div class="">Status: {{interpretStatus(orderStatus)}}</div>
+          <div class="">Changelly Order Number: {{changellyOrderNumber}}</div>
           <div class="">Amount Due: {{orderAmount}} {{sourceCurrency | uppercase}}</div>
           <div class=""><span *ngIf="orderStatus === 'created'">(If sent now) </span>Should arrive at: {{waitTimeLow.toLocaleString()}} ~ {{waitTimeHigh.toLocaleString()}}</div>
           <div class="">Est. Fee: {{estFee}}</div>
@@ -39,8 +40,14 @@
             <div class="">Source Currency: {{sourceCurrency | uppercase}}</div>
             <div class="">Dest Currency: {{destCurrency | uppercase}}</div>
           </div>
-          <button class="btn waves-effect waves-light bg-blue" type="submit" name="action" (click)=abandonOrder()>Cancel Order</button>
+          <button class="btn waves-effect waves-light bg-blue" type="submit" 
+            name="action" (click)=abandonOrder() *ngIf="orderStatus === 'created'">
+            Cancel Order
+          </button>
 
+        </div>
+        <div class="">
+          <a href="https://polymorph.freshdesk.com/support/login" target="_blank">If you have any issues, click here for our help desk.</a>
         </div>
 
         <div class="">
