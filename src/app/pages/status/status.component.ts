@@ -37,8 +37,8 @@ export class StatusPage implements OnInit {
   abandonStatus: string
   isCopied: boolean
 
-  waitTimeLow: Date
-  waitTimeHigh: Date
+  waitTimeLow: string
+  waitTimeHigh: string
 
   constructor(
     private OrderService: OrderService,
@@ -85,8 +85,8 @@ export class StatusPage implements OnInit {
     this.estFee = "10 NAV"
     this.sourceCurrency = mainData.input_currency
     this.destCurrency = mainData.output_currency
-    this.waitTimeLow = this.GenericFuncs.calculateOrderEst(minMax[0])
-    this.waitTimeHigh = this.GenericFuncs.calculateOrderEst(minMax[1])
+    this.waitTimeLow = '' + minMax[0] + ' mins'
+    this.waitTimeHigh = '' + minMax[1] + ' mins'
   }
 
   abandonOrder() {

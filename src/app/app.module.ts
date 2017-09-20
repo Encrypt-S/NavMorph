@@ -33,6 +33,7 @@ import { GenericNodeApiService }  from './services/generic-node-api/generic-node
 import { ChangellyApiService }  from './services/changelly-api/changelly-api'
 import { SendPageDataService } from './services/send-page-data/send-page-data'
 import { GenericFunctionsService } from './services/generic-functions/generic-functions'
+import { TestSocketInterfaceComponent } from './components/test-socket-interface/test-socket-interface.component'
 
 
 
@@ -55,6 +56,7 @@ import { GenericFunctionsService } from './services/generic-functions/generic-fu
     SendCoinsFormComponent,
     HeroBannerSection,
     StatusComponent,
+    TestSocketInterfaceComponent,
   ],
   imports: [
     FormsModule,
