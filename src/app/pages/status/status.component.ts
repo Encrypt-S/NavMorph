@@ -29,6 +29,7 @@ export class StatusPage implements OnInit {
 
   orderAmount: string
   changellyAddress: string
+  changellyOrderNumber: string
   orderStatus: string
   estFee: string
   sourceCurrency: string
@@ -80,6 +81,7 @@ export class StatusPage implements OnInit {
     this.orderAmount = mainData.order_amount
     this.changellyAddress = mainData.changelly_address_one
     this.orderStatus = mainData.order_status
+    this.changellyOrderNumber = mainData.changelly_id
     this.estFee = "10 NAV"
     this.sourceCurrency = mainData.input_currency
     this.destCurrency = mainData.output_currency
@@ -102,5 +104,29 @@ export class StatusPage implements OnInit {
         this.abandonStatus = 'Failed to Abandon Order'
       }
     })
+  }
+
+  interpretStatus(status: string): string {
+    switch (status) {
+      case 'COMPLETED':
+        return 'Completed'
+      case 'ABANDONED':
+        return 'Abandoned'
+      case 'EXPIRED':
+         return 'Expired'
+      case 'CREATED':
+        return 'Created'
+      case 'CONFIRMING':
+       return 'Received'
+      case 'EXCHANGING':
+      case 'SENDING':
+        return 'Exchanging'
+      case 'FINISHED':
+        return 'Sent'
+      case 'FAILED':
+      case 'REFUNDED':
+      default:
+        return 'Error'
+    }
   }
 }
