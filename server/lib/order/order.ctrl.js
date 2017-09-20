@@ -3,11 +3,30 @@ const Keygen = require('generate-key')
 const GetNewAddress = require('../rpc/get-new-address')
 const ChangellyCtrl = require('../changelly/changelly.ctrl')
 const TransactionCtrl = require('../db/transaction.ctrl')
+const ServerModeCtrl = require('../db/serverMode.ctrl')
 const Logger = require('../logger')
 
 const OrderCtrl = {}
 
 OrderCtrl.createOrder = (req, res) => {
+  OrderCtrl.checkForMaintenance()
+  .then((maintenanceActive) => {
+    if(maintenanceActive) {
+      res.send(JSON.stringify({
+        status: 200,
+        type: 'MAINTENANCE',
+        data: [],
+      }))
+      return
+    }
+    OrderCtrl.validateOrder(req, res)
+  })
+  .catch((error) => {
+    OrderCtrl.handleError(error, res, '002')
+  })
+}
+
+OrderCtrl.validateOrder = (req, res) => {
   OrderCtrl.validateParams(req)
   .then(() => {
     OrderCtrl.beginOrderCreation(req, res)
@@ -88,6 +107,21 @@ OrderCtrl.storeOrder = (req, res) => {
     OrderCtrl.handleError(error, res, '007')
   })
 }
+
+OrderCtrl.checkForMaintenance = () => {
+  return new Promise((fulfill, reject) => {
+    serverModeCtrl.checkMode()
+    .then((mode) => {
+      if(mode === 'MAINTENANCE'){
+        fulfill(true)
+      } else {
+        fulfill(false)
+      }      
+    })
+    .catch((err) => reject(err))
+  })
+}
+
 
 OrderCtrl.validateParams = (req) => {
   return new Promise((fulfill, reject) => {

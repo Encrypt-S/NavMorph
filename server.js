@@ -4,8 +4,9 @@ const path = require('path')
 const https = require('https')
 const bodyParser = require('body-parser')
 const pem = require('pem')
-const socketCtrl = require('./server/lib/socket/socketCtrl')
 const mongoose = require('mongoose')
+const socketCtrl = require('./server/lib/socket/socketCtrl')
+
 
 // Get our API routes
 const api = require('./server/routes/api')
@@ -61,12 +62,12 @@ pem.createCertificate({ days: 1, selfSigned: true }, (error, keys) => {
   server = https.createServer(sslOptions, app)
   io = require('socket.io')(server);
 
-  socketCtrl.setupTestSocket(io)
+  socketCtrl.setupServerModeSocket(io)
   .then(() => {
-    Logger.writeLog('n/a', 'Test Socket Running', null, false)
+    Logger.writeLog('n/a', 'Server Mode Socket Running', null, false)
   })
   .catch((err) => {
-    Logger.writeLog('001', 'Failed to start up Test Socket', err, true)
+    Logger.writeLog('001', 'Failed to start up Server Mode Socket', err, true)
   })
 
   server.listen(port, () => {

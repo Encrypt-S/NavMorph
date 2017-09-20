@@ -1,9 +1,12 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ChangellyApiService } from '../../services/changelly-api/changelly-api';
 import { OrderService } from '../../services/order/order';
 import { SendPageDataService } from '../../services/send-page-data/send-page-data';
 import { Router } from '@angular/router';
+import { GenericSocketService } from '../../services/generic-socket/generic-socket'
+
+import * as io from 'socket.io-client'
 
 @Component({
   selector: 'send-coins-form-component',
@@ -17,7 +20,7 @@ import { Router } from '@angular/router';
 })
 
 
-export class SendCoinsFormComponent implements OnInit {
+export class SendCoinsFormComponent implements OnInit, OnDestroy {
 
   @Input() theme: string;
   @Input() loaderTheme: string
@@ -35,11 +38,17 @@ export class SendCoinsFormComponent implements OnInit {
 
   formData: object = {}
 
+  private socketUrl = 'https://localhost:3000'
+  private socket  
+  maintenaceModeActive: boolean = true
+  connection
+
   constructor(
     private changellyApi: ChangellyApiService,
     private dataServ: SendPageDataService,
     private orderServ: OrderService,
     private router: Router,
+    private genericSocket: GenericSocketService,
   ) {
     if(!this.theme){
       this.theme = 'form-dark'
@@ -49,6 +58,22 @@ export class SendCoinsFormComponent implements OnInit {
 
   ngOnInit() {
     this.getCurrencies()
+    this.connectToSocket()
+  }
+
+ ngOnDestroy() {
+    this.connection.unsubscribe()
+  }
+
+  connectToSocket():void {
+    this.connection = this.genericSocket.getMessages(this.socketUrl, 'serverMode').subscribe((serverMode) => {
+      console.log(serverMode)
+      if (serverMode === 'MAINTENANCE') {
+        this.maintenaceModeActive = true
+      } else {
+        this.maintenaceModeActive = false
+      }
+    })
   }
 
   setLoadingState(state):void {
