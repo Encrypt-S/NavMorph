@@ -7,7 +7,7 @@ set_status () {
   
   echo "Calling: mongo polymorph --eval \"db.servermodes.update({}, {'server_mode': '$1'})\""
   echo "--------"
-  mongo polymorph --eval "db.servermodes.update({}, {'server_mode': '$1'})" 
+  mongo polymorph --eval "db.servermodes.update({}, {'server_mode': '$1'},{upsert:true})" 
   echo "--------"
   echo "Server status updated"
   echo "Fetching server mode"
