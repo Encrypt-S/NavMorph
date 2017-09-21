@@ -30,7 +30,7 @@ export class GenericSocketService {
           observer.next(data)
         })
       }
-      if (mode === 'SERVERMODE' || mode === 'ALL') {
+      if (mode === 'SERVER_MODE' || mode === 'ALL') {
         this.socket.on('SERVER_MODE', (data) => {
           observer.next(data)
         })
