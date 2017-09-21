@@ -20,7 +20,7 @@
       <div class="input-field col s3 no-hoz-spacing">
         <!-- TODO: add error indicator when nav to nav transfer detected. Bug with materialize css select stops us from doing this atm -->
         <select materialize="material_select"  [materializeSelectOptions]="currencies" [(ngModel)]="originCoin" (change)="invalidateEstimate()" name="originCoin" [attr.disabled]="isDisabled?true:null">
-          <option *ngFor="let currency of currencies" [value]="currency">{{currency | uppercase}}</option>
+          <option *ngFor="let currency of currencies" [value]="currency">{{currency}}</option>
         </select>
         <label>Source Coin</label>
       </div>
@@ -34,7 +34,7 @@
 
       <div class="input-field col s3 no-hoz-spacing">
         <select materialize="material_select"  [materializeSelectOptions]="currencies" [ngClass]="{'invalid': errors.indexOf('NAV_TO_NAV_TRANSFER') > -1}" [(ngModel)]="destCoin" (change)="invalidateEstimate()" name="destCoin" [attr.disabled]="isDisabled?true:null">
-          <option *ngFor="let currency of currencies" [value]="currency">{{currency | uppercase}}</option>
+          <option *ngFor="let currency of currencies" [value]="currency">{{currency}}</option>
         </select>
         <label>Dest. Coin</label>
       </div>

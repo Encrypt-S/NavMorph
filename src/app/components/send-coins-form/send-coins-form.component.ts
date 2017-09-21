@@ -161,7 +161,7 @@ export class SendCoinsFormComponent implements OnInit, OnDestroy {
       .subscribe(
         currencies => {
           if(this.checkCurrData(currencies))
-            this.currencies = currencies
+            this.currencies = this.formatCurrData(currencies)
             this.isDisabled = false
             this.getFormData()
             this.setLoadingState(false)
@@ -217,5 +217,13 @@ export class SendCoinsFormComponent implements OnInit, OnDestroy {
       return false
     }
     return true
+  }
+
+  formatCurrData(coins) {
+    let formattedCoins = []
+    coins.forEach((coin) => {
+      formattedCoins.push(coin.toUpperCase())
+    })
+    return formattedCoins
   }
 }
