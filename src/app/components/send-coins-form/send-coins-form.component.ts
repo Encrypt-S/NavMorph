@@ -26,13 +26,14 @@ export class SendCoinsFormComponent implements OnInit, OnDestroy {
   @Input() loaderTheme: string
   isDisabled: boolean = true
   currencies: object = ['Loading']
-  transferAmount: number
+  transferAmount: string
   originCoin: string
   destCoin: string
   destAddr: string
   minTransferAmount: number
   estimateValid: boolean = false
   pageLoading: boolean
+  formNotFilled: boolean = true
 
   errors = []
 
@@ -94,11 +95,24 @@ export class SendCoinsFormComponent implements OnInit, OnDestroy {
   }
 
   invalidateEstimate() {
+    this.checkFormFilled()
     this.estimateValid = false
   }
 
   sendForm():void {
+    this.checkFormFilled()
+    if(this.formNotFilled) {
+      return
+    }
     this.storeFormData()
+  }
+
+  checkFormFilled():void {
+    if(this.transferAmount && this.destAddr) {
+      this.formNotFilled = false
+    } else {
+      this.formNotFilled = true
+    }
   }
 
   createOrder(originCoin, destCoin, destAddr, transferAmount):void {
@@ -150,6 +164,7 @@ export class SendCoinsFormComponent implements OnInit, OnDestroy {
 
   clearFormData():void {
     this.dataServ.clearData(true)
+    this.checkFormFilled()
     this.estimateValid = false
     this.originCoin = this.currencies[0]
     this.destCoin = this.currencies[0]
