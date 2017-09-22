@@ -53,12 +53,12 @@ export class SendCoinsFormComponent implements OnInit, OnDestroy {
     if(!this.theme){
       this.theme = 'form-dark'
     }
-    this.getFormDataStream()
   }
 
   ngOnInit() {
-    this.getCurrencies()
     this.connectToSocket()
+    this.getFormDataStream()
+    this.getCurrencies()
   }
 
  ngOnDestroy() {
@@ -67,7 +67,6 @@ export class SendCoinsFormComponent implements OnInit, OnDestroy {
 
   connectToSocket():void {
     this.connection = this.genericSocket.getMessages(this.socketUrl, 'SERVER_MODE').subscribe((serverMode) => {
-      console.log(serverMode)
       if (serverMode === 'MAINTENANCE') {
         this.maintenaceModeActive = true
       } else {
@@ -76,20 +75,28 @@ export class SendCoinsFormComponent implements OnInit, OnDestroy {
     })
   }
 
-  setLoadingState(state):void {
+  setLoadingState(state: boolean):void {
+    console.log('page loading', state)
     this.pageLoading = state
   }
 
   getFormData():void {
+    console.log('get form data')
     this.dataServ.getData()
   }
 
   getFormDataStream() {
     this.dataServ.getDataStream().subscribe(data => {
+      console.log('form data received', data)
       this.errors = []
-      this.formData = data
-      this.checkErrors(data.errors)
-      this.fillForm(this.formData)
+      if (Object.keys(data).length > 0) { 
+        this.formData = data
+        this.checkErrors(data.errors)
+        this.fillForm(this.formData)
+        this.dataServ.setDataStatus('SET')
+      }
+      console.log('data set.' )
+      this.setLoadingState(false)
     })
   }
 
@@ -129,6 +136,7 @@ export class SendCoinsFormComponent implements OnInit, OnDestroy {
         destCoin = this.currencies['0']
     }
     this.dataServ.storeData(this.transferAmount, originCoin, destCoin, this.destAddr)
+    console.log('storing data')
   }
 
   fillForm(data):void {
@@ -146,6 +154,7 @@ export class SendCoinsFormComponent implements OnInit, OnDestroy {
     } else {
       this.estimateValid = false
     }
+    console.log('form filled')
   }
 
   clearFormData():void {
@@ -163,20 +172,14 @@ export class SendCoinsFormComponent implements OnInit, OnDestroy {
           if(this.checkCurrData(currencies))
             this.currencies = this.formatCurrData(currencies)
             this.isDisabled = false
+            console.log('got coins, gettin form data')
             this.getFormData()
-            this.setLoadingState(false)
         },
         error => {
           this.isDisabled = true
           console.log('err', error)
           this.setLoadingState(false)
         })
-  }
-
-  toggleFormState() {
-    setTimeout(() => {
-      this.isDisabled = !this.isDisabled
-    }, 100)
   }
 
   checkErrors(errorBundle) {
@@ -212,7 +215,6 @@ export class SendCoinsFormComponent implements OnInit, OnDestroy {
 
   checkCurrData(data) {
     if(data instanceof Array && data[0] instanceof String ) {
-      console.log(data);
       this.displayError('400')
       return false
     }

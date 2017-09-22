@@ -28,13 +28,15 @@ export class SendPageDataService implements OnInit {
 
   dataSetSubject = new Subject<any>()
 
-  isDataSet: boolean = false
+  dataStatus: string = 'UNSET'
 
   constructor(private changellyApi: ChangellyApiService) { }
 
   getData(): void {
-    if(this.dataStored){
+    if(this.dataStored === true){
       this.dataSubject.next(this.dataBundle)
+    } else {
+      this.dataSubject.next({})    
     }
   }
 
@@ -46,9 +48,9 @@ export class SendPageDataService implements OnInit {
     return this.dataSetSubject.asObservable()
   }
 
-  setDataStatus(isSet): void {
-    this.isDataSet = isSet
-    this.dataSetSubject.next(this.isDataSet)
+  setDataStatus(isSet: string): void {
+    this.dataStatus = isSet
+    this.dataSetSubject.next(this.dataStatus)
   }
 
   clearData(broadcastChanges: boolean ): void {
@@ -58,8 +60,8 @@ export class SendPageDataService implements OnInit {
       this.dataSubject.next(this.dataBundle)
   }
 
-  checkIsDataSet(): boolean {
-    return this.isDataSet
+  checkDataStatus(): string {
+    return this.dataStatus
   }
 
   storeData(transferAmount, originCoin, destCoin, destAddr): void {
@@ -78,7 +80,6 @@ export class SendPageDataService implements OnInit {
     if(this.dataBundle.errors.length > 0) {
       this.dataStored = true
       this.dataSubject.next(this.dataBundle)
-      this.setDataStatus('SET')
       return //validation errors, so return early
     }
     this.estimateFees(originCoin, destCoin, transferAmount)
@@ -155,7 +156,7 @@ export class SendPageDataService implements OnInit {
     this.dataBundle.estConvToNav = this.dataBundle.estConvToNav.toString()
     this.dataStored = true
     this.dataSubject.next(this.dataBundle)
-    this.setDataStatus('SET')
+    console.log('data sent')
   }
 
   validateFormData(dataBundle): void {
