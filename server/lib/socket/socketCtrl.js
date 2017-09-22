@@ -12,8 +12,8 @@ socketCtrl = {}
           socket.on('disconnect', function(){
             console.log('USER DISCONNECTED')
           })
-          socket.on('add-message', (message) => {
-            socket.emit('message', {type:'new-message', text: message})
+          socket.on('ADD_MESSAGE', (message) => {
+            socket.emit('MESSAGE', {type:'NEW_MESSAGE', text: message})
           })
         })
         socketCtrl.startServerModeWatch(socket)
@@ -28,7 +28,7 @@ socketCtrl = {}
     setInterval(() => {
       serverModeCtrl.checkMode()
       .then((mode) => {
-        socket.emit('server-mode', mode[0].server_mode)
+        socket.emit('SERVER_MODE', mode[0].server_mode)
       })
     }, 1000)
   }

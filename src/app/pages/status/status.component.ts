@@ -61,7 +61,7 @@ export class StatusPage implements OnInit {
     this.OrderService.getOrder(this.orderId, this.orderPass)
     .subscribe(data => {
       if (data[0]) {
-        if (data[0] === 'blocked') {
+        if (data[0] === 'BLOCKED') {
           this.ipBlocked = true
         } else {
           this.orderData = data[0]
