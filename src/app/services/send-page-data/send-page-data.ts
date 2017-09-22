@@ -159,11 +159,12 @@ export class SendPageDataService implements OnInit {
   }
 
   validateFormData(dataBundle): void {
-    if(dataBundle.transferAmount === undefined){
-      this.pushError(dataBundle, 'invalidTransferAmount')
-    }
     if(dataBundle.originCoin === 'nav' && dataBundle.destCoin === 'nav') {
       this.pushError(dataBundle, 'navToNavTransfer')
+    }
+    if(dataBundle.transferAmount === undefined){
+      this.pushError(dataBundle, 'invalidTransferAmount')
+      return // If we don't have a number we can't do the test for the next error
     }
     this.getMinTransferAmount(dataBundle.originCoin, 'nav')
     .then((minAmount) => {
