@@ -29,7 +29,9 @@ export class SendPageDataService implements OnInit {
 
   isDataSet: boolean = false
 
-  constructor(private changellyApi: ChangellyApiService) { }
+  previousPageUrl: string
+
+  constructor(private changellyApi: ChangellyApiService) {}
 
   getData(): void {
     if(this.dataStored){

@@ -67,7 +67,6 @@ export class SendCoinsFormComponent implements OnInit, OnDestroy {
 
   connectToSocket():void {
     this.connection = this.genericSocket.getMessages(this.socketUrl, 'serverMode').subscribe((serverMode) => {
-      console.log(serverMode)
       if (serverMode === 'MAINTENANCE') {
         this.maintenaceModeActive = true
       } else {
@@ -137,7 +136,7 @@ export class SendCoinsFormComponent implements OnInit, OnDestroy {
     this.destCoin = data.destCoin
     this.destAddr = data.destAddr
 
-    if( data.errors.length === 0 ) {
+    if( data.errors.length === 0 && this.dataServ.previousPageUrl === '/') {
       this.estimateValid = true
       setTimeout(() => {
         this.estimateValid = false

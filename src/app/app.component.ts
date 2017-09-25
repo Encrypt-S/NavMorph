@@ -2,6 +2,7 @@ import { Component } from '@angular/core'
 import { Router, NavigationStart } from '@angular/router'
 
 import { TitleChangeService } from './services/title-change/title-change'
+import { SendPageDataService } from './services/send-page-data/send-page-data'
 
 @Component({
   selector: 'app-root',
@@ -11,14 +12,19 @@ import { TitleChangeService } from './services/title-change/title-change'
 })
 export class AppComponent {
 
+  previousUrl: string
+
   constructor (
     private _router: Router,
-    private titleChangeService: TitleChangeService ) {
-      _router.events.subscribe((event) => {
-        if(event instanceof NavigationStart) {
-          scroll(0,0)
-          titleChangeService.updateTitle(event)
-        }
-      })
-    }
+    private titleChangeService: TitleChangeService,
+    private sendDataServ: SendPageDataService,
+  ) {
+    _router.events.subscribe((event) => {
+      if(event instanceof NavigationStart) {
+        scroll(0,0)
+        titleChangeService.updateTitle(event)
+        this.sendDataServ.previousPageUrl = _router.url
+      }
+    })
+  }
 }
