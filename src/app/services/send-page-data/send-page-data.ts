@@ -1,4 +1,4 @@
-import { Injectable, OnInit } from '@angular/core';
+import { Injectable, OnInit} from '@angular/core'
 
 import { ChangellyApiService } from '../../services/changelly-api/changelly-api'
 import { GenericFunctionsService } from '../../services/generic-functions/generic-functions'
@@ -6,7 +6,6 @@ import { changellyConstData, dataBundleTemplate } from "../config"
 
 import { Observable } from 'rxjs'
 import { Subject } from 'rxjs/Subject'
-
 import BigNumber from 'bignumber.js'
 
 @Injectable()
