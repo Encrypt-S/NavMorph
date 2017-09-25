@@ -76,18 +76,15 @@ export class SendCoinsFormComponent implements OnInit, OnDestroy {
   }
 
   setLoadingState(state: boolean):void {
-    console.log('page loading', state)
     this.pageLoading = state
   }
 
   getFormData():void {
-    console.log('get form data')
     this.dataServ.getData()
   }
 
   getFormDataStream() {
     this.dataServ.getDataStream().subscribe(data => {
-      console.log('form data received', data)
       this.errors = []
       if (Object.keys(data).length > 0) { 
         this.formData = data
@@ -98,7 +95,6 @@ export class SendCoinsFormComponent implements OnInit, OnDestroy {
       } else if (this.dataServ.checkDataStatus() === 'UNTOUCHED'){
         this.setLoadingState(false)
       }
-      console.log('data set.' )
     })
   }
 
@@ -138,7 +134,6 @@ export class SendCoinsFormComponent implements OnInit, OnDestroy {
         destCoin = this.currencies['0']
     }
     this.dataServ.storeData(this.transferAmount, originCoin, destCoin, this.destAddr)
-    console.log('storing data')
   }
 
   fillForm(data):void {
@@ -156,7 +151,6 @@ export class SendCoinsFormComponent implements OnInit, OnDestroy {
     } else {
       this.estimateValid = false
     }
-    console.log('form filled')
   }
 
   clearFormData():void {
@@ -174,7 +168,6 @@ export class SendCoinsFormComponent implements OnInit, OnDestroy {
           if(this.checkCurrData(currencies))
             this.currencies = this.formatCurrData(currencies)
             this.isDisabled = false
-            console.log('got coins, gettin form data')
             this.getFormData()
         },
         error => {
