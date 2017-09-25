@@ -94,9 +94,11 @@ export class SendCoinsFormComponent implements OnInit, OnDestroy {
         this.checkErrors(data.errors)
         this.fillForm(this.formData)
         this.dataServ.setDataStatus('SET')
+        this.setLoadingState(false)
+      } else if (this.dataServ.checkDataStatus() === 'UNTOUCHED'){
+        this.setLoadingState(false)
       }
       console.log('data set.' )
-      this.setLoadingState(false)
     })
   }
 

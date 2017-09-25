@@ -28,7 +28,7 @@ export class SendPageDataService implements OnInit {
 
   dataSetSubject = new Subject<any>()
 
-  dataStatus: string = 'UNSET'
+  dataStatus: string = 'UNTOUCHED'
 
   constructor(private changellyApi: ChangellyApiService) { }
 
