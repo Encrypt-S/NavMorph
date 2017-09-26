@@ -1,0 +1,54 @@
+{
+  "app": {
+    "static": "string",
+    "apiUri": "string",
+    "catchAllUri": "string"
+  },
+  "serverPort": "number",
+
+  "sslCert": {
+    "days": "number",
+    "selfSigned": "boolean"
+  },
+
+  "mongoDBUrl": "string",
+
+  "version": "string",
+
+  "navClient": {
+    "username": "string",
+    "password": "string",
+    "port": "number",
+    "host": "string"
+  },
+  "changellyApiEndPoints": {
+    "getCurrencies": "string",
+    "getMinAmount": "string",
+    "getExchangeAmount": "string",
+    "generateAddress": "string",
+    "getTransaction": "string",
+    "getExchangeStatus": "string"
+  },
+  "changellyUrl": "string",
+  "changellyKey": "string",
+  "changellySecretKey": "string",
+  "walletKey": "string",
+  "mailSettings": {
+    "smtp": {
+      "user": "string",
+      "pass": "string",
+      "server": "string"
+    },
+    "clientId": "string",
+    "clientSecret": "string",
+    "refreshToken": "string",
+    "notificationEmail": "string",
+    "authCode": "string"
+  },
+  "validOrderStatuses": "array",
+
+  "timeConsts": {
+    "changelly": "array",
+    "navTech": "array"
+  }
+}
