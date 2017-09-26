@@ -1,54 +1,53 @@
 {
   "app": {
-    "static": "string",
-    "apiUri": "string",
-    "catchAllUri": "string"
+    "static": "STRING",
+    "apiUri": "STRING",
+    "catchAllUri": "STRING"
   },
-  "serverPort": "number",
+  "serverPort": "PORT",
 
   "sslCert": {
-    "days": "number",
-    "selfSigned": "boolean"
+    "days": "NUMBER",
+    "selfSigned": "BOOLEAN"
   },
 
-  "mongoDBUrl": "string",
+  "mongoDBUrl": "STRING",
 
-  "version": "string",
+  "version": "STRING",
 
   "navClient": {
-    "username": "string",
-    "password": "string",
-    "port": "number",
-    "host": "string"
+    "username": "STRING",
+    "password": "STRING",
+    "port": "PORT",
+    "host": "STRING"
   },
   "changellyApiEndPoints": {
-    "getCurrencies": "string",
-    "getMinAmount": "string",
-    "getExchangeAmount": "string",
-    "generateAddress": "string",
-    "getTransaction": "string",
-    "getExchangeStatus": "string"
+    "getCurrencies": "STRING",
+    "getMinAmount": "STRING",
+    "getExchangeAmount": "STRING",
+    "generateAddress": "STRING",
+    "getTransaction": "STRING",
+    "getExchangeStatus": "STRING"
   },
-  "changellyUrl": "string",
-  "changellyKey": "string",
-  "changellySecretKey": "string",
-  "walletKey": "string",
+  "changellyUrl": "STRING",
+  "changellyKey": "STRING",
+  "changellySecretKey": "STRING",
   "mailSettings": {
     "smtp": {
-      "user": "string",
-      "pass": "string",
-      "server": "string"
+      "user": "STRING",
+      "pass": "STRING",
+      "server": "STRING"
     },
-    "clientId": "string",
-    "clientSecret": "string",
-    "refreshToken": "string",
-    "notificationEmail": "string",
-    "authCode": "string"
+    "clientId": "STRING",
+    "clientSecret": "STRING",
+    "refreshToken": "STRING",
+    "notificationEmail": "STRING",
+    "authCode": "STRING"
   },
-  "validOrderStatuses": "array",
+  "validOrderStatuses": "ARRAY",
 
   "timeConsts": {
-    "changelly": "array",
-    "navTech": "array"
+    "changelly": "ARRAY",
+    "navTech": "ARRAY"
   }
 }
