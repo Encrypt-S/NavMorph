@@ -20,7 +20,7 @@ export class StatusComponent implements OnInit {
   originCoin: string
   destCoin: string
   destAddr: string
-  formDataStatus: string = 'unset'
+  formDataStatus: string = 'UNSET'
   statusUntouched: boolean = true
 
   estConvToNav: string

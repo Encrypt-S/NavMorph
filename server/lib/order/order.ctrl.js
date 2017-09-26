@@ -48,11 +48,11 @@ OrderCtrl.beginOrderCreation = (req, res) => {
 }
 
 OrderCtrl.getFirstChangellyAddress = (req, res) => {
-  if (req.params.from === 'nav') {
+  if (req.params.from === 'NAV') {
     req.params.changellyAddressOne = req.params.navAddress
     OrderCtrl.getSecondChangellyAddress(req, res)  
   } else {
-    OrderCtrl.getChangellyAddress(req.params.from, 'nav', req.params.navAddress)
+    OrderCtrl.getChangellyAddress(req.params.from, 'NAV', req.params.navAddress)
     .then((address) => {
 
       req.params.changellyAddressOne = address
@@ -65,11 +65,11 @@ OrderCtrl.getFirstChangellyAddress = (req, res) => {
 }
 
 OrderCtrl.getSecondChangellyAddress = (req, res) => {
-  if (req.params.to === 'nav') {
+  if (req.params.to === 'NAV') {
     req.params.changellyAddressTwo = req.params.address
     OrderCtrl.prepForDb(req, res)
   } else {
-    OrderCtrl.getChangellyAddress('nav', req.params.to, req.params.address)
+    OrderCtrl.getChangellyAddress('NAV', req.params.to, req.params.address)
     .then((address) => {
       req.params.changellyAddressTwo = address
       OrderCtrl.prepForDb(req, res)
@@ -148,12 +148,12 @@ OrderCtrl.getNavAddress = () => {
 
 OrderCtrl.getChangellyAddress = (inputCurrency, outputCurrency, destAddress) => {
   return new Promise((fulfill, reject) => {
-    if(outputCurrency === 'nav'){
+    if(outputCurrency === 'NAV'){
       fulfill(destAddress)
     }
     ChangellyCtrl.internal.generateAddress({
-      from: inputCurrency,
-      to: outputCurrency,
+      from: inputCurrency.toLowerCase(),
+      to: outputCurrency.toLowerCase(),
       address: destAddress,
       extraId: null,
     })
