@@ -1,7 +1,8 @@
-import { Component } from '@angular/core';
-import { Router, NavigationStart } from '@angular/router';
+import { Component } from '@angular/core'
+import { Router, NavigationStart } from '@angular/router'
 
-import { TitleChangeService } from './services/title-change/title-change';
+import { ServerMessageDisplayComponent } from './components/server-message-display/server-message-display.component'
+import { TitleChangeService } from './services/title-change/title-change'
 
 @Component({
   selector: 'app-root',
@@ -17,8 +18,8 @@ export class AppComponent {
       _router.events.subscribe ( event => {
         if( event instanceof NavigationStart ){
           scroll(0,0)
-          titleChangeService.updateTitle(event);
+          titleChangeService.updateTitle(event)
         }
-      });
+      })
     }
 }

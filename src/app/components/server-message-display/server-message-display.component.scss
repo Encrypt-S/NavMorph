@@ -1,0 +1,22 @@
+#server-message {}
+
+#message-container {
+  font-size: 16px;
+  padding: 5px 0;
+  text-align: center;
+  color: black;
+}
+
+.info {  
+  background-color: grey;
+}
+
+.warn {
+  background-color: orange;
+  font-weight: bold; 
+}
+
+.error {
+  background-color: red;
+  font-weight: bold; 
+}
