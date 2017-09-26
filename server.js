@@ -13,29 +13,32 @@ const api = require('./server/routes/api')
 const Logger = require('./server/lib/logger')
 
 // Get Config data
-const config = require('./server/config')
+const config = require('./server-settings.json')
+// const validator = require('./server/config-validator')
 
 const app = express()
 
+//validateConfig(config)
+
 // Parsers for POST data
 app.use(bodyParser.json())
-app.use(bodyParser.urlencoded({ extended: false }))
+app.use(bodyParser.urlencoded({extended: false}))
 
 // Point static path to dist
-app.use(express.static(path.join(__dirname, 'dist')))
+app.use(express.static(path.join(__dirname, config.app.static)))
 
 // Set our api routes
-app.use('/api', api)
+app.use(config.app.apiUri, api)
 
 // Catch all other routes and return the index file
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'dist/index.html'))
+  res.sendFile(path.join(__dirname, config.app.catchAllUri))
 })
 
 /**
  * Get port from environment and store in Express.
  */
-const port = process.env.PORT || '3000'
+const port = process.env.PORT || config.serverPort
 app.set('port', port)
 
 /**
@@ -45,7 +48,7 @@ app.set('port', port)
 var server
 var io
 
-pem.createCertificate({ days: 1, selfSigned: true }, (error, keys) => {
+pem.createCertificate(config.sslCert, (error, keys) => {
   if (error) {
     console.log('pem error: ' + error)
   }
@@ -78,8 +81,7 @@ pem.createCertificate({ days: 1, selfSigned: true }, (error, keys) => {
     */
     
     mongoose.Promise = global.Promise
-    
-    const mongoDB = 'mongodb://127.0.0.1/polymorph'
+    const mongoDB = config.mongoDBUrl
     mongoose.connect(mongoDB)
     const db = mongoose.connection
     db.on('error', console.error.bind(console, 'MongoDB connection error:'))
@@ -89,7 +91,6 @@ pem.createCertificate({ days: 1, selfSigned: true }, (error, keys) => {
     Logger.writeLog('n/a', 'Sending start up notification email.', null, false)
     Logger.writeLog('Server Start Up', 'Start Up Complete @' + new Date().toISOString() +
       ', Polymorph Version: ' + config.version, null, true)
-
   })
 })
 
