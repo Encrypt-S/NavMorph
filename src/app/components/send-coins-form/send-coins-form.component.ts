@@ -220,7 +220,7 @@ export class SendCoinsFormComponent implements OnInit, OnDestroy {
   }
 
   formatCurrData(coins) {
-    let formattedCoins = []
+    const formattedCoins = []
     coins.forEach((coin) => {
       formattedCoins.push(coin.toUpperCase())
     })
