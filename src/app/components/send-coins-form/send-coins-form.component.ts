@@ -97,10 +97,10 @@ export class SendCoinsFormComponent implements OnInit, OnDestroy {
     this.invalidateEstimate()
     let removedError
     
-    if (input === 'amount') {
-      removedError = 'invalidTransferAmount'
-    } else if (input === 'input'){
-      removedError = 'invalidDestAddress'
+    if (input === 'AMOUNT') {
+      removedError = 'INVALID_TRANSFER_AMOUNT'
+    } else if (input === 'INPUT'){
+      removedError = 'INVALID_DEST_ADDRESS'
     }
 
     let tempArray = []
