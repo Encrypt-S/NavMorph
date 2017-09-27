@@ -25,7 +25,7 @@ export class SendCoinsFormComponent implements OnInit, OnDestroy {
   @Input() theme: string;
   @Input() loaderTheme: string
   isDisabled: boolean = true
-  currencies: object = ['Loading']
+  currencies: object = ['LOADING']
   transferAmount: string
   originCoin: string
   destCoin: string
@@ -67,7 +67,7 @@ export class SendCoinsFormComponent implements OnInit, OnDestroy {
   }
 
   connectToSocket():void {
-    this.connection = this.genericSocket.getMessages(this.socketUrl, 'serverMode').subscribe((serverMode) => {
+    this.connection = this.genericSocket.getMessages(this.socketUrl, 'SERVER_MODE').subscribe((serverMode) => {
       console.log(serverMode)
       if (serverMode === 'MAINTENANCE') {
         this.maintenaceModeActive = true
@@ -92,6 +92,25 @@ export class SendCoinsFormComponent implements OnInit, OnDestroy {
       this.checkErrors(data.errors)
       this.fillForm(this.formData)
     })
+  }
+
+  modelUpdated(input: string){
+    this.invalidateEstimate()
+    let removedError
+
+    if (input === 'AMOUNT') {
+      removedError = 'INVALID_TRANSFER_AMOUNT'
+    } else if (input === 'INPUT'){
+      removedError = 'INVALID_DEST_ADDRESS'
+    }
+
+    const tempArray = []
+    this.errors.forEach((err) => {
+      if (err !== removedError) {
+        tempArray.push(err)
+      }
+    })
+    this.errors = tempArray
   }
 
   invalidateEstimate() {
@@ -119,7 +138,7 @@ export class SendCoinsFormComponent implements OnInit, OnDestroy {
     this.orderServ.createOrder(originCoin, destCoin, destAddr, transferAmount).subscribe(
       result => {
         if (result.type === "FAIL" ){
-          this.errors.push('orderCreationFailed')
+          this.errors.push('ORDER_CREATION_FAILED')
           return
         }
 
@@ -128,7 +147,7 @@ export class SendCoinsFormComponent implements OnInit, OnDestroy {
       },
       error => {
         console.log('error creating order', error)
-        this.errors.push('orderCreationFailed')
+        this.errors.push('ORDER_CREATION_FAILED')
       })
   }
 
@@ -155,7 +174,7 @@ export class SendCoinsFormComponent implements OnInit, OnDestroy {
       this.estimateValid = true
       setTimeout(() => {
         this.estimateValid = false
-        this.errors.push('expiredEst')
+        this.errors.push('EXPIRED_EST')
       }, 300000)
     } else {
       this.estimateValid = false
@@ -176,7 +195,7 @@ export class SendCoinsFormComponent implements OnInit, OnDestroy {
       .subscribe(
         currencies => {
           if(this.checkCurrData(currencies))
-            this.currencies = currencies
+            this.currencies = this.formatCurrData(currencies)
             this.isDisabled = false
             this.getFormData()
             this.setLoadingState(false)
@@ -195,18 +214,18 @@ export class SendCoinsFormComponent implements OnInit, OnDestroy {
   }
 
   checkErrors(errorBundle) {
-    if(errorBundle.indexOf('invalidDestAddress') > -1) {
-      this.errors.push('invalidDestAddress')
+    if(errorBundle.indexOf('INVALID_DEST_ADDRESS') > -1) {
+      this.errors.push('INVALID_DEST_ADDRESS')
     }
-    if(errorBundle.indexOf('invalidTransferAmount') > -1 || errorBundle.indexOf('transferTooSmall') > -1
-      || errorBundle.indexOf('transferTooLarge') > -1 ) {
-      this.errors.push('invalidTransferAmount')
+    if(errorBundle.indexOf('INVALID_TRANSFER_AMOUNT') > -1 || errorBundle.indexOf('TRANSFER_TOO_SMALL') > -1
+      || errorBundle.indexOf('TRANSFER_TOO_LARGE') > -1 ) {
+      this.errors.push('INVALID_TRANSFER_AMOUNT')
     }
-    if(errorBundle.indexOf('navToNavTransfer') > -1) {
-      this.errors.push('navToNavTransfer')
+    if(errorBundle.indexOf('NAV_TO_NAV_TRANSFER') > -1) {
+      this.errors.push('NAV_TO_NAV_TRANSFER')
     }
-    if(errorBundle.indexOf('changellyError') > -1) {
-      this.errors.push('changellyError')
+    if(errorBundle.indexOf('CHANGELLY_ERROR') > -1) {
+      this.errors.push('CHANGELLY_ERROR')
     }
   }
 
@@ -214,12 +233,12 @@ export class SendCoinsFormComponent implements OnInit, OnDestroy {
     console.log(error);
     switch(error.slice(0,3)){
       case('404'):
-        this.errors.push('notFound')
+        this.errors.push('NOT_FOUND')
         break
       case('400'):
-        this.errors.push('dataFormat')
+        this.errors.push('DATA_FORMAT')
       default:
-        this.errors.push('default')
+        this.errors.push('DEFAULT')
         break
     }
     this.isDisabled = true
@@ -232,5 +251,13 @@ export class SendCoinsFormComponent implements OnInit, OnDestroy {
       return false
     }
     return true
+  }
+
+  formatCurrData(coins) {
+    const formattedCoins = []
+    coins.forEach((coin) => {
+      formattedCoins.push(coin.toUpperCase())
+    })
+    return formattedCoins
   }
 }

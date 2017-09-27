@@ -23,7 +23,7 @@ export class TestSocketInterfaceComponent implements OnInit, OnDestroy {
   constructor(private genericSocket: GenericSocketService ) {}
 
   ngOnInit() {
-    this.connection = this.genericSocket.getMessages(this.socketUrl, 'message').subscribe((message) => {
+    this.connection = this.genericSocket.getMessages(this.socketUrl, 'MESSAGE').subscribe((message) => {
       console.log(message)
       if(this.messages.length > 5) {
         this.messages = []

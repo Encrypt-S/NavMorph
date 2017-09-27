@@ -14,7 +14,7 @@
     <div class="" *ngIf="orderSuccess">
       <h2>Order Status</h2>
       <div class="row">
-        <div class="col s12 m6" *ngIf="orderStatus === 'created'">
+        <div class="col s12 m6" *ngIf="orderStatus === 'CREATED'">
           <div class="">
             Please transfer EXACTLY {{orderAmount}} {{sourceCurrency | uppercase}} in ONE transaction to the following address.<br>
             Transferring an incorrect amount may result in lost currency!
@@ -33,7 +33,7 @@
           <div class="">Status: {{interpretStatus(orderStatus)}}</div>
           <div class="">Changelly Order Number: {{changellyOrderNumber}}</div>
           <div class="">Amount Due: {{orderAmount}} {{sourceCurrency | uppercase}}</div>
-          <div class=""><span *ngIf="orderStatus === 'created'">(If sent now) </span>Should arrive in: {{waitTimeLow.toLocaleString()}} ~ {{waitTimeHigh.toLocaleString()}}</div>
+          <div class=""><span *ngIf="orderStatus === 'CREATED'">(If sent now) </span>Should arrive in: {{waitTimeLow.toLocaleString()}} ~ {{waitTimeHigh.toLocaleString()}}</div>
           <div class="">Est. Fee: {{estFee}}</div>
           <div *ngIf="sourceCurrency === destCurrency">Currency: {{sourceCurrency | uppercase}}</div>
           <div *ngIf="sourceCurrency !== destCurrency">
@@ -41,7 +41,7 @@
             <div class="">Dest Currency: {{destCurrency | uppercase}}</div>
           </div>
           <button class="btn waves-effect waves-light bg-blue" type="submit" 
-            name="action" (click)=abandonOrder() *ngIf="orderStatus === 'created'">
+            name="action" (click)=abandonOrder() *ngIf="orderStatus === 'CREATED'">
             Cancel Order
           </button>
 
