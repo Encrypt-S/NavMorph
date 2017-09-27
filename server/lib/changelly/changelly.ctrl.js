@@ -1,7 +1,7 @@
 const configData = require('../../config')
 const crypto = require('crypto')
 const jayson = require('jayson')
-const Logger = require('../Logger')
+const Logger = require('../logger')
 
 const URL = configData.changellyUrl
 const client = jayson.client.https(URL)
