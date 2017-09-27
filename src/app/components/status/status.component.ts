@@ -29,7 +29,7 @@ export class StatusComponent implements OnInit {
   etaMax: string
 
   estimatedFees: string
-  formData: object = {}
+  formData = {}
   MAX_NAV_PER_TRADE = changellyConstData.MAX_NAV_PER_TRADE
 
   formDataSubscrip: Subscription
@@ -47,9 +47,11 @@ export class StatusComponent implements OnInit {
   }
 
   getFormDataStream() {
-    this.dataServ.getDataStream().subscribe(data => {
+    this.dataServ.getDataStream().subscribe((data) => {
       this.formData = data
-      this.updateComponent(this.formData)
+      if (data.errors.length === 0) {
+        this.updateComponent(this.formData)
+      }
     })
   }
 
