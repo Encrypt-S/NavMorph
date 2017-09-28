@@ -1,4 +1,4 @@
-import { Injectable, OnInit } from '@angular/core';
+import { Injectable, OnInit} from '@angular/core'
 
 import { ChangellyApiService } from '../../services/changelly-api/changelly-api'
 import { GenericFunctionsService } from '../../services/generic-functions/generic-functions'
@@ -6,7 +6,6 @@ import { changellyConstData, dataBundleTemplate } from "../config"
 
 import { Observable } from 'rxjs'
 import { Subject } from 'rxjs/Subject'
-
 import BigNumber from 'bignumber.js'
 
 @Injectable()
@@ -30,7 +29,9 @@ export class SendPageDataService implements OnInit {
 
   dataStatus: string = 'UNTOUCHED'
 
-  constructor(private changellyApi: ChangellyApiService) { }
+  previousPageUrl: string
+
+  constructor(private changellyApi: ChangellyApiService) {}
 
   getData(): void {
     if(this.dataStored === true){

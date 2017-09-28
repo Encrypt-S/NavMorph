@@ -1,9 +1,9 @@
-import { Component, OnInit, Input, OnDestroy} from '@angular/core';
-import { FormsModule } from '@angular/forms';
-import { ChangellyApiService } from '../../services/changelly-api/changelly-api';
-import { OrderService } from '../../services/order/order';
-import { SendPageDataService } from '../../services/send-page-data/send-page-data';
-import { Router } from '@angular/router';
+import { Component, OnInit, Input, OnDestroy} from '@angular/core'
+import { Router } from '@angular/router'
+import { FormsModule } from '@angular/forms'
+import { ChangellyApiService } from '../../services/changelly-api/changelly-api'
+import { OrderService } from '../../services/order/order'
+import { SendPageDataService } from '../../services/send-page-data/send-page-data'
 import { GenericSocketService } from '../../services/generic-socket/generic-socket'
 
 import * as io from 'socket.io-client'
@@ -22,7 +22,7 @@ import * as io from 'socket.io-client'
 
 export class SendCoinsFormComponent implements OnInit, OnDestroy {
 
-  @Input() theme: string;
+  @Input() theme: string
   @Input() loaderTheme: string
   isDisabled: boolean = true
   currencies: object = ['LOADING']
@@ -92,6 +92,7 @@ export class SendCoinsFormComponent implements OnInit, OnDestroy {
         this.checkErrors(data.errors)
         this.fillForm(this.formData)
         this.dataServ.setDataStatus('SET')
+        this.checkFormFilled()
         this.setLoadingState(false)
       } else if (this.dataServ.checkDataStatus() === 'UNTOUCHED'){
         this.setLoadingState(false)
@@ -175,7 +176,7 @@ export class SendCoinsFormComponent implements OnInit, OnDestroy {
     this.destCoin = data.destCoin
     this.destAddr = data.destAddr
 
-    if( data.errors.length === 0 ) {
+    if( data.errors.length === 0 && this.dataServ.previousPageUrl === '/') {
       this.estimateValid = true
       setTimeout(() => {
         this.estimateValid = false
@@ -228,7 +229,7 @@ export class SendCoinsFormComponent implements OnInit, OnDestroy {
   }
 
   displayError(error) {
-    console.log(error);
+    console.log(error)
     switch(error.slice(0,3)){
       case('404'):
         this.errors.push('NOT_FOUND')
