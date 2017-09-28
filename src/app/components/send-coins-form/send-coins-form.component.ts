@@ -90,6 +90,7 @@ export class SendCoinsFormComponent implements OnInit, OnDestroy {
       this.formData = data
       this.checkErrors(data.errors)
       this.fillForm(this.formData)
+      this.checkFormFilled()
     })
   }
 

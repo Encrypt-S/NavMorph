@@ -16,7 +16,7 @@
         <input type="text" name="enter-text-ex" class="input-with-select" 
         [ngClass]="{'invalid': errors.indexOf('INVALID_TRANSFER_AMOUNT') > -1}" 
         [attr.disabled]="isDisabled?true:null" [(ngModel)]="transferAmount" 
-        (change)="modelUpdated('AMOUNT')" />
+        (ngModelChange)="modelUpdated('AMOUNT')" />
         <label for="enter-text-ex" [ngClass]="{'active': transferAmount}" >Enter amount</label>
       </div>
 
@@ -34,7 +34,7 @@
         <input type="text" name="enter-text-ex" class="input-with-select"  
         [ngClass]="{'invalid': errors.indexOf('INVALID_DEST_ADDRESS') > -1}" 
         [attr.disabled]="isDisabled?true:null" [(ngModel)]="destAddr" 
-        (change)="modelUpdated('ADDRESS')" />
+        (ngModelChange)="modelUpdated('ADDRESS')" />
         <label for="enter-text-ex" [ngClass]="{'active': destAddr}">Enter Destination Address</label>
       </div>
 
