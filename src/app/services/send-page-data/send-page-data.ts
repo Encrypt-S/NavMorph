@@ -1,4 +1,4 @@
-import { Injectable, OnInit } from '@angular/core';
+import { Injectable, OnInit} from '@angular/core'
 
 import { ChangellyApiService } from '../../services/changelly-api/changelly-api'
 import { GenericFunctionsService } from '../../services/generic-functions/generic-functions'
@@ -6,7 +6,6 @@ import { changellyConstData, dataBundleTemplate } from "../config"
 
 import { Observable } from 'rxjs'
 import { Subject } from 'rxjs/Subject'
-
 import BigNumber from 'bignumber.js'
 
 @Injectable()
@@ -28,13 +27,17 @@ export class SendPageDataService implements OnInit {
 
   dataSetSubject = new Subject<any>()
 
-  isDataSet: boolean = false
+  dataStatus: string = 'UNTOUCHED'
 
-  constructor(private changellyApi: ChangellyApiService) { }
+  previousPageUrl: string
+
+  constructor(private changellyApi: ChangellyApiService) {}
 
   getData(): void {
-    if(this.dataStored){
+    if(this.dataStored === true){
       this.dataSubject.next(this.dataBundle)
+    } else {
+      this.dataSubject.next({})    
     }
   }
 
@@ -46,9 +49,9 @@ export class SendPageDataService implements OnInit {
     return this.dataSetSubject.asObservable()
   }
 
-  setDataStatus(isSet): void {
-    this.isDataSet = isSet
-    this.dataSetSubject.next(this.isDataSet)
+  setDataStatus(isSet: string): void {
+    this.dataStatus = isSet
+    this.dataSetSubject.next(this.dataStatus)
   }
 
   clearData(broadcastChanges: boolean ): void {
@@ -58,8 +61,8 @@ export class SendPageDataService implements OnInit {
       this.dataSubject.next(this.dataBundle)
   }
 
-  checkIsDataSet(): boolean {
-    return this.isDataSet
+  checkDataStatus(): string {
+    return this.dataStatus
   }
 
   storeData(transferAmount, originCoin, destCoin, destAddr): void {
@@ -78,7 +81,6 @@ export class SendPageDataService implements OnInit {
     if(this.dataBundle.errors.length > 0) {
       this.dataStored = true
       this.dataSubject.next(this.dataBundle)
-      this.setDataStatus('SET')
       return //validation errors, so return early
     }
     this.estimateFees(originCoin, destCoin, transferAmount)
@@ -155,12 +157,13 @@ export class SendPageDataService implements OnInit {
     this.dataBundle.estConvToNav = this.dataBundle.estConvToNav.toString()
     this.dataStored = true
     this.dataSubject.next(this.dataBundle)
-    this.setDataStatus('SET')
+    console.log('data sent')
   }
 
   validateFormData(dataBundle): void {
     if(dataBundle.transferAmount === undefined){
       this.pushError(dataBundle, 'INVALID_TRANSFER_AMOUNT')
+      return // If we don't have a number we can't do the test for the next error
     }
     if(dataBundle.originCoin === 'NAV' && dataBundle.destCoin === 'NAV') {
       this.pushError(dataBundle, 'NAV_TO_NAV_TRANSFER')

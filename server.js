@@ -6,7 +6,8 @@ const bodyParser = require('body-parser')
 const pem = require('pem')
 const mongoose = require('mongoose')
 const socketCtrl = require('./server/lib/socket/socketCtrl')
-
+const auth = require('basic-auth')
+const configData = require('./server/config')
 
 // Get our API routes
 const api = require('./server/routes/api')
@@ -20,6 +21,15 @@ const app = express()
 // Parsers for POST data
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: false }))
+
+app.use(function (req, res, next) {
+  var user = auth(req)
+  if (user === undefined || user.name !== configData.basicAuth.name || user.pass !== configData.basicAuth.pass) {
+    res.send('unauthorised access attempt')
+    return
+  }
+  next()
+})
 
 // Point static path to dist
 app.use(express.static(path.join(__dirname, 'dist')))
