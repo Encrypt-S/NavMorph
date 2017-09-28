@@ -19,14 +19,8 @@ Logger.writeLog = (errorCode, errorMessage, data, email) => {
   logString += 'Date: ' + date + '\r\n'
   logString += 'Error Code: ' + errorCode + '\r\n'
   logString += 'Error Message: ' + errorMessage + '\r\n'
-
-  for (const key in data) {
-    if (data.hasOwnProperty(key)) {
-      let string = data[key]
-      if (typeof data[key] === 'object') string = JSON.stringify(data[key])
-      logString += key + ': ' + string + '\r\n'
-    }
-  }
+  logString += data + '\r\n'  
+  
   logString += '\r\n-----------------------------------------------------------\r\n'
   console.log(logString)
 }
@@ -41,8 +35,8 @@ Logger.sendMail = (errorCode, errorMessage, data) => {
   if (data) {
     mailOptions.attachments = [
       {
-        filename: 'data.json',
-        content: JSON.stringify(data),
+        filename: 'error_data.txt',
+        content: data,
       },
     ]
   }

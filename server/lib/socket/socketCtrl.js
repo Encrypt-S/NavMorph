@@ -1,5 +1,6 @@
-socketIo =  require('socket.io')
-serverModeCtrl = require('../db/serverMode.ctrl')
+const socketIo =  require('socket.io')
+const serverModeCtrl = require('../db/serverMode.ctrl')
+const Logger = require('../logger')
 
 
 socketCtrl = {}
@@ -18,8 +19,8 @@ socketCtrl = {}
         })
         socketCtrl.startDbWatch(socket)
         fufill()
-      } catch (e) {
-        reject(e)
+      } catch (err) {
+        reject(err)
       }
     })
   }
@@ -39,6 +40,10 @@ socketCtrl = {}
           serverMessageType: serverMessageData[0].message_type,
           showMessage: serverMessageData[0].show_message,
         })
+      })
+      .catch((err) => {
+        console.log(err)
+        Logger.writeLog('SKT_001', 'Something went wrong with the socket(s)', err, false)
       })
     }, 1000)
   }
