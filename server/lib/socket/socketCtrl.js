@@ -34,7 +34,7 @@ socketCtrl = {}
         return serverModeCtrl.checkMessage()
       })
       .then((serverMessageData) => {
-        socket.emit('server-message', {
+        socket.emit('SERVER_MESSAGE', {
           serverMessage: serverMessageData[0].server_message,
           serverMessageType: serverMessageData[0].message_type,
           showMessage: serverMessageData[0].show_message,

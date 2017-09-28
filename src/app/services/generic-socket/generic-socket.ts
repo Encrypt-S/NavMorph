@@ -36,8 +36,8 @@ export class GenericSocketService {
         })
       }
 
-      if (mode === 'serverMessages' || mode === 'all') {
-        this.socket.on('server-message', (data) => {
+      if (mode === 'SERVER_MESSAGES' || mode === 'ALL') {
+        this.socket.on('SERVER_MESSAGE', (data) => {
           observer.next(data)
         })
       }
