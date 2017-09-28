@@ -49,14 +49,13 @@ export class StatusComponent implements OnInit {
   getFormDataStream() {
     this.dataServ.getDataStream().subscribe((data) => {
       this.formData = data
-      if (data.errors.length === 0) {
+      if(Object.keys(data).length > 0)
         this.updateComponent(this.formData)
-      }
     })
   }
 
-  getDataStatusStream() {
-    this.dataServ.getDataStatusStream().subscribe(dataStatus => {
+  getDataStatusStream(): void {
+    this.dataServ.getDataStatusStream().subscribe((dataStatus: string) => {
       this.formDataStatus = dataStatus
     })
   }

@@ -54,12 +54,12 @@ export class SendCoinsFormComponent implements OnInit, OnDestroy {
     if(!this.theme){
       this.theme = 'form-dark'
     }
-    this.getFormDataStream()
   }
 
   ngOnInit() {
-    this.getCurrencies()
     this.connectToSocket()
+    this.getFormDataStream()
+    this.getCurrencies()
   }
 
  ngOnDestroy() {
@@ -76,7 +76,7 @@ export class SendCoinsFormComponent implements OnInit, OnDestroy {
     })
   }
 
-  setLoadingState(state):void {
+  setLoadingState(state: boolean):void {
     this.pageLoading = state
   }
 
@@ -87,10 +87,17 @@ export class SendCoinsFormComponent implements OnInit, OnDestroy {
   getFormDataStream() {
     this.dataServ.getDataStream().subscribe(data => {
       this.errors = []
-      this.formData = data
-      this.checkErrors(data.errors)
-      this.fillForm(this.formData)
-      this.checkFormFilled()
+      if (Object.keys(data).length > 0) { 
+        this.formData = data
+        this.checkErrors(data.errors)
+        this.fillForm(this.formData)
+        this.dataServ.setDataStatus('SET')
+        this.setLoadingState(false)
+        this.checkFormFilled()
+      } else if (this.dataServ.checkDataStatus() === 'UNTOUCHED'){
+        this.setLoadingState(false)
+        this.checkFormFilled()
+      }
     })
   }
 
@@ -198,19 +205,12 @@ export class SendCoinsFormComponent implements OnInit, OnDestroy {
             this.currencies = this.formatCurrData(currencies)
             this.isDisabled = false
             this.getFormData()
-            this.setLoadingState(false)
         },
         error => {
           this.isDisabled = true
           console.log('err', error)
           this.setLoadingState(false)
         })
-  }
-
-  toggleFormState() {
-    setTimeout(() => {
-      this.isDisabled = !this.isDisabled
-    }, 100)
   }
 
   checkErrors(errorBundle) {
