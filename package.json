@@ -11,10 +11,9 @@
     "test-coverage": "ng test --code-coverage --reporters=coverage-istanbul",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "mocha": "./node_modules/.bin/mocha",
     "express": "node server.js",
-    "express-coverage": "istanbul cover ./node_modules/.bin/_mocha",
-    "express-test": "npm run mocha"
+    "express-test": "./node_modules/.bin/mocha",
+    "express-coverage": "nyc mocha",
   },
   "private": true,
   "dependencies": {
@@ -75,6 +74,7 @@
     "karma-jasmine": "~1.1.0",
     "karma-jasmine-html-reporter": "^0.2.2",
     "mocha": "^3.3.0",
+    "nyc": "^11.2.1",
     "protractor": "~5.1.0",
     "rewire": "^2.5.2",
     "sinon": "^2.2.0",
