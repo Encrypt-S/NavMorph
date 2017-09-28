@@ -29,7 +29,7 @@ export class HeaderSection implements OnInit  {
     }
 
     getTabFromUrl(url){
-      let tab = url.split('/')[1]
+      let tab = url.split('/')[1].toUpperCase()
       return tab
     }
 
@@ -38,10 +38,10 @@ export class HeaderSection implements OnInit  {
         case '':
           setTimeout(() => this.home.nativeElement.click(), 100)
           break
-        case 'send':
+        case 'SEND':
           setTimeout(() => this.send.nativeElement.click(), 100)
           break
-        case 'about':
+        case 'ABOUT':
           setTimeout(() => this.about.nativeElement.click(), 100)
           break
       }

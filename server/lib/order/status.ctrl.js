@@ -47,7 +47,7 @@ OrderStatusCtrl.getOrderFromDb = (params, ipAddress, polymorphId, orderPassword,
     const order = orderArr[0]
     if (!order) { 
       OrderStatusCtrl.checkForSuspiciousActivity(ipAddress, polymorphId, params, res)  
-    } else if (order.order_status === 'abandoned') {
+    } else if (order.order_status === 'ABANDONED') {
       OrderStatusCtrl.sendEmptyResponse(res)
     } else {
       EtaCtrl.getEta(order.order_status, order.sent, order.input_currency, orderArr.output_currency)
@@ -82,7 +82,7 @@ OrderStatusCtrl.sendEmptyResponse = (res) => {
 }
 
 OrderStatusCtrl.sendBlockedResponse = (res) => {
-  res.send(['blocked'])
+  res.send(['BLOCKED'])
 }
 
 
@@ -101,7 +101,7 @@ OrderStatusCtrl.updateOrderStatus = (req, res) => {
 OrderStatusCtrl.abandonOrder = (req, res) => {
   const polymorphId = req.params.orderId
   const orderPassword = req.params.orderPassword
-  TransactionCtrl.internal.updateOrderStatus(polymorphId, orderPassword, 'abandoned')
+  TransactionCtrl.internal.updateOrderStatus(polymorphId, orderPassword, 'ABANDONED')
   .then(() => { res.send({ status: 'SUCCESS' }) })
   .catch((error) => { OrderStatusCtrl.handleError(error, res, '009') })
 }

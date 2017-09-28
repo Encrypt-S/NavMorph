@@ -25,14 +25,13 @@ export class GenericSocketService {
   getMessages(socketUrl, mode) {
     let observable = new Observable(observer => {
       this.socket = io(socketUrl)
-      if (mode === 'message' || mode === 'all') {
-        this.socket.on('message', (data) => {
+      if (mode === 'MESSAGE' || mode === 'ALL') {
+        this.socket.on('MESSAGE', (data) => {
           observer.next(data)
         })
       }
-
-      if (mode === 'serverMode' || mode === 'all') {
-        this.socket.on('server-mode', (data) => {
+      if (mode === 'SERVER_MODE' || mode === 'ALL') {
+        this.socket.on('SERVER_MODE', (data) => {
           observer.next(data)
         })
       }

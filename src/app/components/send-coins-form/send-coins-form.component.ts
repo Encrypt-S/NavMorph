@@ -1,9 +1,9 @@
-import { Component, OnInit, Input, OnDestroy} from '@angular/core';
-import { FormsModule } from '@angular/forms';
-import { ChangellyApiService } from '../../services/changelly-api/changelly-api';
-import { OrderService } from '../../services/order/order';
-import { SendPageDataService } from '../../services/send-page-data/send-page-data';
-import { Router } from '@angular/router';
+import { Component, OnInit, Input, OnDestroy} from '@angular/core'
+import { Router } from '@angular/router'
+import { FormsModule } from '@angular/forms'
+import { ChangellyApiService } from '../../services/changelly-api/changelly-api'
+import { OrderService } from '../../services/order/order'
+import { SendPageDataService } from '../../services/send-page-data/send-page-data'
 import { GenericSocketService } from '../../services/generic-socket/generic-socket'
 
 import * as io from 'socket.io-client'
@@ -22,17 +22,18 @@ import * as io from 'socket.io-client'
 
 export class SendCoinsFormComponent implements OnInit, OnDestroy {
 
-  @Input() theme: string;
+  @Input() theme: string
   @Input() loaderTheme: string
   isDisabled: boolean = true
-  currencies: object = ['Loading']
-  transferAmount: number
+  currencies: object = ['LOADING']
+  transferAmount: string
   originCoin: string
   destCoin: string
   destAddr: string
   minTransferAmount: number
   estimateValid: boolean = false
   pageLoading: boolean
+  formNotFilled: boolean = true
 
   errors = []
 
@@ -52,12 +53,12 @@ export class SendCoinsFormComponent implements OnInit, OnDestroy {
     if(!this.theme){
       this.theme = 'form-dark'
     }
-    this.getFormDataStream()
   }
 
   ngOnInit() {
-    this.getCurrencies()
     this.connectToSocket()
+    this.getFormDataStream()
+    this.getCurrencies()
   }
 
  ngOnDestroy() {
@@ -65,8 +66,7 @@ export class SendCoinsFormComponent implements OnInit, OnDestroy {
   }
 
   connectToSocket():void {
-    this.connection = this.genericSocket.getMessages(this.socketUrl, 'serverMode').subscribe((serverMode) => {
-      console.log(serverMode)
+    this.connection = this.genericSocket.getMessages(this.socketUrl, 'SERVER_MODE').subscribe((serverMode) => {
       if (serverMode === 'MAINTENANCE') {
         this.maintenaceModeActive = true
       } else {
@@ -75,7 +75,7 @@ export class SendCoinsFormComponent implements OnInit, OnDestroy {
     })
   }
 
-  setLoadingState(state):void {
+  setLoadingState(state: boolean):void {
     this.pageLoading = state
   }
 
@@ -86,25 +86,65 @@ export class SendCoinsFormComponent implements OnInit, OnDestroy {
   getFormDataStream() {
     this.dataServ.getDataStream().subscribe(data => {
       this.errors = []
-      this.formData = data
-      this.checkErrors(data.errors)
-      this.fillForm(this.formData)
+      if (Object.keys(data).length > 0) { 
+        this.formData = data
+        this.checkErrors(data.errors)
+        this.fillForm(this.formData)
+        this.dataServ.setDataStatus('SET')
+        this.setLoadingState(false)
+        this.checkFormFilled()
+      } else if (this.dataServ.checkDataStatus() === 'UNTOUCHED'){
+        this.setLoadingState(false)
+        this.checkFormFilled()
+      }
     })
   }
 
+  modelUpdated(input: string){
+    this.invalidateEstimate()
+    let removedError
+
+    if (input === 'AMOUNT') {
+      removedError = 'INVALID_TRANSFER_AMOUNT'
+    } else if (input === 'INPUT'){
+      removedError = 'INVALID_DEST_ADDRESS'
+    }
+
+    const tempArray = []
+    this.errors.forEach((err) => {
+      if (err !== removedError) {
+        tempArray.push(err)
+      }
+    })
+    this.errors = tempArray
+  }
+
   invalidateEstimate() {
+    this.checkFormFilled()
     this.estimateValid = false
   }
 
   sendForm():void {
+    this.checkFormFilled()
+    if(this.formNotFilled) {
+      return
+    }
     this.storeFormData()
+  }
+
+  checkFormFilled():void {
+    if(this.transferAmount && this.destAddr) {
+      this.formNotFilled = false
+    } else {
+      this.formNotFilled = true
+    }
   }
 
   createOrder(originCoin, destCoin, destAddr, transferAmount):void {
     this.orderServ.createOrder(originCoin, destCoin, destAddr, transferAmount).subscribe(
       result => {
         if (result.type === "FAIL" ){
-          this.errors.push('orderCreationFailed')
+          this.errors.push('ORDER_CREATION_FAILED')
           return
         }
 
@@ -113,7 +153,7 @@ export class SendCoinsFormComponent implements OnInit, OnDestroy {
       },
       error => {
         console.log('error creating order', error)
-        this.errors.push('orderCreationFailed')
+        this.errors.push('ORDER_CREATION_FAILED')
       })
   }
 
@@ -136,11 +176,11 @@ export class SendCoinsFormComponent implements OnInit, OnDestroy {
     this.destCoin = data.destCoin
     this.destAddr = data.destAddr
 
-    if( data.errors.length === 0 ) {
+    if( data.errors.length === 0 && this.dataServ.previousPageUrl === '/') {
       this.estimateValid = true
       setTimeout(() => {
         this.estimateValid = false
-        this.errors.push('expiredEst')
+        this.errors.push('EXPIRED_EST')
       }, 300000)
     } else {
       this.estimateValid = false
@@ -149,6 +189,7 @@ export class SendCoinsFormComponent implements OnInit, OnDestroy {
 
   clearFormData():void {
     this.dataServ.clearData(true)
+    this.checkFormFilled()
     this.estimateValid = false
     this.originCoin = this.currencies[0]
     this.destCoin = this.currencies[0]
@@ -160,10 +201,9 @@ export class SendCoinsFormComponent implements OnInit, OnDestroy {
       .subscribe(
         currencies => {
           if(this.checkCurrData(currencies))
-            this.currencies = currencies
+            this.currencies = this.formatCurrData(currencies)
             this.isDisabled = false
             this.getFormData()
-            this.setLoadingState(false)
         },
         error => {
           this.isDisabled = true
@@ -172,38 +212,32 @@ export class SendCoinsFormComponent implements OnInit, OnDestroy {
         })
   }
 
-  toggleFormState() {
-    setTimeout(() => {
-      this.isDisabled = !this.isDisabled
-    }, 100)
-  }
-
   checkErrors(errorBundle) {
-    if(errorBundle.indexOf('invalidDestAddress') > -1) {
-      this.errors.push('invalidDestAddress')
+    if(errorBundle.indexOf('INVALID_DEST_ADDRESS') > -1) {
+      this.errors.push('INVALID_DEST_ADDRESS')
     }
-    if(errorBundle.indexOf('invalidTransferAmount') > -1 || errorBundle.indexOf('transferTooSmall') > -1
-      || errorBundle.indexOf('transferTooLarge') > -1 ) {
-      this.errors.push('invalidTransferAmount')
+    if(errorBundle.indexOf('INVALID_TRANSFER_AMOUNT') > -1 || errorBundle.indexOf('TRANSFER_TOO_SMALL') > -1
+      || errorBundle.indexOf('TRANSFER_TOO_LARGE') > -1 ) {
+      this.errors.push('INVALID_TRANSFER_AMOUNT')
     }
-    if(errorBundle.indexOf('navToNavTransfer') > -1) {
-      this.errors.push('navToNavTransfer')
+    if(errorBundle.indexOf('NAV_TO_NAV_TRANSFER') > -1) {
+      this.errors.push('NAV_TO_NAV_TRANSFER')
     }
-    if(errorBundle.indexOf('changellyError') > -1) {
-      this.errors.push('changellyError')
+    if(errorBundle.indexOf('CHANGELLY_ERROR') > -1) {
+      this.errors.push('CHANGELLY_ERROR')
     }
   }
 
   displayError(error) {
-    console.log(error);
+    console.log(error)
     switch(error.slice(0,3)){
       case('404'):
-        this.errors.push('notFound')
+        this.errors.push('NOT_FOUND')
         break
       case('400'):
-        this.errors.push('dataFormat')
+        this.errors.push('DATA_FORMAT')
       default:
-        this.errors.push('default')
+        this.errors.push('DEFAULT')
         break
     }
     this.isDisabled = true
@@ -211,10 +245,17 @@ export class SendCoinsFormComponent implements OnInit, OnDestroy {
 
   checkCurrData(data) {
     if(data instanceof Array && data[0] instanceof String ) {
-      console.log(data);
       this.displayError('400')
       return false
     }
     return true
+  }
+
+  formatCurrData(coins) {
+    const formattedCoins = []
+    coins.forEach((coin) => {
+      formattedCoins.push(coin.toUpperCase())
+    })
+    return formattedCoins
   }
 }
