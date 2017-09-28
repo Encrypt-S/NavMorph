@@ -123,7 +123,7 @@ TransactionCtrl.internal.updateOrderStatus = (id, pass, newStatus) => {
       reject(new Error('Id, Password or Status missing. Id: ' + id + '. Pass: ' + pass + '. Status: ' + newStatus))
     }
     const query = { polymorph_id: id, polymorph_pass: pass }
-    TransactionModel.findOneAndUpdate(query, { order_status: 'abandoned' })
+    TransactionModel.findOneAndUpdate(query, { order_status: 'ABANDONED' })
     .then((data) => {
       fulfill()
     })
