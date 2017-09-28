@@ -162,6 +162,7 @@ export class SendPageDataService implements OnInit {
   validateFormData(dataBundle): void {
     if(dataBundle.transferAmount === undefined){
       this.pushError(dataBundle, 'INVALID_TRANSFER_AMOUNT')
+      return // If we don't have a number we can't do the test for the next error
     }
     if(dataBundle.originCoin === 'NAV' && dataBundle.destCoin === 'NAV') {
       this.pushError(dataBundle, 'NAV_TO_NAV_TRANSFER')
