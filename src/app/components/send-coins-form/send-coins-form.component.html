@@ -50,10 +50,10 @@
   <div class="row">
     <div class="send-buttons col s12 no-hoz-spacing">
       <button class="btn waves-effect waves-light btn-small bg-blue" type="submit" name="action" (click)="clearFormData()">Clear</button>
-      <button *ngIf="!estimateValid" class="btn waves-effect waves-light bg-fuschia lighten-1" type="submit" name="action" routerLink="/send" (click)="storeFormData()">Estimate
+      <button *ngIf="!estimateValid" [ngClass]="{'disabled' : formNotFilled}" class="btn waves-effect waves-light bg-fuschia lighten-1" type="submit" name="action" routerLink="/send" (click)="storeFormData()">Estimate
           <i class="material-icons right">send</i>
       </button>
-      <button *ngIf="estimateValid" [ngClass]="{'disabled' : maintenaceModeActive}" class="btn waves-effect waves-light bg-fuschia lighten-1" type="submit" name="action" routerLink="/send" (click)="createOrder(originCoin, destCoin, destAddr, transferAmount)">Send
+      <button *ngIf="estimateValid" [ngClass]="{'disabled' : maintenaceModeActive }" class="btn waves-effect waves-light bg-fuschia lighten-1" type="submit" name="action" routerLink="/send" (click)="createOrder(originCoin, destCoin, destAddr, transferAmount)">Send
           <i class="material-icons right">send</i>
       </button>
     </div>
