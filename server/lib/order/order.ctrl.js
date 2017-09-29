@@ -112,7 +112,7 @@ OrderCtrl.checkForMaintenance = () => {
   return new Promise((fulfill, reject) => {
     serverModeCtrl.checkMode()
     .then((mode) => {
-      if(mode === 'MAINTENANCE'){
+      if(mode[0].server_mode === 'MAINTENANCE'){
         fulfill(true)
       } else {
         fulfill(false)
