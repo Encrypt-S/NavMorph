@@ -156,9 +156,6 @@ OrderCtrl.getChangellyAddress = (inputCurrency, outputCurrency, destAddress) => 
       extraId: null,
     })
     .then((data) => {
-      if (data instanceof Error) {
-        reject(data)
-      }
       fulfill(data.result.address)
     })
     .catch((error) => { reject(error) })
