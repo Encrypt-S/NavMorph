@@ -10,18 +10,69 @@ describe('[Db]', () => {
     beforeEach(() => { // reset the rewired functions
       let Db = rewire('../server/lib/db/login.ctrl')
     })
-    console.log(Db)
-    // it('should be able to insert into the db', (done) => {
-      const ipAddr = '192.168.10.1'
-      const polyId = '123'
+    it('should fail on params', (done) => {
+      Db.insertAttempt({ junkParam: '1234' })
+        .catch((error) => {
+          expect(error).toBe('LGN_001')
+          done()
+        })
+    })
+    it('should get correct params and save', (done) => {
+      const ipAddress = '192.168.10.1'
+      const polymorphId = '123'
       const params = { test: 'test'}
 
-      Db.insertAttempt(ipAddr, polyId, params)
+      function mockFailedLoginsModel(paramsToSave) {
+        return {
+          save: () => {
+            expect(paramsToSave.ip_address).toBe(ipAddress)
+            expect(paramsToSave.polymorph_id).toBe(polymorphId)
+            expect(paramsToSave.params).toBe(JSON.stringify(params))
+            expect(paramsToSave.timestamp instanceof Date).toBe(true)
+            return Promise.resolve('SUCCESS')
+          },
+        }
+      }
+
+      Db.__set__('FailedLoginsModel', mockFailedLoginsModel)
+
+      Db.insertAttempt({ ipAddress, polymorphId, params })
+        .then((data) => {
+          expect(data).toBe('SUCCESS')
+          done()
+        })
     })
+    it('should get correct params and fail', (done) => {
+      const ipAddress = '192.168.10.1'
+      const polymorphId = '123'
+      const params = { test: 'test'}
 
+      function mockFailedLoginsModel(paramsToSave) {
+        return {
+          save: () => {
+            expect(paramsToSave.ip_address).toBe(ipAddress)
+            expect(paramsToSave.polymorph_id).toBe(polymorphId)
+            expect(paramsToSave.params).toBe(JSON.stringify(params))
+            expect(paramsToSave.timestamp instanceof Date).toBe(true)
+            return Promise.reject(new Error('FAIL'))
+          },
+        }
+      }
 
+      Db.__set__('FailedLoginsModel', mockFailedLoginsModel)
 
-
+      Db.insertAttempt({ ipAddress, polymorphId, params })
+        .then((data) => {
+          expect(true).toBe(false)
+          done()
+        })
+        .catch((error) => {
+          console.log('error', error)
+          expect(error).toBe('FAIL')
+          done()
+        })
+    })
+  })
   //   it('should run getinfo and throw an error', (done) => {
   //     Db.navClient = {
   //       getInfo: () => { throw new Exception() },

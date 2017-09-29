@@ -15,13 +15,13 @@ OrderStatusCtrl.getOrder = (req, res) => {
     LoginCtrl.checkIpBlocked(ipAddress)
   .then((isBlocked) => {
     if (isBlocked) {
-      LoginCtrl.insertAttempt(ipAddress, polymorphId, params)
+      LoginCtrl.insertAttempt({ ipAddress, polymorphId, params })
       .then(OrderStatusCtrl.sendBlockedResponse(res))
       .catch(error => OrderStatusCtrl.handleError(error, res, '002'))
     } else {
       OrderStatusCtrl.checkOrderExists(params, ipAddress, polymorphId, orderPassword, res)
     }
-  })  
+  })
   .catch((error) => { OrderStatusCtrl.handleError(error, res, '001') })
 }
 
@@ -32,7 +32,7 @@ OrderStatusCtrl.checkOrderExists = (params, ipAddress, polymorphId, orderPasswor
   .then((orderExists) => {
     if (orderExists) {
       OrderStatusCtrl.getOrderFromDb(params, ipAddress, polymorphId, orderPassword, res)
-    } else if (orderArr[0].length === 0) { 
+    } else if (orderArr[0].length === 0) {
       res.send([[],[]])
       return
     }
@@ -45,8 +45,8 @@ OrderStatusCtrl.getOrderFromDb = (params, ipAddress, polymorphId, orderPassword,
   TransactionCtrl.internal.getOrder(polymorphId, orderPassword)
   .then((orderArr) => {
     const order = orderArr[0]
-    if (!order) { 
-      OrderStatusCtrl.checkForSuspiciousActivity(ipAddress, polymorphId, params, res)  
+    if (!order) {
+      OrderStatusCtrl.checkForSuspiciousActivity(ipAddress, polymorphId, params, res)
     } else if (order.order_status === 'ABANDONED') {
       OrderStatusCtrl.sendEmptyResponse(res)
     } else {
@@ -61,7 +61,7 @@ OrderStatusCtrl.getOrderFromDb = (params, ipAddress, polymorphId, orderPassword,
 }
 
 OrderStatusCtrl.checkForSuspiciousActivity = (ipAddress, polymorphId, params, res) => {
-  LoginCtrl.insertAttempt(ipAddress, polymorphId, params)
+  LoginCtrl.insertAttempt({ ipAddress, polymorphId, params })
   .then(LoginCtrl.checkIfSuspicious(ipAddress)
     .then((isSuspicious) => {
       if (isSuspicious) {
@@ -69,7 +69,7 @@ OrderStatusCtrl.checkForSuspiciousActivity = (ipAddress, polymorphId, params, re
         .then(OrderStatusCtrl.sendBlockedResponse(res))
         .catch(error => OrderStatusCtrl.handleError(error, res, '004'))
       } else {
-        OrderStatusCtrl.sendEmptyResponse(res)              
+        OrderStatusCtrl.sendEmptyResponse(res)
       }
     })
     .catch(error => OrderStatusCtrl.handleError(error, res, '005'))
