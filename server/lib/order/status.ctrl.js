@@ -106,16 +106,16 @@ OrderStatusCtrl.abandonOrder = (req, res) => {
   .catch((error) => { OrderStatusCtrl.handleError(error, res, '009') })
 }
 
-OrderStatusCtrl.handleError = (error, res, code) => {
+OrderStatusCtrl.handleError = (err, res, code) => {
   const statusMessage = 'Unable to fetch/update Polymorph Order'
   res.send(JSON.stringify({
     statusCode: 200,
     type: 'FAIL',
     code: 'ORDER_STATUS_CTRL_' + code || '000',
     statusMessage,
-    error,
+    err,
   }))
-  Logger.writeLog(code, statusMessage, error, true)
+  Logger.writeLog(code, statusMessage, { error: err }, true)
 }
 
 module.exports = OrderStatusCtrl

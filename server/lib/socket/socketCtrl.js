@@ -4,7 +4,7 @@ const Logger = require('../logger')
 
 
 socketCtrl = {}
-    
+  
   socketCtrl.setupServerSocket = (socket) => {
     return new Promise((fufill, reject) => {    
       try {
@@ -26,24 +26,31 @@ socketCtrl = {}
   }
 
   socketCtrl.startDbWatch = (socket) => {
+    let previousMode 
+    let previousMessage
     setInterval(() => {
       serverModeCtrl.checkMode()
       .then((mode) => {
-        socket.emit('SERVER_MODE', mode[0].server_mode)
+        if(mode.length === 1 && previousMode !== mode) {
+          previousMode = mode
+          socket.emit('SERVER_MODE', mode[0].server_mode)
+        }
       })
       .then(() => {
         return serverModeCtrl.checkMessage()
       })
       .then((serverMessageData) => {
-        socket.emit('SERVER_MESSAGE', {
-          serverMessage: serverMessageData[0].server_message,
-          serverMessageType: serverMessageData[0].message_type,
-          showMessage: serverMessageData[0].show_message,
-        })
+        if(serverMessageData.length === 1 && previousMessage !== serverMessageData) {
+          previousMode = mode
+          socket.emit('SERVER_MESSAGE', {
+            serverMessage: serverMessageData[0].server_message,
+            serverMessageType: serverMessageData[0].message_type,
+            showMessage: serverMessageData[0].show_message,
+          })
+        }
       })
       .catch((err) => {
-        console.log(err)
-        Logger.writeLog('SKT_001', 'Something went wrong with the socket(s)', err, false)
+        Logger.writeLog('SKT_001', 'Something went wrong with the socket(s)', { error: err }, false)
       })
     }, 1000)
   }
