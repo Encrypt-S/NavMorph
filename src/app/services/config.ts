@@ -18,8 +18,6 @@ export const orderNodeApiEndPoints = {
   getEta: 'getEta',
 }
 
-export const nodeApiBaseUrl = 'https://localhost:3000/api/'
-
 export const changellyConstData = {
   'CHANGELLY_FEE': 0.005,
   'NAVTECH_FEE': 0.005,

@@ -44,3 +44,5 @@ Thumbs.db
 # Config
 
 /server/config.js
+
+src/app/services/environment-config\.ts

@@ -3,6 +3,8 @@ import { Observable } from 'rxjs/Observable'
 
 import * as io from 'socket.io-client'
 
+import { SocketUrl } from '../../services/environment-config'
+
 import { GenericSocketService } from '../../services/generic-socket/generic-socket'
 
 @Component({
@@ -11,8 +13,6 @@ import { GenericSocketService } from '../../services/generic-socket/generic-sock
   styleUrls: ['./test-socket-interface.component.scss']
 })
 export class TestSocketInterfaceComponent implements OnInit, OnDestroy {
-
-  private socketUrl = 'https://localhost:3000'
 
   private socket
 
@@ -23,7 +23,7 @@ export class TestSocketInterfaceComponent implements OnInit, OnDestroy {
   constructor(private genericSocket: GenericSocketService ) {}
 
   ngOnInit() {
-    this.connection = this.genericSocket.getMessages(this.socketUrl, 'MESSAGE').subscribe((message) => {
+    this.connection = this.genericSocket.getMessages(SocketUrl, 'MESSAGE').subscribe((message) => {
       console.log(message)
       if(this.messages.length > 5) {
         this.messages = []

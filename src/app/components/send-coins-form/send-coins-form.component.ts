@@ -5,6 +5,7 @@ import { ChangellyApiService } from '../../services/changelly-api/changelly-api'
 import { OrderService } from '../../services/order/order'
 import { SendPageDataService } from '../../services/send-page-data/send-page-data'
 import { GenericSocketService } from '../../services/generic-socket/generic-socket'
+import { SocketUrl } from '../../services/environment-config'
 
 import * as io from 'socket.io-client'
 
@@ -39,7 +40,6 @@ export class SendCoinsFormComponent implements OnInit, OnDestroy {
 
   formData: object = {}
 
-  private socketUrl = 'https://localhost:3000'
   private socket  
   maintenaceModeActive: boolean = true
   connection
@@ -67,7 +67,7 @@ export class SendCoinsFormComponent implements OnInit, OnDestroy {
   }
 
   connectToSocket():void {
-    this.connection = this.genericSocket.getMessages(this.socketUrl, 'SERVER_MODE').subscribe((serverMode) => {
+    this.connection = this.genericSocket.getMessages(SocketUrl, 'SERVER_MODE').subscribe((serverMode) => {
       if (serverMode === 'MAINTENANCE') {
         this.maintenaceModeActive = true
       } else {

@@ -5,13 +5,13 @@ import { Observable } from 'rxjs/Rx'
 import 'rxjs/add/operator/catch'
 import 'rxjs/add/operator/map'
 
-import { nodeApiBaseUrl } from "../config"
+import { NodeApiBaseUrl } from "../environment-config"
 
 
 @Injectable()
 export class GenericNodeApiService {
 
-  baseApiUrl: string = nodeApiBaseUrl
+  baseApiUrl: string = NodeApiBaseUrl
 
   constructor(private http: Http) { }
 
