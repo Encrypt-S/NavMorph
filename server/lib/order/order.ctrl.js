@@ -54,7 +54,6 @@ OrderCtrl.getFirstChangellyAddress = (req, res) => {
   } else {
     OrderCtrl.getChangellyAddress(req.params.from, 'NAV', req.params.navAddress)
     .then((address) => {
-
       req.params.changellyAddressOne = address
       OrderCtrl.getSecondChangellyAddress(req, res)
     })
@@ -122,7 +121,6 @@ OrderCtrl.checkForMaintenance = () => {
   })
 }
 
-
 OrderCtrl.validateParams = (req) => {
   return new Promise((fulfill, reject) => {
     // TODO: Add validation for extraId
@@ -163,6 +161,7 @@ OrderCtrl.getChangellyAddress = (inputCurrency, outputCurrency, destAddress) => 
       }
       fulfill(data.result.address)
     })
+    .catch((error) => { reject(error) })
   })
 }
 
