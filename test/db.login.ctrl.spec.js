@@ -2,107 +2,116 @@
 
 const expect = require('expect')
 const rewire = require('rewire')
+const sinon = require('sinon')
 
-let Db = rewire('../server/lib/db/login.ctrl')
+let LoginCtrl = rewire('../server/lib/db/login.ctrl')
+let mockLogger = { writeLog: sinon.spy() }
 
-describe('[Db]', () => {
-  describe('(Login.Ctrl)', () => {
+describe('[Login.Ctrl]', () => {
+  describe('(insertAttempt)', () => {
     beforeEach(() => { // reset the rewired functions
-      let Db = rewire('../server/lib/db/login.ctrl')
+      LoginCtrl = rewire('../server/lib/db/login.ctrl')
+      mockLogger = { writeLog: sinon.spy() }
+      LoginCtrl.__set__('Logger', mockLogger)
     })
     it('should fail on params', (done) => {
-      Db.insertAttempt({ junkParam: '1234' })
+      LoginCtrl.insertAttempt({ junkParam: '1234' })
         .catch((error) => {
           expect(error).toBe('LGN_001')
+          sinon.assert.calledOnce(mockLogger.writeLog)
+          sinon.assert.calledWith(mockLogger.writeLog, 'LGN_001')
           done()
         })
     })
-    it('should get correct params and save', (done) => {
+    it('should get correct params', (done) => {
       const ipAddress = '192.168.10.1'
       const polymorphId = '123'
       const params = { test: 'test'}
 
       function mockFailedLoginsModel(paramsToSave) {
-        return {
-          save: () => {
-            expect(paramsToSave.ip_address).toBe(ipAddress)
-            expect(paramsToSave.polymorph_id).toBe(polymorphId)
-            expect(paramsToSave.params).toBe(JSON.stringify(params))
-            expect(paramsToSave.timestamp instanceof Date).toBe(true)
-            return Promise.resolve('SUCCESS')
-          },
-        }
+        mockFailedLoginsModel.params = paramsToSave
       }
 
-      Db.__set__('FailedLoginsModel', mockFailedLoginsModel)
+      LoginCtrl.insertSave = (fulfill, reject) => {
+        expect(mockFailedLoginsModel.params.ip_address).toBe(ipAddress)
+        expect(mockFailedLoginsModel.params.polymorph_id).toBe(polymorphId)
+        expect(mockFailedLoginsModel.params.params).toBe(JSON.stringify(params))
+        expect(mockFailedLoginsModel.params.timestamp instanceof Date).toBe(true)
+        sinon.assert.notCalled(mockLogger.writeLog)
+        done()
+      }
 
-      Db.insertAttempt({ ipAddress, polymorphId, params })
-        .then((data) => {
-          expect(data).toBe('SUCCESS')
-          done()
-        })
+      LoginCtrl.__set__('FailedLoginsModel', mockFailedLoginsModel)
+      LoginCtrl.insertAttempt({ ipAddress, polymorphId, params })
+    })
+  })
+  describe('(insertSave)', () => {
+    beforeEach(() => { // reset the rewired functions
+      LoginCtrl = rewire('../server/lib/db/login.ctrl')
+      mockLogger = { writeLog: sinon.spy() }
+      LoginCtrl.__set__('Logger', mockLogger)
     })
     it('should get correct params and fail', (done) => {
-      const ipAddress = '192.168.10.1'
-      const polymorphId = '123'
-      const params = { test: 'test'}
 
-      function mockFailedLoginsModel(paramsToSave) {
-        return {
-          save: () => {
-            expect(paramsToSave.ip_address).toBe(ipAddress)
-            expect(paramsToSave.polymorph_id).toBe(polymorphId)
-            expect(paramsToSave.params).toBe(JSON.stringify(params))
-            expect(paramsToSave.timestamp instanceof Date).toBe(true)
-            return Promise.reject(new Error('FAIL'))
-          },
-        }
+      LoginCtrl.runtime.transaction = {
+        save: () => { return Promise.resolve('SUCCESS') },
       }
 
-      Db.__set__('FailedLoginsModel', mockFailedLoginsModel)
+      function fulfill(result) {
+        expect(result).toBe('SUCCESS')
+        sinon.assert.notCalled(mockLogger.writeLog)
+        done()
+      }
 
-      Db.insertAttempt({ ipAddress, polymorphId, params })
-        .then((data) => {
-          expect(true).toBe(false)
-          done()
-        })
+      LoginCtrl.insertSave(fulfill, null)
+    })
+    it('should get correct params and fail', (done) => {
+      LoginCtrl.runtime.transaction = {
+        save: () => { return Promise.reject(new Error('SAVE_FAILED')) },
+      }
+
+      function reject(result) {
+        expect(result.message).toBe('SAVE_FAILED')
+        sinon.assert.calledOnce(mockLogger.writeLog)
+        sinon.assert.calledWith(mockLogger.writeLog, 'LGN_002')
+        done()
+      }
+
+      LoginCtrl.insertSave(null, reject)
+    })
+    it('should get correct params and fail', (done) => {
+      function Exception(message){
+        this.error = message
+      }
+
+      LoginCtrl.runtime.transaction = {
+        save: () => { throw new Exception('SAVE_EXCEPTION') },
+      }
+
+      function reject(result) {
+        expect(result.error).toBe('SAVE_EXCEPTION')
+        sinon.assert.calledOnce(mockLogger.writeLog)
+        sinon.assert.calledWith(mockLogger.writeLog, 'LGN_003')
+        done()
+      }
+
+      LoginCtrl.insertSave(null, reject)
+    })
+  })
+  describe('(blackListIp)', () => {
+    beforeEach(() => { // reset the rewired functions
+      LoginCtrl = rewire('../server/lib/db/login.ctrl')
+    })
+    it('should fail on params', (done) => {
+      const mockLogger = { writeLog: sinon.spy() }
+      LoginCtrl.__set__('Logger', mockLogger)
+      LoginCtrl.blackListIp({ junkParam: '1234' })
         .catch((error) => {
-          console.log('error', error)
-          expect(error).toBe('FAIL')
+          expect(error).toBe('LGN_004')
+          sinon.assert.calledOnce(mockLogger.writeLog)
+          sinon.assert.calledWith(mockLogger.writeLog, 'LGN_004')
           done()
         })
     })
   })
-  //   it('should run getinfo and throw an error', (done) => {
-  //     Db.navClient = {
-  //       getInfo: () => { throw new Exception() },
-  //     }
-  //     const res = {
-  //       send: (response) => {
-  //         const jsonResponse = JSON.parse(response)
-  //         expect(jsonResponse.type).toBe('FAIL')
-  //         expect(jsonResponse.code).toBe('RPC_001')
-  //         expect(jsonResponse.status).toBe(200)
-  //         expect(jsonResponse.message).toBeA('string')
-  //         done()
-  //       },
-  //     }
-  //     const req = {}
-  //     Db.getInfo(req, res)
-  //   })
-  //   it('should run the command with params and succeed', (done) => {
-  //     Db.navClient = {
-  //       getInfo: () => { return Promise.resolve({ code: 200 }) },
-  //     }
-  //     const res = {
-  //       send: (response) => {
-  //         const jsonResponse = JSON.parse(response)
-  //         expect(jsonResponse.type).toBe('SUCCESS')
-  //         done()
-  //       },
-  //     }
-  //     const req = {}
-  //     Db.getInfo(req, res)
-    // })
-  // })
 })

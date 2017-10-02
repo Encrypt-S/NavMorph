@@ -1,11 +1,13 @@
 const lodash = require('lodash')
-const Logger = require('../logger')
+let Logger = require('../logger')
 
 // Compile models from schema
 const BlackListModel = require('./blackList.model')
 let FailedLoginsModel = require('./failedLogins.model')
 
-const LoginCtrl = {}
+const LoginCtrl = {
+  runtime: {},
+}
 
 
 LoginCtrl.insertAttempt = (options) => {
@@ -24,31 +26,41 @@ LoginCtrl.insertAttempt = (options) => {
       timestamp: new Date(),
       params: JSON.stringify(options.params),
     })
-    try {
-
-      LoginCtrl.runtime.transaction.save()
-      .then(fulfill('SUCCESS'))
-      .catch((result) => {
-        if (result instanceof Error) {
-          console.log('result', result)
-          reject(result)
-          return
-        }
-      })
-    } catch (error) {
-      reject(error)
-    }
+    LoginCtrl.insertSave(fulfill, reject)
   })
 }
 
-LoginCtrl.blackListIp = (ipAddress) => {
+LoginCtrl.insertSave = (fulfill, reject) => {
+  try {
+    LoginCtrl.runtime.transaction.save()
+    .then((result) => {
+      fulfill(result)
+    }).catch((result) => {
+      Logger.writeLog('LGN_002', 'Save Rejected', { result })
+      reject(result)
+    })
+  } catch (error) {
+    Logger.writeLog('LGN_003', 'Save Exception', { error })
+    reject(error)
+  }
+}
+
+//check where this is called from and parse in options object instead of params
+LoginCtrl.blackListIp = (options) => {
+  const required = ['ipAddress']
   return new Promise((fulfill, reject) => {
+    if (lodash.intersection(Object.keys(options), required).length !== required.length) {
+      Logger.writeLog('LGN_004', 'invalid options', { options, required })
+      reject('LGN_004')
+      return
+    }
     LoginCtrl.runtime = { }
     LoginCtrl.runtime.transaction = new BlackListModel(
     {
-      ip_address: ipAddress,
+      ip_address: options.ipAddress,
       timestamp: new Date(),
     })
+    // split this to new function
     try {
       LoginCtrl.runtime.transaction.save()
       .then(() => {
@@ -57,11 +69,13 @@ LoginCtrl.blackListIp = (ipAddress) => {
       })
       .catch((result) => {
         if (result instanceof Error) {
+          // log error
           reject(result)
           return
         }
       })
     } catch (error) {
+      //log error
       reject(error)
     }
   })
