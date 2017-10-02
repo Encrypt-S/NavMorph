@@ -65,7 +65,7 @@ OrderStatusCtrl.checkForSuspiciousActivity = (ipAddress, polymorphId, params, re
   .then(LoginCtrl.checkIfSuspicious(ipAddress)
     .then((isSuspicious) => {
       if (isSuspicious) {
-        LoginCtrl.blackListIp(ipAddress)
+        LoginCtrl.blackListIp({ ipAddress })
         .then(OrderStatusCtrl.sendBlockedResponse(res))
         .catch(error => OrderStatusCtrl.handleError(error, res, '004'))
       } else {

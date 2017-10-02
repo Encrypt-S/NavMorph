@@ -60,25 +60,26 @@ LoginCtrl.blackListIp = (options) => {
       ip_address: options.ipAddress,
       timestamp: new Date(),
     })
-    // split this to new function
-    try {
-      LoginCtrl.runtime.transaction.save()
-      .then(() => {
-        fulfill()
-        return
-      })
-      .catch((result) => {
-        if (result instanceof Error) {
-          // log error
-          reject(result)
-          return
-        }
-      })
-    } catch (error) {
-      //log error
-      reject(error)
-    }
+    LoginCtrl.insertIntoBlacklist(fulfill, reject)
   })
+}
+
+LoginCtrl.insertIntoBlacklist = (fulfill, reject) => {
+  try {
+    LoginCtrl.runtime.transaction.save()
+    .then(() => {
+      fulfill('SUCCESS')
+      return
+    })
+    .catch((result) => {
+      Logger.writeLog('LGN_005', 'Save rejected', { result })
+      reject(result)
+      return
+    })
+  } catch (error) {
+    Logger.writeLog('LGN_006', 'Save Exception', { error })
+    reject(error)
+  }
 }
 
 

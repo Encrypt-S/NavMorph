@@ -51,7 +51,7 @@ describe('[Login.Ctrl]', () => {
       mockLogger = { writeLog: sinon.spy() }
       LoginCtrl.__set__('Logger', mockLogger)
     })
-    it('should get correct params and fail', (done) => {
+    it('should handle save success', (done) => {
 
       LoginCtrl.runtime.transaction = {
         save: () => { return Promise.resolve('SUCCESS') },
@@ -65,7 +65,7 @@ describe('[Login.Ctrl]', () => {
 
       LoginCtrl.insertSave(fulfill, null)
     })
-    it('should get correct params and fail', (done) => {
+    it('should handle save failure', (done) => {
       LoginCtrl.runtime.transaction = {
         save: () => { return Promise.reject(new Error('SAVE_FAILED')) },
       }
@@ -79,7 +79,7 @@ describe('[Login.Ctrl]', () => {
 
       LoginCtrl.insertSave(null, reject)
     })
-    it('should get correct params and fail', (done) => {
+    it('should handle exceptions', (done) => {
       function Exception(message){
         this.error = message
       }
@@ -98,13 +98,14 @@ describe('[Login.Ctrl]', () => {
       LoginCtrl.insertSave(null, reject)
     })
   })
+
   describe('(blackListIp)', () => {
     beforeEach(() => { // reset the rewired functions
       LoginCtrl = rewire('../server/lib/db/login.ctrl')
+      mockLogger = { writeLog: sinon.spy() }
+      LoginCtrl.__set__('Logger', mockLogger)
     })
     it('should fail on params', (done) => {
-      const mockLogger = { writeLog: sinon.spy() }
-      LoginCtrl.__set__('Logger', mockLogger)
       LoginCtrl.blackListIp({ junkParam: '1234' })
         .catch((error) => {
           expect(error).toBe('LGN_004')
@@ -112,6 +113,84 @@ describe('[Login.Ctrl]', () => {
           sinon.assert.calledWith(mockLogger.writeLog, 'LGN_004')
           done()
         })
+    })
+
+    it('should pass on params', (done) => {
+      const blacklistSpy = sinon.spy(LoginCtrl, 'insertIntoBlacklist')
+      const ipAddress = '1.1.1.1'
+
+      mockLogger = { writeLog: sinon.spy() }
+      LoginCtrl.__set__('Logger', mockLogger)
+
+      function mockBlacklistModel(paramsToSave) {
+        mockBlacklistModel.params = paramsToSave
+      }
+
+      LoginCtrl.insertIntoBlacklist = (fulfill, reject) => {
+        expect(LoginCtrl.runtime.transaction.ip_address).toBe(ipAddress)
+        expect(LoginCtrl.runtime.transaction.timestamp instanceof Date).toBe(true)
+        sinon.assert.notCalled(mockLogger.writeLog)
+        done()
+      }
+
+      LoginCtrl.__set__('BlackListModel', mockBlacklistModel)
+      LoginCtrl.blackListIp({ ipAddress })
+    })
+  })
+
+  describe('(insertSave)', () => {
+    beforeEach(() => { // reset the rewired functions
+      LoginCtrl = rewire('../server/lib/db/login.ctrl')
+      mockLogger = { writeLog: sinon.spy() }
+      LoginCtrl.__set__('Logger', mockLogger)
+    })
+    it('should handle save success', (done) => {
+
+      LoginCtrl.runtime.transaction = {
+        save: () => { return Promise.resolve('SUCCESS') },
+      }
+
+      function fulfill(result) {
+        expect(result).toBe('SUCCESS')
+        sinon.assert.notCalled(mockLogger.writeLog)
+        done()
+      }
+
+      LoginCtrl.insertIntoBlacklist(fulfill, null)
+    })
+    
+    it('should handle save failure', (done) => {
+      LoginCtrl.runtime.transaction = {
+        save: () => { return Promise.reject(new Error('SAVE_FAILED')) },
+      }
+
+      function reject(result) {
+        expect(result.message).toBe('SAVE_FAILED')
+        sinon.assert.calledOnce(mockLogger.writeLog)
+        sinon.assert.calledWith(mockLogger.writeLog, 'LGN_005')
+        done()
+      }
+
+      LoginCtrl.insertIntoBlacklist(null, reject)
+    })
+
+    it('should handle exceptions', (done) => {
+      function Exception(message){
+        this.error = message
+      }
+
+      LoginCtrl.runtime.transaction = {
+        save: () => { throw new Exception('SAVE_EXCEPTION') },
+      }
+
+      function reject(result) {
+        expect(result.error).toBe('SAVE_EXCEPTION')
+        sinon.assert.calledOnce(mockLogger.writeLog)
+        sinon.assert.calledWith(mockLogger.writeLog, 'LGN_006')
+        done()
+      }
+
+      LoginCtrl.insertIntoBlacklist(null, reject)
     })
   })
 })
