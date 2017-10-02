@@ -9,7 +9,6 @@ const LoginCtrl = {
   runtime: {},
 }
 
-
 LoginCtrl.insertAttempt = (options) => {
   const required = ['ipAddress', 'polymorphId', 'params']
   return new Promise((fulfill, reject) => {
@@ -26,26 +25,10 @@ LoginCtrl.insertAttempt = (options) => {
       timestamp: new Date(),
       params: JSON.stringify(options.params),
     })
-    LoginCtrl.insertSave(fulfill, reject)
+    LoginCtrl.executeSave(fulfill, reject)
   })
 }
 
-LoginCtrl.insertSave = (fulfill, reject) => {
-  try {
-    LoginCtrl.runtime.transaction.save()
-    .then((result) => {
-      fulfill(result)
-    }).catch((result) => {
-      Logger.writeLog('LGN_002', 'Save Rejected', { result })
-      reject(result)
-    })
-  } catch (error) {
-    Logger.writeLog('LGN_003', 'Save Exception', { error })
-    reject(error)
-  }
-}
-
-//check where this is called from and parse in options object instead of params
 LoginCtrl.blackListIp = (options) => {
   const required = ['ipAddress']
   return new Promise((fulfill, reject) => {
@@ -60,50 +43,55 @@ LoginCtrl.blackListIp = (options) => {
       ip_address: options.ipAddress,
       timestamp: new Date(),
     })
-    LoginCtrl.insertIntoBlacklist(fulfill, reject)
+    LoginCtrl.executeSave(fulfill, reject)
   })
 }
 
-LoginCtrl.insertIntoBlacklist = (fulfill, reject) => {
+LoginCtrl.executeSave = (fulfill, reject) => {
   try {
     LoginCtrl.runtime.transaction.save()
-    .then(() => {
-      fulfill('SUCCESS')
-      return
-    })
-    .catch((result) => {
-      Logger.writeLog('LGN_005', 'Save rejected', { result })
+    .then((result) => {
+      fulfill(result)
+    }).catch((result) => {
+      Logger.writeLog('LGN_002', 'Save Rejected', { result })
       reject(result)
-      return
     })
   } catch (error) {
-    Logger.writeLog('LGN_006', 'Save Exception', { error })
+    Logger.writeLog('LGN_003', 'Save Exception', { error })
     reject(error)
   }
 }
 
-
-LoginCtrl.checkIpBlocked = (ipAddress) => {
+LoginCtrl.checkIpBlocked = (options) => {
+  const required = ['ipAddress']
   return new Promise((fulfill, reject) => {
+    if (lodash.intersection(Object.keys(options), required).length !== required.length) {
+      Logger.writeLog('LGN_005', 'invalid options', { options, required })
+      reject('LGN_005')
+      return
+    }
     const query = BlackListModel.find()
 
     query.and([
-      { ip_address: ipAddress },
+      { ip_address: options.ipAddress },
       {timestamp: {
       '$gte': new Date(new Date().getTime() - 10 * 60000),
       }}
     ])
     .select('ip_address timestamp')
-    .exec()
-    .then((result) => {
-      if (result.length > 0) {
-        fulfill(true)
-        return
-      }
-      fulfill(false)
-    })
-    .catch((error) => { reject(error) })
+    
+    LoginCtrl.executeIpBlockedQuery({ fulfill, reject, query })
   })
+}
+
+LoginCtrl.executeIpBlockedQuery = (options) => {
+  options.query.exec()
+  .then((result) => {
+    options.result = result
+    options.limit = 0
+    LoginCtrl.checkResults(options)
+  })
+  .catch((error) => { options.reject(error) })
 }
 
 LoginCtrl.checkIfSuspicious = (ipAddress) => {
@@ -116,16 +104,28 @@ LoginCtrl.checkIfSuspicious = (ipAddress) => {
       }}
     ])
     .select('ip_address timestamp')
-    .exec()
-    .then((result) => {
-      if (result.length >= 10) {
-        fulfill(true)
-        return
-      }
-      fulfill(false)
-    })
-    .catch((error) => { reject(error) })
+
+    LoginCtrl.executeSuspiciousQuery({ fulfill, reject, query })
   })
+}
+
+LoginCtrl.executeSuspiciousQuery = (options) => {
+  options.query.exec()
+  .then((result) => {
+    options.result = result
+    options.limit = 10
+    LoginCtrl.checkResults(options)
+  })
+  .catch((error) => { options.reject(error) })  
+}
+
+// check if we got back > options.limit
+LoginCtrl.checkResults = (options) => {
+  if (options.result.length > options.limit) {
+    options.fulfill(true)
+    return
+  }
+  options.fulfill(false)
 }
 
 module.exports = LoginCtrl
