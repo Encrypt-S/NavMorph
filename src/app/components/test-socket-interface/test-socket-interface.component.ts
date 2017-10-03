@@ -38,7 +38,7 @@ export class TestSocketInterfaceComponent implements OnInit, OnDestroy {
 
   sendMessage(messageType, messageContent) {
     this.genericSocket.sendMessage(messageType, messageContent)
-    console.log("MESSAGE SENT", messageContent)
+    console.log('MESSAGE SENT', messageContent)
     this.message = ''  
   }
 
