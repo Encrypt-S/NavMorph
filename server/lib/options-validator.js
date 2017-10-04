@@ -1,29 +1,76 @@
-const Validator from 'validator'
+const Validator = require('validator')
+const lodash = require('lodash')
 
 const OptionsValidator = { }
 
-OptionsValidator.validateParams = (params, options) => {
+OptionsValidator.startValidatation = (params, options) => {
+
+  let errors = []
   return new Promise((fulfill, reject) => { 
-    if (lodash.intersection(Object.keys(params), Object.keys(options)).length !== Object.keys(options)) {
+    console.log('keys', Object.keys(params), Object.keys(options))
+    if (lodash.intersection(Object.keys(params), Object.keys(options)).length !== Object.keys(options).length) {
+      console.log('this is wrong')
       reject(new Error('PARAMS_ERROR', 'Failed to receive params', params, options))
       return
     }
+    try {
+      for(key of Object.keys(params)){
+        OptionsValidator.validateParams(params[key], options[key], errors)
+      }
+    } catch (exception) {
+      console.log('exception', exception)
+      errors.push(exception)
+    }
 
+    if (errors.length > 0) {
+      reject(errors)
+      return
+    } 
 
-
+    fulfill()
+  })
 }
 
-OptionsValidator.checkString = (str) => {
-  return Validator.isAlphanumeric(str)
+OptionsValidator.validateParams = (param, validators, errors) => {
+  validators.forEach((validator) => {
+    switch(validator.validator) {
+      case 'isString':
+        OptionsValidator.isString(param, validator, errors)
+        break
+      case 'isNumber':
+        OptionsValidator.isNumber(param, validator, errors)
+        break
+      default:
+        console.log('default case', validator)
+        break
+    }
+  })
 }
 
-OptionsValidator.checkNumber = (str) => {
-  return (Validator.isNumeric(str) || !Validator.isDecimal(str))
+OptionsValidator.isString = (param, validator, errors) => {
+  if(!(typeof param === 'string')) {
+    errors.push({ err: 'STR_NON_STRING', param, validator })
+    return
+  }
+
+  if(!Validator.isAlphanumeric(param)) {
+    errors.push({ err: 'STR_NON_ALPHANUM', param, validator })
+  }
+
+  if(validator.maxLength && validator.maxLength < param.length) {
+    errors.push({ err: 'STR_MAX_LENGTH', param, validator })
+  }  
+  if(validator.minLength && validator.minLength > param.length) {
+    errors.push({ err: 'STR_MIN_LENGTH', param, validator })
+  }
+  return 
 }
 
-OptionsValidator.checkSanitizeString = (str) => {
-  
-  return cleanStr
+OptionsValidator.isNumber = (param, validator, errors) => {
+  if(!Validator.isNumeric(param) && !Validator.isDecimal(param)) {
+    errors.push({ err: 'NUM_NON_NUMBER', param, validator })
+    return 
+  }
 }
 
 module.exports = OptionsValidator
