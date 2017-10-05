@@ -2,7 +2,7 @@ const lodash = require('lodash')
 let Logger = require('../logger')
 
 // Compile models from schema
-const BlackListModel = require('./blackList.model')
+let BlackListModel = require('./blackList.model')
 let FailedLoginsModel = require('./failedLogins.model')
 
 const LoginCtrl = {
@@ -72,13 +72,13 @@ LoginCtrl.checkIpBlocked = (options) => {
     }
     const query = BlackListModel
     query.find()
-    .and([
+    query.and([
       { ip_address: options.ipAddress },
       {timestamp: {
       '$gte': new Date(new Date().getTime() - 10 * 60000),
       }}
     ])
-    .select('ip_address timestamp')
+    query.select('ip_address timestamp')
     
     LoginCtrl.executeIpBlockedQuery( fulfill, reject, query )
   })
@@ -95,14 +95,15 @@ LoginCtrl.executeIpBlockedQuery = (fulfill, reject, query ) => {
 
 LoginCtrl.checkIfSuspicious = (ipAddress) => {
   return new Promise((fulfill, reject) => {
-    const query = FailedLoginsModel.find()
+    const query = FailedLoginsModel
+    query.find()
     query.and([
       { ip_address: ipAddress },
       {timestamp: {
       '$gte': new Date(new Date().getTime() - 10 * 60000),
       }}
     ])
-    .select('ip_address timestamp')
+    query.select('ip_address timestamp')
 
     LoginCtrl.executeSuspiciousTestQuery( fulfill, reject, query )
   })

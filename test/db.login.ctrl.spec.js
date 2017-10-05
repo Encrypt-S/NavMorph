@@ -73,12 +73,12 @@ describe('[Login.Ctrl]', () => {
       LoginCtrl.__set__('Logger', mockLogger)
 
       function mockBlacklistModel(paramsToSave) {
-        mockBlacklistModel.params = paramsToSave
+        this.params = paramsToSave  
       }
 
       LoginCtrl.executeSave = (fulfill, reject) => {
-        expect(LoginCtrl.runtime.transaction.ip_address).toBe(ipAddress)
-        expect(LoginCtrl.runtime.transaction.timestamp instanceof Date).toBe(true)
+        expect(LoginCtrl.runtime.transaction.params.ip_address).toBe(ipAddress)
+        expect(LoginCtrl.runtime.transaction.params.timestamp instanceof Date).toBe(true)
         sinon.assert.notCalled(mockLogger.writeLog)
         done()
       }
@@ -164,30 +164,28 @@ describe('[Login.Ctrl]', () => {
     it('should pass on params', (done) => {
       const executeIpSpy = sinon.spy(LoginCtrl, 'executeIpBlockedQuery')
       const ipAddress = '1.1.1.1'
-
+      // let params 
       mockLogger = { writeLog: sinon.spy() }
       LoginCtrl.__set__('Logger', mockLogger)
 
-      const mockBlacklistModel = {
+      let mockBlacklistModel = {
         find: () => {},
         and: (paramsToSave) => {
-            params = paramsToSave
+            mockBlacklistModel.params = paramsToSave
         },
         select: () => {},
         params: {}
         
       }
-      
+
       LoginCtrl.__set__('BlackListModel', mockBlacklistModel)
 
       LoginCtrl.executeIpBlockedQuery = (fulfill, reject, query) => {
-        console.log('options',  query)
-        expect(params.ip_address).toBe(ipAddress)
-        expect(params.timestamp instanceof Date).toBe(true)
+        expect(query.params[0].ip_address).toBe(ipAddress)
+        expect(query.params[1].timestamp.$gte instanceof Date).toBe(true)
         sinon.assert.notCalled(mockLogger.writeLog)
         done()
       }
-
 
       LoginCtrl.checkIpBlocked({ ipAddress })
     })
@@ -231,6 +229,43 @@ describe('[Login.Ctrl]', () => {
         done()
       }
       LoginCtrl.executeIpBlockedQuery(null, reject, query)
+    })
+  })
+
+ describe('(checkIfSuspicious)', () => {
+    beforeEach(() => { // reset the rewired functions
+      LoginCtrl = rewire('../server/lib/db/login.ctrl')
+      mockLogger = { writeLog: sinon.spy() }
+      LoginCtrl.__set__('Logger', mockLogger)
+    })
+
+    it('should call executeSuspiciousTestQuery with params', (done) => {
+      const executeIpSpy = sinon.spy(LoginCtrl, 'executeIpBlockedQuery')
+      const ipAddress = '1.1.1.1'
+      // let params 
+      mockLogger = { writeLog: sinon.spy() }
+      LoginCtrl.__set__('Logger', mockLogger)
+
+      let mockFailedLoginsModel = {
+        find: () => {},
+        and: (paramsToSave) => {
+            mockFailedLoginsModel.params = paramsToSave
+        },
+        select: () => {},
+        params: {}
+        
+      }
+
+      LoginCtrl.__set__('FailedLoginsModel', mockFailedLoginsModel)
+
+      LoginCtrl.executeSuspiciousTestQuery = (fulfill, reject, query) => {
+        expect(query.params[0].ip_address.ipAddress).toBe(ipAddress)
+        expect(query.params[1].timestamp.$gte instanceof Date).toBe(true)
+        sinon.assert.notCalled(mockLogger.writeLog)
+        done()
+      }
+
+      LoginCtrl.checkIfSuspicious({ ipAddress })
     })
   })
 
