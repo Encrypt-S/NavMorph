@@ -70,9 +70,9 @@ LoginCtrl.checkIpBlocked = (options) => {
       reject('LGN_005')
       return
     }
-    const query = BlackListModel.find()
-
-    query.and([
+    const query = BlackListModel
+    query.find()
+    .and([
       { ip_address: options.ipAddress },
       {timestamp: {
       '$gte': new Date(new Date().getTime() - 10 * 60000),
@@ -80,18 +80,17 @@ LoginCtrl.checkIpBlocked = (options) => {
     ])
     .select('ip_address timestamp')
     
-    LoginCtrl.executeIpBlockedQuery({ fulfill, reject, query })
+    LoginCtrl.executeIpBlockedQuery( fulfill, reject, query )
   })
 }
 
-LoginCtrl.executeIpBlockedQuery = (options) => {
-  options.query.exec()
+LoginCtrl.executeIpBlockedQuery = (fulfill, reject, query ) => {
+  query.exec()
   .then((result) => {
-    options.result = result
-    options.limit = 0
-    LoginCtrl.checkResults(options)
+    const minLength = 0
+    LoginCtrl.checkResults(result, minLength)
   })
-  .catch((error) => { options.reject(error) })
+  .catch((error) => { reject(error) })
 }
 
 LoginCtrl.checkIfSuspicious = (ipAddress) => {
@@ -105,27 +104,25 @@ LoginCtrl.checkIfSuspicious = (ipAddress) => {
     ])
     .select('ip_address timestamp')
 
-    LoginCtrl.executeSuspiciousQuery({ fulfill, reject, query })
+    LoginCtrl.executeSuspiciousTestQuery( fulfill, reject, query )
   })
 }
 
-LoginCtrl.executeSuspiciousQuery = (options) => {
-  options.query.exec()
+LoginCtrl.executeSuspiciousTestQuery = (fulfill, reject, query) => {
+  query.exec()
   .then((result) => {
-    options.result = result
-    options.limit = 10
-    LoginCtrl.checkResults(options)
+    const minLength = 10
+    LoginCtrl.checkResults(result, minLength, fulfill, reject)
   })
-  .catch((error) => { options.reject(error) })  
+  .catch((error) => { reject(error) })  
 }
 
-// check if we got back > options.limit
-LoginCtrl.checkResults = (options) => {
-  if (options.result.length > options.limit) {
-    options.fulfill(true)
+LoginCtrl.checkResults = (result, minLength, fulfill, reject) => {
+  if (result.length > minLength) {
+    fulfill(true)
     return
   }
-  options.fulfill(false)
+  fulfill(false)
 }
 
 module.exports = LoginCtrl
