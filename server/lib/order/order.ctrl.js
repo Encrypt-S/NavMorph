@@ -172,15 +172,15 @@ OrderCtrl.generateOrderId = () => {
   })
 }
 
-OrderCtrl.handleError = (error, res, code) => {
+OrderCtrl.handleError = (err, res, code) => {
   const statusMessage = 'Unable to create Polymorph Order'
   res.send(JSON.stringify({
     statusCode: 200,
     type: 'FAIL',
     code: 'ORDER_CTRL_' + code || '001',
     statusMessage,
-    error,
+    err,
   }))
-  Logger.writeLog(code, statusMessage, error, true)
+  Logger.writeLog(code, statusMessage, { error: err }, true)
 }
 module.exports = OrderCtrl

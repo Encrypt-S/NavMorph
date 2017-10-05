@@ -104,14 +104,14 @@ EtaCtrl.factorTimeSinceSending = (min, Max, timeSent) => {
   return [min - minutesPassed, max - minutesPassed]
 }
 
-EtaCtrl.handleError = (error, res, code) => {
+EtaCtrl.handleError = (err, res, code) => {
   const statusMessage = 'Unable to get ETA'
   res.send(JSON.stringify({
     statusCode: 200,
     type: 'FAIL',
     statusMessage,
   }))
-  Logger.writeLog(code, statusMessage, error, true)
+  Logger.writeLog(code, statusMessage, { error: err }, true)
 }
 
 module.exports = EtaCtrl

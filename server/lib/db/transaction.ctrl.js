@@ -6,15 +6,15 @@ const TransactionModel = require('./transaction.model')
 
 const TransactionCtrl = { internal: {} }
 
-TransactionCtrl.handleError = (error, res, code, message) => {
+TransactionCtrl.handleError = (err, res, code, message) => {
   res.send(JSON.stringify({
     status: 200,
     type: 'FAIL',
     code,
     message,
-    error,
+    err,
   }))
-  Logger.writeLog(code, message, error, false)
+  Logger.writeLog(code, message, { error:err }, false)
 }
 
 TransactionCtrl.internal.createTransaction = (req, res) => {

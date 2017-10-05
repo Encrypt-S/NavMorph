@@ -39,7 +39,7 @@ ChangellyCtrl.request = (method, options, callback) => {
 ChangellyCtrl.getCurrencies = (req, res) => {
   ChangellyCtrl.request(ConfigData.changellyApiEndPoints.getCurrencies, {}, (err, data) => {
     if (err) {
-      Logger.writeLog('CHNGLLY_001', 'Failed to getCurrencies', err, true)
+      Logger.writeLog('CHNGLLY_001', 'Failed to getCurrencies', {error: err}, true)
       res.send(err)
     } else {
       res.send(data)

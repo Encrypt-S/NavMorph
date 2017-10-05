@@ -9,7 +9,7 @@ Rpc.getInfo = (req, res) => {
         type: 'SUCCESS',
         data,
       }))
-    }).catch((error) => {
+    }).catch((err) => {
       const code = 'RPC_002'
       const message = 'something went wrong'
       res.send(JSON.stringify({
@@ -17,11 +17,11 @@ Rpc.getInfo = (req, res) => {
         type: 'FAIL',
         code,
         message,
-        error,
+        err,
       }))
-      Logger.writeLog(code, message, error, false)
+      Logger.writeLog(code, message, { error:err }, false)
     })
-  } catch (error) {
+  } catch (err) {
     const code = 'RPC_001'
     const message = 'something went wrong'
     res.send(JSON.stringify({
@@ -29,9 +29,9 @@ Rpc.getInfo = (req, res) => {
       type: 'FAIL',
       code,
       message,
-      error,
+      err,
     }))
-    Logger.writeLog(code, message, error, false)
+    Logger.writeLog(code, message, { error:err }, false)
   }
 }
 
