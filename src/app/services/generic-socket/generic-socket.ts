@@ -35,6 +35,12 @@ export class GenericSocketService {
           observer.next(data)
         })
       }
+
+      if (mode === 'SERVER_MESSAGES' || mode === 'ALL') {
+        this.socket.on('SERVER_MESSAGE', (data) => {
+          observer.next(data)
+        })
+      }
       return () => {
         this.socket.disconnect()
       }
