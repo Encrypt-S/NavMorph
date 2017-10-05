@@ -92,12 +92,10 @@ TransactionCtrl.createTransaction = (req, res) => {
 }
 
 TransactionCtrl.savedTransaction = (err) => {
-  console.log('errro', err)
   if (err) {
     TransactionCtrl.handleError(err, TransactionCtrl.runtime.res, 'TC_002', 'Failed to save transaction')
     return
   }
-  console.log(TransactionCtrl.runtime.transaction)
   TransactionCtrl.runtime.res.send(JSON.stringify({
     status: 200,
     type: 'SUCCESS',
@@ -170,7 +168,6 @@ TransactionCtrl.internal.checkIfIdExists = (polymorphId) => {
         fulfill(false)
       })
     } catch (error) {
-      console.log(error)
       reject(error)
     }
   })

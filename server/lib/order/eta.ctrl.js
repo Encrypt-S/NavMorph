@@ -24,7 +24,6 @@ EtaCtrl.generateEstimate = (req, res) => {
 
 EtaCtrl.getEta = (params) => {
   return new Promise((fufill, reject) => {
-    console.log('params',params)
     Validator.startValidatation(params, ApiOptions.getEtaOptions)
     .then(() => {
       if(!EtaCtrl.validStatus(params.status)) {

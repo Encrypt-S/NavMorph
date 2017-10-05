@@ -31,7 +31,6 @@ OrderStatusCtrl.getOrder = (req, res) => {
 
 
 OrderStatusCtrl.checkOrderExists = (params, res) => {
-  console.log(params)
   TransactionCtrl.internal.checkIfIdExists(params.orderId)
   .then((orderExists) => {
     if (orderExists) {
@@ -42,7 +41,6 @@ OrderStatusCtrl.checkOrderExists = (params, res) => {
     }
   })
   .catch(error => {
-    console.log(error)
     OrderStatusCtrl.handleError(error, res, '003')})
 }
 
@@ -51,7 +49,6 @@ OrderStatusCtrl.getOrderFromDb = (params, res) => {
   TransactionCtrl.internal.getOrder(params.orderId, params.orderPassword)
   .then((orderArr) => {
     const order = orderArr[0]
-    console.log('order', order)
     if (!order) { 
       OrderStatusCtrl.checkForSuspiciousActivity(params, res)  
     } else if (order.order_status === 'ABANDONED') {
@@ -64,9 +61,7 @@ OrderStatusCtrl.getOrderFromDb = (params, res) => {
       .catch(error => OrderStatusCtrl.handleError(error, res, '010'))
     }
   })
-  .catch(error => 
-    {console.log(error)
-        OrderStatusCtrl.handleError(error, res, '011')})
+  .catch(error => OrderStatusCtrl.handleError(error, res, '011'))
 }
 
 OrderStatusCtrl.checkForSuspiciousActivity = (params, res) => {

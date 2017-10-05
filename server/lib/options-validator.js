@@ -7,9 +7,7 @@ OptionsValidator.startValidatation = (params, options) => {
 
   let errors = []
   return new Promise((fulfill, reject) => { 
-    console.log('keys', Object.keys(params), Object.keys(options))
     if (lodash.intersection(Object.keys(params), Object.keys(options)).length !== Object.keys(options).length) {
-      console.log('this is wrong')
       reject(new Error('PARAMS_ERROR', 'Failed to receive params', params, options))
       return
     }
@@ -18,7 +16,6 @@ OptionsValidator.startValidatation = (params, options) => {
         OptionsValidator.validateParams(params[key], options[key], errors)
       }
     } catch (exception) {
-      console.log('exception', exception)
       errors.push(exception)
     }
 
@@ -41,7 +38,6 @@ OptionsValidator.validateParams = (param, validators, errors) => {
         OptionsValidator.isNumber(param, validator, errors)
         break
       default:
-        console.log('default case', validator)
         break
     }
   })
