@@ -7,7 +7,7 @@ const mongoose = require('mongoose')
 
 let sandbox
 let TransactionCtrl = rewire('../server/lib/db/transaction.ctrl')
-let mockLogger = { writeLog: sinon.spy() }
+let mockLogger = { writeLog: () => {} }
 let TransactionModel = require('../server/lib/db/transaction.model')
 
 describe('[TransactionCtrl]', () => {
