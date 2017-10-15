@@ -1,8 +1,8 @@
 const lodash = require('lodash')
-const Logger = require('../logger')
+let Logger = require('../logger')
 
 // Compile model from schema
-const TransactionModel = require('./transaction.model')
+let TransactionModel = require('./transaction.model')
 
 const TransactionCtrl = { internal: {} }
 

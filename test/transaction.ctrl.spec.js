@@ -7,12 +7,15 @@ const mongoose = require('mongoose')
 
 let sandbox
 let TransactionCtrl = rewire('../server/lib/db/transaction.ctrl')
-const TransactionModel = require('../server/lib/db/transaction.model')
+let mockLogger = { writeLog: sinon.spy() }
+let TransactionModel = require('../server/lib/db/transaction.model')
 
 describe('[TransactionCtrl]', () => {
   describe('(handleError)', () => {
     beforeEach(() => { // reset the rewired functions
       TransactionCtrl = rewire('../server/lib/db/transaction.ctrl')
+      mockLogger = { writeLog: () => {} }
+      TransactionCtrl.__set__('Logger', mockLogger)
     })
     it('should send the error to the response', (done) => {
       const res = {

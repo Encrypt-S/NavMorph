@@ -1,5 +1,5 @@
 const Rpc = require('./client')
-const Logger = require('../logger')
+let Logger = require('../logger')
 
 Rpc.getInfo = (req, res) => {
   try {

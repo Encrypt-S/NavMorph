@@ -4,11 +4,14 @@ const expect = require('expect')
 const rewire = require('rewire')
 
 let Rpc = rewire('../server/lib/rpc/get-info')
+let mockLogger = { writeLog: () => {} }
 
 describe('[Rpc]', () => {
   describe('(getInfo)', () => {
     beforeEach(() => { // reset the rewired functions
       Rpc = rewire('../server/lib/rpc/get-info')
+      mockLogger = { writeLog: () => {} }
+      Rpc.__set__('Logger', mockLogger)
     })
     it('should run getinfo and fail the rpc call', (done) => {
       Rpc.navClient = {
