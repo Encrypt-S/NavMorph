@@ -19,7 +19,7 @@ describe('[Rpc]', () => {
           const jsonResponse = JSON.parse(response)
           expect(jsonResponse.type).toBe('FAIL')
           expect(jsonResponse.code).toBe('RPC_002')
-          expect(jsonResponse.error.code).toBe(-17)
+          expect(jsonResponse.err.code).toBe(-17)
           expect(jsonResponse.status).toBe(200)
           expect(jsonResponse.message).toBeA('string')
           done()
