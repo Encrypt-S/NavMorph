@@ -14,7 +14,7 @@ TransactionCtrl.handleError = (err, res, code, message) => {
     message,
     err,
   }))
-  Logger.writeLog(code, message, { error:err }, false)
+  Logger.writeLog(code, message, { error: err }, false)
 }
 
 TransactionCtrl.internal.createTransaction = (req, res) => {

@@ -20,7 +20,7 @@ describe('[TransactionCtrl]', () => {
           const jsonResponse = JSON.parse(response)
           expect(jsonResponse.type).toBe('FAIL')
           expect(jsonResponse.code).toBe(code)
-          expect(jsonResponse.error).toBe(err)
+          expect(jsonResponse.err).toBe(err)
           expect(jsonResponse.message).toBe(message)
           done()
         },
@@ -73,10 +73,16 @@ describe('[TransactionCtrl]', () => {
       }
       const req = {
         body: {
-          junkParam: 'ASDF',
-          output_currency: 'NAV',
-          output_address: '0987',
-          changelly_address: '1234',
+          from: '',
+          to: '',
+          address: '',
+          amount: '',
+          extraId: '',
+          polymorphId: '',
+          polymorphPass: '',
+          changellyAddressOne: '',
+          changellyAddressTwo: '',
+          navAddress: '',
         },
       }
       const saveStub = sinon.stub(TransactionModel.prototype, 'save')

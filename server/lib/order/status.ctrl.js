@@ -1,6 +1,5 @@
 const TransactionCtrl = require('../db/transaction.ctrl')
 const EtaCtrl = require('./eta.ctrl')
-const configData = require('../../config')
 const LoginCtrl = require('../db/login.ctrl')
 const ConfigData = require('../../config')
 const Logger = require('../logger')
@@ -12,7 +11,7 @@ OrderStatusCtrl.getOrder = (req, res) => {
   const ipAddress = req.ip
   const polymorphId = req.params.orderId
   const orderPassword = req.params.orderPassword
-    LoginCtrl.checkIpBlocked(ipAddress)
+  LoginCtrl.checkIpBlocked({ ipAddress })
   .then((isBlocked) => {
     if (isBlocked) {
       LoginCtrl.insertAttempt({ ipAddress, polymorphId, params })
