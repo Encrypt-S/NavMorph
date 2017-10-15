@@ -19,12 +19,12 @@ LoginCtrl.insertAttempt = (options) => {
     }
     LoginCtrl.runtime = {}
     LoginCtrl.runtime.transaction = new FailedLoginsModel(
-    {
-      ip_address: options.ipAddress,
-      polymorph_id: options.polymorphId,
-      timestamp: new Date(),
-      params: JSON.stringify(options.params),
-    })
+      {
+        ip_address: options.ipAddress,
+        polymorph_id: options.polymorphId,
+        timestamp: new Date(),
+        params: JSON.stringify(options.params),
+      })
     LoginCtrl.executeSave(fulfill, reject)
   })
 }
@@ -39,10 +39,10 @@ LoginCtrl.blackListIp = (options) => {
     }
     LoginCtrl.runtime = { }
     LoginCtrl.runtime.transaction = new BlackListModel(
-    {
-      ip_address: options.ipAddress,
-      timestamp: new Date(),
-    })
+      {
+        ip_address: options.ipAddress,
+        timestamp: new Date(),
+      })
     LoginCtrl.executeSave(fulfill, reject)
   })
 }
@@ -74,21 +74,21 @@ LoginCtrl.checkIpBlocked = (options) => {
     query.find()
     query.and([
       { ip_address: options.ipAddress },
-      {timestamp: {
-      '$gte': new Date(new Date().getTime() - 10 * 60000),
-      }}
+      { timestamp: {
+        '$gte': new Date(new Date().getTime() - (10 * 60000)),
+      } },
     ])
     query.select('ip_address timestamp')
-    
-    LoginCtrl.executeIpBlockedQuery( fulfill, reject, query )
+
+    LoginCtrl.executeIpBlockedQuery(fulfill, reject, query)
   })
 }
 
-LoginCtrl.executeIpBlockedQuery = (fulfill, reject, query ) => {
+LoginCtrl.executeIpBlockedQuery = (fulfill, reject, query) => {
   query.exec()
   .then((result) => {
     const minLength = 0
-    LoginCtrl.checkResults(result, minLength)
+    LoginCtrl.checkResults(result, minLength, fulfill)
   })
   .catch((error) => { reject(error) })
 }
@@ -99,13 +99,13 @@ LoginCtrl.checkIfSuspicious = (ipAddress) => {
     query.find()
     query.and([
       { ip_address: ipAddress },
-      {timestamp: {
-      '$gte': new Date(new Date().getTime() - 10 * 60000),
-      }}
+      { timestamp: {
+      '$gte': new Date(new Date().getTime() - (10 * 60000)),
+      } }
     ])
     query.select('ip_address timestamp')
 
-    LoginCtrl.executeSuspiciousTestQuery( fulfill, reject, query )
+    LoginCtrl.executeSuspiciousTestQuery(fulfill, reject, query)
   })
 }
 
@@ -113,12 +113,12 @@ LoginCtrl.executeSuspiciousTestQuery = (fulfill, reject, query) => {
   query.exec()
   .then((result) => {
     const minLength = 10
-    LoginCtrl.checkResults(result, minLength, fulfill, reject)
+    LoginCtrl.checkResults(result, minLength, fulfill)
   })
-  .catch((error) => { reject(error) })  
+  .catch((error) => { reject(error) })
 }
 
-LoginCtrl.checkResults = (result, minLength, fulfill, reject) => {
+LoginCtrl.checkResults = (result, minLength, fulfill) => {
   if (result.length > minLength) {
     fulfill(true)
     return
