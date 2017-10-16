@@ -2,6 +2,7 @@
 
 const expect = require('expect')
 const rewire = require('rewire')
+const sinon = require('sinon')
 
 let EtaCtrl = rewire('../server/lib/order/eta.ctrl')
 let Validator = rewire('../server/lib/options-validator')
@@ -229,6 +230,28 @@ describe('[EtaCtrl]', () => {
 
 
       expect(EtaCtrl.validStatus(status)).toBe(true)
+    })
+  })
+
+  // describe('(buildEta)', () => {
+  //   beforeEach(() => { // reset the rewired functions
+  //     EtaCtrl = rewire('../server/lib/order/eta.ctrl')
+  //   })
+  //   it('should build an eta', () => {
+  //   })
+  // })
+
+  describe('(factorTimeSinceSending)', () => {
+    beforeEach(() => { // reset the rewired functions
+      EtaCtrl = rewire('../server/lib/order/eta.ctrl')
+    })
+    it('should factor in the time since sending', () => {
+      let clock = sinon.useFakeTimers() // freeze date/time
+      const testTime = new Date()
+      clock.tick('01:00') // tick one minute
+
+      expect(EtaCtrl.factorTimeSinceSending(10, 10, testTime)).toEqual([9, 9])
+      clock.restore() // restore date and time funcs
     })
   })
 
