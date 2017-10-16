@@ -1,16 +1,16 @@
 const Config = require('../../config')
-const ApiOptions = require('../../api-options.json')
+let ApiOptions = require('../../api-options.json')
 
-const validStatuses = Config.validOrderStatuses
+let validStatuses = Config.validOrderStatuses
 const timeConsts = Config.timeConsts
-const Validator = require('../options-validator')
-const Logger = require('../logger')
+let Validator = require('../options-validator')
+let Logger = require('../logger')
 
 const EtaCtrl = {}
 
 
 EtaCtrl.generateEstimate = (req, res) => {
-  Validator.startValidatation(req.params, ApiOptions.generateEstimateOptions)
+  Validator.startValidation(req.params, ApiOptions.generateEstimateOptions)
   .then(() => {
     return EtaCtrl.getEta({ status: 'ESTIMATE', timeSent: new Date(), from: req.params.from, to: req.params.to })
   })
@@ -24,13 +24,13 @@ EtaCtrl.generateEstimate = (req, res) => {
 
 EtaCtrl.getEta = (params) => {
   return new Promise((fufill, reject) => {
-    Validator.startValidatation(params, ApiOptions.getEtaOptions)
+    Validator.startValidation(params, ApiOptions.getEtaOptions)
     .then(() => {
       if (!EtaCtrl.validStatus(params.status)) {
-        reject(new Error('Invalid order status'))
+        reject(new Error('INVALID_ORDER_STATUS'))
         return
       } else if (params.status === 'FINISHED' && !(params.timeSent instanceof Date)) {
-        reject(new Error('Invalid sending time'))
+        reject(new Error('INVALID_SENT_TIME'))
         return
       }
       fufill(EtaCtrl.buildEta(params))
