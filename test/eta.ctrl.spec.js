@@ -5,7 +5,7 @@ const rewire = require('rewire')
 const sinon = require('sinon')
 
 let EtaCtrl = rewire('../server/lib/order/eta.ctrl')
-let Validator = rewire('../server/lib/options-validator')
+let Validator = rewire('../server/lib/options-validator') // eslint-disable-line
 
 describe('[EtaCtrl]', () => {
   describe('(generateEstimate)', () => {
@@ -233,20 +233,96 @@ describe('[EtaCtrl]', () => {
     })
   })
 
-  // describe('(buildEta)', () => {
-  //   beforeEach(() => { // reset the rewired functions
-  //     EtaCtrl = rewire('../server/lib/order/eta.ctrl')
-  //   })
-  //   it('should build an eta', () => {
-  //   })
-  // })
+  describe('(buildEta)', () => {
+    beforeEach(() => { // reset the rewired functions
+      EtaCtrl = rewire('../server/lib/order/eta.ctrl')
+    })
+    it('should skip on certain expected statuses', () => {
+      const statuses = ['COMPLETED', 'ABANDONED', 'FAILED', 'REFUNDED', 'EXPIRED',
+        'GARBAGE_STATUS']
+      for (const status of statuses) {
+        const result = EtaCtrl.buildEta({ status })
+        expect(result).toEqual([0, 0])
+      }
+    })
+
+    it('should process statuses with or without NAV correctly', () => {
+      let statuses = ['CREATED', 'ESTIMATE']
+      const mockTimes = {
+        changelly: [1, 2],
+        navTech: [1, 2],
+      }
+      EtaCtrl.__set__('timeConsts', mockTimes)
+
+      for (const status of statuses) {
+        const result = EtaCtrl.buildEta({ status })
+        expect(result).toEqual([3, 6])
+      }
+      for (const status of statuses) {
+        const result = EtaCtrl.buildEta({ status, originCoin: 'NAV' })
+        expect(result).toEqual([2, 4])
+      }
+      for (const status of statuses) {
+        const result = EtaCtrl.buildEta({ status, destCoin: 'NAV' })
+        expect(result).toEqual([2, 4])
+      }
+
+      statuses = ['CONFIRMING']
+      for (const status of statuses) {
+        const result = EtaCtrl.buildEta({ status })
+        expect(result).toEqual([2, 4])
+      }
+      for (const status of statuses) {
+        const result = EtaCtrl.buildEta({ status, destCoin: 'NAV' })
+        expect(result).toEqual([1, 2])
+      }
+
+      statuses = ['EXCHANGING', 'SENDING']
+      for (const status of statuses) {
+        const result = EtaCtrl.buildEta({ status })
+        expect(result).toEqual([2, 4])
+      }
+      for (const status of statuses) {
+        const result = EtaCtrl.buildEta({ status, destCoin: 'NAV' })
+        expect(result).toEqual([1, 2])
+      }
+    })
+
+    it('should deal with the FINISHED status correctly', () => {
+      const mockTimes = {
+        changelly: [1, 2],
+        navTech: [1, 2],
+      }
+
+      const timeSent = new Date()
+      const status = 'FINISHED'
+
+      EtaCtrl.__set__('timeConsts', mockTimes)
+
+      const mockFactorTime = (min, max, time) => {
+        expect(min).toEqual(true)
+        expect(max).toEqual(true)
+        expect(time).toEqual(true)
+        return [min - 1, max - 1]
+      }
+
+      EtaCtrl.__set__('factorTimeSinceSending', mockFactorTime)
+
+      let result = EtaCtrl.buildEta({ status, timeSent })
+      expect(result).toEqual([2, 4])
+
+      result = EtaCtrl.buildEta({ status, timeSent, destCoin: 'NAV' })
+      expect(result).toEqual([1, 2])
+    })
+  })
 
   describe('(factorTimeSinceSending)', () => {
     beforeEach(() => { // reset the rewired functions
       EtaCtrl = rewire('../server/lib/order/eta.ctrl')
     })
     it('should factor in the time since sending', () => {
-      let clock = sinon.useFakeTimers() // freeze date/time
+      // freeze date/time
+      let clock = sinon.useFakeTimers() //eslint-disable-line
       const testTime = new Date()
       clock.tick('01:00') // tick one minute
 
@@ -257,25 +333,31 @@ describe('[EtaCtrl]', () => {
 
   describe('(handleError)', () => {
     beforeEach(() => { // reset the rewired functions
-      EtaCtrl = rewire('../server/lib/db/transaction.ctrl')
-      const mockLogger = { writeLog: () => {} }
-      EtaCtrl.__set__('Logger', mockLogger)
+      EtaCtrl = rewire('../server/lib/order/eta.ctrl')
     })
     it('should send an error using the res', (done) => {
       const res = {
         send: (response) => {
           const jsonResponse = JSON.parse(response)
           expect(jsonResponse.type).toBe('FAIL')
-          expect(jsonResponse.code).toBe(code)
-          expect(jsonResponse.err).toBe(err)
-          expect(jsonResponse.message).toBe(message)
-          done()
+          expect(jsonResponse.statusCode).toBe(200)
+          expect(jsonResponse.statusMessage).toBe('Unable to get ETA')
         },
       }
+
+      const mockLogger = { writeLog: (errCode, statusMessage, error, mail) => {
+        expect(errCode).toBe(code)
+        expect(statusMessage).toExist()
+        expect(error).toExist()
+        expect(mail).toExist()
+
+        done()
+      } }
+      EtaCtrl.__set__('Logger', mockLogger)
+
       const err = 'test_error'
       const code = 'TEST_001'
-      const message = 'This is a test error'
-      EtaCtrl.handleError(err, res, code, message)
+      EtaCtrl.handleError(err, res, code)
     })
   })
 })

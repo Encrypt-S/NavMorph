@@ -2,7 +2,7 @@ const Config = require('../../config')
 let ApiOptions = require('../../api-options.json')
 
 let validStatuses = Config.validOrderStatuses
-const timeConsts = Config.timeConsts
+let timeConsts = Config.timeConsts
 let Validator = require('../options-validator')
 let Logger = require('../logger')
 
@@ -61,7 +61,7 @@ EtaCtrl.buildEta = (options) => {
     case 'ESTIMATE':
       etaMin = timeConsts.navTech[0] + (timeConsts.changelly[0] * 2)
       etaMax = timeConsts.navTech[1] + (timeConsts.changelly[1] * 2)
-      if (options.originCoin === 'nav' || options.destCoin === 'nav') {
+      if (options.originCoin === 'NAV' || options.destCoin === 'NAV') {
         etaMin -= timeConsts.changelly[0]
         etaMax -= timeConsts.changelly[1]
       }
@@ -69,7 +69,7 @@ EtaCtrl.buildEta = (options) => {
     case 'CONFIRMING':
       etaMin = timeConsts.navTech[0] + timeConsts.changelly[0]
       etaMax = timeConsts.navTech[1] + timeConsts.changelly[1]
-      if (options.destCoin === 'nav') {
+      if (options.destCoin === 'NAV') {
         etaMin -= timeConsts.changelly[0]
         etaMax -= timeConsts.changelly[1]
       }
@@ -78,7 +78,7 @@ EtaCtrl.buildEta = (options) => {
     case 'SENDING':
       etaMin = timeConsts.navTech[0] + timeConsts.changelly[0]
       etaMax = timeConsts.navTech[1] + timeConsts.changelly[1]
-      if (options.destCoin === 'nav') {
+      if (options.destCoin === 'NAV') {
         etaMin -= timeConsts.changelly[0]
         etaMax -= timeConsts.changelly[1]
       }
@@ -89,7 +89,7 @@ EtaCtrl.buildEta = (options) => {
       const modifiedMinMax = EtaCtrl.factorTimeSinceSending(etaMin, etaMax, options.timeSent)
       etaMin = modifiedMinMax[0]
       etaMax = modifiedMinMax[1]
-      if (options.destCoin === 'nav') {
+      if (options.destCoin === 'NAV') {
         etaMin -= timeConsts.changelly[0]
         etaMax -= timeConsts.changelly[1]
       }
