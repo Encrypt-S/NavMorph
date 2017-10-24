@@ -14,10 +14,9 @@ describe('[TransactionCtrl]', () => {
   describe('(handleError)', () => {
     beforeEach(() => { // reset the rewired functions
       TransactionCtrl = rewire('../server/lib/db/transaction.ctrl')
-      mockLogger = { writeLog: () => {} }
       TransactionCtrl.__set__('Logger', mockLogger)
     })
-    it('should send the error to the response', (done) => {
+    it('should send the error via the response and call writeLog', (done) => {
       const res = {
         send: (response) => {
           const jsonResponse = JSON.parse(response)
@@ -28,54 +27,50 @@ describe('[TransactionCtrl]', () => {
           done()
         },
       }
+
+      mockLogger = { writeLog: (errCode, statusMessage, error, mail) => {
+        expect(errCode).toBe(code)
+        expect(statusMessage).toBe(message)
+        expect(error.error).toBe(err)
+        expect(mail).toBe(true)
+      } }
+      TransactionCtrl.__set__('Logger', mockLogger)
+
       const err = 'test_error'
       const code = 'TEST_001'
       const message = 'This is a test error'
       TransactionCtrl.handleError(err, res, code, message)
     })
   })
+
   describe('(createTransaction)', () => {
     beforeEach(() => { // reset the rewired functions
       TransactionCtrl = rewire('../server/lib/db/transaction.ctrl')
     })
-    it('should fail on body param', (done) => {
-      TransactionCtrl.handleError = (err, res, code) => {
-        expect(code).toBe('TC_001')
-        done()
-      }
+    it('should fail on req params', (done) => {
       const res = {
         send: () => {
         },
       }
       const req = {
-        junkParam: 'ASDF',
-      }
-      TransactionCtrl.createTransaction(req, res)
-    })
-    it('should fail on body required params', (done) => {
-      TransactionCtrl.handleError = (err, res, code) => {
-        expect(code).toBe('TC_001')
-        done()
-      }
-      const res = {
-        send: () => {
-        },
-      }
-      const req = {
-        body: {
+        params: {
           junkParam: 'ASDF',
-          output_currency: 'NAV',
         },
       }
       TransactionCtrl.createTransaction(req, res)
+      .catch((error) => {
+        expect(error.toString().includes('PARAMS_ERROR')).toBe(true)
+        done()
+      })
     })
-    it('should recieve the correct params and save', (done) => {
+
+    it('should catch when it fails to save', (done) => {
       const res = {
         send: () => {
         },
       }
       const req = {
-        body: {
+        params: {
           from: '',
           to: '',
           address: '',
@@ -88,60 +83,44 @@ describe('[TransactionCtrl]', () => {
           navAddress: '',
         },
       }
-      const saveStub = sinon.stub(TransactionModel.prototype, 'save')
+
+      TransactionCtrl.__set__('TransactionModel.save', () => {
+        console.log('IM HEREERERE')
+        Promise.reject('FAIL')
+      })
       TransactionCtrl.createTransaction(req, res)
-      sinon.assert.calledOnce(saveStub)
-      done()
+      .catch((error) => {
+        console.log(error)
+        expect(error).toBe('FAIL')
+        done()
+      })
+    })
+
+    it('should recieve the correct params and save', (done) => {
+      const req = {
+        params: {
+          from: '',
+          to: '',
+          address: '',
+          amount: '',
+          extraId: '',
+          polymorphId: '',
+          polymorphPass: '',
+          changellyAddressOne: '',
+          changellyAddressTwo: '',
+          navAddress: '',
+        },
+      }
+
+      TransactionModel.save = () => { return new Promise((fulfill) => { fulfill() }) }
+
+      TransactionCtrl.createTransaction(req, {})
+      .then(() => {
+        done()
+      })
     })
   })
-  describe('(savedTransaction)', () => {
-    beforeEach(() => { // reset the rewired functions
-      TransactionCtrl = rewire('../server/lib/db/transaction.ctrl')
-    })
-    it('should fail on mongoose error', (done) => {
-      TransactionCtrl.handleError = (err, res, code) => {
-        expect(code).toBe('TC_002')
-        done()
-      }
-      TransactionCtrl.runtime = {
-        res: {
-          send: () => {
-          },
-        },
-        req: {
-          junkParam: 'ASDF',
-        },
-      }
-      TransactionCtrl.savedTransaction(true)
-    })
-    it('should succeed', (done) => {
-      TransactionCtrl.handleError = (err, res, code) => {
-        expect(code).toBe('TC_002')
-        done()
-      }
-      TransactionCtrl.runtime = {
-        res: {
-          send: (response) => {
-            const jsonResponse = JSON.parse(response)
-            expect(jsonResponse.type).toBe('SUCCESS')
-            expect(jsonResponse.status).toBe(200)
-            expect(jsonResponse.data).toEqual(TransactionCtrl.runtime.transaction)
-            done()
-          },
-        },
-        req: {
-          junkParam: 'ASDF',
-        },
-        transaction: {
-          junkParam: 'ASDF',
-          output_currency: 'NAV',
-          output_address: '0987',
-          changelly_address: '1234',
-        },
-      }
-      TransactionCtrl.savedTransaction()
-    })
-  })
+
   describe('(getTransaction)', () => {
     beforeEach(() => { // reset the rewired functions
       sandbox = sinon.sandbox.create()
@@ -207,6 +186,7 @@ describe('[TransactionCtrl]', () => {
       }
       TransactionCtrl.gotTransaction(true, null)
     })
+
     it('should fetch transactions success', (done) => {
       TransactionCtrl.handleError = (err, res, code) => {
         expect(code).toBe('TC_003')

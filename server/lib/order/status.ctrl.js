@@ -23,18 +23,18 @@ OrderStatusCtrl.getOrder = (req, res) => {
         OrderStatusCtrl.checkOrderExists(params, res)
       }
     })
-  })  
+  })
   .catch((error) => { OrderStatusCtrl.handleError(error, res, '001') })
 }
 
 
 
 OrderStatusCtrl.checkOrderExists = (params, res) => {
-  TransactionCtrl.internal.checkIfIdExists(params.orderId)
+  TransactionCtrl.checkIfIdExists(params.orderId)
   .then((orderExists) => {
     if (orderExists) {
       OrderStatusCtrl.getOrderFromDb(params, res)
-    } else if (orderArr[0].length === 0) { 
+    } else if (orderArr[0].length === 0) {
       res.send([[],[]])
       return
     }
@@ -45,11 +45,11 @@ OrderStatusCtrl.checkOrderExists = (params, res) => {
 
 
 OrderStatusCtrl.getOrderFromDb = (params, res) => {
-  TransactionCtrl.internal.getOrder(params.orderId, params.orderPassword)
+  TransactionCtrl.getOrder(params.orderId, params.orderPassword)
   .then((orderArr) => {
     const order = orderArr[0]
-    if (!order) { 
-      OrderStatusCtrl.checkForSuspiciousActivity(params, res)  
+    if (!order) {
+      OrderStatusCtrl.checkForSuspiciousActivity(params, res)
     } else if (order.order_status === 'ABANDONED') {
       OrderStatusCtrl.sendEmptyResponse(res)
     } else {
@@ -98,7 +98,7 @@ OrderStatusCtrl.updateOrderStatus = (req, res) => {
     if (ConfigData.validOrderStatuses.indexOf(newStatus) === -1) {
       OrderStatusCtrl.handleError(new Error('Invalid order status'), res, '007')
     }
-    TransactionCtrl.internal.updateOrderStatus(params.orderId, params.orderPassword, params.newStatus)
+    TransactionCtrl.updateOrderStatus(params.orderId, params.orderPassword, params.newStatus)
   })
   .then((order) => { res.send(order) })
   .catch((error) => { OrderStatusCtrl.handleError(error, res, '008') })
@@ -109,7 +109,7 @@ OrderStatusCtrl.abandonOrder = (req, res) => {
   .then(() => {
     const polymorphId = req.params.orderId
     const orderPassword = req.params.orderPassword
-    TransactionCtrl.internal.updateOrderStatus(polymorphId, orderPassword, 'ABANDONED')
+    TransactionCtrl.updateOrderStatus(polymorphId, orderPassword, 'ABANDONED')
   })
   .then(() => { res.send({ status: 'SUCCESS' }) })
   .catch((error) => { OrderStatusCtrl.handleError(error, res, '009') })
@@ -130,8 +130,8 @@ OrderStatusCtrl.handleError = (err, res, code) => {
 OrderStatusCtrl.validateParams = (params, options) => {
   return new Promise((fulfill, reject) => {
     Validator.startValidatation(params, options)
-    .then(() => fulfill())  
-    .catch((errorArr => reject(errorArr)))  
+    .then(() => fulfill())
+    .catch((errorArr => reject(errorArr)))
   })
 }
 
