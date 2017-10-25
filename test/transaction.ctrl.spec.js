@@ -48,16 +48,21 @@ describe('[TransactionCtrl]', () => {
       TransactionCtrl = rewire('../server/lib/db/transaction.ctrl')
     })
     it('should fail on req params', (done) => {
-      const res = {
+      const fakeRes = {
         send: () => {
         },
       }
-      const req = {
+      const fakeReq = {
         params: {
           junkParam: 'ASDF',
         },
       }
-      TransactionCtrl.createTransaction(req, res)
+
+      TransactionCtrl.createTransaction(null, fakeRes)
+      .catch((error) => {
+        expect(error.toString().includes('PARAMS_ERROR')).toBe(true)
+      })
+      TransactionCtrl.createTransaction(fakeReq, fakeRes)
       .catch((error) => {
         expect(error.toString().includes('PARAMS_ERROR')).toBe(true)
         done()
@@ -65,6 +70,8 @@ describe('[TransactionCtrl]', () => {
     })
 
     // it('should catch when it fails to save', (done) => {
+    //   const fakeResult = 'FAIL'
+    //   const fakeError = { err: 'ERROR' }
     //   const res = {
     //     send: () => {
     //     },
@@ -84,16 +91,29 @@ describe('[TransactionCtrl]', () => {
     //     },
     //   }
     //
-    //   TransactionCtrl.__set__('TransactionModel.save', () => {
+    //   const mockModel = () => {
     //     console.log('IM HEREERERE')
-    //     Promise.reject('FAIL')
-    //   })
+    //     return new Promise((ful, rej) => rej(fakeError))
+    //   }
+    //
+    //   TransactionCtrl.__set__('TransactionModel.save', mockModel)
     //   TransactionCtrl.createTransaction(req, res)
+    //   .then(() => { done() })
     //   .catch((error) => {
     //     console.log(error)
-    //     expect(error).toBe('FAIL')
+    //     expect(error).toBe(fakeError)
     //     done()
     //   })
+      // TransactionModel.save = () => {
+      //   console.log('IM HEREERERE')
+      //   throw fakeError
+      // }
+      // TransactionCtrl.createTransaction(req, res)
+      // .catch((error) => {
+      //   console.log(error)
+      //   expect(error).toBe(fakeError)
+      //   done()
+      // })
     // })
     //
     // it('should recieve the correct params and save', (done) => {
@@ -111,8 +131,13 @@ describe('[TransactionCtrl]', () => {
     //       navAddress: '',
     //     },
     //   }
-    //
-    //   TransactionModel.save = () => { return new Promise((fulfill) => { fulfill() }) }
+    //   // console.log(TransactionModel._events.save)
+    //   TransactionCtrl.__set__('TransactionModel._events.save', () => {
+    //     return new Promise((fulfill) => {
+    //       expect(true).toBe(false)
+    //       fulfill()
+    //     })
+    //   })
     //
     //   TransactionCtrl.createTransaction(req, {})
     //   .then(() => {
@@ -139,6 +164,28 @@ describe('[TransactionCtrl]', () => {
       TransactionCtrl.getOrder(null, mockPass)
       .catch((err) => {
         expect(err instanceof Error).toBe(true)
+        done()
+      })
+    })
+
+    it('should pass on params and catch rejections', (done) => {
+      const mockId = '10'
+      const mockPass = 'PASS'
+      const mockResult = { prop: 'FAKE' }
+
+      const mockFind = {
+        select: () => {},
+        and: (opts) => {
+          expect(opts).toEqual([{ polymorph_id: mockId }, { polymorph_pass: mockPass }])
+        },
+        exec: () => {
+          return new Promise((ful, rej) => { rej(mockResult) })
+        },
+      }
+      sandbox.stub(TransactionModel, 'find').returns(mockFind)
+      TransactionCtrl.getOrder(mockId, mockPass)
+      .catch((result) => {
+        expect(result).toBe(mockResult)
         done()
       })
     })
