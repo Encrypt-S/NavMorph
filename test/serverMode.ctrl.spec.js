@@ -12,14 +12,9 @@ let ServerMessageModel = require('../server/lib/db/serverMessage.model')
 
 
 describe('[ServerModeCtrl]', () => {
-
   describe('(checkMode)', () => {
     beforeEach(() => { // reset the rewired functions
-      sandbox = sinon.sandbox.create()
       ServerModeCtrl = rewire('../server/lib/db/serverMode.ctrl')
-    })
-    afterEach(() => { // reset the rewired functions
-      sandbox.restore()
     })
     it('should check the server mode', (done) => {
       const serverMode = 'SERVER_ON'
@@ -27,7 +22,7 @@ describe('[ServerModeCtrl]', () => {
         find: () => {},
         select: () => {},
         exec: () => {
-          return new Promise((ful) => ful(serverMode))
+          return new Promise((ful) => { ful(serverMode) })
         },
       }
       ServerModeCtrl.__set__('ServerModeModel', mockModel)
@@ -58,11 +53,7 @@ describe('[ServerModeCtrl]', () => {
 
   describe('(checkMode)', () => {
     beforeEach(() => { // reset the rewired functions
-      sandbox = sinon.sandbox.create()
       ServerModeCtrl = rewire('../server/lib/db/serverMode.ctrl')
-    })
-    afterEach(() => { // reset the rewired functions
-      sandbox.restore()
     })
     it('should check the server mode', (done) => {
       const serverMode = 'SERVER_ON'

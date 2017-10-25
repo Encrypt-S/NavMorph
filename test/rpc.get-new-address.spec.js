@@ -11,12 +11,12 @@ describe('[Rpc]', () => {
       Rpc = rewire('../server/lib/rpc/get-new-address')
     })
 
-    describe('(Rpc.internal.getNewAddress)', () => {
+    describe('(Rpc.getNewAddress)', () => {
       it('should run and get an address', () => {
         Rpc.navClient = {
           getNewAddress: () => { return 'address' },
         }
-        Rpc.internal.getNewAddress().then((data) => { expect(data).toBe('address') })
+        Rpc.getNewAddress().then((data) => { expect(data).toBe('address') })
       })
 
       it('should refill the keypool if the pool is empty, and return an address', () => {
@@ -36,21 +36,21 @@ describe('[Rpc]', () => {
             keysAvailible = true
           },
         }
-        Rpc.internal.getNewAddress().then((data) => { expect(data).toBe('address') })
+        Rpc.getNewAddress().then((data) => { expect(data).toBe('address') })
       })
 
-      it('should run internal.getNewAddress and reject any error thats doesn\'t have code = -12', () => {
+      it('should run getNewAddress and reject any error thats doesn\'t have code = -12', () => {
         Rpc.navClient = {
           getNewAddress: () => { throw new Error() },
         }
 
-        Rpc.internal.getNewAddress().catch((err) => { expect(err instanceof Error && err.code !== -12).toBe(true) })
+        Rpc.getNewAddress().catch((err) => { expect(err instanceof Error && err.code !== -12).toBe(true) })
       })
 
       it('should return an error if getNewAddress errors twice', () => {
         let keypoolRefillCalled = false
 
-        Rpc.internal.keypoolRefill = () => {
+        Rpc.keypoolRefill = () => {
           return new Promise((fulfill) => {
             keypoolRefillCalled = true
             fulfill()
@@ -67,13 +67,29 @@ describe('[Rpc]', () => {
           },
         }
 
-        Rpc.internal.getNewAddress().catch((err) => {
+        Rpc.getNewAddress().catch((err) => {
           expect(err instanceof Error && errorCount === 2 && keypoolRefillCalled).toBe(true)
+        })
+      })
+
+      it('should reject an error if keypoolRefill errors', () => {
+        const mockError = 'ERR'
+
+        Rpc.keypoolRefill = () => {
+          return new Promise((ful, rej) => { rej(mockError) })
+        }
+
+        Rpc.navClient = {
+          getNewAddress: () => {},
+        }
+
+        Rpc.getNewAddress().catch((err) => {
+          expect(err).toBe(mockError)
         })
       })
     })
 
-    describe('(Rpc.internal.keypoolRefill)', () => {
+    describe('(Rpc.keypoolRefill)', () => {
       it('should run and catch any error', () => {
         Rpc.navClient = {
           walletPassphrase: () => {},
@@ -81,7 +97,7 @@ describe('[Rpc]', () => {
           keypoolRefill: () => { throw new Error() },
         }
 
-        Rpc.internal.keypoolRefill().catch((err) => { expect(err instanceof Error).toBe(true) })
+        Rpc.keypoolRefill().catch((err) => { expect(err instanceof Error).toBe(true) })
       })
 
       it('should lock the wallet after filling pool', () => {
@@ -92,7 +108,7 @@ describe('[Rpc]', () => {
           keypoolRefill: () => {},
         }
 
-        Rpc.internal.keypoolRefill().then(() => { expect(walletIsLocked).toBe(true) })
+        Rpc.keypoolRefill().then(() => { expect(walletIsLocked).toBe(true) })
       })
     })
   })

@@ -126,7 +126,7 @@ OrderCtrl.checkForMaintenance = () => {
 
 OrderCtrl.getNavAddress = () => {
   return new Promise((fulfill, reject) => {
-    GetNewAddress.internal.getNewAddress()
+    GetNewAddress.getNewAddress()
     .then((newAddress) => {
       fulfill(newAddress)
     })

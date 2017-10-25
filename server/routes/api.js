@@ -11,7 +11,6 @@ const OrderStatusCtrl = require('../lib/order/status.ctrl')
 
 router.get('/', (req, res) => res.send('api works'))
 router.get('/rpc/getinfo', rpcGetInfo.getInfo)
-router.get('/rpc/getnewaddress', rpcGetNewAddress.getNewAddress)
 router.get('/db/transaction/:id', TransactionCtrl.getTransaction)
 router.get('/db/transaction', TransactionCtrl.getTransaction)
 
