@@ -1,18 +1,17 @@
 const lodash = require('lodash')
-const Logger = require('../logger')
 
 // Compile model from schema
-const ServerModeModel = require('./serverMode.model')
-const ServerMessageModel = require('./serverMessage.model')
+let ServerModeModel = require('./serverMode.model')
+let ServerMessageModel = require('./serverMessage.model')
 
 const ServerModeCtrl = {}
 
 ServerModeCtrl.checkMode = () => {
   return new Promise((fulfill, reject) => {
     ServerModeModel.find({})
-    .select('server_mode')
-    .exec()
-    .then((mode_status) => { fulfill(mode_status) })
+    ServerModeModel.select('server_mode')
+    ServerModeModel.exec()
+    .then((modeStatus) => { fulfill(modeStatus) })
     .catch((error) => { reject(error) })
   })
 }
@@ -20,8 +19,8 @@ ServerModeCtrl.checkMode = () => {
 ServerModeCtrl.checkMessage = () => {
   return new Promise((fulfill, reject) => {
     ServerMessageModel.find({})
-    .exec()
-    .then((server_message) => { fulfill(server_message) })
+    ServerMessageModel.exec()
+    .then((serverMessage) => { fulfill(serverMessage) })
     .catch((error) => { reject(error) })
   })
 }
