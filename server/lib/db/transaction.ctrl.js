@@ -61,11 +61,12 @@ TransactionCtrl.getOrder = (id, pass) => {
     const query = TransactionModel.find()
     if (!id || !pass) {
       reject(new Error('Id or Password missing. Id: ' + id + '. Pass: ' + pass))
+      return
     }
     query.and([{ polymorph_id: id }, { polymorph_pass: pass }])
-    .select('-_id polymorph_id polymorph_pass changelly_address_one changelly_id ' +
+    query.select('-_id polymorph_id polymorph_pass changelly_address_one changelly_id ' +
       'order_amount input_currency output_currency order_status')
-    .exec()
+    query.exec()
     .then((order) => { fulfill(order) })
     .catch((error) => { reject(error) })
   })
@@ -75,10 +76,11 @@ TransactionCtrl.updateOrderStatus = (id, pass, newStatus) => {
   return new Promise((fulfill, reject) => {
     if (!id || !pass || !newStatus) {
       reject(new Error('Id, Password or Status missing. Id: ' + id + '. Pass: ' + pass + '. Status: ' + newStatus))
+      return
     }
     const query = { polymorph_id: id, polymorph_pass: pass }
-    TransactionModel.findOneAndUpdate(query, { order_status: 'ABANDONED' })
-    .then((data) => {
+    TransactionModel.findOneAndUpdate(query, { order_status: newStatus })
+    .then(() => {
       fulfill()
     })
     .catch((error) => { reject(error) })
@@ -112,6 +114,9 @@ TransactionCtrl.checkIfIdExists = (polymorphId) => {
     try {
       if (polymorphId) {
         query.where('polymorph_id').equals(polymorphId)
+      } else {
+        reject(new Error('Incorrect Params - No Polymorph ID'))
+        return
       }
       query.exec()
       .then((result) => {
@@ -121,8 +126,9 @@ TransactionCtrl.checkIfIdExists = (polymorphId) => {
         }
         fulfill(false)
       })
-    } catch (error) {
-      reject(error)
+      .catch((error) => { reject(error) })
+    } catch (exception) {
+      reject(exception)
     }
   })
 }
