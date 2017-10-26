@@ -28,21 +28,19 @@ OrderStatusCtrl.getOrder = (req, res) => {
 }
 
 
-
 OrderStatusCtrl.checkOrderExists = (params, res) => {
   TransactionCtrl.checkIfIdExists(params.orderId)
   .then((orderExists) => {
     if (orderExists) {
       OrderStatusCtrl.getOrderFromDb(params, res)
-    } else if (orderArr[0].length === 0) {
-      res.send([[],[]])
-      return
+    } else {
+      res.send([[], []])
     }
   })
-  .catch(error => {
-    OrderStatusCtrl.handleError(error, res, '003')})
+  .catch((error) => {
+    OrderStatusCtrl.handleError(error, res, '003')
+  })
 }
-
 
 OrderStatusCtrl.getOrderFromDb = (params, res) => {
   TransactionCtrl.getOrder(params.orderId, params.orderPassword)
@@ -53,7 +51,7 @@ OrderStatusCtrl.getOrderFromDb = (params, res) => {
     } else if (order.order_status === 'ABANDONED') {
       OrderStatusCtrl.sendEmptyResponse(res)
     } else {
-      EtaCtrl.getEta({ status: order.order_status, timeSent: order.sent, from: order.input_currency, to: order.output_currency } )
+      EtaCtrl.getEta({ status: order.order_status, timeSent: order.sent, from: order.input_currency, to: order.output_currency })
       .then((eta) => {
         res.send([order, eta])
       })
@@ -65,10 +63,10 @@ OrderStatusCtrl.getOrderFromDb = (params, res) => {
 
 OrderStatusCtrl.checkForSuspiciousActivity = (params, res) => {
   LoginCtrl.insertAttempt(params.ipAddress, params.orderId)
-  .then(LoginCtrl.checkIfSuspicious(ipAddress)
+  .then(LoginCtrl.checkIfSuspicious(params.ipAddress)
     .then((isSuspicious) => {
       if (isSuspicious) {
-        LoginCtrl.blackListIp( { params.ipAddress } )
+        LoginCtrl.blackListIp({ ipAddress: params.ipAddress })
         .then(OrderStatusCtrl.sendBlockedResponse(res))
         .catch(error => OrderStatusCtrl.handleError(error, res, '004'))
       } else {
@@ -93,7 +91,6 @@ OrderStatusCtrl.updateOrderStatus = (req, res) => {
   OrderStatusCtrl.validateParams(req.params, ApiOptions.updateOrderStatusOptions)
   .then(() => {
     const params = req.params
-    const orderPassword = req.params.orderPassword
     const newStatus = req.params.status
     if (ConfigData.validOrderStatuses.indexOf(newStatus) === -1) {
       OrderStatusCtrl.handleError(new Error('Invalid order status'), res, '007')
