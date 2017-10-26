@@ -9,8 +9,8 @@ const ServerModeCtrl = {}
 ServerModeCtrl.checkMode = () => {
   return new Promise((fulfill, reject) => {
     ServerModeModel.find({})
-    ServerModeModel.select('server_mode')
-    ServerModeModel.exec()
+    .select('server_mode')
+    .exec()
     .then((modeStatus) => { fulfill(modeStatus) })
     .catch((error) => { reject(error) })
   })
@@ -19,7 +19,7 @@ ServerModeCtrl.checkMode = () => {
 ServerModeCtrl.checkMessage = () => {
   return new Promise((fulfill, reject) => {
     ServerMessageModel.find({})
-    ServerMessageModel.exec()
+    .exec()
     .then((serverMessage) => { fulfill(serverMessage) })
     .catch((error) => { reject(error) })
   })
