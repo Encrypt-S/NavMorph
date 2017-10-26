@@ -69,11 +69,11 @@ OrderStatusCtrl.checkForSuspiciousActivity = (params, res) => {
   .then(LoginCtrl.checkIfSuspicious(ipAddress)
     .then((isSuspicious) => {
       if (isSuspicious) {
-        LoginCtrl.blackListIp(params.ipAddress)
+        LoginCtrl.blackListIp( { params.ipAddress } )
         .then(OrderStatusCtrl.sendBlockedResponse(res))
         .catch(error => OrderStatusCtrl.handleError(error, res, '004'))
       } else {
-        OrderStatusCtrl.sendEmptyResponse(res)              
+        OrderStatusCtrl.sendEmptyResponse(res)
       }
     })
     .catch(error => OrderStatusCtrl.handleError(error, res, '005'))

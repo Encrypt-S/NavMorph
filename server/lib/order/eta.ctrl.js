@@ -1,49 +1,48 @@
 const Config = require('../../config')
-const ApiOptions = require('../../api-options.json')
+let ApiOptions = require('../../api-options.json')
 
-const validStatuses = Config.validOrderStatuses
-const timeConsts = Config.timeConsts
-const Validator = require('../options-validator')
-const Logger = require('../logger')
+let validStatuses = Config.validOrderStatuses
+let timeConsts = Config.timeConsts
+let Validator = require('../options-validator')
+let Logger = require('../logger')
 
 const EtaCtrl = {}
 
 
 EtaCtrl.generateEstimate = (req, res) => {
-  Validator.startValidatation(req.params, ApiOptions.generateEstimateOptions)
+  Validator.startValidation(req.params, ApiOptions.generateEstimateOptions)
   .then(() => {
-    return EtaCtrl.getEta({ status: 'ESTIMATE', timeSent: new Date(), from: req.params.from, to: req.params.to })  
+    return EtaCtrl.getEta({ status: 'ESTIMATE', timeSent: new Date(), from: req.params.from, to: req.params.to })
   })
   .then((eta) => {
     res.send(eta)
   })
   .catch((error) => {
-    EtaCtrl.handleError(error, res, '001')    
+    EtaCtrl.handleError(error, res, '001')
   })
 }
 
 EtaCtrl.getEta = (params) => {
   return new Promise((fufill, reject) => {
-    Validator.startValidatation(params, ApiOptions.getEtaOptions)
+    Validator.startValidation(params, ApiOptions.getEtaOptions)
     .then(() => {
-      if(!EtaCtrl.validStatus(params.status)) {
-        reject(new Error('Invalid order status'))
+      if (!EtaCtrl.validStatus(params.status)) {
+        reject(new Error('INVALID_ORDER_STATUS'))
         return
       } else if (params.status === 'FINISHED' && !(params.timeSent instanceof Date)) {
-        reject(new Error('Invalid sending time'))
+        reject(new Error('INVALID_SENT_TIME'))
         return
       }
-      fufill(EtaCtrl.buildEta(params))   
+      fufill(EtaCtrl.buildEta(params))
     })
     .catch((error) => { reject(error) })
   })
-
 }
 
 EtaCtrl.validStatus = (status) => {
   if (validStatuses.indexOf(status) === -1) {
     return false
-  } 
+  }
   return true
 }
 
@@ -51,8 +50,8 @@ EtaCtrl.buildEta = (options) => {
   let etaMin = 0 // These are in minutes
   let etaMax = 0
 
-  switch(options.status) {
-    case 'COMPLETED': 
+  switch (options.status) {
+    case 'COMPLETED':
     case 'ABANDONED':
     case 'FAILED':
     case 'REFUNDED':
@@ -60,9 +59,9 @@ EtaCtrl.buildEta = (options) => {
       break
     case 'CREATED':
     case 'ESTIMATE':
-      etaMin = timeConsts.navTech[0] + timeConsts.changelly[0]*2
-      etaMax = timeConsts.navTech[1] + timeConsts.changelly[1]*2
-      if (options.originCoin === 'nav' || options.destCoin === 'nav') {
+      etaMin = timeConsts.navTech[0] + (timeConsts.changelly[0] * 2)
+      etaMax = timeConsts.navTech[1] + (timeConsts.changelly[1] * 2)
+      if (options.originCoin === 'NAV' || options.destCoin === 'NAV') {
         etaMin -= timeConsts.changelly[0]
         etaMax -= timeConsts.changelly[1]
       }
@@ -70,7 +69,7 @@ EtaCtrl.buildEta = (options) => {
     case 'CONFIRMING':
       etaMin = timeConsts.navTech[0] + timeConsts.changelly[0]
       etaMax = timeConsts.navTech[1] + timeConsts.changelly[1]
-      if (options.destCoin === 'nav') {
+      if (options.destCoin === 'NAV') {
         etaMin -= timeConsts.changelly[0]
         etaMax -= timeConsts.changelly[1]
       }
@@ -79,7 +78,7 @@ EtaCtrl.buildEta = (options) => {
     case 'SENDING':
       etaMin = timeConsts.navTech[0] + timeConsts.changelly[0]
       etaMax = timeConsts.navTech[1] + timeConsts.changelly[1]
-      if (options.destCoin === 'nav') {
+      if (options.destCoin === 'NAV') {
         etaMin -= timeConsts.changelly[0]
         etaMax -= timeConsts.changelly[1]
       }
@@ -88,9 +87,9 @@ EtaCtrl.buildEta = (options) => {
       etaMin = timeConsts.navTech[0] + timeConsts.changelly[0]
       etaMax = timeConsts.navTech[1] + timeConsts.changelly[1]
       const modifiedMinMax = EtaCtrl.factorTimeSinceSending(etaMin, etaMax, options.timeSent)
-      etaMin = modifiedMinMax[0] 
+      etaMin = modifiedMinMax[0]
       etaMax = modifiedMinMax[1]
-      if (options.destCoin === 'nav') {
+      if (options.destCoin === 'NAV') {
         etaMin -= timeConsts.changelly[0]
         etaMax -= timeConsts.changelly[1]
       }
@@ -99,7 +98,7 @@ EtaCtrl.buildEta = (options) => {
   return [etaMin, etaMax]
 }
 
-EtaCtrl.factorTimeSinceSending = (min, Max, timeSent) => {
+EtaCtrl.factorTimeSinceSending = (min, max, timeSent) => {
   const minutesPassed = Math.round((new Date() - timeSent) / 1000 / 60, 0)
   return [min - minutesPassed, max - minutesPassed]
 }
