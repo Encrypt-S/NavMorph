@@ -1,8 +1,7 @@
 const TransactionCtrl = require('../db/transaction.ctrl')
 const EtaCtrl = require('./eta.ctrl')
-const configData = require('../../config')
+const configData = require('../../../server-settings.json')
 const LoginCtrl = require('../db/login.ctrl')
-const ConfigData = require('../../config')
 const Logger = require('../logger')
 
 const OrderStatusCtrl = {}
@@ -90,7 +89,7 @@ OrderStatusCtrl.updateOrderStatus = (req, res) => {
   const polymorphId = req.params.orderId
   const orderPassword = req.params.orderPassword
   const newStatus = req.params.status
-  if (ConfigData.validOrderStatuses.indexOf(newStatus) === -1) {
+  if (configData.validOrderStatuses.indexOf(newStatus) === -1) {
     OrderStatusCtrl.handleError(new Error('Invalid order status'), res, '007')
   }
   TransactionCtrl.internal.updateOrderStatus(polymorphId, orderPassword, newStatus)

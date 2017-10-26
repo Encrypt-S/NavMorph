@@ -1,4 +1,4 @@
-const configData = require('../../config')
+const configData = require('../../../server-settings.json')
 const crypto = require('crypto')
 const jayson = require('jayson')
 const Logger = require('../logger')
