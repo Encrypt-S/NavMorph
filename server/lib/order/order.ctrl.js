@@ -12,7 +12,7 @@ const ApiOptions = require('../../api-options.json')
 const OrderCtrl = {}
 
 OrderCtrl.createOrder = (req, res) => {
-  Validator.startValidatation(req.params, ApiOptions.orderOptions)
+  Validator.startValidation(req.params, ApiOptions.orderOptions)
   .then(() => {
     OrderCtrl.checkServerMode(req, res)
   })
@@ -159,7 +159,7 @@ OrderCtrl.getChangellyAddress = (inputCurrency, outputCurrency, destAddress) => 
 OrderCtrl.generateOrderId = () => {
   return new Promise((fulfill, reject) => {
     const polymorphId = Keygen.generateKey(16)
-    TransactionCtrl.internalCheckIfIdExists(polymorphId)
+    TransactionCtrl.checkIfIdExists(polymorphId)
     .then((existsInDb) => {
       if (existsInDb) {
         OrderCtrl.generateOrderId()

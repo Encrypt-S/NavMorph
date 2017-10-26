@@ -5,7 +5,6 @@ const Logger = require('../logger')
 const socketCtrl = {}
 
 socketCtrl.setupServerSocket = (socket) => {
-  console.log(socket)
   return new Promise((fufill, reject) => {
     try {
       socket.on('connection', (socket) => {

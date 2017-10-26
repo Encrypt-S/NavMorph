@@ -72,25 +72,20 @@ LoginCtrl.checkIpBlocked = (options) => {
     }
     const query = BlackListModel
     query.find()
-    query.and([
+    .and([
       { ip_address: options.ipAddress },
       { timestamp: {
         '$gte': new Date(new Date().getTime() - (10 * 60000)),
       } },
     ])
-    query.select('ip_address timestamp')
-
-    LoginCtrl.executeIpBlockedQuery(fulfill, reject, query)
+    .select('ip_address timestamp')
+    .exec()
+    .then((result) => {
+      const minLength = 0
+      LoginCtrl.checkResults(result, minLength, fulfill)
+    })
+    .catch((error) => { reject(error) })
   })
-}
-
-LoginCtrl.executeIpBlockedQuery = (fulfill, reject, query) => {
-  query.exec()
-  .then((result) => {
-    const minLength = 0
-    LoginCtrl.checkResults(result, minLength, fulfill)
-  })
-  .catch((error) => { reject(error) })
 }
 
 LoginCtrl.checkIfSuspicious = (ipAddress) => {
