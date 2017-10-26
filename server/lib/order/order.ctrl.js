@@ -5,10 +5,23 @@ const ChangellyCtrl = require('../changelly/changelly.ctrl')
 const TransactionCtrl = require('../db/transaction.ctrl')
 const ServerModeCtrl = require('../db/serverMode.ctrl')
 const Logger = require('../logger')
+const Validator = require('../options-validator')
+const ApiOptions = require('../../api-options.json')
+
 
 const OrderCtrl = {}
 
 OrderCtrl.createOrder = (req, res) => {
+  Validator.startValidatation(req.params, ApiOptions.orderOptions)  
+  .then(() => {
+    OrderCtrl.checkServerMode(req, res)
+  })
+  .catch((error) => {
+    OrderCtrl.handleError(error, res, '002')
+  })
+}
+
+OrderCtrl.checkServerMode = (req, res) => {
   OrderCtrl.checkForMaintenance()
   .then((maintenanceActive) => {
     if(maintenanceActive) {
@@ -19,22 +32,11 @@ OrderCtrl.createOrder = (req, res) => {
       }))
       return
     }
-    OrderCtrl.validateOrder(req, res)
-  })
-  .catch((error) => {
-    OrderCtrl.handleError(error, res, '002')
-  })
-}
-
-OrderCtrl.validateOrder = (req, res) => {
-  OrderCtrl.validateParams(req)
-  .then(() => {
     OrderCtrl.beginOrderCreation(req, res)
   })
   .catch((error) => {
     OrderCtrl.handleError(error, res, '002')
-  })
-}
+  })}
 
 OrderCtrl.beginOrderCreation = (req, res) => {
   OrderCtrl.getNavAddress()
