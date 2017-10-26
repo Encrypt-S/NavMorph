@@ -24,7 +24,7 @@ OrderCtrl.createOrder = (req, res) => {
 OrderCtrl.checkServerMode = (req, res) => {
   OrderCtrl.checkForMaintenance()
   .then((maintenanceActive) => {
-    if(maintenanceActive) {
+    if (maintenanceActive) {
       res.send(JSON.stringify({
         status: 200,
         type: 'MAINTENANCE',
@@ -36,7 +36,8 @@ OrderCtrl.checkServerMode = (req, res) => {
   })
   .catch((error) => {
     OrderCtrl.handleError(error, res, '002')
-  })}
+  })
+}
 
 OrderCtrl.beginOrderCreation = (req, res) => {
   OrderCtrl.getNavAddress()
@@ -56,7 +57,6 @@ OrderCtrl.getFirstChangellyAddress = (req, res) => {
   } else {
     OrderCtrl.getChangellyAddress(req.params.from, 'NAV', req.params.navAddress)
     .then((address) => {
-
       req.params.changellyAddressOne = address
       OrderCtrl.getSecondChangellyAddress(req, res)
     })
@@ -112,15 +112,15 @@ OrderCtrl.storeOrder = (req, res) => {
 
 OrderCtrl.checkForMaintenance = () => {
   return new Promise((fulfill, reject) => {
-    serverModeCtrl.checkMode()
+    ServerModeCtrl.checkMode()
     .then((mode) => {
-      if(mode === 'MAINTENANCE'){
+      if (mode === 'MAINTENANCE') {
         fulfill(true)
       } else {
         fulfill(false)
       }
     })
-    .catch((err) => reject(err))
+    .catch(err => reject(err))
   })
 }
 
@@ -138,7 +138,7 @@ OrderCtrl.getNavAddress = () => {
 
 OrderCtrl.getChangellyAddress = (inputCurrency, outputCurrency, destAddress) => {
   return new Promise((fulfill, reject) => {
-    if(outputCurrency === 'NAV'){
+    if (outputCurrency === 'NAV') {
       fulfill(destAddress)
     }
     ChangellyCtrl.internal.generateAddress({
