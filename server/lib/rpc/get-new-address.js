@@ -1,6 +1,4 @@
 const Rpc = require('./client')
-const Logger = require('../logger')
-
 const config = require('../../config')
 
 Rpc.getNewAddress = () => {
