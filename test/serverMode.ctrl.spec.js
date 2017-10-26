@@ -2,10 +2,7 @@
 
 const expect = require('expect')
 const rewire = require('rewire')
-const sinon = require('sinon')
-const mongoose = require('mongoose')
 
-let sandbox
 let ServerModeCtrl = rewire('../server/lib/db/serverMode.ctrl')
 let ServerModeModel = require('../server/lib/db/serverMode.model')
 let ServerMessageModel = require('../server/lib/db/serverMessage.model')
