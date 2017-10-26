@@ -54,7 +54,6 @@ OrderCtrl.getFirstChangellyAddress = (req, res) => {
   } else {
     OrderCtrl.getChangellyAddress(req.params.from, 'NAV', req.params.navAddress)
     .then((address) => {
-
       req.params.changellyAddressOne = address
       OrderCtrl.getSecondChangellyAddress(req, res)
     })
@@ -112,7 +111,7 @@ OrderCtrl.checkForMaintenance = () => {
   return new Promise((fulfill, reject) => {
     serverModeCtrl.checkMode()
     .then((mode) => {
-      if(mode === 'MAINTENANCE'){
+      if(mode[0].server_mode === 'MAINTENANCE'){
         fulfill(true)
       } else {
         fulfill(false)
@@ -121,7 +120,6 @@ OrderCtrl.checkForMaintenance = () => {
     .catch((err) => reject(err))
   })
 }
-
 
 OrderCtrl.validateParams = (req) => {
   return new Promise((fulfill, reject) => {
@@ -158,11 +156,9 @@ OrderCtrl.getChangellyAddress = (inputCurrency, outputCurrency, destAddress) => 
       extraId: null,
     })
     .then((data) => {
-      if (data instanceof Error) {
-        reject(data)
-      }
       fulfill(data.result.address)
     })
+    .catch((error) => { reject(error) })
   })
 }
 

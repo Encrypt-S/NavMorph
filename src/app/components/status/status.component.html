@@ -13,7 +13,9 @@
       <div class="error-text" *ngIf="formData.errors.indexOf('TRANSFER_TOO_SMALL') > -1">You're attempting to send too few coins. Changelly requires at least {{formData.minTransferAmount | number:'1.0-8' }} {{formData.originCoin | uppercase}} </div>
       <div class="error-text" *ngIf="formData.errors.indexOf('TRANSFER_TOO_LARGE') > -1">You're attempting to send too many coins at once, our current limit is {{MAX_NAV_PER_TRADE | number:'1.0-8'  }} NAV per trade. You're attempting to send {{formData.estConvToNav | number:'1.0-8'  }} NAV.</div>
       <div class="error-text" *ngIf="formData.errors.indexOf('NAV_TO_NAV_TRANSFER') > -1">You're attempting a NAV to NAV anonymous transfer, please use NavTech wallet's built in anon transaction feature for this.</div>
-      <div class="error-text" *ngIf="formData.errors.indexOf('CHANGELLY_ERROR') > -1">There was an error contacting Changelly servers, please try again.</div>
+      <!-- <div class="error-text" *ngIf="formData.errors.indexOf('CHANGELLY_ERROR') > -1">There was an error contacting Changelly servers, please try again.</div> -->
+      <div class="error-text" *ngIf="formData.errors.indexOf('ETA_ERROR') > -1">There was an error fetching an ETA.</div>
+
     </div>
     <div *ngIf="formData.errors.length <= 0">
       <div>

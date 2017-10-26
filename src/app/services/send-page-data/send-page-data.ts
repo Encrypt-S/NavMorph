@@ -113,10 +113,12 @@ export class SendPageDataService implements OnInit {
   
   estimateArrivalTime(originCoin, destCoin, transferAmount) {
     this.getEta(originCoin, destCoin)
-      .then((data) => {
-        this.dataBundle.estTime = data
-
+    .then((data) => {
+      this.dataBundle.estTime = data
       this.estimateFirstExchange(originCoin, destCoin, transferAmount)
+    })
+    .catch((err) => {
+      this.dataBundle.errors.push('ETA_ERROR')
     })
   }
   
@@ -127,12 +129,16 @@ export class SendPageDataService implements OnInit {
       this.estimateSecondExchange(destCoin, conversionAfterFees)
     } else {
       this.getEstimatedExchange(originCoin, 'NAV', transferAmount)
-        .then((data) => {
-          this.dataBundle.estConvToNav = new BigNumber(data, 10).round(8)
+      .then((data) => {
+        this.dataBundle.estConvToNav = new BigNumber(data, 10).round(8)
 
-          const conversionAfterFees = new BigNumber(this.dataBundle.estConvToNav, 10).times(1 - this.NAVTECH_FEE).round(8)
+        const conversionAfterFees = new BigNumber(this.dataBundle.estConvToNav, 10).times(1 - this.NAVTECH_FEE).round(8)
 
-          this.estimateSecondExchange(destCoin, conversionAfterFees)
+        this.estimateSecondExchange(destCoin, conversionAfterFees)
+      })
+      .catch((err) => {
+        this.pushError(this.dataBundle, 'CHANGELLY_ERROR')
+        this.sendData()     
       })
     }      
   }
@@ -147,14 +153,18 @@ export class SendPageDataService implements OnInit {
         this.dataBundle.estConvFromNav = new BigNumber(data, 10).round(8).toString()
         this.sendData()
       })
+      .catch((err) => {
+        this.pushError(this.dataBundle, 'CHANGELLY_ERROR')
+        this.sendData()
+      })
     }
-  }
+  }  
 
 
   sendData(){
     this.validateDataBundle(this.dataBundle)
-    this.dataBundle.changellyFeeOne = this.dataBundle.changellyFeeOne.toString()
-    this.dataBundle.estConvToNav = this.dataBundle.estConvToNav.toString()
+    this.dataBundle.changellyFeeOne = this.dataBundle.changellyFeeOne.toString() || undefined
+    this.dataBundle.estConvToNav = this.dataBundle.estConvToNav.toString() || undefined
     this.dataStored = true
     this.dataSubject.next(this.dataBundle)
     console.log('data sent')
@@ -175,6 +185,9 @@ export class SendPageDataService implements OnInit {
         dataBundle.minTransferAmount = new BigNumber(minAmount, 10).round(8).toString()
       }
     })
+    .catch((error) => {
+      this.pushError(dataBundle, 'CHANGELLY_ERROR')
+    })
   }
 
   validateDataBundle(dataBundle) {
@@ -184,9 +197,6 @@ export class SendPageDataService implements OnInit {
     if(!this.checkAddressIsValid(dataBundle.destAddr)) {
       this.pushError(dataBundle, 'INVALID_DEST_ADDRESS')
     }
-    // if(changellyError () {
-      // this.pushError(dataBundle, 'CHANGELLY_ERROR')
-    // }
   }
 
  pushError(dataBundle, error): void {
@@ -201,7 +211,7 @@ export class SendPageDataService implements OnInit {
   }
 
   getEstimatedExchange(originCoin, destCoin, transferAmount) {
-    return new Promise<any>( resolve => {
+    return new Promise<any>((resolve, reject) => {
       if(originCoin === 'NAV' && destCoin === 'NAV'){
         resolve(transferAmount)
       }
@@ -209,29 +219,29 @@ export class SendPageDataService implements OnInit {
       .subscribe( data => {
         resolve(data)
       }, (err) => {
-        resolve (err)
+        reject(err)
       })
     })
   }
 
   getMinTransferAmount(originCoin, destCoin) {
-    return new Promise<any>( resolve => {
+    return new Promise<any>((resolve, reject) => {
       this.changellyApi.getMinAmount(originCoin, destCoin)
       .subscribe( data => {
         resolve(data)
       }, (err) => {
-        resolve (err)
+        reject(err)
       })
     })
   }
 
   getEta(originCoin, destCoin) {
-    return new Promise<any>( resolve => {
+    return new Promise<any>( (resolve, reject) => {
       this.changellyApi.getEta(originCoin, destCoin)
-      .subscribe( data => {
+      .subscribe( (data) => {
         resolve(data)
       }, (err) => {
-        resolve (err)
+        reject(err)
       })
     })
   }
