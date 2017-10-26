@@ -111,7 +111,7 @@ ChangellyCtrl.internal.generateAddress = (params) => {
 
 ChangellyCtrl.validateParams = (params, options) => {
   return new Promise((fulfill, reject) => {
-    Validator.startValidatation(params, options)  
+    Validator.startValidation(params, options)  
     .then(() => {
       fulfill()
     })
