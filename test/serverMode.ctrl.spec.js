@@ -16,8 +16,8 @@ describe('[ServerModeCtrl]', () => {
     it('should check the server mode', (done) => {
       const serverMode = 'SERVER_ON'
       const mockModel = {
-        find: () => {},
-        select: () => {},
+        find: () => mockModel,
+        select: () => mockModel,
         exec: () => {
           return new Promise((ful) => { ful(serverMode) })
         },
@@ -29,33 +29,31 @@ describe('[ServerModeCtrl]', () => {
         done()
       })
     })
-  })
-
-  it('should catch rejected errors', (done) => {
-    const mockErr = 'REJECT'
-    const mockModel = {
-      find: () => {},
-      select: () => {},
-      exec: () => {
-        return new Promise((ful, rej) => rej(mockErr))
-      },
-    }
-    ServerModeCtrl.__set__('ServerModeModel', mockModel)
-    ServerModeCtrl.checkMode()
-    .catch((err) => {
-      expect(err).toBe(mockErr)
-      done()
+    it('should catch rejected errors', (done) => {
+      const mockErr = 'REJECT'
+      const mockModel = {
+        find: () => mockModel,
+        select: () => mockModel,
+        exec: () => {
+          return new Promise((ful, rej) => rej(mockErr))
+        },
+      }
+      ServerModeCtrl.__set__('ServerModeModel', mockModel)
+      ServerModeCtrl.checkMode()
+      .catch((err) => {
+        expect(err).toBe(mockErr)
+        done()
+      })
     })
   })
-
-  describe('(checkMode)', () => {
+  describe('(checkMessage)', () => {
     beforeEach(() => { // reset the rewired functions
       ServerModeCtrl = rewire('../server/lib/db/serverMode.ctrl')
     })
     it('should check the server mode', (done) => {
       const serverMode = 'SERVER_ON'
       const mockModel = {
-        find: () => {},
+        find: () => mockModel,
         exec: () => {
           return new Promise((ful) => { ful(serverMode) })
         },
@@ -67,22 +65,21 @@ describe('[ServerModeCtrl]', () => {
         done()
       })
     })
-  })
-
-  it('should catch rejected errors', (done) => {
-    const mockErr = 'REJECT'
-    const mockModel = {
-      find: () => {},
-      select: () => {},
-      exec: () => {
-        return new Promise((ful, rej) => rej(mockErr))
-      },
-    }
-    ServerModeCtrl.__set__('ServerMessageModel', mockModel)
-    ServerModeCtrl.checkMessage()
-    .catch((err) => {
-      expect(err).toBe(mockErr)
-      done()
+    it('should catch rejected errors', (done) => {
+      const mockErr = 'REJECT'
+      const mockModel = {
+        find: () => mockModel,
+        select: () => mockModel,
+        exec: () => {
+          return new Promise((ful, rej) => rej(mockErr))
+        },
+      }
+      ServerModeCtrl.__set__('ServerMessageModel', mockModel)
+      ServerModeCtrl.checkMessage()
+      .catch((err) => {
+        expect(err).toBe(mockErr)
+        done()
+      })
     })
   })
 })

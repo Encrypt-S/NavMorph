@@ -44,15 +44,9 @@ TransactionCtrl.createTransaction = (req, res) => {
       created: new Date(),
       sent: null,
     })
-    try {
-      TransactionCtrl.runtime.transaction.save()
-      .then(fulfill())
-      .catch((error) => {
-        reject(error)
-      })
-    } catch (error) {
-      reject(error)
-    }
+    TransactionCtrl.runtime.transaction.save()
+    .then(() => fulfill())
+    .catch(err => reject(err))
   })
 }
 
