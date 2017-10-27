@@ -53,7 +53,7 @@ app.set('port', port)
  */
 
 var server
-var io
+var socketIo
 
 pem.createCertificate({ days: 1, selfSigned: true }, (error, keys) => {
   if (error) {
@@ -70,9 +70,9 @@ pem.createCertificate({ days: 1, selfSigned: true }, (error, keys) => {
     extended: true,
   }))
   server = https.createServer(sslOptions, app)
-  io = require('socket.io')(server);
+  socketIo = require('socket.io')(server)
 
-  socketCtrl.setupServerSocket(io)
+  socketCtrl.setupServerSocket(socketIo)
   .then(() => {
     Logger.writeLog('n/a', 'Server Mode Socket Running', null, false)
   })
@@ -86,20 +86,18 @@ pem.createCertificate({ days: 1, selfSigned: true }, (error, keys) => {
     /**
     * Connect to mongoose
     */
-    
+
     mongoose.Promise = global.Promise
-    
+
     const mongoDB = 'mongodb://127.0.0.1/polymorph'
     mongoose.connect(mongoDB)
     const db = mongoose.connection
     db.on('error', console.error.bind(console, 'MongoDB connection error:'))
-    
+
     Logger.writeLog('MongoDB Connect', `Conected to MongoDB on ${mongoDB}`, null, false)
 
     Logger.writeLog('n/a', 'Sending start up notification email.', null, false)
     Logger.writeLog('Server Start Up', 'Start Up Complete @' + new Date().toISOString() +
       ', Polymorph Version: ' + config.version, null, true)
-
   })
 })
-

@@ -1,5 +1,5 @@
 const Rpc = require('./client')
-const Logger = require('../logger')
+let Logger = require('../logger')
 
 Rpc.getInfo = (req, res) => {
   try {
@@ -19,7 +19,7 @@ Rpc.getInfo = (req, res) => {
         message,
         err,
       }))
-      Logger.writeLog(code, message, { error:err }, false)
+      Logger.writeLog(code, message, { error: err }, false)
     })
   } catch (err) {
     const code = 'RPC_001'
@@ -31,7 +31,7 @@ Rpc.getInfo = (req, res) => {
       message,
       err,
     }))
-    Logger.writeLog(code, message, { error:err }, false)
+    Logger.writeLog(code, message, { error: err }, false)
   }
 }
 
