@@ -28,13 +28,13 @@ describe('[Login.Ctrl]', () => {
     it('should get correct params', (done) => {
       const ipAddress = '192.168.10.1'
       const polymorphId = '123'
-      const params = { test: 'test'}
+      const params = { test: 'test' }
 
       function mockFailedLoginsModel(paramsToSave) {
         mockFailedLoginsModel.params = paramsToSave
       }
 
-      LoginCtrl.executeSave = (fulfill, reject) => {
+      LoginCtrl.executeSave = () => {
         expect(mockFailedLoginsModel.params.ip_address).toBe(ipAddress)
         expect(mockFailedLoginsModel.params.polymorph_id).toBe(polymorphId)
         expect(mockFailedLoginsModel.params.params).toBe(JSON.stringify(params))
@@ -47,7 +47,7 @@ describe('[Login.Ctrl]', () => {
       LoginCtrl.insertAttempt({ ipAddress, polymorphId, params })
     })
   })
-  
+
   describe('(blackListIp)', () => {
     beforeEach(() => { // reset the rewired functions
       LoginCtrl = rewire('../server/lib/db/login.ctrl')
@@ -73,7 +73,7 @@ describe('[Login.Ctrl]', () => {
       LoginCtrl.__set__('Logger', mockLogger)
 
       function mockBlacklistModel(paramsToSave) {
-        this.params = paramsToSave  
+        this.params = paramsToSave
       }
 
       LoginCtrl.executeSave = (fulfill, reject) => {
@@ -96,7 +96,6 @@ describe('[Login.Ctrl]', () => {
     })
 
     it('should handle save success', (done) => {
-
       LoginCtrl.runtime.transaction = {
         save: () => { return Promise.resolve('SUCCESS') },
       }
@@ -125,7 +124,7 @@ describe('[Login.Ctrl]', () => {
     })
 
     it('should handle exceptions', (done) => {
-      function Exception(message){
+      function Exception(message) {
         this.error = message
       }
 
@@ -162,77 +161,55 @@ describe('[Login.Ctrl]', () => {
     })
 
     it('should pass on params', (done) => {
-      const executeIpSpy = sinon.spy(LoginCtrl, 'executeIpBlockedQuery')
       const ipAddress = '1.1.1.1'
-      // let params 
-      mockLogger = { writeLog: sinon.spy() }
-      LoginCtrl.__set__('Logger', mockLogger)
-
-      let mockBlacklistModel = {
-        find: () => {},
+      const mockResult = 'MOCK'
+      const mockBlacklistModel = {
+        find: () => mockBlacklistModel,
         and: (paramsToSave) => {
-            mockBlacklistModel.params = paramsToSave
+          mockBlacklistModel.params = paramsToSave
+          return mockBlacklistModel
         },
-        select: () => {},
-        params: {}
-        
+        select: () => mockBlacklistModel,
+        exec: () => new Promise(ful => ful(mockResult)),
+        params: {},
       }
-
       LoginCtrl.__set__('BlackListModel', mockBlacklistModel)
 
-      LoginCtrl.executeIpBlockedQuery = (fulfill, reject, query) => {
-        expect(query.params[0].ip_address).toBe(ipAddress)
-        expect(query.params[1].timestamp.$gte instanceof Date).toBe(true)
-        sinon.assert.notCalled(mockLogger.writeLog)
-        done()
-      }
+      LoginCtrl.checkResults = (res, min, fufill) => fufill(res)
 
       LoginCtrl.checkIpBlocked({ ipAddress })
+      .then((result) => {
+        expect(mockBlacklistModel.params[0].ip_address).toBe(ipAddress)
+        expect(mockBlacklistModel.params[1].timestamp.$gte instanceof Date).toBe(true)
+        expect(result).toBe(mockResult)
+        done()
+      })
+    })
+
+    it('should catch rejections', (done) => {
+      const ipAddress = '1.1.1.1'
+      const mockResult = 'MOCK'
+      const mockBlacklistModel = {
+        find: () => mockBlacklistModel,
+        and: (paramsToSave) => {
+          mockBlacklistModel.params = paramsToSave
+          return mockBlacklistModel
+        },
+        select: () => mockBlacklistModel,
+        exec: () => new Promise((ful, rej) => rej(mockResult)),
+        params: {},
+      }
+      LoginCtrl.__set__('BlackListModel', mockBlacklistModel)
+
+      LoginCtrl.checkIpBlocked({ ipAddress })
+      .catch((result) => {
+        expect(result).toBe(mockResult)
+        done()
+      })
     })
   })
 
-  describe('(executeIpBlockedQuery)', () => {
-    beforeEach(() => { // reset the rewired functions
-      LoginCtrl = rewire('../server/lib/db/login.ctrl')
-    })
-
-    it('should handle query success', (done) => {
-      let query = {}
-      query.exec = () => {
-        return Promise.resolve('SUCCESS')
-      }
-      
-      function fulfill(result) {
-        expect(result).toBe('SUCCESS')
-        sinon.assert.notCalled(mockLogger.writeLog)
-        done()
-      }
-
-      LoginCtrl.checkResults = (result, minLength) => {
-        expect(result).toBe('SUCCESS')
-        expect(result).toBe('SUCCESS')
-        expect(minLength).toBe(0)
-        done()
-      }
-
-      LoginCtrl.executeIpBlockedQuery(null, null, query)
-    }) 
-
-    it('should handle query failure', (done) => {
-      let query = {}
-      query.exec = () => {
-        return Promise.reject('QUERY_FAILED')
-      }
-
-      function reject(result) {
-        expect(result).toBe('QUERY_FAILED')
-        done()
-      }
-      LoginCtrl.executeIpBlockedQuery(null, reject, query)
-    })
-  })
-
- describe('(checkIfSuspicious)', () => {
+  describe('(checkIfSuspicious)', () => {
     beforeEach(() => { // reset the rewired functions
       LoginCtrl = rewire('../server/lib/db/login.ctrl')
       mockLogger = { writeLog: sinon.spy() }
@@ -240,20 +217,17 @@ describe('[Login.Ctrl]', () => {
     })
 
     it('should call executeSuspiciousTestQuery with params', (done) => {
-      const executeIpSpy = sinon.spy(LoginCtrl, 'executeIpBlockedQuery')
       const ipAddress = '1.1.1.1'
-      // let params 
       mockLogger = { writeLog: sinon.spy() }
       LoginCtrl.__set__('Logger', mockLogger)
 
-      let mockFailedLoginsModel = {
+      const mockFailedLoginsModel = {
         find: () => {},
         and: (paramsToSave) => {
-            mockFailedLoginsModel.params = paramsToSave
+          mockFailedLoginsModel.params = paramsToSave
         },
         select: () => {},
-        params: {}
-        
+        params: {},
       }
 
       LoginCtrl.__set__('FailedLoginsModel', mockFailedLoginsModel)
@@ -275,15 +249,9 @@ describe('[Login.Ctrl]', () => {
     })
 
     it('should handle query success', (done) => {
-      let query = {}
+      const query = {}
       query.exec = () => {
         return Promise.resolve('SUCCESS')
-      }
-      
-      function fulfill(result) {
-        expect(result).toBe('SUCCESS')
-        sinon.assert.notCalled(mockLogger.writeLog)
-        done()
       }
 
       LoginCtrl.checkResults = (result, minLength) => {
@@ -294,10 +262,10 @@ describe('[Login.Ctrl]', () => {
       }
 
       LoginCtrl.executeSuspiciousTestQuery(null, null, query)
-    }) 
+    })
 
     it('should handle query failure', (done) => {
-      let query = {}
+      const query = {}
       query.exec = () => {
         return Promise.reject('QUERY_FAILED')
       }
@@ -316,22 +284,22 @@ describe('[Login.Ctrl]', () => {
     })
 
     it('should pass a check', (done) => {
-     const result = [1,2]
-     const minLength = 0
-      
+      const result = [1, 2]
+      const minLength = 0
+
       function fulfill(result) {
         expect(result).toBe(true)
         done()
       }
 
       LoginCtrl.checkResults(result, minLength, fulfill, null)
-    }) 
+    })
 
     it('should fail a check', (done) => {
-     const result = [1,2]
-     const minLength = 3
+      const result = [1, 2]
+      const minLength = 3
 
-     function fulfill(result) {
+      function fulfill(result) {
         expect(result).toBe(false)
         done()
       }

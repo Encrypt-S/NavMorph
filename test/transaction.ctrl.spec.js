@@ -69,81 +69,70 @@ describe('[TransactionCtrl]', () => {
       })
     })
 
-    // it('should catch when it fails to save', (done) => {
-    //   const fakeResult = 'FAIL'
-    //   const fakeError = { err: 'ERROR' }
-    //   const res = {
-    //     send: () => {
-    //     },
-    //   }
-    //   const req = {
-    //     params: {
-    //       from: '',
-    //       to: '',
-    //       address: '',
-    //       amount: '',
-    //       extraId: '',
-    //       polymorphId: '',
-    //       polymorphPass: '',
-    //       changellyAddressOne: '',
-    //       changellyAddressTwo: '',
-    //       navAddress: '',
-    //     },
-    //   }
-    //
-    //   const mockModel = () => {
-    //     console.log('IM HEREERERE')
-    //     return new Promise((ful, rej) => rej(fakeError))
-    //   }
-    //
-    //   TransactionCtrl.__set__('TransactionModel.save', mockModel)
-    //   TransactionCtrl.createTransaction(req, res)
-    //   .then(() => { done() })
-    //   .catch((error) => {
-    //     console.log(error)
-    //     expect(error).toBe(fakeError)
-    //     done()
-    //   })
-      // TransactionModel.save = () => {
-      //   console.log('IM HEREERERE')
-      //   throw fakeError
-      // }
-      // TransactionCtrl.createTransaction(req, res)
-      // .catch((error) => {
-      //   console.log(error)
-      //   expect(error).toBe(fakeError)
-      //   done()
-      // })
-    // })
-    //
-    // it('should recieve the correct params and save', (done) => {
-    //   const req = {
-    //     params: {
-    //       from: '',
-    //       to: '',
-    //       address: '',
-    //       amount: '',
-    //       extraId: '',
-    //       polymorphId: '',
-    //       polymorphPass: '',
-    //       changellyAddressOne: '',
-    //       changellyAddressTwo: '',
-    //       navAddress: '',
-    //     },
-    //   }
-    //   // console.log(TransactionModel._events.save)
-    //   TransactionCtrl.__set__('TransactionModel._events.save', () => {
-    //     return new Promise((fulfill) => {
-    //       expect(true).toBe(false)
-    //       fulfill()
-    //     })
-    //   })
-    //
-    //   TransactionCtrl.createTransaction(req, {})
-    //   .then(() => {
-    //     done()
-    //   })
-    // })
+    it('should catch when it fails to save', (done) => {
+      const fakeError = { err: 'ERROR' }
+      const res = {
+        send: () => {
+        },
+      }
+      const req = {
+        params: {
+          from: '',
+          to: '',
+          address: '',
+          amount: '',
+          extraId: '',
+          polymorphId: '',
+          polymorphPass: '',
+          changellyAddressOne: '',
+          changellyAddressTwo: '',
+          navAddress: '',
+        },
+      }
+
+      function mockModel(obj) {
+        this.options = obj
+        this.save = () => {
+          console.log('here')
+          return new Promise((ful, rej) => rej(fakeError))
+        }
+      }
+
+      TransactionCtrl.__set__('TransactionModel', mockModel)
+      TransactionCtrl.createTransaction(req, res)
+      .catch((error) => {
+        expect(error).toBe(fakeError)
+        done()
+      })
+    })
+
+    it('should recieve the correct params and save', (done) => {
+      const req = {
+        params: {
+          from: '',
+          to: '',
+          address: '',
+          amount: '',
+          extraId: '',
+          polymorphId: '',
+          polymorphPass: '',
+          changellyAddressOne: '',
+          changellyAddressTwo: '',
+          navAddress: '',
+        },
+      }
+
+      function mockModel(obj) {
+        this.options = obj
+        this.save = () => { return new Promise(ful => ful()) }
+      }
+
+      TransactionCtrl.__set__('TransactionModel', mockModel)
+      TransactionCtrl.createTransaction(req, {})
+      .then(() => {
+        done()
+      })
+    })
   })
 
   describe('(getOrder)', () => {

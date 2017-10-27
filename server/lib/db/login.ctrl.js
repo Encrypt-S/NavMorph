@@ -95,8 +95,8 @@ LoginCtrl.checkIfSuspicious = (ipAddress) => {
     query.and([
       { ip_address: ipAddress },
       { timestamp: {
-      '$gte': new Date(new Date().getTime() - (10 * 60000)),
-      } }
+        '$gte': new Date(new Date().getTime() - (10 * 60000)),
+      } },
     ])
     query.select('ip_address timestamp')
 

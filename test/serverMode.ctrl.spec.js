@@ -19,7 +19,6 @@ describe('[ServerModeCtrl]', () => {
         find: () => mockModel,
         select: () => mockModel,
         exec: () => {
-          console.log('ServerModeModel.exec')
           return new Promise((ful) => { ful(serverMode) })
         },
       }
