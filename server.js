@@ -7,13 +7,14 @@ const pem = require('pem')
 const mongoose = require('mongoose')
 const SocketCtrl = require('./server/lib/socket/socketCtrl')
 const SettingsValidator = require('./server/lib/settingsValidator.js')
+const auth = require('basic-auth')
 
 // Get our API routes
 const api = require('./server/routes/api')
 const Logger = require('./server/lib/logger')
 
 // Get Config data
-const config = require('./server-settings.json')
+const ConfigData = require('./server/server-settings.json')
 // const validator = require('./server/config-validator')
 
 const app = express()
@@ -24,7 +25,7 @@ const app = express()
 
 app.use(function (req, res, next) {
   var user = auth(req)
-  if (user === undefined || user.name !== configData.basicAuth.name || user.pass !== configData.basicAuth.pass) {
+  if (user === undefined || user.name !== ConfigData.basicAuth.name || user.pass !== ConfigData.basicAuth.pass) {
     res.send('unauthorised access attempt')
     return
   }
@@ -32,14 +33,14 @@ app.use(function (req, res, next) {
 })
 
 // Point static path to dist
-app.use(express.static(path.join(__dirname, 'dist')))
-SettingsValidator.validateSettings(config)
+// app.use(express.static(path.join(__dirname, 'dist')))
+SettingsValidator.validateSettings(ConfigData)
 .then(() => {
   console.log('--------------------------------------------')
   console.log('Server Config Validated. Continuing start up')
   console.log('--------------------------------------------')
 
-  startUpServer()
+  app.startUpServer()
 })
 .catch((err) => {
   console.log('--------------------------------------------')
@@ -48,26 +49,26 @@ SettingsValidator.validateSettings(config)
   console.log('--------------------------------------------')
 })
 
-startUpServer = () => {
+app.startUpServer = () => {
   // Parsers for POST data
   app.use(bodyParser.json())
   app.use(bodyParser.urlencoded({extended: false}))
 
   // Point static path to dist
-  app.use(express.static(path.join(__dirname, config.app.static)))
+  app.use(express.static(path.join(__dirname, ConfigData.app.static)))
 
   // Set our api routes
-  app.use(config.app.apiUri, api)
+  app.use(ConfigData.app.apiUri, api)
 
   // Catch all other routes and return the index file
   app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, config.app.catchAllUri))
+    res.sendFile(path.join(__dirname, ConfigData.app.catchAllUri))
   })
 
   /**
    * Get port from environment and store in Express.
    */
-  const port = process.env.PORT || config.serverPort
+  const port = process.env.PORT || ConfigData.serverPort
   app.set('port', port)
 
   /**
@@ -93,8 +94,8 @@ startUpServer = () => {
     }))
     server = https.createServer(sslOptions, app)
     io = require('socket.io')(server);
-  
-    socketCtrl.setupServerSocket(io)
+
+    SocketCtrl.setupServerSocket(io)
     .then(() => {
       Logger.writeLog('n/a', 'Server Mode Socket Running', null, false)
     })
@@ -108,18 +109,18 @@ startUpServer = () => {
       /**
       * Connect to mongoose
       */
-      
+
       mongoose.Promise = global.Promise
-      const mongoDB = config.mongoDBUrl
+      const mongoDB = ConfigData.mongoDBUrl
       mongoose.connect(mongoDB)
       const db = mongoose.connection
       db.on('error', console.error.bind(console, 'MongoDB connection error:'))
-      
+
       Logger.writeLog('MongoDB Connect', `Conected to MongoDB on ${mongoDB}`, null, false)
 
       Logger.writeLog('n/a', 'Sending start up notification email.', null, false)
       Logger.writeLog('Server Start Up', 'Start Up Complete @' + new Date().toISOString() +
-        ', Polymorph Version: ' + config.version, null, true)
+        ', Polymorph Version: ' + ConfigData.version, null, true)
     })
   })
 }

@@ -1,9 +1,9 @@
 const TransactionCtrl = require('../db/transaction.ctrl')
 const EtaCtrl = require('./eta.ctrl')
-const configData = require('../../../server-settings.json')
+const ConfigData = require('../../server-settings.json')
 const LoginCtrl = require('../db/login.ctrl')
 const Validator = require('../options-validator')
-const ConfigData = require('../../config')
+// const ConfigData = require('../../config')
 const ApiOptions = require('../../api-options.json')
 
 const Logger = require('../logger')

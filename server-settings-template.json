@@ -49,5 +49,9 @@
   "timeConsts": {
     "changelly": "ARRAY",
     "navTech": "ARRAY"
+  },
+  "basicAuth": {
+    "name": "STRING",
+    "pass": "STRING"
   }
 }
