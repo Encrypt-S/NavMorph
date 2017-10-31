@@ -6,7 +6,8 @@ const bodyParser = require('body-parser')
 const pem = require('pem')
 const mongoose = require('mongoose')
 const SocketCtrl = require('./server/lib/socket/socketCtrl')
-const SettingsValidator = require('./server/lib/settingsValidator.js')
+const SettingsValidator = require('./server/lib/settingsValidator')
+const ProcessHandler = require('./server/lib/processHandler')
 const auth = require('basic-auth')
 
 // Get our API routes
@@ -121,6 +122,18 @@ app.startUpServer = () => {
       Logger.writeLog('n/a', 'Sending start up notification email.', null, false)
       Logger.writeLog('Server Start Up', 'Start Up Complete @' + new Date().toISOString() +
         ', Polymorph Version: ' + ConfigData.version, null, true)
+
+      /**
+      * Setup the process handler
+      */
+
+      ProcessHandler.setup()
+      .then(() => {
+
+      })
+      .catch((err) => {
+        // Logger.writeLog('error msg', '' , errObj, true)
+      })
     })
   })
 }
