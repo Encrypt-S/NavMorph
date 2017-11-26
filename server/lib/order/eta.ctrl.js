@@ -1,3 +1,5 @@
+"use strict";
+
 const config = require('../../config')
 
 const validStatuses = config.validOrderStatuses
@@ -14,7 +16,7 @@ EtaCtrl.generateEstimate = (req, res) => {
       res.send(eta)
     })
     .catch((error) => {
-      EtaCtrl.handleError(error, res, '001')    
+      EtaCtrl.handleError(error, res, '001')
     })
 }
 
@@ -28,14 +30,14 @@ EtaCtrl.getEta = (status, timeSent, originCoin, destCoin) => {
       reject(new Error('Invalid sending time'))
       return
     }
-    fufill(EtaCtrl.buildEta(status, timeSent, originCoin, destCoin))   
+    fufill(EtaCtrl.buildEta(status, timeSent, originCoin, destCoin))
   })
 }
 
 EtaCtrl.validStatus = (status) => {
   if (validStatuses.indexOf(status) === -1) {
     return false
-  } 
+  }
   return true
 }
 
@@ -44,7 +46,7 @@ EtaCtrl.buildEta = (status, timeSent, originCoin, destCoin) => {
   let etaMax = 0
 
   switch(status) {
-    case 'COMPLETED': 
+    case 'COMPLETED':
     case 'ABANDONED':
     case 'FAILED':
     case 'REFUNDED':
@@ -80,7 +82,7 @@ EtaCtrl.buildEta = (status, timeSent, originCoin, destCoin) => {
       etaMin = timeConsts.navTech[0] + timeConsts.changelly[0]
       etaMax = timeConsts.navTech[1] + timeConsts.changelly[1]
       const modifiedMinMax = EtaCtrl.factorTimeSinceSending(min, max, timeSent)
-      etaMin = modifiedMinMax[0] 
+      etaMin = modifiedMinMax[0]
       etaMax = modifiedMinMax[1]
       if (destCoin === 'nav') {
         etaMin -= timeConsts.changelly[0]

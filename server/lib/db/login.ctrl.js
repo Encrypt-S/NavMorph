@@ -1,3 +1,5 @@
+"use strict";
+
 const lodash = require('lodash')
 const Logger = require('../logger')
 
@@ -64,21 +66,21 @@ LoginCtrl.blackListIp = (ipAddress) => {
 LoginCtrl.checkIpBlocked = (ipAddress) => {
   return new Promise((fulfill, reject) => {
     const query = BlackListModel.find()
-    
+
     query.and([
-      { ip_address: ipAddress }, 
+      { ip_address: ipAddress },
       {timestamp: {
       '$gte': new Date(new Date().getTime() - 10 * 60000),
       }}
     ])
     .select('ip_address timestamp')
     .exec()
-    .then((result) => { 
+    .then((result) => {
       if (result.length > 0) {
-        fulfill(true) 
+        fulfill(true)
         return
       }
-      fulfill(false) 
+      fulfill(false)
     })
     .catch((error) => { reject(error) })
   })
@@ -88,19 +90,19 @@ LoginCtrl.checkIfSuspicious = (ipAddress) => {
   return new Promise((fulfill, reject) => {
     const query = FailedLoginsModel.find()
     query.and([
-      { ip_address: ipAddress }, 
+      { ip_address: ipAddress },
       {timestamp: {
       '$gte': new Date(new Date().getTime() - 10 * 60000),
       }}
     ])
     .select('ip_address timestamp')
     .exec()
-    .then((result) => { 
+    .then((result) => {
       if (result.length >= 10) {
-        fulfill(true) 
+        fulfill(true)
         return
       }
-      fulfill(false) 
+      fulfill(false)
     })
     .catch((error) => { reject(error) })
   })

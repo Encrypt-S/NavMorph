@@ -1,3 +1,5 @@
+"use strict";
+
 const configData = require('../../config')
 const crypto = require('crypto')
 const jayson = require('jayson')
