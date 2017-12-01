@@ -1,12 +1,14 @@
+"use strict";
+
 const socketIo =  require('socket.io')
 const serverModeCtrl = require('../db/serverMode.ctrl')
 const Logger = require('../logger')
 
 
-socketCtrl = {}
-  
+const socketCtrl = {}
+
   socketCtrl.setupServerSocket = (socket) => {
-    return new Promise((fufill, reject) => {    
+    return new Promise((fufill, reject) => {
       try {
         socket.on('connection', function(socket){
           console.log('a user connected')
@@ -26,7 +28,7 @@ socketCtrl = {}
   }
 
   socketCtrl.startDbWatch = (socket) => {
-    let previousMode 
+    let previousMode
     let previousMessage
     setInterval(() => {
       serverModeCtrl.checkMode()
