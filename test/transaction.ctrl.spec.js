@@ -93,7 +93,6 @@ describe('[TransactionCtrl]', () => {
       function mockModel(obj) {
         this.options = obj
         this.save = () => {
-          console.log('here')
           return new Promise((ful, rej) => rej(fakeError))
         }
       }
