@@ -5,7 +5,7 @@ const https = require('https')
 const bodyParser = require('body-parser')
 const pem = require('pem')
 const mongoose = require('mongoose')
-const socketCtrl = require('./server/lib/socket/socketCtrl')
+const SocketCtrl = require('./server/lib/socket/socketCtrl')
 const auth = require('basic-auth')
 const configData = require('./server/config')
 const SettingsValidator = require('./server/lib/settingsValidator.js')
@@ -43,16 +43,16 @@ SettingsValidator.validateSettings(config)
 startUpServer = () => {
   // Parsers for POST data
   app.use(bodyParser.json())
-  app.use(bodyParser.urlencoded({extended: false}))
-  
+  app.use(bodyParser.urlencoded({ extended: false }))
+
   app.use(function (req, res, next) {
-  var user = auth(req)
-  if (user === undefined || user.name !== configData.basicAuth.name || user.pass !== configData.basicAuth.pass) {
-    res.send('unauthorised access attempt')
-    return
-  }
-  next()
-})
+    var user = auth(req)
+    if (user === undefined || user.name !== configData.basicAuth.name || user.pass !== configData.basicAuth.pass) {
+      res.send('unauthorised access attempt')
+      return
+    }
+    next()
+  })
 
 
   // Point static path to dist
@@ -95,9 +95,9 @@ startUpServer = () => {
       extended: true,
     }))
     server = https.createServer(sslOptions, app)
-    io = require('socket.io')(server);
+    io = require('socket.io')(server)
 
-    SocketCtrl.setupServerModeSocket(io)
+    SocketCtrl.setupServerSocket(io)
     .then(() => {
       Logger.writeLog('n/a', 'Server Mode Socket Running', null, false)
     })
@@ -111,13 +111,13 @@ startUpServer = () => {
       /**
       * Connect to mongoose
       */
-      
+
       mongoose.Promise = global.Promise
       const mongoDB = config.mongoDBUrl
       mongoose.connect(mongoDB)
       const db = mongoose.connection
       db.on('error', console.error.bind(console, 'MongoDB connection error:'))
-      
+
       Logger.writeLog('MongoDB Connect', `Conected to MongoDB on ${mongoDB}`, null, false)
 
       Logger.writeLog('n/a', 'Sending start up notification email.', null, false)
