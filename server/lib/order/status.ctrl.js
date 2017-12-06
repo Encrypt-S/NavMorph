@@ -23,7 +23,7 @@ OrderStatusCtrl.getOrder = (req, res) => {
         OrderStatusCtrl.checkOrderExists(params, res)
       }
     })
-  })  
+  })
   .catch((error) => { OrderStatusCtrl.handleError(error, res, '001') })
 }
 
@@ -34,7 +34,7 @@ OrderStatusCtrl.checkOrderExists = (params, res) => {
   .then((orderExists) => {
     if (orderExists) {
       OrderStatusCtrl.getOrderFromDb(params, res)
-    } else if (orderArr[0].length === 0) { 
+    } else if (orderArr[0].length === 0) {
       res.send([[],[]])
       return
     }
@@ -48,8 +48,8 @@ OrderStatusCtrl.getOrderFromDb = (params, res) => {
   TransactionCtrl.internal.getOrder(params.orderId, params.orderPassword)
   .then((orderArr) => {
     const order = orderArr[0]
-    if (!order) { 
-      OrderStatusCtrl.checkForSuspiciousActivity(params, res)  
+    if (!order) {
+      OrderStatusCtrl.checkForSuspiciousActivity(params, res)
     } else if (order.order_status === 'ABANDONED') {
       OrderStatusCtrl.sendEmptyResponse(res)
     } else {
@@ -65,10 +65,10 @@ OrderStatusCtrl.getOrderFromDb = (params, res) => {
 
 OrderStatusCtrl.checkForSuspiciousActivity = (params, res) => {
   LoginCtrl.insertAttempt(params.ipAddress, params.orderId)
-  .then(LoginCtrl.checkIfSuspicious(ipAddress)
+  .then(LoginCtrl.checkIfSuspicious(params.ipAddress)
     .then((isSuspicious) => {
       if (isSuspicious) {
-        LoginCtrl.blackListIp( { params.ipAddress } )
+        LoginCtrl.blackListIp({ ipAddress: params.ipAddress })
         .then(OrderStatusCtrl.sendBlockedResponse(res))
         .catch(error => OrderStatusCtrl.handleError(error, res, '004'))
       } else {
@@ -130,8 +130,8 @@ OrderStatusCtrl.handleError = (err, res, code) => {
 OrderStatusCtrl.validateParams = (params, options) => {
   return new Promise((fulfill, reject) => {
     Validator.startValidatation(params, options)
-    .then(() => fulfill())  
-    .catch((errorArr => reject(errorArr)))  
+    .then(() => fulfill())
+    .catch((errorArr => reject(errorArr)))
   })
 }
 
