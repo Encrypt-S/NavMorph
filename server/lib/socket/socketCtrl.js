@@ -33,7 +33,7 @@ const socketCtrl = {}
     setInterval(() => {
       serverModeCtrl.checkMode()
       .then((mode) => {
-        if(mode.length === 1 && previousMode !== mode) {
+        if (mode.length === 1 && previousMode !== mode) {
           previousMode = mode
           socket.emit('SERVER_MODE', mode[0].server_mode)
         }
@@ -42,8 +42,8 @@ const socketCtrl = {}
         return serverModeCtrl.checkMessage()
       })
       .then((serverMessageData) => {
-        if(serverMessageData.length === 1 && previousMessage !== serverMessageData) {
-          previousMode = mode
+        if (serverMessageData.length === 1 && previousMessage !== serverMessageData) {
+          previousMode = serverMessageData
           socket.emit('SERVER_MESSAGE', {
             serverMessage: serverMessageData[0].server_message,
             serverMessageType: serverMessageData[0].message_type,
