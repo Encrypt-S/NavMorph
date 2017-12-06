@@ -1,7 +1,7 @@
 "use strict";
 
 const Client = require('bitcoin-core')
-const configData = require('../../config')
+const configData = require('../../../server-settings.json')
 
 
 let Rpc = { //eslint-disable-line
