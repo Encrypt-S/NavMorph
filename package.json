@@ -6,7 +6,7 @@
     "ng": "ng",
     "start": "concurrently  \"npm run watch:sass\" \"npm run build\" \"ng serve\"",
     "build": "ng build",
-    "ngexp": "ng build && node server.js",
+    "build-run": "ng build && node server.js",
     "test": "ng test",
     "test-coverage": "ng test --code-coverage --reporters=coverage-istanbul",
     "lint": "ng lint",
