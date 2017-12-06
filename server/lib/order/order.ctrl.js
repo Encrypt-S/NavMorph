@@ -1,3 +1,5 @@
+"use strict";
+
 const Keygen = require('generate-key')
 
 const GetNewAddress = require('../rpc/get-new-address')
@@ -50,7 +52,7 @@ OrderCtrl.beginOrderCreation = (req, res) => {
 OrderCtrl.getFirstChangellyAddress = (req, res) => {
   if (req.params.from === 'NAV') {
     req.params.changellyAddressOne = req.params.navAddress
-    OrderCtrl.getSecondChangellyAddress(req, res)  
+    OrderCtrl.getSecondChangellyAddress(req, res)
   } else {
     OrderCtrl.getChangellyAddress(req.params.from, 'NAV', req.params.navAddress)
     .then((address) => {
@@ -59,7 +61,7 @@ OrderCtrl.getFirstChangellyAddress = (req, res) => {
     })
     .catch((error) => {
       OrderCtrl.handleError(error, res, '004')
-    })    
+    })
   }
 }
 
@@ -115,7 +117,7 @@ OrderCtrl.checkForMaintenance = () => {
         fulfill(true)
       } else {
         fulfill(false)
-      }      
+      }
     })
     .catch((err) => reject(err))
   })
@@ -178,15 +180,15 @@ OrderCtrl.generateOrderId = () => {
   })
 }
 
-OrderCtrl.handleError = (error, res, code) => {
+OrderCtrl.handleError = (err, res, code) => {
   const statusMessage = 'Unable to create Polymorph Order'
   res.send(JSON.stringify({
     statusCode: 200,
     type: 'FAIL',
     code: 'ORDER_CTRL_' + code || '001',
     statusMessage,
-    error,
+    err,
   }))
-  Logger.writeLog(code, statusMessage, error, true)
+  Logger.writeLog(code, statusMessage, { error: err }, true)
 }
 module.exports = OrderCtrl

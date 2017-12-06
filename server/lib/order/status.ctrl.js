@@ -1,3 +1,5 @@
+"use strict";
+
 const TransactionCtrl = require('../db/transaction.ctrl')
 const EtaCtrl = require('./eta.ctrl')
 const configData = require('../../config')
@@ -21,7 +23,7 @@ OrderStatusCtrl.getOrder = (req, res) => {
     } else {
       OrderStatusCtrl.checkOrderExists(params, ipAddress, polymorphId, orderPassword, res)
     }
-  })  
+  })
   .catch((error) => { OrderStatusCtrl.handleError(error, res, '001') })
 }
 
@@ -32,7 +34,7 @@ OrderStatusCtrl.checkOrderExists = (params, ipAddress, polymorphId, orderPasswor
   .then((orderExists) => {
     if (orderExists) {
       OrderStatusCtrl.getOrderFromDb(params, ipAddress, polymorphId, orderPassword, res)
-    } else if (orderArr[0].length === 0) { 
+    } else if (orderArr[0].length === 0) {
       res.send([[],[]])
       return
     }
@@ -45,8 +47,8 @@ OrderStatusCtrl.getOrderFromDb = (params, ipAddress, polymorphId, orderPassword,
   TransactionCtrl.internal.getOrder(polymorphId, orderPassword)
   .then((orderArr) => {
     const order = orderArr[0]
-    if (!order) { 
-      OrderStatusCtrl.checkForSuspiciousActivity(ipAddress, polymorphId, params, res)  
+    if (!order) {
+      OrderStatusCtrl.checkForSuspiciousActivity(ipAddress, polymorphId, params, res)
     } else if (order.order_status === 'ABANDONED') {
       OrderStatusCtrl.sendEmptyResponse(res)
     } else {
@@ -69,7 +71,7 @@ OrderStatusCtrl.checkForSuspiciousActivity = (ipAddress, polymorphId, params, re
         .then(OrderStatusCtrl.sendBlockedResponse(res))
         .catch(error => OrderStatusCtrl.handleError(error, res, '004'))
       } else {
-        OrderStatusCtrl.sendEmptyResponse(res)              
+        OrderStatusCtrl.sendEmptyResponse(res)
       }
     })
     .catch(error => OrderStatusCtrl.handleError(error, res, '005'))
@@ -106,16 +108,16 @@ OrderStatusCtrl.abandonOrder = (req, res) => {
   .catch((error) => { OrderStatusCtrl.handleError(error, res, '009') })
 }
 
-OrderStatusCtrl.handleError = (error, res, code) => {
+OrderStatusCtrl.handleError = (err, res, code) => {
   const statusMessage = 'Unable to fetch/update Polymorph Order'
   res.send(JSON.stringify({
     statusCode: 200,
     type: 'FAIL',
     code: 'ORDER_STATUS_CTRL_' + code || '000',
     statusMessage,
-    error,
+    err,
   }))
-  Logger.writeLog(code, statusMessage, error, true)
+  Logger.writeLog(code, statusMessage, { error: err }, true)
 }
 
 module.exports = OrderStatusCtrl

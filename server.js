@@ -72,7 +72,7 @@ pem.createCertificate({ days: 1, selfSigned: true }, (error, keys) => {
   server = https.createServer(sslOptions, app)
   io = require('socket.io')(server);
 
-  socketCtrl.setupServerModeSocket(io)
+  socketCtrl.setupServerSocket(io)
   .then(() => {
     Logger.writeLog('n/a', 'Server Mode Socket Running', null, false)
   })
