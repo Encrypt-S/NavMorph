@@ -1,0 +1,97 @@
+{
+  "getOrderStatusOptions": {
+    "orderId": [{
+      "validator": "isString"
+    }],
+    "orderPassword": [{
+      "validator": "isString"
+    }]
+  },
+
+  "updateOrderStatusOptions": {
+    "orderId": [{
+      "validator": "isString"
+    }],
+    "orderPassword": [{
+      "validator": "isString"
+    }],
+    "status": [{
+      "validator": "isString"
+    }]
+  },
+
+  "orderOptions": {
+    "from": [{
+      "validator": "isString"
+    }],
+    "to": [{
+      "validator": "isString"
+    }],
+    "address": [{
+      "validator": "isString"
+    }],
+    "amount": [{
+      "validator": "isNumber"
+    }]
+  },
+
+  "getMinAmountOptions": {
+    "from": [{
+      "validator": "isString"
+    }],
+    "to": [{
+      "validator": "isString"
+    }]
+  },
+
+  "getExchangeAmountOptions": {
+    "from": [{
+      "validator": "isString"
+    }],
+    "to": [{
+      "validator": "isString"
+    }],
+    "amount": [{
+      "validator": "isNumber"
+    }]
+  },
+
+  "generateAddressOptions": {
+    "from": [{
+      "validator": "isString"
+    }],
+    "to": [{
+      "validator": "isString"
+    }],
+    "address": [{
+      "validator": "isString"
+    }],
+    "extraId": [{
+      "validator": "other"
+    }]
+  },
+
+  "getEtaOptions": {
+    "status": [{
+      "validator": "isString"
+    }],
+    "timeSent": [{
+      "validator": "isDate"
+    }],
+    "from": [{
+      "validator": "isString"
+    }],
+    "to": [{
+      "validator": "isString"
+    }]
+  },
+
+  "generateEstimateOptions": {
+    "from": [{
+      "validator": "isString"
+    }],
+    "to": [{
+      "validator": "isString"
+    }]
+  }
+}
