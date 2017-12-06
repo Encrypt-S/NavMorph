@@ -1,3 +1,5 @@
+"use strict";
+
 const Keygen = require('generate-key')
 
 const GetNewAddress = require('../rpc/get-new-address')
@@ -52,7 +54,7 @@ OrderCtrl.beginOrderCreation = (req, res) => {
 OrderCtrl.getFirstChangellyAddress = (req, res) => {
   if (req.params.from === 'NAV') {
     req.params.changellyAddressOne = req.params.navAddress
-    OrderCtrl.getSecondChangellyAddress(req, res)  
+    OrderCtrl.getSecondChangellyAddress(req, res)
   } else {
     OrderCtrl.getChangellyAddress(req.params.from, 'NAV', req.params.navAddress)
     .then((address) => {
@@ -62,7 +64,7 @@ OrderCtrl.getFirstChangellyAddress = (req, res) => {
     })
     .catch((error) => {
       OrderCtrl.handleError(error, res, '004')
-    })    
+    })
   }
 }
 
@@ -118,7 +120,7 @@ OrderCtrl.checkForMaintenance = () => {
         fulfill(true)
       } else {
         fulfill(false)
-      }      
+      }
     })
     .catch((err) => reject(err))
   })

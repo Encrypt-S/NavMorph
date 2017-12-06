@@ -1,3 +1,5 @@
+"use strict";
+
 const Client = require('bitcoin-core')
 const configData = require('../../config')
 

@@ -1,3 +1,5 @@
+"use strict";
+
 const TransactionCtrl = require('../db/transaction.ctrl')
 const EtaCtrl = require('./eta.ctrl')
 const configData = require('../../config')
@@ -73,7 +75,7 @@ OrderStatusCtrl.checkForSuspiciousActivity = (params, res) => {
         .then(OrderStatusCtrl.sendBlockedResponse(res))
         .catch(error => OrderStatusCtrl.handleError(error, res, '004'))
       } else {
-        OrderStatusCtrl.sendEmptyResponse(res)              
+        OrderStatusCtrl.sendEmptyResponse(res)
       }
     })
     .catch(error => OrderStatusCtrl.handleError(error, res, '005'))

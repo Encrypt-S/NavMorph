@@ -1,4 +1,6 @@
-const ConfigData = require('../../config')
+"use strict";
+
+const configData = require('../../config')
 const ApiOptions = require('../../api-options.json')
 const crypto = require('crypto')
 const jayson = require('jayson')

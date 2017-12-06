@@ -1,3 +1,5 @@
+"use strict";
+
 const Config = require('../../config')
 const ApiOptions = require('../../api-options.json')
 
@@ -43,7 +45,7 @@ EtaCtrl.getEta = (params) => {
 EtaCtrl.validStatus = (status) => {
   if (validStatuses.indexOf(status) === -1) {
     return false
-  } 
+  }
   return true
 }
 
