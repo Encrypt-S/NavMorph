@@ -22,8 +22,8 @@ const app = express()
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: false }))
 
-app.use(function (req, res, next) {
-  var user = auth(req)
+app.use((req, res, next) => {
+  const user = auth(req)
   if (user === undefined || user.name !== configData.basicAuth.name || user.pass !== configData.basicAuth.pass) {
     res.send('unauthorised access attempt')
     return
@@ -86,20 +86,18 @@ pem.createCertificate({ days: 1, selfSigned: true }, (error, keys) => {
     /**
     * Connect to mongoose
     */
-    
+
     mongoose.Promise = global.Promise
-    
+
     const mongoDB = 'mongodb://127.0.0.1/polymorph'
     mongoose.connect(mongoDB)
     const db = mongoose.connection
     db.on('error', console.error.bind(console, 'MongoDB connection error:'))
-    
+
     Logger.writeLog('MongoDB Connect', `Conected to MongoDB on ${mongoDB}`, null, false)
 
     Logger.writeLog('n/a', 'Sending start up notification email.', null, false)
     Logger.writeLog('Server Start Up', 'Start Up Complete @' + new Date().toISOString() +
       ', Polymorph Version: ' + config.version, null, true)
-
   })
 })
-
