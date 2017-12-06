@@ -29,6 +29,7 @@
     "@angular/router": "^4.0.0",
     "angular2-materialize": "^15.0.2",
     "angular2-qrcode": "^2.0.1",
+    "basic-auth": "^2.0.0",
     "bignumber.js": "^4.0.2",
     "bitcoin-core": "^1.2.0",
     "body-parser": "^1.17.1",
@@ -51,7 +52,7 @@
     "zone.js": "^0.8.4"
   },
   "devDependencies": {
-    "@angular/cli": "1.0.3",
+    "@angular/cli": "^1.4.0",
     "@angular/compiler-cli": "^4.0.0",
     "@types/bignumber.js": "^4.0.3",
     "@types/jasmine": "2.5.38",

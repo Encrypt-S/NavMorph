@@ -1,3 +1,5 @@
+"use strict";
+
 const Rpc = require('./client')
 const Logger = require('../logger')
 
@@ -11,7 +13,7 @@ Rpc.getNewAddress = (req, res) => {
         type: 'SUCCESS',
         data,
       }))
-    }).catch((error) => {
+    }).catch((err) => {
       const code = 'RPC_004'
       const message = 'something went wrong'
       res.send(JSON.stringify({
@@ -19,11 +21,11 @@ Rpc.getNewAddress = (req, res) => {
         type: 'FAIL',
         code,
         message,
-        error,
+        err,
       }))
-      Logger.writeLog(code, message, error, false)
+      Logger.writeLog(code, message, { error: err }, false)
     })
-  } catch (error) {
+  } catch (err) {
     const code = 'RPC_003'
     const message = 'something went wrong'
     res.send(JSON.stringify({
@@ -31,9 +33,9 @@ Rpc.getNewAddress = (req, res) => {
       type: 'FAIL',
       code,
       message,
-      error,
+      err,
     }))
-    Logger.writeLog(code, message, error, false)
+    Logger.writeLog(code, message, { error: err }, false)
   }
 }
 

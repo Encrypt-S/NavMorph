@@ -1,34 +1,58 @@
-socketIo =  require('socket.io')
-serverModeCtrl = require('../db/serverMode.ctrl')
+"use strict";
+
+const socketIo =  require('socket.io')
+const serverModeCtrl = require('../db/serverMode.ctrl')
+const Logger = require('../logger')
 
 
-socketCtrl = {}
-    
-  socketCtrl.setupServerModeSocket = (socket) => {
-    return new Promise((fufill, reject) => {    
+const socketCtrl = {}
+
+  socketCtrl.setupServerSocket = (socket) => {
+    return new Promise((fufill, reject) => {
       try {
         socket.on('connection', function(socket){
           console.log('a user connected')
           socket.on('disconnect', function(){
             console.log('USER DISCONNECTED')
           })
-          socket.on('add-message', (message) => {
-            socket.emit('message', {type:'new-message', text: message})
+          socket.on('ADD_MESSAGE', (message) => {
+            socket.emit('MESSAGE', {type:'NEW_MESSAGE', text: message})
           })
         })
-        socketCtrl.startServerModeWatch(socket)
+        socketCtrl.startDbWatch(socket)
         fufill()
-      } catch (e) {
-        reject(e)
+      } catch (err) {
+        reject(err)
       }
     })
   }
 
-  socketCtrl.startServerModeWatch = (socket) => {
+  socketCtrl.startDbWatch = (socket) => {
+    let previousMode
+    let previousMessage
     setInterval(() => {
       serverModeCtrl.checkMode()
       .then((mode) => {
-        socket.emit('server-mode', mode[0].server_mode)
+        if(mode.length === 1 && previousMode !== mode) {
+          previousMode = mode
+          socket.emit('SERVER_MODE', mode[0].server_mode)
+        }
+      })
+      .then(() => {
+        return serverModeCtrl.checkMessage()
+      })
+      .then((serverMessageData) => {
+        if(serverMessageData.length === 1 && previousMessage !== serverMessageData) {
+          previousMode = mode
+          socket.emit('SERVER_MESSAGE', {
+            serverMessage: serverMessageData[0].server_message,
+            serverMessageType: serverMessageData[0].message_type,
+            showMessage: serverMessageData[0].show_message,
+          })
+        }
+      })
+      .catch((err) => {
+        Logger.writeLog('SKT_001', 'Something went wrong with the socket(s)', { error: err }, false)
       })
     }, 1000)
   }

@@ -5,9 +5,10 @@ const https = require('https')
 const bodyParser = require('body-parser')
 const pem = require('pem')
 const mongoose = require('mongoose')
-const SocketCtrl = require('./server/lib/socket/socketCtrl')
+const socketCtrl = require('./server/lib/socket/socketCtrl')
+const auth = require('basic-auth')
+const configData = require('./server/config')
 const SettingsValidator = require('./server/lib/settingsValidator.js')
-
 
 // Get our API routes
 const api = require('./server/routes/api')
@@ -22,6 +23,7 @@ const app = express()
 /**
   * Validate Server Settings Config(config)
   */
+
 
 SettingsValidator.validateSettings(config)
 .then(() => {
@@ -42,12 +44,23 @@ startUpServer = () => {
   // Parsers for POST data
   app.use(bodyParser.json())
   app.use(bodyParser.urlencoded({extended: false}))
+  
+  app.use(function (req, res, next) {
+  var user = auth(req)
+  if (user === undefined || user.name !== configData.basicAuth.name || user.pass !== configData.basicAuth.pass) {
+    res.send('unauthorised access attempt')
+    return
+  }
+  next()
+})
+
 
   // Point static path to dist
   app.use(express.static(path.join(__dirname, config.app.static)))
 
   // Set our api routes
   app.use(config.app.apiUri, api)
+
 
   // Catch all other routes and return the index file
   app.get('*', (req, res) => {

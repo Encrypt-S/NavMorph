@@ -1,3 +1,5 @@
+"use strict";
+
 const lodash = require('lodash')
 const Logger = require('../logger')
 
@@ -6,15 +8,15 @@ const TransactionModel = require('./transaction.model')
 
 const TransactionCtrl = { internal: {} }
 
-TransactionCtrl.handleError = (error, res, code, message) => {
+TransactionCtrl.handleError = (err, res, code, message) => {
   res.send(JSON.stringify({
     status: 200,
     type: 'FAIL',
     code,
     message,
-    error,
+    err,
   }))
-  Logger.writeLog(code, message, error, false)
+  Logger.writeLog(code, message, { error:err }, false)
 }
 
 TransactionCtrl.internal.createTransaction = (req, res) => {
@@ -123,7 +125,7 @@ TransactionCtrl.internal.updateOrderStatus = (id, pass, newStatus) => {
       reject(new Error('Id, Password or Status missing. Id: ' + id + '. Pass: ' + pass + '. Status: ' + newStatus))
     }
     const query = { polymorph_id: id, polymorph_pass: pass }
-    TransactionModel.findOneAndUpdate(query, { order_status: 'abandoned' })
+    TransactionModel.findOneAndUpdate(query, { order_status: 'ABANDONED' })
     .then((data) => {
       fulfill()
     })
