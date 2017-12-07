@@ -1,10 +1,10 @@
 "use strict";
 
 const lodash = require('lodash')
-const Logger = require('../logger')
+let Logger = require('../logger')
 
 // Compile model from schema
-const TransactionModel = require('./transaction.model')
+let TransactionModel = require('./transaction.model')
 
 const TransactionCtrl = { internal: {} }
 
@@ -16,12 +16,12 @@ TransactionCtrl.handleError = (err, res, code, message) => {
     message,
     err,
   }))
-  Logger.writeLog(code, message, { error:err }, false)
+  Logger.writeLog(code, message, { error: err }, false)
 }
 
 TransactionCtrl.internal.createTransaction = (req, res) => {
   return new Promise((fulfill, reject) => {
-    const required = ['from', 'to', 'address', 'amount', 'extraId', 'polymorphId',
+    const required = ['from', 'to', 'address', 'amount', 'polymorphId',
       'polymorphPass', 'changellyAddressOne', 'changellyAddressTwo', 'navAddress']
     if (!req || lodash.intersection(Object.keys(req.params), required).length !== required.length) {
       reject(new Error('params_error', 'TC_001', 'Failed to receive params'))
@@ -61,7 +61,7 @@ TransactionCtrl.internal.createTransaction = (req, res) => {
 }
 
 TransactionCtrl.createTransaction = (req, res) => {
-  const required = ['from', 'to', 'address', 'amount', 'extraId', 'polymorphId',
+  const required = ['from', 'to', 'address', 'amount', 'polymorphId',
     'polymorphPass', 'changellyAddressOne', 'changellyAddressTwo', 'navAddress']
   if (!req.body || lodash.intersection(Object.keys(req.body), required).length !== required.length) {
     TransactionCtrl.handleError('params_error', res, 'TC_001', 'Failed to receive params')

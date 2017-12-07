@@ -1,4 +1,4 @@
-"use strict";
+'use strict'
 
 const Keygen = require('generate-key')
 
@@ -7,13 +7,26 @@ const ChangellyCtrl = require('../changelly/changelly.ctrl')
 const TransactionCtrl = require('../db/transaction.ctrl')
 const ServerModeCtrl = require('../db/serverMode.ctrl')
 const Logger = require('../logger')
+const Validator = require('../options-validator')
+const ApiOptions = require('../../api-options.json')
+
 
 const OrderCtrl = {}
 
 OrderCtrl.createOrder = (req, res) => {
+  Validator.startValidatation(req.params, ApiOptions.orderOptions)
+  .then(() => {
+    OrderCtrl.checkServerMode(req, res)
+  })
+  .catch((error) => {
+    OrderCtrl.handleError(error, res, '002')
+  })
+}
+
+OrderCtrl.checkServerMode = (req, res) => {
   OrderCtrl.checkForMaintenance()
   .then((maintenanceActive) => {
-    if(maintenanceActive) {
+    if (maintenanceActive) {
       res.send(JSON.stringify({
         status: 200,
         type: 'MAINTENANCE',
@@ -21,16 +34,6 @@ OrderCtrl.createOrder = (req, res) => {
       }))
       return
     }
-    OrderCtrl.validateOrder(req, res)
-  })
-  .catch((error) => {
-    OrderCtrl.handleError(error, res, '002')
-  })
-}
-
-OrderCtrl.validateOrder = (req, res) => {
-  OrderCtrl.validateParams(req)
-  .then(() => {
     OrderCtrl.beginOrderCreation(req, res)
   })
   .catch((error) => {
@@ -111,28 +114,18 @@ OrderCtrl.storeOrder = (req, res) => {
 
 OrderCtrl.checkForMaintenance = () => {
   return new Promise((fulfill, reject) => {
-    serverModeCtrl.checkMode()
+    ServerModeCtrl.checkMode()
     .then((mode) => {
-      if(mode[0].server_mode === 'MAINTENANCE'){
+      if (mode[0].server_mode === 'MAINTENANCE') {
         fulfill(true)
       } else {
         fulfill(false)
       }
     })
-    .catch((err) => reject(err))
+    .catch((err) => { reject(err) })
   })
 }
 
-OrderCtrl.validateParams = (req) => {
-  return new Promise((fulfill, reject) => {
-    // TODO: Add validation for extraId
-    if (typeof req.params.from === typeof 'string' && typeof req.params.to === typeof 'string'
-    && typeof req.params.address === typeof 'string' && !isNaN(parseFloat(req.params.amount))) {
-      fulfill()
-    }
-    reject(new Error('Incorrect parameters'))
-  })
-}
 
 OrderCtrl.getNavAddress = () => {
   return new Promise((fulfill, reject) => {
@@ -148,7 +141,7 @@ OrderCtrl.getNavAddress = () => {
 
 OrderCtrl.getChangellyAddress = (inputCurrency, outputCurrency, destAddress) => {
   return new Promise((fulfill, reject) => {
-    if(outputCurrency === 'NAV'){
+    if (outputCurrency === 'NAV'){
       fulfill(destAddress)
     }
     ChangellyCtrl.internal.generateAddress({

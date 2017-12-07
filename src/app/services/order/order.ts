@@ -10,7 +10,7 @@ export class OrderService {
   constructor( private genServ:GenericNodeApiService) { }
 
   createOrder(originCoin, destCoin, destAddr, transferAmount) {
-    return this.getApiRequest( orderNodeApiEndPoints.createOrder, [originCoin, destCoin, destAddr, transferAmount, 'null'])
+    return this.getApiRequest( orderNodeApiEndPoints.createOrder, [originCoin, destCoin, destAddr, transferAmount])
   }
 
   getOrder(orderId, password) {
