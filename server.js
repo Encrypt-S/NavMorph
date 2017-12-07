@@ -18,7 +18,6 @@ const Logger = require('./server/lib/logger')
 const config = require('./server-settings.json')
 
 const app = express()
-
 /**
   * Validate Server Settings Config
   */
