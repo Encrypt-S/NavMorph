@@ -86,7 +86,7 @@ export class SendCoinsFormComponent implements OnInit, OnDestroy {
   getFormDataStream() {
     this.dataServ.getDataStream().subscribe(data => {
       this.errors = []
-      if (Object.keys(data).length > 0) { 
+      if (Object.keys(data).length > 0) {
         this.formData = data
         this.checkErrors(data.errors)
         this.fillForm(this.formData)
@@ -209,7 +209,9 @@ export class SendCoinsFormComponent implements OnInit, OnDestroy {
         },
         error => {
           this.isDisabled = true
-          console.log('err', error)
+          console.log('error loading currencies', error)
+          this.currencies = ['ERROR']
+          this.errors.push('NOT_FOUND')
           this.setLoadingState(false)
         })
   }

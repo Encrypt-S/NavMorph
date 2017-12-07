@@ -13,7 +13,6 @@ export class ChangellyApiService {
     return this.getApiRequest(changellyNodeApiEndPoints.getCurrencies, undefined)
   }
 
-
   getEta(originCoin, destCoin) {
     return this.getApiRequest(changellyNodeApiEndPoints.getEta, [originCoin, destCoin])
   }

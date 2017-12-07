@@ -1,6 +1,5 @@
-"use strict";
+'use strict'
 
-const socketIo =  require('socket.io')
 const serverModeCtrl = require('../db/serverMode.ctrl')
 const Logger = require('../logger')
 
