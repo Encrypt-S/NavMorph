@@ -16,12 +16,11 @@ const Logger = require('./server/lib/logger')
 
 // Get Config data
 const config = require('./server-settings.json')
-// const validator = require('./server/config-validator')
 
 const app = express()
 
 /**
-  * Validate Server Settings Config(config)
+  * Validate Server Settings Config
   */
 
 
@@ -45,8 +44,8 @@ startUpServer = () => {
   app.use(bodyParser.json())
   app.use(bodyParser.urlencoded({ extended: false }))
 
-  app.use(function (req, res, next) {
-    var user = auth(req)
+  app.use((req, res, next) => {
+    const user = auth(req)
     if (user === undefined || user.name !== configData.basicAuth.name || user.pass !== configData.basicAuth.pass) {
       res.send('unauthorised access attempt')
       return
