@@ -347,10 +347,9 @@ describe('[EtaCtrl]', () => {
 
       const mockLogger = { writeLog: (errCode, statusMessage, error, mail) => {
         expect(errCode).toBe(code)
-        expect(statusMessage).toExist()
-        expect(error).toExist()
-        expect(mail).toExist()
-
+        expect(statusMessage).toBe('Unable to get ETA')
+        expect(error.error).toBe(err)
+        expect(mail).toBe(true)
         done()
       } }
       EtaCtrl.__set__('Logger', mockLogger)

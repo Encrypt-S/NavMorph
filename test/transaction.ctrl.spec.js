@@ -14,10 +14,9 @@ describe('[TransactionCtrl]', () => {
   describe('(handleError)', () => {
     beforeEach(() => { // reset the rewired functions
       TransactionCtrl = rewire('../server/lib/db/transaction.ctrl')
-      mockLogger = { writeLog: () => {} }
       TransactionCtrl.__set__('Logger', mockLogger)
     })
-    it('should send the error to the response', (done) => {
+    it('should send the error via the response and call writeLog', (done) => {
       const res = {
         send: (response) => {
           const jsonResponse = JSON.parse(response)
@@ -28,54 +27,56 @@ describe('[TransactionCtrl]', () => {
           done()
         },
       }
+
+      mockLogger = { writeLog: (errCode, statusMessage, error, mail) => {
+        expect(errCode).toBe(code)
+        expect(statusMessage).toBe(message)
+        expect(error.error).toBe(err)
+        expect(mail).toBe(true)
+      } }
+      TransactionCtrl.__set__('Logger', mockLogger)
+
       const err = 'test_error'
       const code = 'TEST_001'
       const message = 'This is a test error'
       TransactionCtrl.handleError(err, res, code, message)
     })
   })
+
   describe('(createTransaction)', () => {
     beforeEach(() => { // reset the rewired functions
       TransactionCtrl = rewire('../server/lib/db/transaction.ctrl')
     })
-    it('should fail on body param', (done) => {
-      TransactionCtrl.handleError = (err, res, code) => {
-        expect(code).toBe('TC_001')
-        done()
-      }
-      const res = {
+    it('should fail on req params', (done) => {
+      const fakeRes = {
         send: () => {
         },
       }
-      const req = {
-        junkParam: 'ASDF',
-      }
-      TransactionCtrl.createTransaction(req, res)
-    })
-    it('should fail on body required params', (done) => {
-      TransactionCtrl.handleError = (err, res, code) => {
-        expect(code).toBe('TC_001')
-        done()
-      }
-      const res = {
-        send: () => {
-        },
-      }
-      const req = {
-        body: {
+      const fakeReq = {
+        params: {
           junkParam: 'ASDF',
-          output_currency: 'NAV',
         },
       }
-      TransactionCtrl.createTransaction(req, res)
+
+      TransactionCtrl.createTransaction(null, fakeRes)
+      .catch((error) => {
+        expect(error.toString().includes('PARAMS_ERROR')).toBe(true)
+      })
+      TransactionCtrl.createTransaction(fakeReq, fakeRes)
+      .catch((error) => {
+        expect(error.toString().includes('PARAMS_ERROR')).toBe(true)
+        done()
+      })
     })
-    it('should recieve the correct params and save', (done) => {
+
+    it('should catch when it fails to save', (done) => {
+      const fakeError = { err: 'ERROR' }
       const res = {
         send: () => {
         },
       }
       const req = {
-        body: {
+        params: {
           from: '',
           to: '',
           address: '',
@@ -88,60 +89,118 @@ describe('[TransactionCtrl]', () => {
           navAddress: '',
         },
       }
-      const saveStub = sinon.stub(TransactionModel.prototype, 'save')
+
+      function mockModel(obj) {
+        this.options = obj
+        this.save = () => {
+          return new Promise((ful, rej) => rej(fakeError))
+        }
+      }
+
+      TransactionCtrl.__set__('TransactionModel', mockModel)
       TransactionCtrl.createTransaction(req, res)
-      sinon.assert.calledOnce(saveStub)
-      done()
+      .catch((error) => {
+        expect(error).toBe(fakeError)
+        done()
+      })
+    })
+
+    it('should recieve the correct params and save', (done) => {
+      const req = {
+        params: {
+          from: '',
+          to: '',
+          address: '',
+          amount: '',
+          extraId: '',
+          polymorphId: '',
+          polymorphPass: '',
+          changellyAddressOne: '',
+          changellyAddressTwo: '',
+          navAddress: '',
+        },
+      }
+
+      function mockModel(obj) {
+        this.options = obj
+        this.save = () => { return new Promise(ful => ful()) }
+      }
+
+      TransactionCtrl.__set__('TransactionModel', mockModel)
+      TransactionCtrl.createTransaction(req, {})
+      .then(() => {
+        done()
+      })
     })
   })
-  describe('(savedTransaction)', () => {
+
+  describe('(getOrder)', () => {
     beforeEach(() => { // reset the rewired functions
+      sandbox = sinon.sandbox.create()
       TransactionCtrl = rewire('../server/lib/db/transaction.ctrl')
     })
-    it('should fail on mongoose error', (done) => {
-      TransactionCtrl.handleError = (err, res, code) => {
-        expect(code).toBe('TC_002')
-        done()
-      }
-      TransactionCtrl.runtime = {
-        res: {
-          send: () => {
-          },
-        },
-        req: {
-          junkParam: 'ASDF',
-        },
-      }
-      TransactionCtrl.savedTransaction(true)
+    afterEach(() => { // reset the rewired functions
+      sandbox.restore()
     })
-    it('should succeed', (done) => {
-      TransactionCtrl.handleError = (err, res, code) => {
-        expect(code).toBe('TC_002')
+    it('should fail on params', (done) => {
+      const mockId = '10'
+      const mockPass = 'PASS'
+      TransactionCtrl.getOrder(mockId, null)
+      .catch((err) => {
+        expect(err instanceof Error).toBe(true)
+      })
+      TransactionCtrl.getOrder(null, mockPass)
+      .catch((err) => {
+        expect(err instanceof Error).toBe(true)
         done()
-      }
-      TransactionCtrl.runtime = {
-        res: {
-          send: (response) => {
-            const jsonResponse = JSON.parse(response)
-            expect(jsonResponse.type).toBe('SUCCESS')
-            expect(jsonResponse.status).toBe(200)
-            expect(jsonResponse.data).toEqual(TransactionCtrl.runtime.transaction)
-            done()
-          },
+      })
+    })
+
+    it('should pass on params and catch rejections', (done) => {
+      const mockId = '10'
+      const mockPass = 'PASS'
+      const mockResult = { prop: 'FAKE' }
+
+      const mockFind = {
+        select: () => {},
+        and: (opts) => {
+          expect(opts).toEqual([{ polymorph_id: mockId }, { polymorph_pass: mockPass }])
         },
-        req: {
-          junkParam: 'ASDF',
-        },
-        transaction: {
-          junkParam: 'ASDF',
-          output_currency: 'NAV',
-          output_address: '0987',
-          changelly_address: '1234',
+        exec: () => {
+          return new Promise((ful, rej) => { rej(mockResult) })
         },
       }
-      TransactionCtrl.savedTransaction()
+      sandbox.stub(TransactionModel, 'find').returns(mockFind)
+      TransactionCtrl.getOrder(mockId, mockPass)
+      .catch((result) => {
+        expect(result).toBe(mockResult)
+        done()
+      })
+    })
+
+    it('should pass on params and return result', (done) => {
+      const mockId = '10'
+      const mockPass = 'PASS'
+      const mockResult = { prop: 'FAKE' }
+
+      const mockFind = {
+        select: () => {},
+        and: (opts) => {
+          expect(opts).toEqual([{ polymorph_id: mockId }, { polymorph_pass: mockPass }])
+        },
+        exec: () => {
+          return new Promise((ful) => { ful(mockResult) })
+        },
+      }
+      sandbox.stub(TransactionModel, 'find').returns(mockFind)
+      TransactionCtrl.getOrder(mockId, mockPass)
+      .then((result) => {
+        expect(result).toBe(mockResult)
+        done()
+      })
     })
   })
+
   describe('(getTransaction)', () => {
     beforeEach(() => { // reset the rewired functions
       sandbox = sinon.sandbox.create()
@@ -192,6 +251,7 @@ describe('[TransactionCtrl]', () => {
       TransactionCtrl.getTransaction(req, res)
     })
   })
+
   describe('(gotTransaction)', () => {
     beforeEach(() => { // reset the rewired functions
       TransactionCtrl = rewire('../server/lib/db/transaction.ctrl')
@@ -207,6 +267,7 @@ describe('[TransactionCtrl]', () => {
       }
       TransactionCtrl.gotTransaction(true, null)
     })
+
     it('should fetch transactions success', (done) => {
       TransactionCtrl.handleError = (err, res, code) => {
         expect(code).toBe('TC_003')
@@ -243,6 +304,172 @@ describe('[TransactionCtrl]', () => {
       ]
 
       TransactionCtrl.gotTransaction(false, transactions)
+    })
+  })
+
+  describe('(updateOrderStatus)', () => {
+    beforeEach(() => { // reset the rewired functions
+      sandbox = sinon.sandbox.create()
+      TransactionCtrl = rewire('../server/lib/db/transaction.ctrl')
+    })
+    afterEach(() => { // reset the rewired functions
+      sandbox.restore()
+    })
+
+    it('should fail on params and reject', (done) => {
+      const fakeId = '100'
+      const fakePass = 'PASS'
+      const fakeStatus = 'SUNNY WITH A CHANCE OF SHOWERS'
+
+      TransactionCtrl.updateOrderStatus(null, fakePass, fakeStatus)
+      .catch((err) => {
+        expect(err instanceof Error).toBe(true)
+      })
+
+      TransactionCtrl.updateOrderStatus(fakeId, null, fakeStatus)
+      .catch((err) => {
+        expect(err instanceof Error).toBe(true)
+      })
+
+      TransactionCtrl.updateOrderStatus(fakeId, fakePass, null)
+      .catch((err) => {
+        expect(err instanceof Error).toBe(true)
+        done()
+      })
+    })
+
+    it('should pass on params and catch a rejection', (done) => {
+      const fakeId = '100'
+      const fakePass = 'PASS'
+      const fakeStatus = 'SUNNY WITH A CHANCE OF SHOWERS'
+      const mockFindOneAndUpdate = (query, orderStatusObj) => {
+        return new Promise((ful, rej) => {
+          expect(query.polymorph_id).toBe(fakeId)
+          expect(query.polymorph_pass).toBe(fakePass)
+          expect(orderStatusObj.order_status).toBe(fakeStatus)
+          rej('ERROR')
+        })
+      }
+      TransactionCtrl.__set__('TransactionModel.findOneAndUpdate', mockFindOneAndUpdate)
+      TransactionCtrl.updateOrderStatus(fakeId, fakePass, fakeStatus)
+      .catch((err) => {
+        expect(err).toBe('ERROR')
+        done()
+      })
+    })
+
+    it('should pass on params and fulfill', (done) => {
+      const fakeId = '100'
+      const fakePass = 'PASS'
+      const fakeStatus = 'SUNNY WITH A CHANCE OF SHOWERS'
+      const mockFindOneAndUpdate = (query, orderStatusObj) => {
+        return new Promise((ful) => {
+          expect(query.polymorph_id).toBe(fakeId)
+          expect(query.polymorph_pass).toBe(fakePass)
+          expect(orderStatusObj.order_status).toBe(fakeStatus)
+          ful()
+        })
+      }
+      TransactionCtrl.__set__('TransactionModel.findOneAndUpdate', mockFindOneAndUpdate)
+      TransactionCtrl.updateOrderStatus(fakeId, fakePass, fakeStatus)
+      .then(() => {
+        done()
+      })
+    })
+  })
+
+  describe('(checkIfIdExists)', () => {
+    beforeEach(() => { // reset the rewired functions
+      sandbox = sinon.sandbox.create()
+      TransactionCtrl = rewire('../server/lib/db/transaction.ctrl')
+    })
+    afterEach(() => { // reset the rewired functions
+      sandbox.restore()
+    })
+
+    it('should return true if there are results', (done) => {
+      const mockFind = {
+        where: () => {
+          return {
+            equals: () => {},
+          }
+        },
+        exec: () => {
+          return new Promise((ful) => { ful([0, 1, 2]) })
+        },
+      }
+      sandbox.stub(mongoose.Model, 'find').returns(mockFind)
+      TransactionCtrl.checkIfIdExists('50')
+      .then((result) => {
+        expect(result).toBe(true)
+        done()
+      })
+    })
+
+    it('should return false if there are no results', (done) => {
+      const mockFind = {
+        where: () => {
+          return {
+            equals: () => {},
+          }
+        },
+        exec: () => {
+          return new Promise((ful) => { ful([]) })
+        },
+      }
+      sandbox.stub(mongoose.Model, 'find').returns(mockFind)
+      TransactionCtrl.checkIfIdExists('50')
+      .then((result) => {
+        expect(result).toBe(false)
+        done()
+      })
+    })
+
+    it('should fail on params', (done) => {
+      TransactionCtrl.checkIfIdExists(null)
+      .catch((result) => {
+        expect(result instanceof Error).toBe(true)
+        done()
+      })
+    })
+
+    it('should catch and reject errors', (done) => {
+      const mockExecption = { error: 'ERROR' }
+      const mockFind = {
+        where: () => {
+          return {
+            equals: () => {},
+          }
+        },
+        exec: () => {
+          throw (mockExecption)
+        },
+      }
+      sandbox.stub(mongoose.Model, 'find').returns(mockFind)
+      TransactionCtrl.checkIfIdExists('50')
+      .catch((err) => {
+        expect(err.error).toBe('ERROR')
+        done()
+      })
+    })
+
+    it('should catch and rejected queries', (done) => {
+      const mockFind = {
+        where: () => {
+          return {
+            equals: () => { },
+          }
+        },
+        exec: () => {
+          return new Promise((ful, rej) => rej('REJECT'))
+        },
+      }
+      sandbox.stub(mongoose.Model, 'find').returns(mockFind)
+      TransactionCtrl.checkIfIdExists('50')
+      .catch((err) => {
+        expect(err).toBe('REJECT')
+        done()
+      })
     })
   })
 })

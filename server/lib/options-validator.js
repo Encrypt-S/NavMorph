@@ -3,7 +3,7 @@ const lodash = require('lodash')
 
 const OptionsValidator = { }
 
-OptionsValidator.startValidatation = (params, options) => {
+OptionsValidator.startValidation = (params, options) => {
   const errors = []
   return new Promise((fulfill, reject) => {
     if (lodash.intersection(Object.keys(params), Object.keys(options)).length !== Object.keys(options).length) {
@@ -11,7 +11,7 @@ OptionsValidator.startValidatation = (params, options) => {
       return
     }
     try {
-      for (key of Object.keys(params)){
+      for (const key of Object.keys(params)) {
         OptionsValidator.validateParams(params[key], options[key], errors)
       }
     } catch (exception) {

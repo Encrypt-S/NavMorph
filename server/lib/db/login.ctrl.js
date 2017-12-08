@@ -73,7 +73,8 @@ LoginCtrl.checkIpBlocked = (options) => {
       return
     }
     const query = BlackListModel
-    query.find().and([
+    query.find()
+    .and([
       { ip_address: options.ipAddress },
       { timestamp: { $gte: new Date(new Date().getTime() - (10 * 60000)) } },
     ])

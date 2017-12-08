@@ -26,16 +26,14 @@ OrderStatusCtrl.getOrder = (req, res) => {
         OrderStatusCtrl.checkOrderExists(params, res)
       }
     })
-    .catch((error) => {
-      OrderStatusCtrl.handleError(error, res, '012')
-    })
+    .catch((error) => { OrderStatusCtrl.handleError(error, res, '003') })
   })
   .catch((error) => { OrderStatusCtrl.handleError(error, res, '001') })
 }
 
 
 OrderStatusCtrl.checkOrderExists = (params, res) => {
-  TransactionCtrl.internal.checkIfIdExists(params.orderId)
+  TransactionCtrl.checkIfIdExists(params.orderId)
   .then((orderExists) => {
     if (orderExists) {
       OrderStatusCtrl.getOrderFromDb(params, res)
@@ -44,13 +42,12 @@ OrderStatusCtrl.checkOrderExists = (params, res) => {
     }
   })
   .catch((error) => {
-    OrderStatusCtrl.handleError(error, res, '003')
+    OrderStatusCtrl.handleError(error, res, '004')
   })
 }
 
-
 OrderStatusCtrl.getOrderFromDb = (params, res) => {
-  TransactionCtrl.internal.getOrder(params.orderId, params.orderPassword)
+  TransactionCtrl.getOrder(params.orderId, params.orderPassword)
   .then((orderArr) => {
     const order = orderArr[0]
     if (!order) {
@@ -62,12 +59,10 @@ OrderStatusCtrl.getOrderFromDb = (params, res) => {
       .then((eta) => {
         res.send([order, eta])
       })
-      .catch((error) => {
-        OrderStatusCtrl.handleError(error, res, '010')
-      })
+      .catch(error => OrderStatusCtrl.handleError(error, res, '005'))
     }
   })
-  .catch(error => OrderStatusCtrl.handleError(error, res, '011'))
+  .catch(error => OrderStatusCtrl.handleError(error, res, '006'))
 }
 
 OrderStatusCtrl.checkForSuspiciousActivity = (params, res) => {
@@ -77,14 +72,14 @@ OrderStatusCtrl.checkForSuspiciousActivity = (params, res) => {
       if (isSuspicious) {
         LoginCtrl.blackListIp({ ipAddress: params.ipAddress })
         .then(OrderStatusCtrl.sendBlockedResponse(res))
-        .catch(error => OrderStatusCtrl.handleError(error, res, '004'))
+        .catch(error => OrderStatusCtrl.handleError(error, res, '007'))
       } else {
         OrderStatusCtrl.sendEmptyResponse(res)
       }
     })
-    .catch(error => OrderStatusCtrl.handleError(error, res, '005'))
+    .catch(error => OrderStatusCtrl.handleError(error, res, '008'))
   )
-  .catch(error => OrderStatusCtrl.handleError(error, res, '006'))
+  .catch(error => OrderStatusCtrl.handleError(error, res, '009'))
 }
 
 OrderStatusCtrl.sendEmptyResponse = (res) => {
@@ -100,13 +95,14 @@ OrderStatusCtrl.updateOrderStatus = (req, res) => {
   OrderStatusCtrl.validateParams(req.params, ApiOptions.updateOrderStatusOptions)
   .then(() => {
     const params = req.params
-    if (ConfigData.validOrderStatuses.indexOf(params.newStatus) === -1) {
-      OrderStatusCtrl.handleError(new Error('Invalid order status'), res, '007')
+    const newStatus = req.params.status
+    if (ConfigData.validOrderStatuses.indexOf(newStatus) === -1) {
+      OrderStatusCtrl.handleError(new Error('Invalid order status'), res, '010')
     }
-    TransactionCtrl.internal.updateOrderStatus(params.orderId, params.orderPassword, params.newStatus)
+    TransactionCtrl.updateOrderStatus(params.orderId, params.orderPassword, params.newStatus)
   })
   .then((order) => { res.send(order) })
-  .catch((error) => { OrderStatusCtrl.handleError(error, res, '008') })
+  .catch((error) => { OrderStatusCtrl.handleError(error, res, '011') })
 }
 
 OrderStatusCtrl.abandonOrder = (req, res) => {
@@ -114,10 +110,10 @@ OrderStatusCtrl.abandonOrder = (req, res) => {
   .then(() => {
     const polymorphId = req.params.orderId
     const orderPassword = req.params.orderPassword
-    TransactionCtrl.internal.updateOrderStatus(polymorphId, orderPassword, 'ABANDONED')
+    TransactionCtrl.updateOrderStatus(polymorphId, orderPassword, 'ABANDONED')
   })
   .then(() => { res.send({ status: 'SUCCESS' }) })
-  .catch((error) => { OrderStatusCtrl.handleError(error, res, '009') })
+  .catch((error) => { OrderStatusCtrl.handleError(error, res, '012') })
 }
 
 OrderStatusCtrl.handleError = (err, res, code) => {
@@ -134,7 +130,7 @@ OrderStatusCtrl.handleError = (err, res, code) => {
 
 OrderStatusCtrl.validateParams = (params, options) => {
   return new Promise((fulfill, reject) => {
-    Validator.startValidatation(params, options)
+    Validator.startValidation(params, options)
     .then(() => fulfill())
     .catch((errorArr => reject(errorArr)))
   })

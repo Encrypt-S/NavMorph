@@ -14,7 +14,7 @@ const ApiOptions = require('../../api-options.json')
 const OrderCtrl = {}
 
 OrderCtrl.createOrder = (req, res) => {
-  Validator.startValidatation(req.params, ApiOptions.orderOptions)
+  Validator.startValidation(req.params, ApiOptions.orderOptions)
   .then(() => {
     OrderCtrl.checkServerMode(req, res)
   })
@@ -99,7 +99,7 @@ OrderCtrl.prepForDb = (req, res) => {
 }
 
 OrderCtrl.storeOrder = (req, res) => {
-  TransactionCtrl.internal.createTransaction(req, res)
+  TransactionCtrl.createTransaction(req, res)
   .then(() => {
     res.send(JSON.stringify({
       status: 200,
@@ -116,20 +116,20 @@ OrderCtrl.checkForMaintenance = () => {
   return new Promise((fulfill, reject) => {
     ServerModeCtrl.checkMode()
     .then((mode) => {
-      if (mode[0].server_mode === 'MAINTENANCE') {
+      if (mode === 'MAINTENANCE') {
         fulfill(true)
       } else {
         fulfill(false)
       }
     })
-    .catch((err) => { reject(err) })
+    .catch(err => reject(err))
   })
 }
 
 
 OrderCtrl.getNavAddress = () => {
   return new Promise((fulfill, reject) => {
-    GetNewAddress.internal.getNewAddress()
+    GetNewAddress.getNewAddress()
     .then((newAddress) => {
       fulfill(newAddress)
     })
@@ -141,7 +141,7 @@ OrderCtrl.getNavAddress = () => {
 
 OrderCtrl.getChangellyAddress = (inputCurrency, outputCurrency, destAddress) => {
   return new Promise((fulfill, reject) => {
-    if (outputCurrency === 'NAV'){
+    if (outputCurrency === 'NAV') {
       fulfill(destAddress)
     }
     ChangellyCtrl.internal.generateAddress({
@@ -160,7 +160,7 @@ OrderCtrl.getChangellyAddress = (inputCurrency, outputCurrency, destAddress) => 
 OrderCtrl.generateOrderId = () => {
   return new Promise((fulfill, reject) => {
     const polymorphId = Keygen.generateKey(16)
-    TransactionCtrl.internal.checkIfIdExists(polymorphId)
+    TransactionCtrl.checkIfIdExists(polymorphId)
     .then((existsInDb) => {
       if (existsInDb) {
         OrderCtrl.generateOrderId()
