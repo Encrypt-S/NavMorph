@@ -22,7 +22,6 @@ OptionsValidator.startValidatation = (params, options) => {
       reject(errors)
       return
     }
-    console.log('done here');
     fulfill()
   })
 }
