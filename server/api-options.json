@@ -5,6 +5,10 @@
     }],
     "orderPassword": [{
       "validator": "isString"
+    }],
+    "ipAddress": [{
+      "validator": "isString",
+      "shouldBeAlphanumeric": false 
     }]
   },
 

@@ -1,11 +1,11 @@
-"use strict";
+'use strict'
 
 const lodash = require('lodash')
-let Logger = require('../logger')
+let Logger = require('../logger') // eslint-disable-line prefer-const
 
 // Compile models from schema
-let BlackListModel = require('./blackList.model')
-let FailedLoginsModel = require('./failedLogins.model')
+let BlackListModel = require('./blackList.model') // eslint-disable-line prefer-const
+let FailedLoginsModel = require('./failedLogins.model') // eslint-disable-line prefer-const
 
 const LoginCtrl = {
   runtime: {},
@@ -73,51 +73,36 @@ LoginCtrl.checkIpBlocked = (options) => {
       return
     }
     const query = BlackListModel
-    query.find()
-    query.and([
+    query.find().and([
       { ip_address: options.ipAddress },
-      { timestamp: {
-        '$gte': new Date(new Date().getTime() - (10 * 60000)),
-      } },
+      { timestamp: { $gte: new Date(new Date().getTime() - (10 * 60000)) } },
     ])
-    query.select('ip_address timestamp')
-
-    LoginCtrl.executeIpBlockedQuery(fulfill, reject, query)
+    .select('ip_address timestamp')
+    .exec()
+    .then((result) => {
+      const minLength = 0
+      LoginCtrl.checkResults(result, minLength, fulfill)
+    })
+    .catch((error) => { reject(error) })
   })
-}
-
-LoginCtrl.executeIpBlockedQuery = (fulfill, reject, query) => {
-  query.exec()
-  .then((result) => {
-    const minLength = 0
-    LoginCtrl.checkResults(result, minLength, fulfill)
-  })
-  .catch((error) => { reject(error) })
 }
 
 LoginCtrl.checkIfSuspicious = (ipAddress) => {
   return new Promise((fulfill, reject) => {
     const query = FailedLoginsModel
     query.find()
-    query.and([
+    .and([
       { ip_address: ipAddress },
-      { timestamp: {
-      '$gte': new Date(new Date().getTime() - (10 * 60000)),
-      } }
+      { timestamp: { $gte: new Date(new Date().getTime() - (10 * 60000)) } },
     ])
-    query.select('ip_address timestamp')
-
-    LoginCtrl.executeSuspiciousTestQuery(fulfill, reject, query)
+    .select('ip_address timestamp')
+    .exec()
+    .then((result) => {
+      const minLength = 10
+      LoginCtrl.checkResults(result, minLength, fulfill)
+    })
+    .catch((error) => { reject(error) })
   })
-}
-
-LoginCtrl.executeSuspiciousTestQuery = (fulfill, reject, query) => {
-  query.exec()
-  .then((result) => {
-    const minLength = 10
-    LoginCtrl.checkResults(result, minLength, fulfill)
-  })
-  .catch((error) => { reject(error) })
 }
 
 LoginCtrl.checkResults = (result, minLength, fulfill) => {

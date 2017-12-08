@@ -1,12 +1,12 @@
 'use strict'
 
 const Config = require('../../config')
-let ApiOptions = require('../../api-options.json')
+let ApiOptions = require('../../api-options.json') // eslint-disable-line prefer-const
 
-let validStatuses = Config.validOrderStatuses
-let timeConsts = Config.timeConsts
-let Validator = require('../options-validator')
-let Logger = require('../logger')
+let validStatuses = Config.validOrderStatuses // eslint-disable-line prefer-const
+let timeConsts = Config.timeConsts // eslint-disable-line prefer-const
+let Validator = require('../options-validator') // eslint-disable-line prefer-const
+let Logger = require('../logger') // eslint-disable-line prefer-const
 
 const EtaCtrl = {}
 
@@ -26,7 +26,7 @@ EtaCtrl.generateEstimate = (req, res) => {
 
 EtaCtrl.getEta = (params) => {
   return new Promise((fufill, reject) => {
-    Validator.startValidation(params, ApiOptions.getEtaOptions)
+    Validator.startValidatation(params, ApiOptions.getEtaOptions)
     .then(() => {
       if (!EtaCtrl.validStatus(params.status)) {
         reject(new Error('INVALID_ORDER_STATUS'))
@@ -37,7 +37,9 @@ EtaCtrl.getEta = (params) => {
       }
       fufill(EtaCtrl.buildEta(params))
     })
-    .catch((error) => { reject(error) })
+    .catch((error) => {
+      reject(new Error('VALIDATION_FAILED', { error }))
+    })
   })
 }
 

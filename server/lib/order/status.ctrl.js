@@ -1,4 +1,4 @@
-"use strict";
+'use strict'
 
 const TransactionCtrl = require('../db/transaction.ctrl')
 const EtaCtrl = require('./eta.ctrl')
@@ -13,9 +13,10 @@ const OrderStatusCtrl = {}
 
 OrderStatusCtrl.getOrder = (req, res) => {
   const params = req.params
+  params.ipAddress = req.ip
   OrderStatusCtrl.validateParams(params, ApiOptions.getOrderStatusOptions)
   .then(() => {
-    LoginCtrl.checkIpBlocked(params.ipAddress)
+    LoginCtrl.checkIpBlocked({ ipAddress: params.ipAddress })
     .then((isBlocked) => {
       if (isBlocked) {
         LoginCtrl.insertAttempt(params.ipAddress, params.polymorphId)
@@ -25,10 +26,12 @@ OrderStatusCtrl.getOrder = (req, res) => {
         OrderStatusCtrl.checkOrderExists(params, res)
       }
     })
+    .catch((error) => {
+      OrderStatusCtrl.handleError(error, res, '012')
+    })
   })
   .catch((error) => { OrderStatusCtrl.handleError(error, res, '001') })
 }
-
 
 
 OrderStatusCtrl.checkOrderExists = (params, res) => {
@@ -36,13 +39,13 @@ OrderStatusCtrl.checkOrderExists = (params, res) => {
   .then((orderExists) => {
     if (orderExists) {
       OrderStatusCtrl.getOrderFromDb(params, res)
-    } else if (orderArr[0].length === 0) {
-      res.send([[],[]])
-      return
+    } else {
+      res.send([[], []])
     }
   })
-  .catch(error => {
-    OrderStatusCtrl.handleError(error, res, '003')})
+  .catch((error) => {
+    OrderStatusCtrl.handleError(error, res, '003')
+  })
 }
 
 
@@ -55,11 +58,13 @@ OrderStatusCtrl.getOrderFromDb = (params, res) => {
     } else if (order.order_status === 'ABANDONED') {
       OrderStatusCtrl.sendEmptyResponse(res)
     } else {
-      EtaCtrl.getEta({ status: order.order_status, timeSent: order.sent, from: order.input_currency, to: order.output_currency } )
+      EtaCtrl.getEta({ status: order.order_status, timeSent: order.sent, from: order.input_currency, to: order.output_currency })
       .then((eta) => {
         res.send([order, eta])
       })
-      .catch(error => OrderStatusCtrl.handleError(error, res, '010'))
+      .catch((error) => {
+        OrderStatusCtrl.handleError(error, res, '010')
+      })
     }
   })
   .catch(error => OrderStatusCtrl.handleError(error, res, '011'))
@@ -95,9 +100,7 @@ OrderStatusCtrl.updateOrderStatus = (req, res) => {
   OrderStatusCtrl.validateParams(req.params, ApiOptions.updateOrderStatusOptions)
   .then(() => {
     const params = req.params
-    const orderPassword = req.params.orderPassword
-    const newStatus = req.params.status
-    if (ConfigData.validOrderStatuses.indexOf(newStatus) === -1) {
+    if (ConfigData.validOrderStatuses.indexOf(params.newStatus) === -1) {
       OrderStatusCtrl.handleError(new Error('Invalid order status'), res, '007')
     }
     TransactionCtrl.internal.updateOrderStatus(params.orderId, params.orderPassword, params.newStatus)
