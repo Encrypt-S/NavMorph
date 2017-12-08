@@ -26,7 +26,7 @@ EtaCtrl.generateEstimate = (req, res) => {
 
 EtaCtrl.getEta = (params) => {
   return new Promise((fufill, reject) => {
-    Validator.startValidatation(params, ApiOptions.getEtaOptions)
+    Validator.startValidation(params, ApiOptions.getEtaOptions)
     .then(() => {
       if (!EtaCtrl.validStatus(params.status)) {
         reject(new Error('INVALID_ORDER_STATUS'))
