@@ -123,16 +123,18 @@ describe('[EtaCtrl]', () => {
       const mockApiOptions = { junkOption: {} }
       EtaCtrl.__set__('ApiOptions', mockApiOptions)
 
+      const mockErr = 'BAD_PARAMS'
+
       const mockStartValidation = (params, options) => {
         expect(params).toBe(testParams)
         expect(options).toBe(mockApiOptions.generateEstimateOptions)
-        return Promise.reject('BAD_PARAMS')
+        return Promise.reject(mockErr)
       }
       EtaCtrl.__set__('Validator.startValidation', mockStartValidation)
 
       EtaCtrl.getEta(testParams)
       .catch((error) => {
-        expect(error).toBe('BAD_PARAMS')
+        expect(error.error).toBe(mockErr)
         done()
       })
     })
@@ -300,19 +302,17 @@ describe('[EtaCtrl]', () => {
       EtaCtrl.__set__('timeConsts', mockTimes)
 
       const mockFactorTime = (min, max, time) => {
-        expect(min).toEqual(true)
-        expect(max).toEqual(true)
-        expect(time).toEqual(true)
+        expect(min).toExist()
+        expect(max).toExist()
+        expect(time).toExist()
         return [min - 1, max - 1]
       }
-
-      EtaCtrl.__set__('factorTimeSinceSending', mockFactorTime)
-
+      EtaCtrl.factorTimeSinceSending = mockFactorTime
       let result = EtaCtrl.buildEta({ status, timeSent })
-      expect(result).toEqual([2, 4])
+      expect(result).toEqual([1, 3])
 
       result = EtaCtrl.buildEta({ status, timeSent, destCoin: 'NAV' })
-      expect(result).toEqual([1, 2])
+      expect(result).toEqual([0, 1])
     })
   })
 

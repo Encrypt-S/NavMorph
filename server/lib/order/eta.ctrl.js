@@ -38,7 +38,7 @@ EtaCtrl.getEta = (params) => {
       fufill(EtaCtrl.buildEta(params))
     })
     .catch((error) => {
-      reject(new Error('VALIDATION_FAILED', { error }))
+      reject({ error })
     })
   })
 }
