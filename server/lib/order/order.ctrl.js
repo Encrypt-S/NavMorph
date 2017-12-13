@@ -1,4 +1,4 @@
-"use strict";
+'use strict'
 
 const Keygen = require('generate-key')
 
@@ -7,13 +7,26 @@ const ChangellyCtrl = require('../changelly/changelly.ctrl')
 const TransactionCtrl = require('../db/transaction.ctrl')
 const ServerModeCtrl = require('../db/serverMode.ctrl')
 const Logger = require('../logger')
+const Validator = require('../options-validator')
+const ApiOptions = require('../../api-options.json')
+
 
 const OrderCtrl = {}
 
 OrderCtrl.createOrder = (req, res) => {
+  Validator.startValidation(req.params, ApiOptions.orderOptions)
+  .then(() => {
+    OrderCtrl.checkServerMode(req, res)
+  })
+  .catch((error) => {
+    OrderCtrl.handleError(error, res, '002')
+  })
+}
+
+OrderCtrl.checkServerMode = (req, res) => {
   OrderCtrl.checkForMaintenance()
   .then((maintenanceActive) => {
-    if(maintenanceActive) {
+    if (maintenanceActive) {
       res.send(JSON.stringify({
         status: 200,
         type: 'MAINTENANCE',
@@ -21,16 +34,6 @@ OrderCtrl.createOrder = (req, res) => {
       }))
       return
     }
-    OrderCtrl.validateOrder(req, res)
-  })
-  .catch((error) => {
-    OrderCtrl.handleError(error, res, '002')
-  })
-}
-
-OrderCtrl.validateOrder = (req, res) => {
-  OrderCtrl.validateParams(req)
-  .then(() => {
     OrderCtrl.beginOrderCreation(req, res)
   })
   .catch((error) => {
@@ -56,7 +59,6 @@ OrderCtrl.getFirstChangellyAddress = (req, res) => {
   } else {
     OrderCtrl.getChangellyAddress(req.params.from, 'NAV', req.params.navAddress)
     .then((address) => {
-
       req.params.changellyAddressOne = address
       OrderCtrl.getSecondChangellyAddress(req, res)
     })
@@ -97,7 +99,7 @@ OrderCtrl.prepForDb = (req, res) => {
 }
 
 OrderCtrl.storeOrder = (req, res) => {
-  TransactionCtrl.internal.createTransaction(req, res)
+  TransactionCtrl.createTransaction(req, res)
   .then(() => {
     res.send(JSON.stringify({
       status: 200,
@@ -112,33 +114,22 @@ OrderCtrl.storeOrder = (req, res) => {
 
 OrderCtrl.checkForMaintenance = () => {
   return new Promise((fulfill, reject) => {
-    serverModeCtrl.checkMode()
+    ServerModeCtrl.checkMode()
     .then((mode) => {
-      if(mode === 'MAINTENANCE'){
+      if (mode === 'MAINTENANCE') {
         fulfill(true)
       } else {
         fulfill(false)
       }
     })
-    .catch((err) => reject(err))
+    .catch(err => reject(err))
   })
 }
 
-
-OrderCtrl.validateParams = (req) => {
-  return new Promise((fulfill, reject) => {
-    // TODO: Add validation for extraId
-    if (typeof req.params.from === typeof 'string' && typeof req.params.to === typeof 'string'
-    && typeof req.params.address === typeof 'string' && !isNaN(parseFloat(req.params.amount))) {
-      fulfill()
-    }
-    reject(new Error('Incorrect parameters'))
-  })
-}
 
 OrderCtrl.getNavAddress = () => {
   return new Promise((fulfill, reject) => {
-    GetNewAddress.internal.getNewAddress()
+    GetNewAddress.getNewAddress()
     .then((newAddress) => {
       fulfill(newAddress)
     })
@@ -150,7 +141,7 @@ OrderCtrl.getNavAddress = () => {
 
 OrderCtrl.getChangellyAddress = (inputCurrency, outputCurrency, destAddress) => {
   return new Promise((fulfill, reject) => {
-    if(outputCurrency === 'NAV'){
+    if (outputCurrency === 'NAV') {
       fulfill(destAddress)
     }
     ChangellyCtrl.internal.generateAddress({
@@ -160,18 +151,16 @@ OrderCtrl.getChangellyAddress = (inputCurrency, outputCurrency, destAddress) => 
       extraId: null,
     })
     .then((data) => {
-      if (data instanceof Error) {
-        reject(data)
-      }
       fulfill(data.result.address)
     })
+    .catch((error) => { reject(error) })
   })
 }
 
 OrderCtrl.generateOrderId = () => {
   return new Promise((fulfill, reject) => {
     const polymorphId = Keygen.generateKey(16)
-    TransactionCtrl.internal.checkIfIdExists(polymorphId)
+    TransactionCtrl.checkIfIdExists(polymorphId)
     .then((existsInDb) => {
       if (existsInDb) {
         OrderCtrl.generateOrderId()

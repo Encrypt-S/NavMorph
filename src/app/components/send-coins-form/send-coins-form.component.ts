@@ -86,7 +86,7 @@ export class SendCoinsFormComponent implements OnInit, OnDestroy {
   getFormDataStream() {
     this.dataServ.getDataStream().subscribe(data => {
       this.errors = []
-      if (Object.keys(data).length > 0) { 
+      if (Object.keys(data).length > 0) {
         this.formData = data
         this.checkErrors(data.errors)
         this.fillForm(this.formData)
@@ -146,8 +146,10 @@ export class SendCoinsFormComponent implements OnInit, OnDestroy {
         if (result.type === "FAIL" ){
           this.errors.push('ORDER_CREATION_FAILED')
           return
+        } else if (result.type === "MAINTENANCE" ){
+          this.errors.push('MAINTENANCE_MODE')
+          return
         }
-
         const statusPageUrl = '/status/' + result.data['0'] + '/' + result.data['1']
         this.router.navigateByUrl(statusPageUrl)
       },
@@ -207,7 +209,9 @@ export class SendCoinsFormComponent implements OnInit, OnDestroy {
         },
         error => {
           this.isDisabled = true
-          console.log('err', error)
+          console.log('error loading currencies', error)
+          this.currencies = ['ERROR']
+          this.errors.push('NOT_FOUND')
           this.setLoadingState(false)
         })
   }
