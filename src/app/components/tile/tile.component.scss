@@ -1,6 +1,9 @@
 @import '../../styles/base.scss';
 
 .tile {
+  border-radius: 5px;
+  box-shadow: rgba(169, 184, 195, 0.85) 0px 10px 11px -2px;
+
   &.tile-blue-white, &.tile-fuschia-white {
     background-color: $white;
   }
@@ -33,6 +36,16 @@
   &.tile-blue-white, &.tile-blue {
     .tile-button button {
       background-color: $blue;
+    }
+  }
+  &.tile-white {
+    background-color: $white;
+
+    .tile-title {
+      color: $dark-purple;
+    }
+    .tile-text, {
+      color: $light-purple;
     }
   }
 }

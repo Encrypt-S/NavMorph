@@ -1,25 +1,74 @@
+@font-face {
+ font-family: "Roboto";
+ src: url("/assets/Roboto-Regular.tff");
+}
+
+@font-face {
+ font-family: "Montserrat";
+ src: url("/assets/Montserrat-Regular.ttf");
+}
+
+html {
+  font-family: Roboto, sans-serif;
+}
+
+.montserrat {
+  font-family: Montserrat, sans-serif;
+}
+
+.heading {
+  line-height: 55px;
+  font-weight: 500;
+}
+
+.heading-md {
+  font-weight: 300;
+}
+
+.sub-heading, .sub-heading-thin {
+  margin-top: 30px;
+  margin-bottom: 20px;
+  line-height: 25px;
+  &.sub-heading-thin {
+    font-weight: 200px;
+  }
+}
+
+
+
 h1 {
-  font-size: 50px;
+  font-size: 45px;
+  line-height: 44px;
+  margin-top: 20px;
+  font-weight: 400;
 }
 
 h2 {
-  font-size: 40px;
+  font-size: 38px;
+  font-weight: 400;
 }
 
 h3 {
   font-size: 30px;
+  font-weight: 400;
 }
 
 h4 {
   font-size: 20px;
+  font-weight: 400;
 }
 
 h5 {
   font-size: 16px;
+  font-weight: 400;
 }
 
 h6 {
   font-size: 14px;
+}
+
+.20-px {
+  font-size: 20px;
 }
 
 .text-center {

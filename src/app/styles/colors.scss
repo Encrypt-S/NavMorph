@@ -8,7 +8,10 @@ $fuschia: #c926b5;
 $purple: #7d59b5;
 $blue: #0e4bbe;
 $ice: #43b5eb;
-$red: red; 
+$red: red;
+$cool-grey: #C4D8E6;
+$light-purple: rgb(137, 148, 198);
+$dark-purple: rgb(62, 57, 107);
 
 /*font colours*/
 
@@ -22,6 +25,14 @@ $red: red;
 
 .txt-purple {
   color: $purple;
+}
+
+.txt-light-purple {
+  color: $light-purple;
+}
+
+.txt-dark-purple {
+  color: $dark-purple;
 }
 
 .txt-blue {
@@ -68,6 +79,10 @@ $red: red;
 .bg-blue {
   background-color: $blue;
   color: $white;
+}
+
+.bg-cool-grey {
+  background-color: $cool-grey;
 }
 
 .bg-blue-dark {

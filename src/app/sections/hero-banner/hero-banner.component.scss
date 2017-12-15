@@ -1,17 +1,9 @@
 @import "../../styles/base.scss";
 
 #send-coin-sect {
-  height: auto; /* Overrides the 500px height that the parallax class applies */
+  background-image: linear-gradient(198deg, rgb(33, 191, 253), rgb(182, 61, 253));
 }
 
 #paragraph-container {
   color: $white;
-}
-
-.parallax-container {
-  overflow: visible !important;
-}
-
-.parallax {
-  overflow: hidden !important;
 }

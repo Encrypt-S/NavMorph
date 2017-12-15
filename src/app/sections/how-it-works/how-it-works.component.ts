@@ -8,7 +8,7 @@ import { Component, OnInit, Input } from '@angular/core';
 export class HowItWorksSection implements OnInit {
 
   @Input('showButton')
-  showButton: boolean = true;
+  showButton: boolean;
   constructor() { }
 
   ngOnInit() {
