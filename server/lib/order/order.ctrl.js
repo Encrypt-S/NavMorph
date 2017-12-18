@@ -1,3 +1,5 @@
+'use strict'
+
 const Keygen = require('generate-key')
 
 const GetNewAddress = require('../rpc/get-new-address')
@@ -124,16 +126,6 @@ OrderCtrl.checkForMaintenance = () => {
   })
 }
 
-OrderCtrl.validateParams = (req) => {
-  return new Promise((fulfill, reject) => {
-    // TODO: Add validation for extraId
-    if (typeof req.params.from === typeof 'string' && typeof req.params.to === typeof 'string'
-    && typeof req.params.address === typeof 'string' && !isNaN(parseFloat(req.params.amount))) {
-      fulfill()
-    }
-    reject(new Error('Incorrect parameters'))
-  })
-}
 
 OrderCtrl.getNavAddress = () => {
   return new Promise((fulfill, reject) => {

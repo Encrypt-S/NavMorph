@@ -1,3 +1,5 @@
+"use strict";
+
 const lodash = require('lodash')
 let Logger = require('../logger')
 

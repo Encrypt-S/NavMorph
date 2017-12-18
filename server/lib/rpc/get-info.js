@@ -1,3 +1,5 @@
+"use strict";
+
 const Rpc = require('./client')
 let Logger = require('../logger')
 

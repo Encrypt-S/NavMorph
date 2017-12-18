@@ -1,10 +1,12 @@
-const Config = require('../../config')
-let ApiOptions = require('../../api-options.json')
+'use strict'
 
-let validStatuses = Config.validOrderStatuses
-let timeConsts = Config.timeConsts
-let Validator = require('../options-validator')
-let Logger = require('../logger')
+const Config = require('../../config')
+let ApiOptions = require('../../api-options.json') // eslint-disable-line prefer-const
+
+let validStatuses = Config.validOrderStatuses // eslint-disable-line prefer-const
+let timeConsts = Config.timeConsts // eslint-disable-line prefer-const
+let Validator = require('../options-validator') // eslint-disable-line prefer-const
+let Logger = require('../logger') // eslint-disable-line prefer-const
 
 const EtaCtrl = {}
 
@@ -35,7 +37,9 @@ EtaCtrl.getEta = (params) => {
       }
       fufill(EtaCtrl.buildEta(params))
     })
-    .catch((error) => { reject(error) })
+    .catch((error) => {
+      reject({ error })
+    })
   })
 }
 

@@ -115,7 +115,7 @@ describe('[Rpc]', () => {
         Rpc.keypoolRefill().catch((err) => { expect(err instanceof Error).toBe(true) })
       })
 
-      it('should lock the wallet after filling pool', () => {
+      it('should lock the wallet after filling pool', (done) => {
         let walletIsLocked
         Rpc.navClient = {
           walletPassphrase: () => { walletIsLocked = false },

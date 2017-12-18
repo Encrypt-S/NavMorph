@@ -1,5 +1,6 @@
-const ConfigData = require('../../config')
+const ConfigData = require('../../../server-settings.json')
 const ApiOptions = require('../../api-options.json')
+
 const crypto = require('crypto')
 const jayson = require('jayson')
 const Logger = require('../logger')
@@ -39,8 +40,11 @@ ChangellyCtrl.request = (method, options, callback) => {
 ChangellyCtrl.getCurrencies = (req, res) => {
   ChangellyCtrl.request(ConfigData.changellyApiEndPoints.getCurrencies, {}, (err, data) => {
     if (err) {
-      Logger.writeLog('CHNGLLY_001', 'Failed to getCurrencies', {error: err}, true)
+      Logger.writeLog('CHNGLLY_001', 'Failed to getCurrencies', { error: err, data }, true)
       res.send(err)
+    } else if (data.result && data.result.indexOf('nav') === -1) {
+      Logger.writeLog('CHNGLLY_006', 'Nav not listed in currencies', { error: err, data }, true)
+      res.status(500).send(new Error('Nav not listed in currencies'))
     } else {
       res.send(data)
     }
@@ -48,6 +52,7 @@ ChangellyCtrl.getCurrencies = (req, res) => {
 }
 
 ChangellyCtrl.getMinAmount = (req, res) => {
+
   ChangellyCtrl.validateParams(req.params, ApiOptions.getMinAmountOptions)
   .then(() => {
     return ChangellyCtrl.request(ConfigData.changellyApiEndPoints.getMinAmount, req.params, (err, data) => {
@@ -63,6 +68,7 @@ ChangellyCtrl.getMinAmount = (req, res) => {
 }
 
 ChangellyCtrl.getExchangeAmount = (req, res) => {
+
   ChangellyCtrl.validateParams(req.params, ApiOptions.getExchangeAmountOptions)
   .then(() => {
     return ChangellyCtrl.request(ConfigData.changellyApiEndPoints.getExchangeAmount, req.params, (err, data) => {

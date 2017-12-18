@@ -22,7 +22,6 @@ OptionsValidator.startValidation = (params, options) => {
       reject(errors)
       return
     }
-
     fulfill()
   })
 }
@@ -48,7 +47,7 @@ OptionsValidator.isString = (param, validator, errors) => {
     return
   }
 
-  if (!Validator.isAlphanumeric(param)) {
+  if (validator.shouldBeAlphanumeric && !Validator.isAlphanumeric(param)) {
     errors.push({ err: 'STR_NON_ALPHANUM', param, validator })
   }
 

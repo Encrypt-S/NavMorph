@@ -1,3 +1,5 @@
+"use strict";
+
 const lodash = require('lodash')
 
 // Compile model from schema

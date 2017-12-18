@@ -216,94 +216,86 @@ describe('[Login.Ctrl]', () => {
       LoginCtrl.__set__('Logger', mockLogger)
     })
 
-    it('should call executeSuspiciousTestQuery with params', (done) => {
+    it('should call run with params', (done) => {
       const ipAddress = '1.1.1.1'
-      mockLogger = { writeLog: sinon.spy() }
-      LoginCtrl.__set__('Logger', mockLogger)
+      const mockResult = 'RESULT'
 
       const mockFailedLoginsModel = {
-        find: () => {},
-        and: (paramsToSave) => {
-          mockFailedLoginsModel.params = paramsToSave
+        find: function () { return this },
+        and: function () {
+          return this
         },
-        select: () => {},
+        select: function () { return this },
         params: {},
+        exec: function () {
+          return Promise.resolve(mockResult)
+        },
       }
 
       LoginCtrl.__set__('FailedLoginsModel', mockFailedLoginsModel)
 
-      LoginCtrl.executeSuspiciousTestQuery = (fulfill, reject, query) => {
-        expect(query.params[0].ip_address.ipAddress).toBe(ipAddress)
-        expect(query.params[1].timestamp.$gte instanceof Date).toBe(true)
-        sinon.assert.notCalled(mockLogger.writeLog)
+      LoginCtrl.checkResults = (result, minLength, fulfill) => {
+        expect(result).toBe(mockResult)
+        expect(minLength).toBe(10)
+        expect(fulfill).toBeTruthy()
         done()
       }
 
       LoginCtrl.checkIfSuspicious({ ipAddress })
     })
-  })
-
-  describe('(executeSuspiciousTestQuery)', () => {
-    beforeEach(() => { // reset the rewired functions
-      LoginCtrl = rewire('../server/lib/db/login.ctrl')
-    })
-
-    it('should handle query success', (done) => {
-      const query = {}
-      query.exec = () => {
-        return Promise.resolve('SUCCESS')
-      }
-
-      LoginCtrl.checkResults = (result, minLength) => {
-        expect(result).toBe('SUCCESS')
-        expect(result).toBe('SUCCESS')
-        expect(minLength).toBe(10)
-        done()
-      }
-
-      LoginCtrl.executeSuspiciousTestQuery(null, null, query)
-    })
 
     it('should handle query failure', (done) => {
-      const query = {}
-      query.exec = () => {
-        return Promise.reject('QUERY_FAILED')
+      const ipAddress = '1.1.1.1'
+      const mockResult = 'FAIL'
+
+      const mockFailedLoginsModel = {
+        find: function () { return this },
+        and: function () {
+          return this
+        },
+        select: function () { return this },
+        params: {},
+        exec: function () {
+          return Promise.reject(mockResult)
+        },
       }
 
-      function reject(result) {
-        expect(result).toBe('QUERY_FAILED')
+      LoginCtrl.__set__('FailedLoginsModel', mockFailedLoginsModel)
+
+      LoginCtrl.checkIfSuspicious({ ipAddress })
+      .catch((error) => {
+        expect(error).toBe(mockResult)
         done()
-      }
-      LoginCtrl.executeSuspiciousTestQuery(null, reject, query)
-    })
-  })
-
-  describe('(checkResults)', () => {
-    beforeEach(() => { // reset the rewired functions
-      LoginCtrl = rewire('../server/lib/db/login.ctrl')
-    })
-
-    it('should pass a check', (done) => {
-      const result = [1, 2]
-      const minLength = 0
-
-      function fulfill(result) {
-        expect(result).toBe(true)
-        done()
-      }
-
-      LoginCtrl.checkResults(result, minLength, fulfill, null)
+      })
     })
 
-    it('should fail a check', (done) => {
-      const result = [1, 2]
-      const minLength = 3
+    describe('(checkResults)', () => {
+      beforeEach(() => { // reset the rewired functions
+        LoginCtrl = rewire('../server/lib/db/login.ctrl')
+      })
 
-      function fulfill(result) {
-        expect(result).toBe(false)
-        done()
-      }
-      LoginCtrl.checkResults(result, minLength, fulfill, null)
+      it('should pass a check', (done) => {
+        const mockResult = [1, 2]
+        const minLength = 0
+
+        function fulfill(result) {
+          expect(result).toBe(true)
+          done()
+        }
+
+        LoginCtrl.checkResults(mockResult, minLength, fulfill, null)
+      })
+
+      it('should fail a check', (done) => {
+        const mockResult = [1, 2]
+        const minLength = 3
+
+        function fulfill(result) {
+          expect(result).toBe(false)
+          done()
+        }
+        LoginCtrl.checkResults(mockResult, minLength, fulfill, null)
+      })
     })
   })
 })

@@ -1,9 +1,12 @@
+'use strict'
+
 const serverModeCtrl = require('../db/serverMode.ctrl')
 const Logger = require('../logger')
 
-const socketCtrl = {}
 
-socketCtrl.setupServerSocket = (socket) => {
+const SocketCtrl = {}
+
+SocketCtrl.setupServerSocket = (socket) => {
   return new Promise((fufill, reject) => {
     try {
       socket.on('connection', function(socket){
@@ -15,7 +18,7 @@ socketCtrl.setupServerSocket = (socket) => {
           socket.emit('MESSAGE', { type: 'NEW_MESSAGE', text: message })
         })
       })
-      socketCtrl.startDbWatch(socket)
+      SocketCtrl.startDbWatch(socket)
       fufill()
     } catch (err) {
       reject(err)
@@ -23,7 +26,7 @@ socketCtrl.setupServerSocket = (socket) => {
   })
 }
 
-socketCtrl.startDbWatch = (socket) => {
+SocketCtrl.startDbWatch = (socket) => {
   let previousMode
   let previousMessage
   setInterval(() => {
@@ -53,4 +56,4 @@ socketCtrl.startDbWatch = (socket) => {
   }, 1000)
 }
 
-module.exports = socketCtrl
+module.exports = SocketCtrl

@@ -1,9 +1,10 @@
+'use strict'
+
 const TransactionCtrl = require('../db/transaction.ctrl')
 const EtaCtrl = require('./eta.ctrl')
-const ConfigData = require('../../server-settings.json')
 const LoginCtrl = require('../db/login.ctrl')
 const Validator = require('../options-validator')
-// const ConfigData = require('../../config')
+const ConfigData = require('../../../server-settings.json')
 const ApiOptions = require('../../api-options.json')
 
 const Logger = require('../logger')
@@ -12,9 +13,10 @@ const OrderStatusCtrl = {}
 
 OrderStatusCtrl.getOrder = (req, res) => {
   const params = req.params
+  params.ipAddress = req.ip
   OrderStatusCtrl.validateParams(params, ApiOptions.getOrderStatusOptions)
   .then(() => {
-    LoginCtrl.checkIpBlocked({ ipAddress: req.ip })
+    LoginCtrl.checkIpBlocked({ ipAddress: params.ipAddress })
     .then((isBlocked) => {
       if (isBlocked) {
         LoginCtrl.insertAttempt(params.ipAddress, params.polymorphId)

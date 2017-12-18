@@ -6,36 +6,25 @@ const bodyParser = require('body-parser')
 const pem = require('pem')
 const mongoose = require('mongoose')
 const SocketCtrl = require('./server/lib/socket/socketCtrl')
-const SettingsValidator = require('./server/lib/settingsValidator')
-const ProcessHandler = require('./server/lib/processHandler')
 const auth = require('basic-auth')
+const configData = require('./server/config')
+const SettingsValidator = require('./server/lib/settingsValidator.js')
+const ProcessHandler = require('./server/lib/processHandler')
 
 // Get our API routes
 const api = require('./server/routes/api')
 const Logger = require('./server/lib/logger')
 
 // Get Config data
-const ConfigData = require('./server/server-settings.json')
-// const validator = require('./server/config-validator')
+const config = require('./server-settings.json')
 
 const app = express()
-
 /**
-  * Validate Server Settings Config(config)
+  * Validate Server Settings Config
   */
 
-app.use(function (req, res, next) {
-  var user = auth(req)
-  if (user === undefined || user.name !== ConfigData.basicAuth.name || user.pass !== ConfigData.basicAuth.pass) {
-    res.send('unauthorised access attempt')
-    return
-  }
-  next()
-})
 
-// Point static path to dist
-// app.use(express.static(path.join(__dirname, 'dist')))
-SettingsValidator.validateSettings(ConfigData)
+SettingsValidator.validateSettings(config)
 .then(() => {
   console.log('--------------------------------------------')
   console.log('Server Config Validated. Continuing start up')
@@ -50,10 +39,20 @@ SettingsValidator.validateSettings(ConfigData)
   console.log('--------------------------------------------')
 })
 
-app.startUpServer = () => {
+startUpServer = () => {
   // Parsers for POST data
   app.use(bodyParser.json())
-  app.use(bodyParser.urlencoded({extended: false}))
+  app.use(bodyParser.urlencoded({ extended: false }))
+
+  app.use((req, res, next) => {
+    const user = auth(req)
+    if (user === undefined || user.name !== configData.basicAuth.name || user.pass !== configData.basicAuth.pass) {
+      res.send('unauthorised access attempt')
+      return
+    }
+    next()
+  })
+
 
   // Point static path to dist
   app.use(express.static(path.join(__dirname, ConfigData.app.static)))
@@ -94,7 +93,7 @@ app.startUpServer = () => {
       extended: true,
     }))
     server = https.createServer(sslOptions, app)
-    io = require('socket.io')(server);
+    io = require('socket.io')(server)
 
     SocketCtrl.setupServerSocket(io)
     .then(() => {
