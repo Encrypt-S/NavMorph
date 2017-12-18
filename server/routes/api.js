@@ -3,8 +3,6 @@
 const express = require('express')
 
 const router = express.Router()
-const rpcGetInfo = require('../lib/rpc/get-info')
-const rpcGetNewAddress = require('../lib/rpc/get-new-address')
 const TransactionCtrl = require('../lib/db/transaction.ctrl')
 const ChangellyCtrl = require('../lib/changelly/changelly.ctrl')
 const OrderCtrl = require('../lib/order/order.ctrl')
@@ -12,7 +10,6 @@ const EtaCtrl = require('../lib/order/eta.ctrl')
 const OrderStatusCtrl = require('../lib/order/status.ctrl')
 
 router.get('/', (req, res) => res.send('api works'))
-router.get('/rpc/getinfo', rpcGetInfo.getInfo)
 router.get('/db/transaction/:id', TransactionCtrl.getTransaction)
 router.get('/db/transaction', TransactionCtrl.getTransaction)
 
