@@ -8,11 +8,17 @@ const ProcessHandler = {
 }
 
 ProcessHandler.setup = () => {
-  ProcessHandler.testRpc()
-  .then(() => ProcessHandler.startTimer())
-  .catch((err) => {
-    ProcessHandler.setTimerPaused(true)
-    Logger.writeLog('PH_001', 'Failed to pass RPC pretimer check', err, true)
+  return new Promise((fulfill, reject) => {
+    ProcessHandler.testRpc()
+    .then(() => {
+      ProcessHandler.startTimer()
+      fulfill()
+    })
+    .catch((err) => {
+      ProcessHandler.setTimerPaused(true)
+      Logger.writeLog('PH_001', 'Failed to pass RPC pretimer check', err, true)
+      reject()
+    })
   })
 }
 
@@ -48,7 +54,7 @@ ProcessHandler.preflightChecks = () => {
 }
 
 ProcessHandler.setTimerPaused = (newStatus) => {
-  ProcessHandler.ProcessHandler.setTimerPaused = newStatus
+  ProcessHandler.ProcessHandler.timerPaused = newStatus
 }
 
 module.exports = ProcessHandler

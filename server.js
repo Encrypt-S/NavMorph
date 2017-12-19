@@ -7,7 +7,7 @@ const pem = require('pem')
 const mongoose = require('mongoose')
 const SocketCtrl = require('./server/lib/socket/socketCtrl')
 const auth = require('basic-auth')
-const configData = require('./server/config')
+const ConfigData = require('./server/server-settings')
 const SettingsValidator = require('./server/lib/settingsValidator.js')
 const ProcessHandler = require('./server/lib/processHandler')
 
@@ -39,14 +39,14 @@ SettingsValidator.validateSettings(config)
   console.log('--------------------------------------------')
 })
 
-startUpServer = () => {
+app.startUpServer = () => {
   // Parsers for POST data
   app.use(bodyParser.json())
   app.use(bodyParser.urlencoded({ extended: false }))
 
   app.use((req, res, next) => {
     const user = auth(req)
-    if (user === undefined || user.name !== configData.basicAuth.name || user.pass !== configData.basicAuth.pass) {
+    if (user === undefined || user.name !== ConfigData.basicAuth.name || user.pass !== ConfigData.basicAuth.pass) {
       res.send('unauthorised access attempt')
       return
     }
@@ -128,7 +128,7 @@ startUpServer = () => {
 
       ProcessHandler.setup()
       .then(() => {
-
+        console.log('set up')
       })
       .catch((err) => {
         // Logger.writeLog('error msg', '' , errObj, true)
