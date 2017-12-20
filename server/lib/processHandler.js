@@ -1,5 +1,5 @@
 const Config = require('./../server-settings.json')
-const Logger = require('./logger')
+let Logger = require('./logger') // eslint-disable-line prefer-const
 const RpcGetNewAddress = require('./rpc/get-new-address')
 
 const ProcessHandler = {
@@ -29,7 +29,7 @@ ProcessHandler.testRpc = () => {
 }
 
 ProcessHandler.startTimer = () => {
-  setInterval(ProcessHandler.runTasks(), Config.processHandler.timerLength)
+  global.setInterval(ProcessHandler.runTasks, Config.processHandler.timerLength)
 }
 
 ProcessHandler.runTasks = () => {
@@ -54,7 +54,7 @@ ProcessHandler.preflightChecks = () => {
 }
 
 ProcessHandler.setTimerPaused = (newStatus) => {
-  ProcessHandler.ProcessHandler.timerPaused = newStatus
+  ProcessHandler.timerPaused = newStatus
 }
 
 module.exports = ProcessHandler

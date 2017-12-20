@@ -2,84 +2,93 @@
 
 const expect = require('expect')
 const rewire = require('rewire')
+const sinon = require('sinon')
+const Config = require('./../server/server-settings.json')
 
-let ServerModeCtrl = rewire('../server/lib/db/serverMode.ctrl')
-let ServerModeModel = require('../server/lib/db/serverMode.model')
-let ServerMessageModel = require('../server/lib/db/serverMessage.model')
+let ProcessHandler = rewire('../server/lib/processHandler')
+let mockLogger = { writeLog: sinon.spy() }
 
-
-describe('[ServerModeCtrl]', () => {
-  describe('(checkMode)', () => {
+describe('[ProcessHandler]', () => {
+  describe('(setup)', () => {
     beforeEach(() => { // reset the rewired functions
-      ServerModeCtrl = rewire('../server/lib/db/serverMode.ctrl')
+      ProcessHandler = rewire('../server/lib/processHandler')
+      mockLogger = { writeLog: sinon.spy() }
+      ProcessHandler.__set__('Logger', mockLogger)
     })
-    it('should check the server mode', (done) => {
-      const serverMode = 'SERVER_ON'
-      const mockModel = {
-        find: () => mockModel,
-        select: () => mockModel,
-        exec: () => {
-          return new Promise((ful) => { ful(serverMode) })
-        },
+
+    it('should testRpc then startTimer', (done) => {
+      ProcessHandler.testRpc = () => {
+        return Promise.resolve()
       }
-      ServerModeCtrl.__set__('ServerModeModel', mockModel)
-      ServerModeCtrl.checkMode()
-      .then((mode) => {
-        expect(mode).toBe(serverMode)
+      const mockTimer = () => {}
+      ProcessHandler.startTimer = mockTimer
+
+      const timerSpy = sinon.spy(ProcessHandler, 'startTimer')
+      const testRpcSpy = sinon.spy(ProcessHandler, 'testRpc')
+
+
+      ProcessHandler.setup()
+      .then(() => {
+        sinon.assert.called(timerSpy)
+        sinon.assert.called(testRpcSpy)
         done()
       })
     })
-    it('should catch rejected errors', (done) => {
-      const mockErr = 'REJECT'
-      const mockModel = {
-        find: () => mockModel,
-        select: () => mockModel,
-        exec: () => {
-          return new Promise((ful, rej) => rej(mockErr))
-        },
+
+    it('should catch errors from testRpc, then writeLog', (done) => {
+      ProcessHandler.testRpc = () => {
+        return Promise.reject()
       }
-      ServerModeCtrl.__set__('ServerModeModel', mockModel)
-      ServerModeCtrl.checkMode()
-      .catch((err) => {
-        expect(err).toBe(mockErr)
+      ProcessHandler.setTimerPaused = () => {}
+      const pauseSpy = sinon.spy(ProcessHandler, 'setTimerPaused')
+
+      ProcessHandler.setup()
+      .catch(() => {
+        sinon.assert.called(pauseSpy.withArgs(true))
+        sinon.assert.calledOnce(mockLogger.writeLog)
+
         done()
       })
     })
   })
-  describe('(checkMessage)', () => {
+
+
+  // describe('(testRpc)', () => {})
+
+  describe('(startTimer)', () => {
     beforeEach(() => { // reset the rewired functions
-      ServerModeCtrl = rewire('../server/lib/db/serverMode.ctrl')
+      ProcessHandler = rewire('../server/lib/processHandler')
     })
-    it('should check the server mode', (done) => {
-      const serverMode = 'SERVER_ON'
-      const mockModel = {
-        find: () => mockModel,
-        exec: () => {
-          return new Promise((ful) => { ful(serverMode) })
-        },
-      }
-      ServerModeCtrl.__set__('ServerMessageModel', mockModel)
-      ServerModeCtrl.checkMessage()
-      .then((mode) => {
-        expect(mode).toBe(serverMode)
-        done()
-      })
+    it('should run setInterval with specific args', (done) => {
+      this.clock = sinon.useFakeTimers()
+      const intervalSpy = sinon.spy(global, 'setInterval')
+      ProcessHandler.runTasks = () => {}
+      const handlerSpy = sinon.spy(ProcessHandler, 'runTasks')
+
+      ProcessHandler.startTimer()
+      this.clock.tick(Config.processHandler.timerLength + 1)
+      sinon.assert.called(intervalSpy)
+      sinon.assert.called(handlerSpy)
+      this.clock.restore()
+      done()
     })
-    it('should catch rejected errors', (done) => {
-      const mockErr = 'REJECT'
-      const mockModel = {
-        find: () => mockModel,
-        select: () => mockModel,
-        exec: () => {
-          return new Promise((ful, rej) => rej(mockErr))
-        },
-      }
-      ServerModeCtrl.__set__('ServerMessageModel', mockModel)
-      ServerModeCtrl.checkMessage()
-      .catch((err) => {
-        expect(err).toBe(mockErr)
-        done()
-      })
+  })
+
+  // describe('(runTasks)', () => {})
+
+  // describe('(preflightChecks)', () => {})
+
+  describe('(setTimerPaused)', () => {
+    beforeEach(() => { // reset the rewired functions
+      ProcessHandler = rewire('../server/lib/processHandler')
+    })
+    it('should unpause/pause the timer', () => {
+      ProcessHandler.timerPaused = true
+
+      ProcessHandler.setTimerPaused(false)
+      expect(ProcessHandler.timerPaused).toBe(false)
+      ProcessHandler.setTimerPaused(true)
+      expect(ProcessHandler.timerPaused).toBe(true)
     })
   })
 })
