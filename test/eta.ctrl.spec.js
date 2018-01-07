@@ -31,15 +31,17 @@ describe('[EtaCtrl]', () => {
         expect(options).toBe(mockApiOptions.generateEstimateOptions)
         return Promise.reject(err)
       }
+
       EtaCtrl.__set__('Validator.startValidation', mockStartValidation)
-
-      EtaCtrl.handleError = (error, res, code) => {
-        expect(error).toBe(err)
-        expect(res).toBe(junkRes)
-        expect(code).toBeA('string')
-        done()
+      const mockErrorHandler = {
+        handleError: (msg, error, code, sendEmail, res) => {
+          expect(error).toBe(err)
+          expect(res).toBe(junkRes)
+          expect(code).toBeA('string')
+          done()
+        }
       }
-
+      EtaCtrl.__set__('ErrorHandler', mockErrorHandler)
       EtaCtrl.generateEstimate(req, junkRes)
     })
 
@@ -98,15 +100,18 @@ describe('[EtaCtrl]', () => {
         return Promise.resolve()
       }
       EtaCtrl.__set__('Validator.startValidation', mockStartValidation)
-
+      const mockError = 'ERROR'
       EtaCtrl.getEta = () => {
-        return Promise.reject('ERROR')
+        return Promise.reject(mockError)
       }
 
-      EtaCtrl.handleError = (err) => {
-        expect(err).toBe('ERROR')
-        done()
+      const mockErrorHandler = {
+        handleError: (msg, error, code, sendEmail, res) => {
+          expect(error).toBe(mockError)
+          done()
+        }
       }
+      EtaCtrl.__set__('ErrorHandler', mockErrorHandler)
 
       EtaCtrl.generateEstimate(req, null)
     })
@@ -328,35 +333,6 @@ describe('[EtaCtrl]', () => {
 
       expect(EtaCtrl.factorTimeSinceSending(10, 10, testTime)).toEqual([9, 9])
       clock.restore() // restore date and time funcs
-    })
-  })
-
-  describe('(handleError)', () => {
-    beforeEach(() => { // reset the rewired functions
-      EtaCtrl = rewire('../server/lib/order/eta.ctrl')
-    })
-    it('should send an error using the res', (done) => {
-      const res = {
-        send: (response) => {
-          const jsonResponse = JSON.parse(response)
-          expect(jsonResponse.type).toBe('FAIL')
-          expect(jsonResponse.statusCode).toBe(200)
-          expect(jsonResponse.statusMessage).toBe('Unable to get ETA')
-        },
-      }
-
-      const mockLogger = { writeLog: (errCode, statusMessage, error, mail) => {
-        expect(errCode).toBe(code)
-        expect(statusMessage).toBe('Unable to get ETA')
-        expect(error.error).toBe(err)
-        expect(mail).toBe(true)
-        done()
-      } }
-      EtaCtrl.__set__('Logger', mockLogger)
-
-      const err = 'test_error'
-      const code = 'TEST_001'
-      EtaCtrl.handleError(err, res, code)
     })
   })
 })
