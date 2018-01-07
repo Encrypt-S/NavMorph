@@ -6,10 +6,9 @@ const GetNewAddress = require('../rpc/get-new-address')
 const ChangellyCtrl = require('../changelly/changelly.ctrl')
 const TransactionCtrl = require('../db/transaction.ctrl')
 const ServerModeCtrl = require('../db/serverMode.ctrl')
-const Logger = require('../logger')
 const Validator = require('../options-validator')
 const ApiOptions = require('../../api-options.json')
-
+let ErrorHandler = require('../error-handler') // eslint-disable-line prefer-const
 
 const OrderCtrl = {}
 
@@ -19,7 +18,7 @@ OrderCtrl.createOrder = (req, res) => {
     OrderCtrl.checkServerMode(req, res)
   })
   .catch((error) => {
-    OrderCtrl.handleError(error, res, '002')
+    ErrorHandler.handleError('Unable to create Polymorph Order', error, 'ORDER_CTRL_001', true, res)
   })
 }
 
@@ -37,7 +36,7 @@ OrderCtrl.checkServerMode = (req, res) => {
     OrderCtrl.beginOrderCreation(req, res)
   })
   .catch((error) => {
-    OrderCtrl.handleError(error, res, '002')
+    ErrorHandler.handleError('Unable to create Polymorph Order', error, 'ORDER_CTRL_002', true, res)
   })
 }
 
@@ -48,7 +47,7 @@ OrderCtrl.beginOrderCreation = (req, res) => {
     OrderCtrl.getFirstChangellyAddress(req, res)
   })
   .catch((error) => {
-    OrderCtrl.handleError(error, res, '003')
+    ErrorHandler.handleError('Unable to create Polymorph Order', error, 'ORDER_CTRL_003', true, res)
   })
 }
 
@@ -63,7 +62,7 @@ OrderCtrl.getFirstChangellyAddress = (req, res) => {
       OrderCtrl.getSecondChangellyAddress(req, res)
     })
     .catch((error) => {
-      OrderCtrl.handleError(error, res, '004')
+      ErrorHandler.handleError('Unable to create Polymorph Order', error, 'ORDER_CTRL_004', true, res)
     })
   }
 }
@@ -79,7 +78,7 @@ OrderCtrl.getSecondChangellyAddress = (req, res) => {
       OrderCtrl.prepForDb(req, res)
     })
     .catch((error) => {
-      OrderCtrl.handleError(error, res, '005')
+      ErrorHandler.handleError('Unable to create Polymorph Order', error, 'ORDER_CTRL_005', true, res)
     })
   }
 }
@@ -94,7 +93,7 @@ OrderCtrl.prepForDb = (req, res) => {
     OrderCtrl.storeOrder(req, res)
   })
   .catch((error) => {
-    OrderCtrl.handleError(error, res, '006')
+    ErrorHandler.handleError('Unable to create Polymorph Order', error, 'ORDER_CTRL_006', true, res)
   })
 }
 
@@ -108,7 +107,7 @@ OrderCtrl.storeOrder = (req, res) => {
     }))
   })
   .catch((error) => {
-    OrderCtrl.handleError(error, res, '007')
+    ErrorHandler.handleError('Unable to create Polymorph Order', error, 'ORDER_CTRL_007', true, res)
   })
 }
 
@@ -173,15 +172,4 @@ OrderCtrl.generateOrderId = () => {
   })
 }
 
-OrderCtrl.handleError = (err, res, code) => {
-  const statusMessage = 'Unable to create Polymorph Order'
-  res.send(JSON.stringify({
-    statusCode: 200,
-    type: 'FAIL',
-    code: 'ORDER_CTRL_' + code || '001',
-    statusMessage,
-    err,
-  }))
-  Logger.writeLog(code, statusMessage, { error: err }, true)
-}
 module.exports = OrderCtrl

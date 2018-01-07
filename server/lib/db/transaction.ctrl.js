@@ -1,30 +1,19 @@
 "use strict";
 
 const lodash = require('lodash')
-let Logger = require('../logger')
+let ErrorHandler = require('../error-handler') // eslint-disable-line prefer-const
 
 // Compile model from schema
 let TransactionModel = require('./transaction.model')
 
 const TransactionCtrl = { }
 
-TransactionCtrl.handleError = (err, res, code, message) => {
-  res.send(JSON.stringify({
-    status: 200,
-    type: 'FAIL',
-    code,
-    message,
-    err,
-  }))
-  Logger.writeLog(code, message, { error: err }, false)
-}
-
 TransactionCtrl.createTransaction = (req, res) => {
   return new Promise((fulfill, reject) => {
     const required = ['from', 'to', 'address', 'amount', 'polymorphId',
       'polymorphPass', 'changellyAddressOne', 'changellyAddressTwo', 'navAddress']
     if (!req || lodash.intersection(Object.keys(req.params), required).length !== required.length) {
-      reject(new Error('PARAMS_ERROR', 'TC_001', 'Failed to receive params'))
+      reject(new Error('PARAMS_ERROR', 'TRANS_CTRL_001', 'Failed to receive params'))
       return
     }
 
@@ -94,7 +83,7 @@ TransactionCtrl.getTransaction = (req, res) => {
 
 TransactionCtrl.gotTransaction = (err, transactions) => {
   if (err) {
-    TransactionCtrl.handleError(err, TransactionCtrl.runtime.res, 'TC_003', 'Failed to get transaction')
+    ErrorHandler.handleError('Failed to get transaction', err, 'TRANS_CTRL_003', false, TransactionCtrl.runtime.res)
     return
   }
   TransactionCtrl.runtime.res.send(JSON.stringify({

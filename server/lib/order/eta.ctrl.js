@@ -6,7 +6,7 @@ let ApiOptions = require('../../api-options.json') // eslint-disable-line prefer
 let validStatuses = Config.validOrderStatuses // eslint-disable-line prefer-const
 let timeConsts = Config.timeConsts // eslint-disable-line prefer-const
 let Validator = require('../options-validator') // eslint-disable-line prefer-const
-let Logger = require('../logger') // eslint-disable-line prefer-const
+let ErrorHandler = require('../error-handler') // eslint-disable-line prefer-const
 
 const EtaCtrl = {}
 
@@ -20,7 +20,7 @@ EtaCtrl.generateEstimate = (req, res) => {
     res.send(eta)
   })
   .catch((error) => {
-    EtaCtrl.handleError(error, res, '001')
+    ErrorHandler.handleError('Unable to get ETA', error, 'ETA_CTRL_001', true, res)
   })
 }
 
@@ -105,16 +105,6 @@ EtaCtrl.buildEta = (options) => {
 EtaCtrl.factorTimeSinceSending = (min, max, timeSent) => {
   const minutesPassed = Math.round((new Date() - timeSent) / 1000 / 60, 0)
   return [min - minutesPassed, max - minutesPassed]
-}
-
-EtaCtrl.handleError = (err, res, code) => {
-  const statusMessage = 'Unable to get ETA'
-  res.send(JSON.stringify({
-    statusCode: 200,
-    type: 'FAIL',
-    statusMessage,
-  }))
-  Logger.writeLog(code, statusMessage, { error: err }, true)
 }
 
 module.exports = EtaCtrl
