@@ -12,32 +12,32 @@ describe('[ErrorHandler]', () => {
     beforeEach(() => { // reset the rewired functions
       ErrorHandler = rewire('../server/lib/error-handler')
       Validator = rewire('../server/lib/options-validator')
-      console.log(Object.keys(ErrorHandler))
     })
     it('should catch rejected params', (done) => {
-
-      const statusMessage = 'USELESS'
-      const err = 'ERROR'
-      const code = 'CODE'
-      const sendEmail = 'SENDMAIL'
-      const res = 'RES'
+      const mockStatusMessage = 'USELESS'
+      const mockErr = 'ERROR'
+      const mockCode = 'CODE'
+      const mockSendEmail = true
+      const mockRes = 'RES'
+      let mockParams = {}
 
       const mockStartValidation = (params, options) => {
-        expect(params.statusMessage).toBe(statusMessage)
-        expect(params.err).toBe(err)
-        expect(params.code).toBe(code)
-        expect(params.sendEmail).toBe(sendEmail)
-        expect(params.res).toBe(res)
-        return Promise.reject(err)
+        expect(params.statusMessage).toBe(mockStatusMessage)
+        expect(params.err).toBe(mockErr)
+        expect(params.code).toBe(mockCode)
+        expect(params.sendEmail).toBe(mockSendEmail)
+        expect(params.res).toBe(mockRes)
+        mockParams = params
+        return Promise.reject(mockErr)
       }
 
       const mockLogger = {
-        writeLog: (code, statusMessage, error, sendMail) => {
+        writeLog: (errCode, statusMessage, error, sendMail) => {
           expect(statusMessage).toBe('Incorrect Params - couldn\'t handle error')
-          expect(err.error).toBe(err)
-          expect(err.originalError).toBe(params)
-          expect(code).toBe('ERR_HDL_001')
-          expect(sendEmail).toBe(sendEmail)
+          expect(error.error).toBe(mockErr)
+          expect(error.originalError).toBe(mockParams)
+          expect(errCode).toBe('ERR_HDL_001')
+          expect(sendMail).toBe(mockSendEmail)
 
           done()
         }
@@ -45,46 +45,45 @@ describe('[ErrorHandler]', () => {
 
       ErrorHandler.__set__('Validator.startValidation', mockStartValidation)
 
-      ErrorHandler.handleError(statusMessage, err, code, sendEmail, res)
+      ErrorHandler.__set__('Logger', mockLogger)
+
+      ErrorHandler.handleError(mockStatusMessage, mockErr, mockCode, mockSendEmail, mockRes)
     })
 
-    // it('should pass on params', (done) => {
-    //   const req = {
-    //     params: {
-    //       generateEstimateOptions: {},
-    //       from: 'NAV',
-    //       to: 'BTC',
-    //     },
-    //   }
-    //
-    //   const mockApiOptions = { junkOption: {} }
-    //   ErrorHandler.__set__('ApiOptions', mockApiOptions)
-    //
-    //   const mockStartValidation = (params, options) => {
-    //     expect(params).toBe(req.params)
-    //     expect(options).toBe(mockApiOptions.generateEstimateOptions)
-    //     return Promise.resolve()
-    //   }
-    //   ErrorHandler.__set__('Validator.startValidation', mockStartValidation)
-    //
-    //   const mockEta = [1, 1]
-    //
-    //   ErrorHandler.getEta = (options) => {
-    //     expect(options.status).toBe('ESTIMATE')
-    //     expect(options.timeSent).toBeA('object')
-    //     expect(options.to).toBe(req.params.to)
-    //     expect(options.from).toBe(req.params.from)
-    //     return Promise.resolve(mockEta)
-    //   }
-    //
-    //   const junkRes = {
-    //     send: (data) => {
-    //       expect(data).toBe(mockEta)
-    //       done()
-    //     },
-    //   }
-    //
-    //   ErrorHandler.generateEstimate(req, junkRes)
-    // })
+    it('should pass on params', (done) => {
+      const mockStatusMessage = 'USELESS'
+      const mockErr = 'ERROR'
+      const mockCode = 'CODE'
+      const mockSendEmail = true
+      const mockRes = {
+        send: sinon.spy()
+      }
+
+      const mockStartValidation = (params, options) => {
+        expect(params.statusMessage).toBe(mockStatusMessage)
+        expect(params.err).toBe(mockErr)
+        expect(params.code).toBe(mockCode)
+        expect(params.sendEmail).toBe(mockSendEmail)
+        expect(params.res).toBe(mockRes)
+        return Promise.resolve()
+      }
+
+      const mockLogger = {
+        writeLog: (errCode, statusMessage, error, sendMail) => {
+          expect(statusMessage).toBe(mockStatusMessage)
+          expect(error.error).toBe(mockErr)
+          expect(errCode).toBe('CODE')
+          expect(sendMail).toBe(mockSendEmail)
+          sinon.assert.calledOnce(mockRes.send)
+          done()
+        }
+      }
+
+      ErrorHandler.__set__('Validator.startValidation', mockStartValidation)
+
+      ErrorHandler.__set__('Logger', mockLogger)
+
+      ErrorHandler.handleError(mockStatusMessage, mockErr, mockCode, mockSendEmail, mockRes)
+    })
   })
 })
