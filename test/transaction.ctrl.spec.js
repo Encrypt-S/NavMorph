@@ -226,7 +226,7 @@ describe('[TransactionCtrl]', () => {
     it('should catch transactions failure', (done) => {
       const mockErrorHandler = {
         handleError: (msg, err, code, sendmail, res) => {
-          expect(code).toBe('TC_003')
+          expect(code).toBe('TRANS_CTRL_003')
           done()
         }
       }
@@ -241,7 +241,7 @@ describe('[TransactionCtrl]', () => {
 
     it('should fetch transactions success', (done) => {
       TransactionCtrl.handleError = (err, res, code) => {
-        expect(code).toBe('TC_003')
+        expect(code).toBe('TRANS_CTRL_003')
         done()
       }
       TransactionCtrl.runtime = {
