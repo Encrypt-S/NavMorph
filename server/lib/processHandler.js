@@ -22,7 +22,7 @@ ProcessHandler.setup = () => {
   })
 }
 
-ProcessHandler.testRpc = () => {
+ProcessHandler.testRpc = () => { // TODO: Complete this function
   return new Promise((fulfill, reject) => {
     fulfill()
   })
@@ -32,7 +32,7 @@ ProcessHandler.startTimer = () => {
   global.setInterval(ProcessHandler.runTasks, Config.processHandler.timerLength)
 }
 
-ProcessHandler.runTasks = () => {
+ProcessHandler.runTasks = () => { // TODO: Complete this function
   ProcessHandler.preflightChecks()
   .then(() => {
 
@@ -43,7 +43,7 @@ ProcessHandler.runTasks = () => {
   })
 }
 
-ProcessHandler.preflightChecks = () => {
+ProcessHandler.preflightChecks = () => { // TODO: Complete this function
   return new Promise((fulfill, reject) => {
     if (!ProcessHandler.timerPaused && !ProcessHandler.tasksRunning) {
       fulfill()
