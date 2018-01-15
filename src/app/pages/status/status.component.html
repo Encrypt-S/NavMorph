@@ -40,7 +40,7 @@
             <div class="">Source Currency: {{sourceCurrency | uppercase}}</div>
             <div class="">Dest Currency: {{destCurrency | uppercase}}</div>
           </div>
-          <button class="btn waves-effect waves-light bg-blue" type="submit"
+          <button class="btn waves-effect waves-light bg-blue" type="submit" 
             name="action" (click)=abandonOrder() *ngIf="orderStatus === 'CREATED'">
             Cancel Order
           </button>

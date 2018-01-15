@@ -9,9 +9,9 @@ const SocketCtrl = {}
 SocketCtrl.setupServerSocket = (socket) => {
   return new Promise((fufill, reject) => {
     try {
-      socket.on('connection', (socket) => {
+      socket.on('connection', function(socket){
         console.log('a user connected')
-        socket.on('disconnect', () => {
+        socket.on('disconnect', function(){
           console.log('USER DISCONNECTED')
         })
         socket.on('ADD_MESSAGE', (message) => {
@@ -55,6 +55,5 @@ SocketCtrl.startDbWatch = (socket) => {
     })
   }, 1000)
 }
-
 
 module.exports = SocketCtrl
