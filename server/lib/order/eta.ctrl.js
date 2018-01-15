@@ -20,7 +20,13 @@ EtaCtrl.generateEstimate = (req, res) => {
     res.send(eta)
   })
   .catch((error) => {
-    ErrorHandler.handleError('Unable to get ETA', error, 'ETA_CTRL_001', true, res)
+    ErrorHandler.handleError({
+      statusMessage: 'Unable to get ETA',
+      err: error,
+      code: 'ETA_CTRL_001',
+      sendEmail: true,
+      res
+    })
   })
 }
 

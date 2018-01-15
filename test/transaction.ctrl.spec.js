@@ -8,6 +8,7 @@ const mongoose = require('mongoose')
 let sandbox
 let TransactionCtrl = rewire('../server/lib/db/transaction.ctrl')
 let TransactionModel = require('../server/lib/db/transaction.model')
+let ErrorHandler = rewire('../server/lib/error-handler') // eslint-disable-line
 
 describe('[TransactionCtrl]', () => {
   describe('(createTransaction)', () => {
@@ -222,26 +223,30 @@ describe('[TransactionCtrl]', () => {
   describe('(gotTransaction)', () => {
     beforeEach(() => { // reset the rewired functions
       TransactionCtrl = rewire('../server/lib/db/transaction.ctrl')
+      ErrorHandler = rewire('../server/lib/error-handler')
     })
     it('should catch transactions failure', (done) => {
       const mockErrorHandler = {
-        handleError: (msg, err, code, sendmail, res) => {
-          expect(code).toBe('TRANS_CTRL_003')
+        handleError: (params) => {
+          expect(params.code).toBe('TRANS_CTRL_003')
           done()
         }
       }
 
-      TransactionCtrl.__set__('ErrorHandler', mockErrorHandler)
+
       TransactionCtrl.runtime = {
         res: {},
         req: {},
       }
+
+      TransactionCtrl.__set__('ErrorHandler', mockErrorHandler)
+
       TransactionCtrl.gotTransaction(true, null)
     })
 
     it('should fetch transactions success', (done) => {
-      TransactionCtrl.handleError = (err, res, code) => {
-        expect(code).toBe('TRANS_CTRL_003')
+      TransactionCtrl.handleError = (params) => {
+        expect(params.code).toBe('TRANS_CTRL_003')
         done()
       }
       TransactionCtrl.runtime = {

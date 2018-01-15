@@ -14,7 +14,7 @@ describe('[ErrorHandler]', () => {
       Validator = rewire('../server/lib/options-validator')
     })
     it('should catch rejected params', (done) => {
-      const mockStatusMessage = 'USELESS'
+      const mockStatusMessage = 'MOCK_STATUS'
       const mockErr = 'ERROR'
       const mockCode = 'CODE'
       const mockSendEmail = true
@@ -32,12 +32,12 @@ describe('[ErrorHandler]', () => {
       }
 
       const mockLogger = {
-        writeLog: (errCode, statusMessage, error, sendMail) => {
+        writeLog: (errCode, statusMessage, error, sendEmail) => {
           expect(statusMessage).toBe('Incorrect Params - couldn\'t handle error')
           expect(error.error).toBe(mockErr)
           expect(error.originalError).toBe(mockParams)
           expect(errCode).toBe('ERR_HDL_001')
-          expect(sendMail).toBe(mockSendEmail)
+          expect(sendEmail).toBe(mockSendEmail)
 
           done()
         }
@@ -47,11 +47,17 @@ describe('[ErrorHandler]', () => {
 
       ErrorHandler.__set__('Logger', mockLogger)
 
-      ErrorHandler.handleError(mockStatusMessage, mockErr, mockCode, mockSendEmail, mockRes)
+      ErrorHandler.handleError({
+        statusMessage: mockStatusMessage,
+        err: mockErr,
+        code: mockCode,
+        sendEmail: mockSendEmail,
+        res: mockRes,
+      })
     })
 
     it('should pass on params', (done) => {
-      const mockStatusMessage = 'USELESS'
+      const mockStatusMessage = 'ANOTHER_MOCK_STATUS'
       const mockErr = 'ERROR'
       const mockCode = 'CODE'
       const mockSendEmail = true
@@ -69,11 +75,11 @@ describe('[ErrorHandler]', () => {
       }
 
       const mockLogger = {
-        writeLog: (errCode, statusMessage, error, sendMail) => {
+        writeLog: (errCode, statusMessage, error, sendEmail) => {
           expect(statusMessage).toBe(mockStatusMessage)
           expect(error.error).toBe(mockErr)
           expect(errCode).toBe('CODE')
-          expect(sendMail).toBe(mockSendEmail)
+          expect(sendEmail).toBe(mockSendEmail)
           sinon.assert.calledOnce(mockRes.send)
           done()
         }
@@ -83,7 +89,13 @@ describe('[ErrorHandler]', () => {
 
       ErrorHandler.__set__('Logger', mockLogger)
 
-      ErrorHandler.handleError(mockStatusMessage, mockErr, mockCode, mockSendEmail, mockRes)
+      ErrorHandler.handleError({
+        statusMessage: mockStatusMessage,
+        err: mockErr,
+        code: mockCode,
+        sendEmail: mockSendEmail,
+        res: mockRes,
+      })
     })
   })
 })

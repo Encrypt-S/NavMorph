@@ -4,17 +4,16 @@ const ApiOptions = require('../api-options.json')
 
 const ErrorHandler = {}
 
-ErrorHandler.handleError = (statusMessage, err, code, sendEmail, res) => {
-  const params = { statusMessage, err, code, sendEmail, res }
+ErrorHandler.handleError = (params) => {
   Validator.startValidation(params, ApiOptions)
   .then(() => {
-    res.send(JSON.stringify({
+    params.res.send(JSON.stringify({
       statusCode: 200,
       type: 'FAIL',
-      statusMessage,
-      err,
+      statusMessage: params.statusMessage,
+      err: params.err,
     }))
-    Logger.writeLog(code, statusMessage, { error: err }, sendEmail)
+    Logger.writeLog(params.code, params.statusMessage, { error: params.err }, params.sendEmail)
   })
   .catch((errorArr) => {
     Logger.writeLog('ERR_HDL_001', 'Incorrect Params - couldn\'t handle error', { error: errorArr, originalError: params }, true)

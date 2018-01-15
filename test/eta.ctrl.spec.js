@@ -34,10 +34,10 @@ describe('[EtaCtrl]', () => {
 
       EtaCtrl.__set__('Validator.startValidation', mockStartValidation)
       const mockErrorHandler = {
-        handleError: (msg, error, code, sendEmail, res) => {
-          expect(error).toBe(err)
-          expect(res).toBe(junkRes)
-          expect(code).toBeA('string')
+        handleError: (params) => {
+          expect(params.err).toBe(err)
+          expect(params.res).toBe(junkRes)
+          expect(params.code).toBeA('string')
           done()
         }
       }
@@ -106,8 +106,8 @@ describe('[EtaCtrl]', () => {
       }
 
       const mockErrorHandler = {
-        handleError: (msg, error, code, sendEmail, res) => {
-          expect(error).toBe(mockError)
+        handleError: (params) => {
+          expect(params.err).toBe(mockError)
           done()
         }
       }
@@ -119,6 +119,10 @@ describe('[EtaCtrl]', () => {
 
   describe('(getEta)', () => {
     beforeEach(() => { // reset the rewired functions
+      EtaCtrl = rewire('../server/lib/order/eta.ctrl')
+      Validator = rewire('../server/lib/options-validator')
+    })
+    afterEach(() => { // reset the rewired functions
       EtaCtrl = rewire('../server/lib/order/eta.ctrl')
       Validator = rewire('../server/lib/options-validator')
     })

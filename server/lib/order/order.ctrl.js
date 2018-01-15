@@ -18,7 +18,13 @@ OrderCtrl.createOrder = (req, res) => {
     OrderCtrl.checkServerMode(req, res)
   })
   .catch((error) => {
-    ErrorHandler.handleError('Unable to create Polymorph Order', error, 'ORDER_CTRL_001', true, res)
+    ErrorHandler.handleError({
+      statusMessage: 'Unable to create Polymorph Order',
+      err: error,
+      code: 'ORDER_CTRL_001',
+      sendEmail: true,
+      res
+    })
   })
 }
 
@@ -36,7 +42,13 @@ OrderCtrl.checkServerMode = (req, res) => {
     OrderCtrl.beginOrderCreation(req, res)
   })
   .catch((error) => {
-    ErrorHandler.handleError('Unable to create Polymorph Order', error, 'ORDER_CTRL_002', true, res)
+    ErrorHandler.handleError({
+      statusMessage: 'Unable to create Polymorph Order',
+      err: error,
+      code: 'ORDER_CTRL_002',
+      sendEmail: true,
+      res
+    })
   })
 }
 
@@ -47,7 +59,13 @@ OrderCtrl.beginOrderCreation = (req, res) => {
     OrderCtrl.getFirstChangellyAddress(req, res)
   })
   .catch((error) => {
-    ErrorHandler.handleError('Unable to create Polymorph Order', error, 'ORDER_CTRL_003', true, res)
+    ErrorHandler.handleError({
+      statusMessage: 'Unable to create Polymorph Order',
+      err: error,
+      code: 'ORDER_CTRL_003',
+      sendEmail: true,
+      res
+    })
   })
 }
 
@@ -62,7 +80,13 @@ OrderCtrl.getFirstChangellyAddress = (req, res) => {
       OrderCtrl.getSecondChangellyAddress(req, res)
     })
     .catch((error) => {
-      ErrorHandler.handleError('Unable to create Polymorph Order', error, 'ORDER_CTRL_004', true, res)
+      ErrorHandler.handleError({
+        statusMessage: 'Unable to create Polymorph Order',
+        err: error,
+        code: 'ORDER_CTRL_004',
+        sendEmail: true,
+        res
+      })
     })
   }
 }
@@ -78,7 +102,13 @@ OrderCtrl.getSecondChangellyAddress = (req, res) => {
       OrderCtrl.prepForDb(req, res)
     })
     .catch((error) => {
-      ErrorHandler.handleError('Unable to create Polymorph Order', error, 'ORDER_CTRL_005', true, res)
+      ErrorHandler.handleError({
+        statusMessage: 'Unable to create Polymorph Order',
+        err: error,
+        code: 'ORDER_CTRL_005',
+        sendEmail: true,
+        res
+      })
     })
   }
 }
@@ -93,7 +123,13 @@ OrderCtrl.prepForDb = (req, res) => {
     OrderCtrl.storeOrder(req, res)
   })
   .catch((error) => {
-    ErrorHandler.handleError('Unable to create Polymorph Order', error, 'ORDER_CTRL_006', true, res)
+    ErrorHandler.handleError({
+      statusMessage: 'Unable to create Polymorph Order',
+      err: error,
+      code: 'ORDER_CTRL_006',
+      sendEmail: true,
+      res
+    })
   })
 }
 
@@ -107,7 +143,13 @@ OrderCtrl.storeOrder = (req, res) => {
     }))
   })
   .catch((error) => {
-    ErrorHandler.handleError('Unable to create Polymorph Order', error, 'ORDER_CTRL_007', true, res)
+    ErrorHandler.handleError({
+      statusMessage: 'Unable to create Polymorph Order',
+      err: error,
+      code: 'ORDER_CTRL_007',
+      sendEmail: true,
+      res
+    })
   })
 }
 

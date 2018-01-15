@@ -83,7 +83,13 @@ TransactionCtrl.getTransaction = (req, res) => {
 
 TransactionCtrl.gotTransaction = (err, transactions) => {
   if (err) {
-    ErrorHandler.handleError('Failed to get transaction', err, 'TRANS_CTRL_003', false, TransactionCtrl.runtime.res)
+    ErrorHandler.handleError({
+      statusMessage: 'Failed to get transaction',
+      err,
+      code: 'TRANS_CTRL_003',
+      sendEmail: false,
+      res: TransactionCtrl.runtime.res
+    })
     return
   }
   TransactionCtrl.runtime.res.send(JSON.stringify({
