@@ -14,7 +14,7 @@ Logger.transporter = nodemailer.createTransport('smtps://' + emailAuth + '@' + s
 
 Logger.writeLog = (errorCode, errorMessage, data, email) => {
   if (email) {
-    Logger.sendMail(errorCode, errorMessage, data)
+    Logger.sendEmail(errorCode, errorMessage, data)
   }
   const date = new Date()
   let logString = '\r\n'
@@ -33,7 +33,7 @@ Logger.writeLog = (errorCode, errorMessage, data, email) => {
   console.log(logString)
 }
 
-Logger.sendMail = (errorCode, errorMessage, data) => {
+Logger.sendEmail = (errorCode, errorMessage, data) => {
   const mailOptions = {
     from: '"Polymorph System" <' + settings.smtp.user + '>',
     to: settings.notificationEmail,
@@ -49,7 +49,7 @@ Logger.sendMail = (errorCode, errorMessage, data) => {
     ]
   }
 
-  Logger.transporter.sendMail(mailOptions, (error, info) => {
+  Logger.transporter.sendEmail(mailOptions, (error, info) => {
     if (error) {
       return console.log('nodemail error', error)
     }

@@ -6,8 +6,8 @@ const LoginCtrl = require('../db/login.ctrl')
 const Validator = require('../options-validator')
 const ConfigData = require('../../../server-settings.json')
 const ApiOptions = require('../../api-options.json')
+let ErrorHandler = require('../error-handler') // eslint-disable-line prefer-const
 
-const Logger = require('../logger')
 
 const OrderStatusCtrl = {}
 
@@ -21,14 +21,35 @@ OrderStatusCtrl.getOrder = (req, res) => {
       if (isBlocked) {
         LoginCtrl.insertAttempt(params.ipAddress, params.polymorphId)
         .then(OrderStatusCtrl.sendBlockedResponse(res))
-        .catch(error => OrderStatusCtrl.handleError(error, res, '002'))
+        .catch(error => ErrorHandler.handleError({
+          statusMessage: 'Unable to fetch/update Polymorph Order',
+          code: 'ORDER_STATUS_CTRL_002',
+          err: error,
+          sendEmail: true,
+          res
+        }))
       } else {
         OrderStatusCtrl.checkOrderExists(params, res)
       }
     })
-    .catch((error) => { OrderStatusCtrl.handleError(error, res, '003') })
+    .catch((error) => { ErrorHandler.handleError({
+      statusMessage: 'Unable to fetch/update Polymorph Order',
+      code: 'ORDER_STATUS_CTRL_003',
+      err: error,
+      sendEmail: true,
+      res
+    })
+   })
   })
-  .catch((error) => { OrderStatusCtrl.handleError(error, res, '001') })
+  .catch((error) => {
+    ErrorHandler.handleError({
+      statusMessage: 'Unable to fetch/update Polymorph Order',
+      code: 'ORDER_STATUS_CTRL_001',
+      err: error,
+      sendEmail: true,
+      res
+    })
+  })
 }
 
 
@@ -42,7 +63,13 @@ OrderStatusCtrl.checkOrderExists = (params, res) => {
     }
   })
   .catch((error) => {
-    OrderStatusCtrl.handleError(error, res, '004')
+    ErrorHandler.handleError({
+      statusMessage: 'Unable to fetch/update Polymorph Order',
+      code: 'ORDER_STATUS_CTRL_004',
+      err: error,
+      sendEmail: true,
+      res
+    })
   })
 }
 
@@ -59,10 +86,22 @@ OrderStatusCtrl.getOrderFromDb = (params, res) => {
       .then((eta) => {
         res.send([order, eta])
       })
-      .catch(error => OrderStatusCtrl.handleError(error, res, '005'))
+      .catch(error => ErrorHandler.handleError({
+        statusMessage: 'Unable to fetch/update Polymorph Order',
+        code: 'ORDER_STATUS_CTRL_005',
+        err: error,
+        sendEmail: true,
+        res
+      }))
     }
   })
-  .catch(error => OrderStatusCtrl.handleError(error, res, '006'))
+  .catch(error => ErrorHandler.handleError({
+    statusMessage: 'Unable to fetch/update Polymorph Order',
+    code: 'ORDER_STATUS_CTRL_006',
+    err: error,
+    sendEmail: true,
+    res
+  }))
 }
 
 OrderStatusCtrl.checkForSuspiciousActivity = (params, res) => {
@@ -72,14 +111,32 @@ OrderStatusCtrl.checkForSuspiciousActivity = (params, res) => {
       if (isSuspicious) {
         LoginCtrl.blackListIp({ ipAddress: params.ipAddress })
         .then(OrderStatusCtrl.sendBlockedResponse(res))
-        .catch(error => OrderStatusCtrl.handleError(error, res, '007'))
+        .catch(error => ErrorHandler.handleError({
+          statusMessage: 'Unable to fetch/update Polymorph Order',
+          code: 'ORDER_STATUS_CTRL_007',
+          err: error,
+          sendEmail: true,
+          res
+        }))
       } else {
         OrderStatusCtrl.sendEmptyResponse(res)
       }
     })
-    .catch(error => OrderStatusCtrl.handleError(error, res, '008'))
+    .catch(error => ErrorHandler.handleError({
+      statusMessage: 'Unable to fetch/update Polymorph Order',
+      code: 'ORDER_STATUS_CTRL_008',
+      err: error,
+      sendEmail: true,
+      res
+    }))
   )
-  .catch(error => OrderStatusCtrl.handleError(error, res, '009'))
+  .catch(error => ErrorHandler.handleError({
+    statusMessage: 'Unable to fetch/update Polymorph Order',
+    code: 'ORDER_STATUS_CTRL_009',
+    err: error,
+    sendEmail: true,
+    res
+  }))
 }
 
 OrderStatusCtrl.sendEmptyResponse = (res) => {
@@ -97,12 +154,26 @@ OrderStatusCtrl.updateOrderStatus = (req, res) => {
     const params = req.params
     const newStatus = req.params.status
     if (ConfigData.validOrderStatuses.indexOf(newStatus) === -1) {
-      OrderStatusCtrl.handleError(new Error('Invalid order status'), res, '010')
+      ErrorHandler.handleError({
+        statusMessage: 'Unable to fetch/update Polymorph Order',
+        code: 'ORDER_STATUS_CTRL_010',
+        err: new Error('Invalid order status'),
+        sendEmail: true,
+        res
+      })
     }
     TransactionCtrl.updateOrderStatus(params.orderId, params.orderPassword, params.newStatus)
   })
   .then((order) => { res.send(order) })
-  .catch((error) => { OrderStatusCtrl.handleError(error, res, '011') })
+  .catch((error) => {
+    ErrorHandler.handleError({
+      statusMessage: 'Unable to fetch/update Polymorph Order',
+      code: 'ORDER_STATUS_CTRL_011',
+      err: error,
+      sendEmail: true,
+      res
+    })
+  })
 }
 
 OrderStatusCtrl.abandonOrder = (req, res) => {
@@ -113,19 +184,15 @@ OrderStatusCtrl.abandonOrder = (req, res) => {
     TransactionCtrl.updateOrderStatus(polymorphId, orderPassword, 'ABANDONED')
   })
   .then(() => { res.send({ status: 'SUCCESS' }) })
-  .catch((error) => { OrderStatusCtrl.handleError(error, res, '012') })
-}
-
-OrderStatusCtrl.handleError = (err, res, code) => {
-  const statusMessage = 'Unable to fetch/update Polymorph Order'
-  res.send(JSON.stringify({
-    statusCode: 200,
-    type: 'FAIL',
-    code: 'ORDER_STATUS_CTRL_' + code || '000',
-    statusMessage,
-    err,
-  }))
-  Logger.writeLog(code, statusMessage, { error: err }, true)
+  .catch((error) => {
+    ErrorHandler.handleError({
+      statusMessage: 'Unable to fetch/update Polymorph Order',
+      code: 'ORDER_STATUS_CTRL_012',
+      err: error,
+      sendEmail: true,
+      res
+    })
+  })
 }
 
 OrderStatusCtrl.validateParams = (params, options) => {

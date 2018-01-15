@@ -7,42 +7,10 @@ const mongoose = require('mongoose')
 
 let sandbox
 let TransactionCtrl = rewire('../server/lib/db/transaction.ctrl')
-let mockLogger = { writeLog: () => {} }
 let TransactionModel = require('../server/lib/db/transaction.model')
+let ErrorHandler = rewire('../server/lib/error-handler') // eslint-disable-line
 
 describe('[TransactionCtrl]', () => {
-  describe('(handleError)', () => {
-    beforeEach(() => { // reset the rewired functions
-      TransactionCtrl = rewire('../server/lib/db/transaction.ctrl')
-      TransactionCtrl.__set__('Logger', mockLogger)
-    })
-    it('should send the error via the response and call writeLog', (done) => {
-      const res = {
-        send: (response) => {
-          const jsonResponse = JSON.parse(response)
-          expect(jsonResponse.type).toBe('FAIL')
-          expect(jsonResponse.code).toBe(code)
-          expect(jsonResponse.err).toBe(err)
-          expect(jsonResponse.message).toBe(message)
-          done()
-        },
-      }
-
-      mockLogger = { writeLog: (errCode, statusMessage, error, mail) => {
-        expect(errCode).toBe(code)
-        expect(statusMessage).toBe(message)
-        expect(error.error).toBe(err)
-        expect(mail).toBe(true)
-      } }
-      TransactionCtrl.__set__('Logger', mockLogger)
-
-      const err = 'test_error'
-      const code = 'TEST_001'
-      const message = 'This is a test error'
-      TransactionCtrl.handleError(err, res, code, message)
-    })
-  })
-
   describe('(createTransaction)', () => {
     beforeEach(() => { // reset the rewired functions
       TransactionCtrl = rewire('../server/lib/db/transaction.ctrl')
@@ -255,22 +223,30 @@ describe('[TransactionCtrl]', () => {
   describe('(gotTransaction)', () => {
     beforeEach(() => { // reset the rewired functions
       TransactionCtrl = rewire('../server/lib/db/transaction.ctrl')
+      ErrorHandler = rewire('../server/lib/error-handler')
     })
-    it('should fetch transactions failure', (done) => {
-      TransactionCtrl.handleError = (err, res, code) => {
-        expect(code).toBe('TC_003')
-        done()
+    it('should catch transactions failure', (done) => {
+      const mockErrorHandler = {
+        handleError: (params) => {
+          expect(params.code).toBe('TRANS_CTRL_003')
+          done()
+        }
       }
+
+
       TransactionCtrl.runtime = {
         res: {},
         req: {},
       }
+
+      TransactionCtrl.__set__('ErrorHandler', mockErrorHandler)
+
       TransactionCtrl.gotTransaction(true, null)
     })
 
     it('should fetch transactions success', (done) => {
-      TransactionCtrl.handleError = (err, res, code) => {
-        expect(code).toBe('TC_003')
+      TransactionCtrl.handleError = (params) => {
+        expect(params.code).toBe('TRANS_CTRL_003')
         done()
       }
       TransactionCtrl.runtime = {
