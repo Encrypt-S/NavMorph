@@ -2,10 +2,13 @@
 
 A site for anonymizing crypto currencies via Changelly's crypto exchange system and NavTech's anonymous NavCoin transactions.  
 
-This project uses nodejs v8.9.0
+## Requirements 
+
+This project uses nodejs v8.9.0 and Mongodb.
 
 ## Code scaffolding
 
+We use angular cli for creating new components.
 Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|module`.
 
 ## Run the project
