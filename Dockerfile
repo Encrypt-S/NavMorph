@@ -1,4 +1,4 @@
-FROM node:6.10.2-alpine
+FROM node:8.9.0-alpine
 
 RUN apk update && apk upgrade && \
     apk add --no-cache bash git openssh
@@ -10,8 +10,8 @@ WORKDIR /usr/src/app
 RUN npm install nodemon -g
 
 COPY package.json /usr/src/app/
-COPY yarn.lock /usr/src/app/
-RUN yarn
+#COPY yarn.lock /usr/src/app/
+#RUN yarn
 
 COPY ./src /usr/src/app
 
