@@ -8,13 +8,23 @@ This project uses nodejs v8.9.0 and Mongodb.
 
 
 # Development Setup
+The development flow requires both a backend and frontend docker service to be running.
+
+Please follow the steps below to get the docker version running on your system
+
+Note: You need to have docker installed
 
 ## Backend
-Build the docker instance
+The backend is a node mongo system 
+
+Build the docker instance 
 
 `docker-compose -f docker-compose-prod.yml -f docker-compose-dev.yml up --build`
 
 
+Run the container
+
+`docker-compose -f docker-compose-prod.yml -f docker-compose-dev.yml up`
 
 ## Frontend
 The frontend of NavMorph is an angular app. The dev enviroment is provided by docker. 
