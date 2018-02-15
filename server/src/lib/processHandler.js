@@ -1,6 +1,7 @@
 const Config = require('../server-settings')
 let Logger = require('./logger') // eslint-disable-line prefer-const
 const RpcGetNewAddress = require('./rpc/get-new-address')
+const preflightCheckController = require('./preflightCheckController')
 
 const ProcessHandler = {
   tasksRunning: false,
@@ -12,6 +13,7 @@ ProcessHandler.setup = () => {
     ProcessHandler.testRpc()
     .then(() => {
       ProcessHandler.startTimer()
+      console.log('start timer')
       fulfill()
     })
     .catch((err) => {
@@ -29,7 +31,7 @@ ProcessHandler.testRpc = () => { // TODO: Complete this function
 }
 
 ProcessHandler.startTimer = () => {
-  global.setInterval(ProcessHandler.runTasks, Config.processHandler.timerLength)
+  global.setInterval(ProcessHandler.runTasks, 5000)
 }
 
 ProcessHandler.runTasks = () => { // TODO: Complete this function
@@ -39,6 +41,7 @@ ProcessHandler.runTasks = () => { // TODO: Complete this function
   })
   .catch((err) => {
     ProcessHandler.setTimerPaused(true)
+    console.log(err)
     Logger.writeLog('PH_002', 'Failed to pass preflightChecks', err, true)
   })
 }
@@ -46,7 +49,13 @@ ProcessHandler.runTasks = () => { // TODO: Complete this function
 ProcessHandler.preflightChecks = () => { // TODO: Complete this function
   return new Promise((fulfill, reject) => {
     if (!ProcessHandler.timerPaused && !ProcessHandler.tasksRunning) {
-      fulfill()
+      preflightCheckController.startChecks()
+      .then(() => {
+        fulfill()
+      })
+      .catch((error) => {
+        reject(error)
+      })
     } else {
       reject(new Error('Preflight checks failed'))
     }

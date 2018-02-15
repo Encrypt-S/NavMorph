@@ -18,7 +18,7 @@ const api = require('./routes/api')
 const Logger = require('./lib/logger')
 
 // Get Config data
-const config = require('./server-settings')
+// const config = require('./server-settings.json')
 
 const app = express()
 /**
@@ -26,7 +26,7 @@ const app = express()
   */
 
 
-SettingsValidator.validateSettings(config)
+SettingsValidator.validateSettings(ConfigData)
 .then(() => {
   console.log('--------------------------------------------')
   console.log('Server Config Validated. Continuing start up')
@@ -131,10 +131,12 @@ app.startUpServer = () => {
 
       ProcessHandler.setup()
       .then(() => {
-        console.log('set up')
+        console.log('setup process handler')
+        ProcessHandler.setup()
+        console.log('process handler should be running')
       })
       .catch((err) => {
-        // Logger.writeLog('error msg', '' , errObj, true)
+        Logger.writeLog('Error ', '', err, true)
       })
     })
   })
