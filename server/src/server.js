@@ -5,15 +5,15 @@ const https = require('https')
 const bodyParser = require('body-parser')
 const pem = require('pem')
 const mongoose = require('mongoose')
-const SocketCtrl = require('./server/lib/socket/socketCtrl')
+const SocketCtrl = require('./lib/socket/socketCtrl')
 const auth = require('basic-auth')
-const ConfigData = require('./server/server-settings')
-const SettingsValidator = require('./server/lib/settingsValidator.js')
-const ProcessHandler = require('./server/lib/processHandler')
+const ConfigData = require('./server-settings')
+const SettingsValidator = require('./lib/settingsValidator.js')
+const ProcessHandler = require('./lib/processHandler')
 
 // Get our API routes
-const api = require('./server/routes/api')
-const Logger = require('./server/lib/logger')
+const api = require('./routes/api')
+const Logger = require('./lib/logger')
 
 // Get Config data
 const config = require('./server-settings.json')

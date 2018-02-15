@@ -1,9 +1,9 @@
 version: "2"
 
 services:
-  polymorph:
+  polymorph_server:
     build: .
-    command: node index.js
+    command: node src/server.js
     ports:
       - 8080:8080
     links:

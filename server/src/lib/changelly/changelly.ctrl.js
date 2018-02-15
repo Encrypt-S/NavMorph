@@ -1,4 +1,4 @@
-const ConfigData = require('../../../server-settings.json')
+const ConfigData = require('../../server-settings.json')
 const ApiOptions = require('../../api-options.json')
 
 const crypto = require('crypto')

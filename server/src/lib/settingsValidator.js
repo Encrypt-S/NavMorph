@@ -1,4 +1,4 @@
-const serverSettingsTemplate = require('../../server-settings-template.json')
+const serverSettingsTemplate = require('../server-settings-template.json')
 
 const NUMBER_TWO_DECIMALS = /^(\d+)?([.]?\d{0,2})?$/
 
@@ -7,7 +7,7 @@ const SettingsValidator = {
 }
 
 SettingsValidator.validateSettings = (serverSettings) => {
-  return new Promise((resolve, reject) => { 
+  return new Promise((resolve, reject) => {
     SettingsValidator.errors = []
     validate(serverSettings, serverSettingsTemplate)
     if (SettingsValidator.errors.length < 1) {
@@ -17,7 +17,7 @@ SettingsValidator.validateSettings = (serverSettings) => {
     }
   })
 }
-  
+
 function validate(value, validation, currentKey) {
   if (typeof value === 'object' && !(value instanceof Array)) {
     for (const key in validation) {
@@ -57,7 +57,7 @@ function eachField(value, validation, currentKey) {
       break
     case 'ARRAY':
       validateArray(value, validation, currentKey)
-    break    
+    break
     case 'BOOLEAN':
       validateBoolean(value, validation, currentKey)
     break
@@ -76,7 +76,7 @@ function validatePort(value, validation, key) {
 }
 
 function validateNumber(value, validation, key) {
-  
+
   if (typeof value === 'number') {
     return true
   }

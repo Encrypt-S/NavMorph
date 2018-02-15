@@ -3,7 +3,7 @@
 const expect = require('expect')
 const rewire = require('rewire')
 const sinon = require('sinon')
-const Config = require('./../server/server-settings.json')
+const Config = require('../../server/src/server-settings.json')
 
 let ProcessHandler = rewire('../server/lib/processHandler')
 let mockLogger = { writeLog: sinon.spy() }

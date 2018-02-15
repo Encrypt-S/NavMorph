@@ -1,4 +1,4 @@
-FROM node:8.9.0-alpine
+FROM node:8.9.4-alpine
 
 RUN apk update && apk upgrade && \
     apk add --no-cache bash git openssh
@@ -9,13 +9,12 @@ RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app
 RUN npm install nodemon -g
 
-COPY package.json /usr/src/app/
-#COPY yarn.lock /usr/src/app/
-#RUN yarn
+COPY ./package.json /usr/src/app/
+#COPY ../yarn.lock /usr/src/app/
+RUN yarn
 
-COPY ./src /usr/src/app
+COPY ./ /usr/src/app
 
-COPY start-dev.sh /usr/src/app/
 RUN dos2unix /usr/src/app/start-dev.sh
 
 EXPOSE 8080
