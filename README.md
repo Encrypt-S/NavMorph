@@ -15,7 +15,7 @@ Please follow the steps below to get the docker version running on your system
 Note: You need to have docker installed
 
 ## Backend
-The backend is a node mongo system 
+The backend is a node + mongo system 
 
 Build the docker instance 
 
