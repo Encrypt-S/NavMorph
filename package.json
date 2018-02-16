@@ -1,0 +1,23 @@
+{
+  "name": "polymorph",
+  "version": "0.1.0",
+  "description": "A site for anonymizing crypto currencies via Changelly's crypto exchange system and NavTech's anonymous NavCoin transactions.",
+  "main": "index.js",
+  "scripts": {
+    "start": "echo 'You must use \nnpm run start:server \nand/or \nnpm run start:client'",
+    "start:server": "docker-compose -f ./server/docker-compose-prod.yml -f ./server/docker-compose-dev.yml up",
+    "docker:server:build": "docker-compose -f ./server/docker-compose-prod.yml -f ./server/docker-compose-dev.yml up --build",
+    "start:client": "docker run -it -p 4200:4200 -v \"$(pwd)\":/app navmorph-frontend",
+    "docker:client:build": "docker build -f ./frontend/dev.Dockerfile -t navmorph-frontend ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NAVCoin/polymorph.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/NAVCoin/polymorph/issues"
+  },
+  "homepage": "https://github.com/NAVCoin/polymorph#readme"
+}

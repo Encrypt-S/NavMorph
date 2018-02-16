@@ -14,6 +14,14 @@ Please follow the steps below to get the docker version running on your system.
 
 Note: You need to have docker installed.
 
+## Shortcuts
+`npm run start:server`
+`npm run start:client`
+
+**First run or when rebuild requires**
+`npm run docker:server:build`
+`npm run docker:build:build`
+
 ## Backend
 The backend is a node / express app + mongo system.
 
