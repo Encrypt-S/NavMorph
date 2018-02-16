@@ -4,7 +4,7 @@ const TransactionCtrl = require('../db/transaction.ctrl')
 const EtaCtrl = require('./eta.ctrl')
 const LoginCtrl = require('../db/login.ctrl')
 const Validator = require('../options-validator')
-const ConfigData = require('../../server-settings.json')
+const ConfigData = require('../../server-settings')
 const ApiOptions = require('../../api-options.json')
 let ErrorHandler = require('../error-handler') // eslint-disable-line prefer-const
 

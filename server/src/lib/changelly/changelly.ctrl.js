@@ -1,4 +1,4 @@
-const ConfigData = require('../../server-settings.json')
+const ConfigData = require('../../server-settings')
 const ApiOptions = require('../../api-options.json')
 
 const crypto = require('crypto')
@@ -117,7 +117,7 @@ ChangellyCtrl.internal.generateAddress = (params) => {
 
 ChangellyCtrl.validateParams = (params, options) => {
   return new Promise((fulfill, reject) => {
-    Validator.startValidation(params, options)  
+    Validator.startValidation(params, options)
     .then(() => {
       fulfill()
     })

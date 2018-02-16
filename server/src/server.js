@@ -16,7 +16,7 @@ const api = require('./routes/api')
 const Logger = require('./lib/logger')
 
 // Get Config data
-const config = require('./server-settings.json')
+const config = require('./server-settings')
 
 const app = express()
 /**

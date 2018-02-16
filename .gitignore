@@ -3,7 +3,6 @@
 #docker mongo
 /server/data
 /server/node_modules
-/server/server-settings\.json
 
 
 # compiled output
@@ -47,9 +46,5 @@ testem.log
 .DS_Store
 Thumbs.db
 
-# Config
-
-/server/config.js
-
-server-settings\.json
-server/src/config.js
+#secrets
+/server/src/secrets.js

@@ -1,9 +1,10 @@
-{
+module.exports = {
   "app": {
     "static": "STRING",
     "apiUri": "STRING",
     "catchAllUri": "STRING"
   },
+
   "serverPort": "PORT",
 
   "sslCert": {

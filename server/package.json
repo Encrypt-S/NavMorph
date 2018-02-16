@@ -1,6 +1,6 @@
 {
-  "name": "Polymorph",
-  "version": "0.0.0",
+  "name": "polymorph-server",
+  "version": "0.0.2",
   "license": "MIT",
   "scripts": {
     "ng": "ng",
@@ -30,8 +30,8 @@
     "jquery": "^2.2.4",
     "lodash": "^4.17.4",
     "mongoose": "^4.9.9",
-    "nodemailer": "^2.6.4",
-    "pem": "^1.9.7",
+    "nodemailer": "^2.7.2",
+    "pem": "^1.12.3",
     "promise": "^8.0.0",
     "socket.io": "^2.0.3",
     "socket.io-client": "^2.0.3",

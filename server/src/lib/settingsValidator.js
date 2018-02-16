@@ -1,4 +1,4 @@
-const serverSettingsTemplate = require('../server-settings-template.json')
+const serverSettingsTemplate = require('../server-settings-template')
 
 const NUMBER_TWO_DECIMALS = /^(\d+)?([.]?\d{0,2})?$/
 

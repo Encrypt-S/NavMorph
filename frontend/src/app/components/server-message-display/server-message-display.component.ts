@@ -10,10 +10,10 @@ import * as io from 'socket.io-client'
 })
 export class ServerMessageDisplayComponent implements OnInit {
 
-  private socketUrl = 'https://localhost:3000'
+  private socketUrl = 'https://localhost:8080'
   connection
   displayMessage: boolean = false
-  serverMessage: string 
+  serverMessage: string
   modeInfo: boolean
   modeWarn: boolean
   modeError: boolean

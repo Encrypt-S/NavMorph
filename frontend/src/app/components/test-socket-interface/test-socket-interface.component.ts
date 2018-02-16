@@ -12,7 +12,7 @@ import { GenericSocketService } from '../../services/generic-socket/generic-sock
 })
 export class TestSocketInterfaceComponent implements OnInit, OnDestroy {
 
-  private socketUrl = 'https://localhost:3000'
+  private socketUrl = 'https://localhost:8080'
 
   private socket
 
@@ -39,7 +39,7 @@ export class TestSocketInterfaceComponent implements OnInit, OnDestroy {
   sendMessage(messageType, messageContent) {
     this.genericSocket.sendMessage(messageType, messageContent)
     console.log('MESSAGE SENT', messageContent)
-    this.message = ''  
+    this.message = ''
   }
 
 }

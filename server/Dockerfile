@@ -1,7 +1,7 @@
 FROM node:8.9.4-alpine
 
 RUN apk update && apk upgrade && \
-    apk add --no-cache bash git openssh
+    apk add --no-cache bash git openssh openssl
 
 RUN apk add dos2unix --update-cache --repository http://dl-3.alpinelinux.org/alpine/edge/community/ --allow-untrusted
 
@@ -11,7 +11,7 @@ RUN npm install nodemon -g
 
 COPY ./package.json /usr/src/app/
 #COPY ../yarn.lock /usr/src/app/
-RUN yarn
+RUN npm install
 
 COPY ./ /usr/src/app
 

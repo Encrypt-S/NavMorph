@@ -3,7 +3,6 @@
 const expect = require('expect')
 const rewire = require('rewire')
 const sinon = require('sinon')
-const Config = require('../../server/src/server-settings.json')
 
 let ProcessHandler = rewire('../server/lib/processHandler')
 let mockLogger = { writeLog: sinon.spy() }
@@ -66,7 +65,7 @@ describe('[ProcessHandler]', () => {
       const handlerSpy = sinon.spy(ProcessHandler, 'runTasks')
 
       ProcessHandler.startTimer()
-      this.clock.tick(Config.processHandler.timerLength + 1)
+      this.clock.tick(120000 + 1) // Same as server settings timerLength + 1
       sinon.assert.called(intervalSpy)
       sinon.assert.called(handlerSpy)
       this.clock.restore()

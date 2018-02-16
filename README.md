@@ -1,8 +1,8 @@
 # Polymorph
 
-A site for anonymizing crypto currencies via Changelly's crypto exchange system and NavTech's anonymous NavCoin transactions.  
+A site for anonymizing crypto currencies via Changelly's crypto exchange system and NavTech's anonymous NavCoin transactions.
 
-## Requirements 
+## Requirements
 
 This project uses nodejs v8.9.0 and Mongodb.
 
@@ -23,11 +23,11 @@ Build and run the docker container.
 
 You can also force build the docker with.
 
-`docker-compose -f docker-compose-prod.yml -f docker-compose-dev.yml up -- build`
+`docker-compose -f docker-compose-prod.yml -f docker-compose-dev.yml up --build`
 
 
 ## Frontend
-The frontend of NavMorph is an angular app. The dev enviroment is provided by docker. 
+The frontend of NavMorph is an angular app. The dev enviroment is provided by docker.
 
 Docker is not a requirement, but it is the fastest way to get going.
 
@@ -38,14 +38,15 @@ Build the docker image with the following command
 
 Run the Docker container you just built
 
-`docker run -it -p 4200:4200 -v ${pwd}:/app navmorph-frontend`
+Windows: `docker run -it -p 4200:4200 -v ${pwd}:/app navmorph-frontend`
+Mac: `docker run -it -p 4200:4200 -v "$(pwd)":/app navmorph-frontend`
 
 ### First run
 As this is a dev env you need to run the dev-setup.sh
 
 From docker container bash run `dev-setup.sh`
 
-### Server the 
+### Server the
 
 For you convince we have a run and serve script.
 

@@ -1,4 +1,4 @@
-const Config = require('./../server-settings.json')
+const Config = require('../server-settings')
 let Logger = require('./logger') // eslint-disable-line prefer-const
 const RpcGetNewAddress = require('./rpc/get-new-address')
 

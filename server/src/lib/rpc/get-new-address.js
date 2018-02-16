@@ -1,7 +1,7 @@
 "use strict";
 
 const Rpc = require('./client')
-const config = require('../../config')
+const config = require('../../server-settings')
 
 Rpc.getNewAddress = () => {
   return new Promise((fulfill, reject) => {

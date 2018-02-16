@@ -1,6 +1,6 @@
 'use strict'
 
-const Config = require('../../config')
+const Config = require('../../server-settings')
 let ApiOptions = require('../../api-options.json') // eslint-disable-line prefer-const
 
 let validStatuses = Config.validOrderStatuses // eslint-disable-line prefer-const

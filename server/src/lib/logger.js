@@ -1,7 +1,7 @@
 "use strict";
 
 const nodemailer = require('nodemailer')
-const config = require('../config')
+const config = require('../server-settings')
 
 const settings = config.mailSettings
 
@@ -49,7 +49,7 @@ Logger.sendEmail = (errorCode, errorMessage, data) => {
     ]
   }
 
-  Logger.transporter.sendEmail(mailOptions, (error, info) => {
+  Logger.transporter.sendMail(mailOptions, (error, info) => {
     if (error) {
       return console.log('nodemail error', error)
     }
