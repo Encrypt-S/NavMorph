@@ -2,7 +2,9 @@
 const express = require('express')
 const path = require('path')
 const https = require('https')
+const http = require('http')
 const bodyParser = require('body-parser')
+const cors = require('cors')
 const pem = require('pem')
 const mongoose = require('mongoose')
 const SocketCtrl = require('./lib/socket/socketCtrl')
@@ -42,14 +44,15 @@ SettingsValidator.validateSettings(config)
 app.startUpServer = () => {
   // Parsers for POST data
   app.use(bodyParser.json())
+  app.use(cors())
   app.use(bodyParser.urlencoded({ extended: false }))
 
   app.use((req, res, next) => {
     const user = auth(req)
-    if (user === undefined || user.name !== ConfigData.basicAuth.name || user.pass !== ConfigData.basicAuth.pass) {
-      res.send('unauthorised access attempt')
-      return
-    }
+    // if (user === undefined || user.name !== ConfigData.basicAuth.name || user.pass !== ConfigData.basicAuth.pass) {
+    //   res.send('unauthorised access attempt')
+    //   return
+    // }
     next()
   })
 
@@ -92,7 +95,7 @@ app.startUpServer = () => {
     app.use(bodyParser.urlencoded({
       extended: true,
     }))
-    server = https.createServer(sslOptions, app)
+    server = http.createServer(app)
     io = require('socket.io')(server)
 
     SocketCtrl.setupServerSocket(io)
@@ -104,7 +107,7 @@ app.startUpServer = () => {
     })
 
     server.listen(port, () => {
-      Logger.writeLog('n/a', `API running on https://localhost:${port}`, null, false)
+      Logger.writeLog('n/a', `API running on http://localhost:${port}`, null, false)
 
       /**
       * Connect to mongoose

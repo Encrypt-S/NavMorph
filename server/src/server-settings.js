@@ -14,7 +14,7 @@ module.exports = {
     "selfSigned": true
   },
 
-  "mongoDBUrl": "mongodb://127.0.0.1/polymorph",
+  "mongoDBUrl": "mongodb://mongo/polymorph",
 
   "version": "0.0.2",
   "navClient": {

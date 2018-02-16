@@ -10,7 +10,6 @@ WORKDIR /usr/src/app
 RUN npm install nodemon -g
 
 COPY ./package.json /usr/src/app/
-#COPY ../yarn.lock /usr/src/app/
 RUN npm install
 
 COPY ./ /usr/src/app

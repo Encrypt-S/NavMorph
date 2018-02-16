@@ -9,12 +9,12 @@ const emailAuth = encodeURIComponent(settings.smtp.user) + ':' + encodeURICompon
 
 const Logger = {}
 
-Logger.transporter = nodemailer.createTransport('smtps://' + emailAuth + '@' + settings.smtp.server)
+// Logger.transporter = nodemailer.createTransport('smtps://' + emailAuth + '@' + settings.smtp.server)
 
 
 Logger.writeLog = (errorCode, errorMessage, data, email) => {
   if (email) {
-    Logger.sendEmail(errorCode, errorMessage, data)
+    // Logger.sendEmail(errorCode, errorMessage, data)
   }
   const date = new Date()
   let logString = '\r\n'
