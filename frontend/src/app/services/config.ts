@@ -18,7 +18,7 @@ export const orderNodeApiEndPoints = {
   getEta: 'getEta',
 }
 
-export const nodeApiBaseUrl = 'https://localhost:8080/api/'
+export const nodeApiBaseUrl = 'http://localhost:8080/api/'
 
 export const changellyConstData = {
   'CHANGELLY_FEE': 0.005,

@@ -12,7 +12,7 @@ import { GenericSocketService } from '../../services/generic-socket/generic-sock
 })
 export class TestSocketInterfaceComponent implements OnInit, OnDestroy {
 
-  private socketUrl = 'https://localhost:8080'
+  private socketUrl = 'http://localhost:8080'
 
   private socket
 

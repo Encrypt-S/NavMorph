@@ -1,1 +1,1 @@
-npm start -- --host 0.0.0.0 --poll 500
+npm start -- --host 0.0.0.0 --poll 1000

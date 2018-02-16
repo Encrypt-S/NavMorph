@@ -39,7 +39,7 @@ export class SendCoinsFormComponent implements OnInit, OnDestroy {
 
   formData: object = {}
 
-  private socketUrl = 'https://localhost:8080'
+  private socketUrl = 'http://localhost:8080'
   maintenaceModeActive: boolean = true
   connection
 
