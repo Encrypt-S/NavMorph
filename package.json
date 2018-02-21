@@ -6,7 +6,7 @@
   "scripts": {
     "start": "echo 'You must use \nnpm run start:server \nand/or \nnpm run start:client'",
     "start:server": "docker-compose -f ./server/docker-compose-prod.yml -f ./server/docker-compose-dev.yml up",
-    "docker:server:build": "docker-compose -f ./server/docker-compose-prod.yml -f ./server/docker-compose-dev.yml up --build",
+    "docker:server:build": "docker-compgitose -f ./server/docker-compose-prod.yml -f ./server/docker-compose-dev.yml up --build",
     "start:client": "docker run -it -p 4200:4200 -v \"$(pwd)\":/app navmorph-frontend",
     "docker:client:build": "docker build -f ./frontend/dev.Dockerfile -t navmorph-frontend ."
   },
