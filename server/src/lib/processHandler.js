@@ -53,9 +53,9 @@ ProcessHandler.preflightChecks = () => { // TODO: Complete this function
       console.log('timer not paused and no tasks running')
       ProcessHandler.tasksRunning = true
       preflightCheckController.startChecks()
-      .then(() => {
+      .then((balance) => {
         ProcessHandler.tasksRunning = false
-        resolve()
+        resolve(balance)
       })
       .catch((error) => {
         reject(error)

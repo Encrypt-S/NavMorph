@@ -4,7 +4,7 @@ const config = require('../server-settings')
 const preflightCheckController = {}
 
 preflightCheckController.startChecks = () => {
-  return new Promise( async (fufill, reject) => {
+  return new Promise( async (resolve, reject) => {
     try {
       await client.unlockWallet()
       const walletInfo = await client.getInfo()
@@ -16,11 +16,10 @@ preflightCheckController.startChecks = () => {
         throw new Error(`Block height is out of sync:  networkBlockCount: ${networkBlockCount}, 
         reportedBlockHeight: ${walletInfo.blocks}. ${networkBlockCount - walletInfo.blocks} blocks out of sync.`)
       }
-      console.log('hey I\'m wurking btw')
-      fufill()
+      console.log('working')
+      resolve(walletInfo.balance)
     } catch (err) {
       console.log('error: ', err);
-      
       reject(err)
     }
   })
