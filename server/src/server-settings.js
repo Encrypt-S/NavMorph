@@ -14,7 +14,8 @@ module.exports = {
     "selfSigned": true
   },
 
-  "mongoDBUrl": "mongodb://mongo/polymorph",
+  // Update to "mongodb://mongo/polymorph" for docker environment
+  "mongoDBUrl": "mongodb://127.0.0.1/polymorph",
 
   "version": "0.0.2",
   "navClient": {
