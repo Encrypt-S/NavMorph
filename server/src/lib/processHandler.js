@@ -49,14 +49,19 @@ ProcessHandler.runTasks = () => { // TODO: Complete this function
 ProcessHandler.preflightChecks = () => { // TODO: Complete this function
   return new Promise((fulfill, reject) => {
     if (!ProcessHandler.timerPaused && !ProcessHandler.tasksRunning) {
+      console.log('timer not paused and no tasks running')
+      ProcessHandler.tasksRunning = true
       preflightCheckController.startChecks()
       .then(() => {
         fulfill()
+        ProcessHandler.tasksRunning = false
       })
       .catch((error) => {
         reject(error)
       })
     } else {
+      ProcessHandler.tasksRunning = false
+      ProcessHandler.timerPaused = true
       reject(new Error('Preflight checks failed'))
     }
   })
