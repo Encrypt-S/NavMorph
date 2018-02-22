@@ -60,5 +60,8 @@ module.exports = {
 
   "processHandler": {
     "timerLength": 120000,
+  },
+  "preflightCheckController": {
+    "maxBlockHeightDiscrepency": 5
   }
 }
