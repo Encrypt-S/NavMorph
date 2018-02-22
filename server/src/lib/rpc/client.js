@@ -1,52 +1,14 @@
-"use strict";
-
 const Client = require('bitcoin-core')
 const configData = require('../../server-settings')
 
+// Rpc.getBlockCount = () => Rpc.navClient.getBlockCount()
 
-let Rpc = { //eslint-disable-line
-  navClient: new Client(configData.navClient),
-  internal: {}
-}
+// Rpc.getInfo = () => Rpc.navClient.getInfo()
 
-Rpc.getBlockCount = () => {
-  return new Promise((fulfill, reject) => {
-    Rpc.navClient.getBlockCount()
-    .then(blockCount => fulfill(blockCount))
-    .catch((err) => {
-      reject(err)
-    })
-  })
-}
+// Rpc.getWalletInfo = () => Rpc.navClient.getWalletInfo()
 
-Rpc.getInfo = () => {
-  return new Promise((fulfill, reject) => {
-    Rpc.navClient.getInfo()
-    .then(address => fulfill(address))
-    .catch((err) => {
-      reject(err)
-    })
-  })
-}
+const rpc =  new Client(configData.navClient)
 
-Rpc.getWalletInfo = () => {
-  return new Promise((fulfill, reject) => {
-    Rpc.navClient.getWalletInfo()
-    .then(walletInfo => fulfill(walletInfo))
-    .catch((err) => {
-      reject(err)
-    })
-  })
-}
+rpc.unlockWallet = () => rpc.walletPassphrase('password', 100000)
 
-Rpc.walletPassphrase = () => {
-  return new Promise((fulfill, reject) => {
-    Rpc.navClient.walletPassphrase('password', 100000)
-    .then(walletInfo => fulfill(walletInfo))
-    .catch((err) => {
-      reject(err)
-    })
-  })
-}
-
-module.exports = Rpc
+module.exports = rpc
