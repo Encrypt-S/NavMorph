@@ -6,6 +6,7 @@ const preflightCheckController = require('./preflightCheckController')
 const ProcessHandler = {
   tasksRunning: false,
   timerPaused: false,
+  processTimer: undefined
 }
 
 ProcessHandler.setup = () => {
@@ -31,7 +32,7 @@ ProcessHandler.testRpc = () => { // TODO: Complete this function
 }
 
 ProcessHandler.startTimer = () => {
-  global.setInterval(ProcessHandler.runTasks, 5000)
+  ProcessHandler.processTimer = setInterval(ProcessHandler.runTasks, 10000)
 }
 
 ProcessHandler.runTasks = () => { // TODO: Complete this function
@@ -47,23 +48,27 @@ ProcessHandler.runTasks = () => { // TODO: Complete this function
 }
 
 ProcessHandler.preflightChecks = () => { // TODO: Complete this function
-  return new Promise((fulfill, reject) => {
+  return new Promise((resolve, reject) => {
     if (!ProcessHandler.timerPaused && !ProcessHandler.tasksRunning) {
       console.log('timer not paused and no tasks running')
       ProcessHandler.tasksRunning = true
       preflightCheckController.startChecks()
       .then(() => {
-        fulfill()
         ProcessHandler.tasksRunning = false
+        resolve()
       })
       .catch((error) => {
         reject(error)
       })
+    } else if(ProcessHandler.tasksRunning) {
+      console.log('Preflight checks still running')
+      resolve()
     } else {
-      ProcessHandler.tasksRunning = false
-      ProcessHandler.timerPaused = true
-      reject(new Error('Preflight checks failed'))
+      console.log('Timer is paused')
+      clearInterval(ProcessHandler.processTimer)
+      reject(new Error('Timer is paused'))
     }
+    
   })
 }
 

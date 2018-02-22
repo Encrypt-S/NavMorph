@@ -131,9 +131,7 @@ app.startUpServer = () => {
 
       ProcessHandler.setup()
       .then(() => {
-        console.log('setup process handler')
-        ProcessHandler.setup()
-        console.log('process handler should be running')
+        console.log('setup process successful')
       })
       .catch((err) => {
         Logger.writeLog('Error ', '', err, true)
