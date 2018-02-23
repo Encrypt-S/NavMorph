@@ -3,7 +3,7 @@
   "version": "0.0.2",
   "license": "MIT",
   "scripts": {
-    "start": "nodemon server.js",
+    "start": "nodemon src/server.js",
     "express-coverage": "./node_modules/.bin/istanbul cover ./node_modules/mocha/bin/_mocha",
     "test": "./node_modules/.bin/mocha",
     "test:watch": "./node_modules/.bin/mocha --watch --recursive"

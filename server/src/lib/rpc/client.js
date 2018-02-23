@@ -4,7 +4,7 @@ const config = require('../../server-settings')
 let logger = require('../logger')
 let rpc = new Client(config.navClient)
 
-const unlockWallet = async () => {
+rpc.unlockWallet = async () => {
   try {
     await rpc.walletPassphrase(config.navClient.walletPassphrase, config.navClient.walletUnlockTime)
     return true
@@ -18,7 +18,4 @@ const unlockWallet = async () => {
   }
 }
 
-module.exports = {
-  ...rpc,
-  unlockWallet,
-}
+module.exports = rpc

@@ -13,11 +13,6 @@ const Logger = {}
 
 
 Logger.writeLog = (errorCode, errorMessage, data, sendEmail = false) => {
-  console.log("ENVIRONMENT VARS")
-  console.log(process.env)
-  if (process.env.TEST) {
-    return ''
-  }
   if (sendEmail) {
     // Logger.sendEmail(errorCode, errorMessage, data)
   }
