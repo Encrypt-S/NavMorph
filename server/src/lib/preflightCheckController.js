@@ -1,13 +1,12 @@
-const client = require('./rpc/client')
-const config = require('../server-settings')
+let client = require('./rpc/client')
+let config = require('../server-settings')
 
 const preflightCheckController = {}
 
 preflightCheckController.startChecks = async () => {
   try {
     const unlocked = await client.unlockWallet()
-    // if(!unlocked) {
-    if(true) {
+    if(!unlocked) {
       throw new Error('Unable to connect to wallet / NavCoin wallet is locked')
     }
 
@@ -20,7 +19,6 @@ preflightCheckController.startChecks = async () => {
 
     return walletInfo.balance
   } catch (err) {
-    console.log('error: ', err);
     throw new Error(err)
   }
 }

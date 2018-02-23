@@ -17,7 +17,7 @@ ProcessHandler.setup = () => {
       fulfill()
     })
     .catch((err) => {
-      clearInterval(ProcessHandler.processTimer)
+      global.clearInterval(ProcessHandler.processTimer)
       logger.writeLog('PH_001', 'Failed to pass RPC pretimer check', err, true)
       reject()
     })
@@ -31,7 +31,7 @@ ProcessHandler.testRpc = () => { // TODO: Complete this function
 }
 
 ProcessHandler.startTimer = () => {
-  ProcessHandler.processTimer = setInterval(ProcessHandler.runTasks, 10000)
+  ProcessHandler.processTimer = global.setInterval(ProcessHandler.runTasks, 10000)
 }
 
 ProcessHandler.runTasks = async () => { // TODO: Complete this function
@@ -40,7 +40,7 @@ ProcessHandler.runTasks = async () => { // TODO: Complete this function
     return passedChecks
   }
   catch (err) {
-    clearInterval(ProcessHandler.processTimer)
+    global.clearInterval(ProcessHandler.processTimer)
     const errData = {
       stackTrace: err.stack,
     }

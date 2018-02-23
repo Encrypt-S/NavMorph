@@ -4,14 +4,14 @@ const expect = require('expect')
 const rewire = require('rewire')
 const sinon = require('sinon')
 
-let EtaCtrl = rewire('../server/lib/order/eta.ctrl')
-let Validator = rewire('../server/lib/options-validator') // eslint-disable-line
+let EtaCtrl = rewire('../src/lib/order/eta.ctrl')
+let Validator = rewire('../src/lib/options-validator') // eslint-disable-line
 
 describe('[EtaCtrl]', () => {
   describe('(generateEstimate)', () => {
     beforeEach(() => { // reset the rewired functions
-      EtaCtrl = rewire('../server/lib/order/eta.ctrl')
-      Validator = rewire('../server/lib/options-validator')
+      EtaCtrl = rewire('../src/lib/order/eta.ctrl')
+      Validator = rewire('../src/lib/options-validator')
     })
     it('should catch rejected params', (done) => {
       const req = {
@@ -119,12 +119,12 @@ describe('[EtaCtrl]', () => {
 
   describe('(getEta)', () => {
     beforeEach(() => { // reset the rewired functions
-      EtaCtrl = rewire('../server/lib/order/eta.ctrl')
-      Validator = rewire('../server/lib/options-validator')
+      EtaCtrl = rewire('../src/lib/order/eta.ctrl')
+      Validator = rewire('../src/lib/options-validator')
     })
     afterEach(() => { // reset the rewired functions
-      EtaCtrl = rewire('../server/lib/order/eta.ctrl')
-      Validator = rewire('../server/lib/options-validator')
+      EtaCtrl = rewire('../src/lib/order/eta.ctrl')
+      Validator = rewire('../src/lib/options-validator')
     })
     it('should catch rejected params', (done) => {
       const testParams = {}
@@ -223,7 +223,7 @@ describe('[EtaCtrl]', () => {
 
   describe('(validStatus)', () => {
     beforeEach(() => { // reset the rewired functions
-      EtaCtrl = rewire('../server/lib/order/eta.ctrl')
+      EtaCtrl = rewire('../src/lib/order/eta.ctrl')
     })
     it('should fail incorrect statuses', () => {
       const status = 'INCORRECT'
@@ -246,7 +246,7 @@ describe('[EtaCtrl]', () => {
 
   describe('(buildEta)', () => {
     beforeEach(() => { // reset the rewired functions
-      EtaCtrl = rewire('../server/lib/order/eta.ctrl')
+      EtaCtrl = rewire('../src/lib/order/eta.ctrl')
     })
     it('should skip on certain expected statuses', () => {
       const statuses = ['COMPLETED', 'ABANDONED', 'FAILED', 'REFUNDED', 'EXPIRED',
@@ -327,7 +327,7 @@ describe('[EtaCtrl]', () => {
 
   describe('(factorTimeSinceSending)', () => {
     beforeEach(() => { // reset the rewired functions
-      EtaCtrl = rewire('../server/lib/order/eta.ctrl')
+      EtaCtrl = rewire('../src/lib/order/eta.ctrl')
     })
     it('should factor in the time since sending', () => {
       // freeze date/time

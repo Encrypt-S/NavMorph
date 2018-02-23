@@ -1,10 +1,10 @@
 const Client = require('bitcoin-core')
 
 const config = require('../../server-settings')
-const logger = require('../logger')
-const rpc =  new Client(config.navClient)
+let logger = require('../logger')
+let rpc = new Client(config.navClient)
 
-rpc.unlockWallet = async () => {
+const unlockWallet = async () => {
   try {
     await rpc.walletPassphrase(config.navClient.walletPassphrase, config.navClient.walletUnlockTime)
     return true
@@ -18,4 +18,7 @@ rpc.unlockWallet = async () => {
   }
 }
 
-module.exports = rpc
+module.exports = {
+  ...rpc,
+  unlockWallet,
+}
