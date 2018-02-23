@@ -1,5 +1,5 @@
 import { TestBed, inject, fakeAsync, tick, async } from '@angular/core/testing';
-import { HttpModule } from '@angular/http';
+import { HttpClientModule } from '@angular/common/http';
 import { changellyConstData } from "../config";
 import { Observable } from 'rxjs/Observable';
 
@@ -18,7 +18,7 @@ describe('SendPageDataService', () => {
         { provide: ChangellyApiService, useClass: MockChangellyService },
 
     ],
-    imports: [HttpModule]
+    imports: [HttpClientModule]
     })
 
     .compileComponents();

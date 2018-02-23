@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core'
-import { Http, Response } from '@angular/http'
+import { HttpClient } from '@angular/common/http'
 
 import { Observable } from 'rxjs/Rx'
 import 'rxjs/add/operator/catch'
@@ -13,7 +13,7 @@ export class GenericNodeApiService {
 
   baseApiUrl: string = nodeApiBaseUrl
 
-  constructor(private http: Http) { }
+  constructor(private http: HttpClient) { }
 
   getRequest(apiRouteUrl): Observable<any> {
     return this.http.get(this.baseApiUrl + apiRouteUrl)
@@ -23,8 +23,8 @@ export class GenericNodeApiService {
 
   private extractData(res: Response) {
     try{
-      let body = res.json()
-      return body.result || body
+      console.log(res)
+      return res
     } catch (error) {
       console.error('Error extracting api data: ' + error )
       return ['Error']
@@ -34,8 +34,7 @@ export class GenericNodeApiService {
   private handleError (error: Response | any) {
     let errMsg: string
     if (error instanceof Response) {
-      const body = error.json() || ''
-      const err = body.error || JSON.stringify(body)
+      const err = error || JSON.stringify(error)
       errMsg = `${error.status} - ${error.statusText || ''} ${err}`
     } else {
       errMsg = error.message ? error.message : error.toString()

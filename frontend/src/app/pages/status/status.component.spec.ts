@@ -1,6 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { MaterializeModule } from 'angular2-materialize';
-import { HttpModule } from '@angular/http';
+import { HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
 
@@ -26,7 +26,7 @@ describe('StatusPage', () => {
     TestBed.configureTestingModule({
       imports:[
         MaterializeModule,
-        HttpModule,
+        HttpClientModule,
         FormsModule,
         RouterTestingModule
       ],
