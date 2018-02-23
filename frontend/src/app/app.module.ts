@@ -1,7 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser'
 import { NgModule } from '@angular/core'
 import { FormsModule } from '@angular/forms'
-import { HttpModule, JsonpModule } from '@angular/http'
+import { HttpClientModule } from '@angular/common/http'
 import { RouterModule } from '@angular/router'
 import { MaterializeModule } from 'angular2-materialize'
 import { QRCodeModule } from 'angular2-qrcode'
@@ -64,14 +64,13 @@ import { GenericFunctionsService } from './services/generic-functions/generic-fu
     QRCodeModule,
     MaterializeModule,
     BrowserModule,
-    HttpModule,
-    JsonpModule,
+    HttpClientModule,
     ClipboardModule,
     RouterModule.forRoot(routes)
   ],
   providers: [
-    GenericNodeApiService, 
-    ChangellyApiService, 
+    GenericNodeApiService,
+    ChangellyApiService,
     SendPageDataService,
     GenericSocketService,
     GenericFunctionsService,

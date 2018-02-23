@@ -201,7 +201,8 @@ export class SendCoinsFormComponent implements OnInit, OnDestroy {
     this.setLoadingState(true)
     this.changellyApi.getCurrencies()
       .subscribe(
-        currencies => {
+        response => {
+          const currencies = response.result
           if(this.checkCurrData(currencies))
             this.currencies = this.formatCurrData(currencies)
             this.isDisabled = false

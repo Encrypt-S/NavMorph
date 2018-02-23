@@ -1,6 +1,6 @@
 import { async, ComponentFixture, TestBed, inject, fakeAsync, tick } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
-import { HttpModule } from '@angular/http';
+import { HttpClientModule } from '@angular/common/http';
 import { MaterializeModule } from 'angular2-materialize';
 import { RouterTestingModule } from '@angular/router/testing';
 
@@ -24,7 +24,7 @@ describe('SendCoinsFormComponent', () => {
       declarations: [ SendCoinsFormComponent ],
       imports: [
         FormsModule,
-        HttpModule,
+        HttpClientModule,
         MaterializeModule,
         RouterTestingModule,
     ],
