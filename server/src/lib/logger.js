@@ -17,7 +17,7 @@ Logger.writeLog = (errorCode, errorMessage, data, sendEmail = false) => {
     // Logger.sendEmail(errorCode, errorMessage, data)
   }
   const date = new Date()
-  let logString = '\r\n'
+  let logString = '\r\n-----------------------------------------------------------\r\n'
   logString += 'Date: ' + date + '\r\n'
   logString += 'Error Code: ' + errorCode + '\r\n'
   logString += 'Error Message: ' + errorMessage + '\r\n'
@@ -26,7 +26,7 @@ Logger.writeLog = (errorCode, errorMessage, data, sendEmail = false) => {
     if (data.hasOwnProperty(key)) {
       let string = data[key]
       if (typeof data[key] === 'object') string = JSON.stringify(data[key])
-      logString += key + ': ' + string + '\r\n'
+      logString += key + ': ' + string
     }
   }
   logString += '\r\n-----------------------------------------------------------\r\n'
