@@ -10,10 +10,10 @@ rpc.unlockWallet = async () => {
     return true
   } catch (err) {
     if (err.message.includes('unencrypted')) {
-      // wallet wasn't encrypted. Already unlocked
+      // wallet wasn't encrypted, therefore we can treat it as unlocked
       return true
     }
-    logger.writeLog('client.js', err.message, err)
+    logger.writeLog('RPC_001', err.message, err)
     return false
   }
 }

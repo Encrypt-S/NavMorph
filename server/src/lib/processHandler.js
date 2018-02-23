@@ -1,46 +1,42 @@
-const Config = require('../server-settings')
 let logger = require('./logger') // eslint-disable-line prefer-const
-const RpcGetNewAddress = require('./rpc/get-new-address')
+const config = require('../server-settings')
 const preflightCheckController = require('./preflightCheckController')
 
-const ProcessHandler = {
+const processHandler = {
   tasksRunning: false,
   processTimer: undefined
 }
 
-ProcessHandler.setup = () => {
-  return new Promise((fulfill, reject) => {
-    ProcessHandler.testRpc()
-    .then(() => {
-      ProcessHandler.startTimer()
-      console.log('start timer')
-      fulfill()
-    })
-    .catch((err) => {
-      global.clearInterval(ProcessHandler.processTimer)
-      logger.writeLog('PH_001', 'Failed to pass RPC pretimer check', err, true)
-      reject()
-    })
-  })
+processHandler.setup = async () => {
+  try {
+    await processHandler.testRpc()
+    processHandler.startTimer()
+    logger.writeLog('n/a', 'Setup Successful')
+    return true
+  } catch (err) {
+    global.clearInterval(processHandler.processTimer)
+    logger.writeLog('PH_001', 'Setup Failed', err, true)
+    return false
+  }
 }
 
-ProcessHandler.testRpc = () => { // TODO: Complete this function
+processHandler.testRpc = () => { // TODO: Complete this function
   return new Promise((fulfill, reject) => {
     fulfill()
   })
 }
 
-ProcessHandler.startTimer = () => {
-  ProcessHandler.processTimer = global.setInterval(ProcessHandler.runTasks, 10000)
+processHandler.startTimer = () => {
+  processHandler.processTimer = global.setInterval(processHandler.runTasks, config.processHandler.timerLength)
 }
 
-ProcessHandler.runTasks = async () => { // TODO: Complete this function
+processHandler.runTasks = async () => {
   try {
-    const passedChecks = await ProcessHandler.preflightChecks()
+    const passedChecks = await processHandler.preflightChecks()
     return passedChecks
   }
   catch (err) {
-    global.clearInterval(ProcessHandler.processTimer)
+    global.clearInterval(processHandler.processTimer)
     const errData = {
       stackTrace: err.stack,
     }
@@ -48,17 +44,15 @@ ProcessHandler.runTasks = async () => { // TODO: Complete this function
   }
 }
 
-ProcessHandler.preflightChecks = async () => { // TODO: Complete this function
-  if (!ProcessHandler.tasksRunning) {
-    ProcessHandler.tasksRunning = true
+processHandler.preflightChecks = async () => {
+  if (!processHandler.tasksRunning) {
+    processHandler.tasksRunning = true
     const balance = await preflightCheckController.startChecks()
-    ProcessHandler.tasksRunning = false
-    console.log('Preflight checks passed')
+    processHandler.tasksRunning = false
     return balance
   }
 
-  console.log('Preflight checks still running')
   return undefined
 }
 
-module.exports = ProcessHandler
+module.exports = processHandler

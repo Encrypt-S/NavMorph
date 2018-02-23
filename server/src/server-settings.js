@@ -22,7 +22,7 @@ module.exports = {
     "username": secrets.navClient.username,
     "password": secrets.navClient.password,
     "walletPassphrase": secrets.navClient.walletPassphrase,
-    "walletUnlockTime": 100000,
+    "walletUnlockTime": 600, // In seconds
     "port": 44445,
     "host": "127.0.0.1",
   },

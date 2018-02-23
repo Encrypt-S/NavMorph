@@ -13,8 +13,7 @@ const Logger = {}
 
 
 Logger.writeLog = (errorCode, errorMessage, data, sendEmail = false) => {
-  console.log()
-  if (sendEmail && string.toLowerCase(process.env.NODE_ENV) === 'production') {
+  if (sendEmail && process.env.NODE_ENV === 'production') {
     Logger.sendEmail(errorCode, errorMessage, data)
   }
   const date = new Date()
