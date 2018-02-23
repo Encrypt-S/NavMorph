@@ -4,15 +4,15 @@ const expect = require('expect')
 const rewire = require('rewire')
 const sinon = require('sinon')
 
-let ProcessHandler = rewire('../server/lib/processHandler')
+let ProcessHandler = rewire('../src/lib/processHandler')
 let mockLogger = { writeLog: sinon.spy() }
 
 describe('[ProcessHandler]', () => {
   describe('(setup)', () => {
     beforeEach(() => { // reset the rewired functions
-      ProcessHandler = rewire('../server/lib/processHandler')
+      ProcessHandler = rewire('../src/lib/processHandler')
       mockLogger = { writeLog: sinon.spy() }
-      ProcessHandler.__set__('Logger', mockLogger)
+      ProcessHandler.__set__('logger', mockLogger)
     })
 
     it('should testRpc then startTimer', (done) => {
@@ -38,14 +38,9 @@ describe('[ProcessHandler]', () => {
       ProcessHandler.testRpc = () => {
         return Promise.reject()
       }
-      ProcessHandler.setTimerPaused = () => {}
-      const pauseSpy = sinon.spy(ProcessHandler, 'setTimerPaused')
-
       ProcessHandler.setup()
       .catch(() => {
-        sinon.assert.called(pauseSpy.withArgs(true))
         sinon.assert.calledOnce(mockLogger.writeLog)
-
         done()
       })
     })
@@ -56,7 +51,7 @@ describe('[ProcessHandler]', () => {
 
   describe('(startTimer)', () => {
     beforeEach(() => { // reset the rewired functions
-      ProcessHandler = rewire('../server/lib/processHandler')
+      ProcessHandler = rewire('../src/lib/processHandler')
     })
     it('should run setInterval with specific args', (done) => {
       this.clock = sinon.useFakeTimers()
@@ -70,24 +65,6 @@ describe('[ProcessHandler]', () => {
       sinon.assert.called(handlerSpy)
       this.clock.restore()
       done()
-    })
-  })
-
-  // describe('(runTasks)', () => {})
-
-  // describe('(preflightChecks)', () => {})
-
-  describe('(setTimerPaused)', () => {
-    beforeEach(() => { // reset the rewired functions
-      ProcessHandler = rewire('../server/lib/processHandler')
-    })
-    it('should unpause/pause the timer', () => {
-      ProcessHandler.timerPaused = true
-
-      ProcessHandler.setTimerPaused(false)
-      expect(ProcessHandler.timerPaused).toBe(false)
-      ProcessHandler.setTimerPaused(true)
-      expect(ProcessHandler.timerPaused).toBe(true)
     })
   })
 })

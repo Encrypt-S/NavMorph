@@ -54,5 +54,11 @@ module.exports = {
   "basicAuth": {
     "name": "STRING",
     "pass": "STRING"
+  },
+  "processHandler": {
+    "timerLength": "NUMBER",
+  },
+  "preflightCheckController": {
+    "maxBlockHeightDiscrepency": "NUMBER"
   }
 }

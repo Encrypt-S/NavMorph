@@ -97,9 +97,5 @@
     "to": [{
       "validator": "isString"
     }]
-  },
-
-  "processHandler": {
-    "timerLength": "isNumber"
   }
 }

@@ -4,14 +4,14 @@ const expect = require('expect')
 const rewire = require('rewire')
 const sinon = require('sinon')
 
-let ErrorHandler = rewire('../server/lib/error-handler')
-let Validator = rewire('../server/lib/options-validator') // eslint-disable-line
+let ErrorHandler = rewire('../src/lib/error-handler')
+let Validator = rewire('../src/lib/options-validator') // eslint-disable-line
 
 describe('[ErrorHandler]', () => {
   describe('(handleError)', () => {
     beforeEach(() => { // reset the rewired functions
-      ErrorHandler = rewire('../server/lib/error-handler')
-      Validator = rewire('../server/lib/options-validator')
+      ErrorHandler = rewire('../src/lib/error-handler')
+      Validator = rewire('../src/lib/options-validator')
     })
     it('should catch rejected params', (done) => {
       const mockStatusMessage = 'MOCK_STATUS'
