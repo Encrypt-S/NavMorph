@@ -1,14 +1,21 @@
 const Client = require('bitcoin-core')
-const configData = require('../../server-settings')
 
-// Rpc.getBlockCount = () => Rpc.navClient.getBlockCount()
+const config = require('../../server-settings')
+const logger = require('../logger')
+const rpc =  new Client(config.navClient)
 
-// Rpc.getInfo = () => Rpc.navClient.getInfo()
-
-// Rpc.getWalletInfo = () => Rpc.navClient.getWalletInfo()
-
-const rpc =  new Client(configData.navClient)
-
-rpc.unlockWallet = () => rpc.walletPassphrase('password', 100000)
+rpc.unlockWallet = async () => {
+  try {
+    await rpc.walletPassphrase(config.navClient.walletPassphrase, config.navClient.walletUnlockTime)
+    return true
+  } catch (err) {
+    if (err.message.includes('unencrypted')) {
+      // wallet wasn't encrypted. Already unlocked
+      return true
+    }
+    logger.writeLog('client.js', err.message, err)
+    return false
+  }
+}
 
 module.exports = rpc

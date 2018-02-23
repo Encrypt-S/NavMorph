@@ -12,8 +12,8 @@ const Logger = {}
 // Logger.transporter = nodemailer.createTransport('smtps://' + emailAuth + '@' + settings.smtp.server)
 
 
-Logger.writeLog = (errorCode, errorMessage, data, email) => {
-  if (email) {
+Logger.writeLog = (errorCode, errorMessage, data, sendEmail = false) => {
+  if (sendEmail) {
     // Logger.sendEmail(errorCode, errorMessage, data)
   }
   const date = new Date()

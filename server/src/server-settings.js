@@ -21,7 +21,9 @@ module.exports = {
   "navClient": {
     "username": secrets.navClient.username,
     "password": secrets.navClient.password,
-    "port": 44444,
+    "walletPassphrase": secrets.navClient.walletPassphrase,
+    "walletUnlockTime": 100000,
+    "port": 44445,
     "host": "127.0.0.1",
   },
   "changellyApiEndPoints": {

@@ -5,7 +5,6 @@ const preflightCheckController = require('./preflightCheckController')
 
 const ProcessHandler = {
   tasksRunning: false,
-  timerPaused: false,
   processTimer: undefined
 }
 
@@ -18,7 +17,7 @@ ProcessHandler.setup = () => {
       fulfill()
     })
     .catch((err) => {
-      ProcessHandler.setTimerPaused(true)
+      clearInterval(ProcessHandler.processTimer)
       Logger.writeLog('PH_001', 'Failed to pass RPC pretimer check', err, true)
       reject()
     })
@@ -41,7 +40,7 @@ ProcessHandler.runTasks = () => { // TODO: Complete this function
 
   })
   .catch((err) => {
-    ProcessHandler.setTimerPaused(true)
+    clearInterval(ProcessHandler.processTimer)
     console.log(err)
     Logger.writeLog('PH_002', 'Failed to pass preflightChecks', err, true)
   })
@@ -49,7 +48,7 @@ ProcessHandler.runTasks = () => { // TODO: Complete this function
 
 ProcessHandler.preflightChecks = () => { // TODO: Complete this function
   return new Promise((resolve, reject) => {
-    if (!ProcessHandler.timerPaused && !ProcessHandler.tasksRunning) {
+    if (!ProcessHandler.tasksRunning) {
       console.log('timer not paused and no tasks running')
       ProcessHandler.tasksRunning = true
       preflightCheckController.startChecks()
@@ -57,23 +56,15 @@ ProcessHandler.preflightChecks = () => { // TODO: Complete this function
         ProcessHandler.tasksRunning = false
         resolve(balance)
       })
-      .catch((error) => {
-        reject(error)
+      .catch((err) => {
+        console.log('caught an error in preflightCheckController.startChecks()')
+        ProcessHandler.tasksRunning = false
+        reject(err)
       })
-    } else if(ProcessHandler.tasksRunning) {
-      console.log('Preflight checks still running')
-      resolve()
-    } else {
-      console.log('Timer is paused')
-      clearInterval(ProcessHandler.processTimer)
-      reject(new Error('Timer is paused'))
     }
-    
+    console.log('Preflight checks still running')
+    resolve()
   })
-}
-
-ProcessHandler.setTimerPaused = (newStatus) => {
-  ProcessHandler.timerPaused = newStatus
 }
 
 module.exports = ProcessHandler

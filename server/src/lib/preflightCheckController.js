@@ -6,17 +6,18 @@ const preflightCheckController = {}
 preflightCheckController.startChecks = () => {
   return new Promise( async (resolve, reject) => {
     try {
-      await client.unlockWallet()
-      const walletInfo = await client.getInfo()
-      if(!walletInfo.unlocked_until) {
-        throw new Error('NavCoin wallet is locked.')
+      const unlocked = await client.unlockWallet()
+      if(!unlocked) {
+        throw new Error('Unable to connect to wallet / NavCoin wallet is locked')
       }
+
+      const walletInfo = await client.getInfo()
       const networkBlockCount = await client.getBlockCount()
       if (networkBlockCount - walletInfo.blocks > config.preflightCheckController.maxBlockHeightDiscrepency ) {
-        throw new Error(`Block height is out of sync:  networkBlockCount: ${networkBlockCount}, 
+        throw new Error(`Block height is out of sync:  networkBlockCount: ${networkBlockCount},
         reportedBlockHeight: ${walletInfo.blocks}. ${networkBlockCount - walletInfo.blocks} blocks out of sync.`)
       }
-      console.log('working')
+
       resolve(walletInfo.balance)
     } catch (err) {
       console.log('error: ', err);

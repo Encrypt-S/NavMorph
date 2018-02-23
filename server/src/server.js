@@ -115,7 +115,7 @@ app.startUpServer = () => {
 
       mongoose.Promise = global.Promise
       const mongoDB = ConfigData.mongoDBUrl
-      mongoose.connect(mongoDB)
+      mongoose.connect(mongoDB, { useMongoClient: true })
       const db = mongoose.connection
       db.on('error', console.error.bind(console, 'MongoDB connection error:'))
 
