@@ -100,14 +100,14 @@ app.startUpServer = () => {
 
     SocketCtrl.setupServerSocket(io)
     .then(() => {
-      Logger.writeLog('n/a', 'Server Mode Socket Running', null, false)
+      Logger.writeLog('n/a', 'Server Mode Socket Running', null)
     })
     .catch((err) => {
       Logger.writeLog('001', 'Failed to start up Server Mode Socket', err, true)
     })
 
     server.listen(port, () => {
-      Logger.writeLog('n/a', `API running on http://localhost:${port}`, null, false)
+      Logger.writeLog('n/a', `API running on http://localhost:${port}`, null)
 
       /**
       * Connect to mongoose

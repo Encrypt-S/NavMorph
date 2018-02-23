@@ -38,12 +38,8 @@ describe('[ProcessHandler]', () => {
       ProcessHandler.testRpc = () => {
         return Promise.reject()
       }
-      // ProcessHandler.setTimerPaused = () => {}
-      // const pauseSpy = sinon.spy(ProcessHandler, 'setTimerPaused')
-
       ProcessHandler.setup()
       .catch(() => {
-        // sinon.assert.called(pauseSpy.withArgs(true))
         sinon.assert.calledOnce(mockLogger.writeLog)
         done()
       })
@@ -71,22 +67,4 @@ describe('[ProcessHandler]', () => {
       done()
     })
   })
-
-  // describe('(runTasks)', () => {})
-
-  // describe('(preflightChecks)', () => {})
-
-  // describe('(setTimerPaused)', () => {
-  //   beforeEach(() => { // reset the rewired functions
-  //     ProcessHandler = rewire('../src/lib/processHandler')
-  //   })
-  //   it('should unpause/pause the timer', () => {
-  //     ProcessHandler.timerPaused = true
-
-  //     ProcessHandler.setTimerPaused(false)
-  //     expect(ProcessHandler.timerPaused).toBe(false)
-  //     ProcessHandler.setTimerPaused(true)
-  //     expect(ProcessHandler.timerPaused).toBe(true)
-  //   })
-  // })
 })

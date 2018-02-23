@@ -20,9 +20,6 @@ describe('[preflightCheckController]', () => {
         expect(err).toBeA(Error)
         done()
       })
-      //client.unlockwallet
-      //client.getinfo
-      //client.getblockcount
     })
 
     it('should reject if the block count is too far from network count', (done) => {
@@ -44,18 +41,6 @@ describe('[preflightCheckController]', () => {
         expect(err).toBeA(Error)
         done()
       })
-      //client.unlockwallet
-      //client.getinfo
-      //client.getblockcount
     })
-
-    // it('should error if the nav daemon is too far out of sync with the blockchain', (done) => {
-
-    // })
-
-    // it('should return the wallets balance', (done) => {
-
-    // })
-
   })
 })

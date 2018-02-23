@@ -13,8 +13,9 @@ const Logger = {}
 
 
 Logger.writeLog = (errorCode, errorMessage, data, sendEmail = false) => {
-  if (sendEmail) {
-    // Logger.sendEmail(errorCode, errorMessage, data)
+  console.log()
+  if (sendEmail && string.toLowerCase(process.env.NODE_ENV) === 'production') {
+    Logger.sendEmail(errorCode, errorMessage, data)
   }
   const date = new Date()
   let logString = '\r\n-----------------------------------------------------------\r\n'
