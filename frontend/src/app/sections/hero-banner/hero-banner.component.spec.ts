@@ -1,6 +1,6 @@
 import { async, ComponentFixture, TestBed, inject } from '@angular/core/testing';
 import { MaterializeModule } from 'angular2-materialize';
-import { HttpModule, Http, BaseRequestOptions, XHRBackend } from '@angular/http';
+import { HttpClientModule, Http, BaseRequestOptions, XHRBackend } from '@angular/common/http';
 import { MockBackend } from '@angular/http/testing';
 import { FormsModule } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -28,7 +28,7 @@ describe('heroBannerSection', () => {
        ],
       imports: [
         MaterializeModule,
-        HttpModule,
+        HttpClientModule,
         FormsModule,
         RouterTestingModule,
       ],

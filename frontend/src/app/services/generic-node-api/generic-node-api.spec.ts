@@ -1,5 +1,5 @@
 import { TestBed, inject } from '@angular/core/testing';
-import { HttpModule } from '@angular/http';
+import { HttpClientModule } from '@angular/common/http';
 
 import { GenericNodeApiService } from './generic-node-api';
 
@@ -7,7 +7,7 @@ describe('GenericNodeApiService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
-        HttpModule
+        HttpClientModule
       ],
       providers: [
         GenericNodeApiService,
