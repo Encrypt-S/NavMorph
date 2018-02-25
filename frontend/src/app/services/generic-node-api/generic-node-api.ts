@@ -23,7 +23,6 @@ export class GenericNodeApiService {
 
   private extractData(res: Response) {
     try{
-      console.log(res)
       return res
     } catch (error) {
       console.error('Error extracting api data: ' + error )
