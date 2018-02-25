@@ -1,9 +1,0 @@
-version: "2"
-
-services:
-  polymorph:
-    command: /bin/bash ./start-dev.sh
-    volumes:
-      - ./:/usr/src/app
-    ports:
-      - 5555:5555
