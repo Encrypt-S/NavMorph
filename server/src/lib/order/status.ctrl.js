@@ -1,5 +1,3 @@
-'use strict'
-
 const TransactionCtrl = require('../db/transaction.ctrl')
 const EtaCtrl = require('./eta.ctrl')
 const LoginCtrl = require('../db/login.ctrl')
@@ -11,58 +9,39 @@ let ErrorHandler = require('../error-handler') // eslint-disable-line prefer-con
 
 const OrderStatusCtrl = {}
 
-OrderStatusCtrl.getOrder = (req, res) => {
-  const params = req.params
-  params.ipAddress = req.ip
-  OrderStatusCtrl.validateParams(params, ApiOptions.getOrderStatusOptions)
-  .then(() => {
-    LoginCtrl.checkIpBlocked({ ipAddress: params.ipAddress })
-    .then((isBlocked) => {
-      if (isBlocked) {
-        LoginCtrl.insertAttempt(params.ipAddress, params.polymorphId)
-        .then(OrderStatusCtrl.sendBlockedResponse(res))
-        .catch(error => ErrorHandler.handleError({
-          statusMessage: 'Unable to fetch/update Polymorph Order',
-          code: 'ORDER_STATUS_CTRL_002',
-          err: error,
-          sendEmail: true,
-          res
-        }))
-      } else {
-        OrderStatusCtrl.checkOrderExists(params, res)
-      }
-    })
-    .catch((error) => { ErrorHandler.handleError({
+OrderStatusCtrl.getOrder = async (req, res) => {
+  try {
+    const params = req.params
+    params.ipAddress = req.ip
+    await Validator.startValidation(params, options)
+    const isIpBlocked = await LoginCtrl.checkIpBlocked({ ipAddress: params.ipAddress })
+    if (isIpBlocked) {
+      await LoginCtrl.insertAttempt(params.ipAddress, params.polymorphId)
+      await OrderStatusCtrl.sendBlockedResponse(res)
+    } else {
+      await OrderStatusCtrl.checkOrderExists(params, res)
+    }
+  } catch(error) { 
+    ErrorHandler.handleError({
       statusMessage: 'Unable to fetch/update Polymorph Order',
       code: 'ORDER_STATUS_CTRL_003',
       err: error,
       sendEmail: true,
       res
     })
-   })
-  })
-  .catch((error) => {
-    ErrorHandler.handleError({
-      statusMessage: 'Unable to fetch/update Polymorph Order',
-      code: 'ORDER_STATUS_CTRL_001',
-      err: error,
-      sendEmail: true,
-      res
-    })
-  })
+  }
 }
 
 
-OrderStatusCtrl.checkOrderExists = (params, res) => {
-  TransactionCtrl.checkIfIdExists(params.orderId)
-  .then((orderExists) => {
-    if (orderExists) {
+OrderStatusCtrl.checkOrderExists = async (params, res) => {
+  try { 
+    const orderIdExists = await TransactionCtrl.checkIfIdExists(params.orderId)
+    if (orderIdExists) {
       OrderStatusCtrl.getOrderFromDb(params, res)
     } else {
       res.send([[], []])
-    }
-  })
-  .catch((error) => {
+    } 
+  } catch (error) {
     ErrorHandler.handleError({
       statusMessage: 'Unable to fetch/update Polymorph Order',
       code: 'ORDER_STATUS_CTRL_004',
@@ -70,73 +49,51 @@ OrderStatusCtrl.checkOrderExists = (params, res) => {
       sendEmail: true,
       res
     })
-  })
+  }
 }
 
-OrderStatusCtrl.getOrderFromDb = (params, res) => {
-  TransactionCtrl.getOrder(params.orderId, params.orderPassword)
-  .then((orderArr) => {
+OrderStatusCtrl.getOrderFromDb = async (params, res) => {
+  try {
+    const orderArray = await TransactionCtrl.getOrder(params.orderId, params.orderPassword)
     const order = orderArr[0]
     if (!order) {
       OrderStatusCtrl.checkForSuspiciousActivity(params, res)
     } else if (order.order_status === 'ABANDONED') {
       OrderStatusCtrl.sendEmptyResponse(res)
     } else {
-      EtaCtrl.getEta({ status: order.order_status, timeSent: order.sent, from: order.input_currency, to: order.output_currency })
-      .then((eta) => {
-        res.send([order, eta])
-      })
-      .catch(error => ErrorHandler.handleError({
-        statusMessage: 'Unable to fetch/update Polymorph Order',
-        code: 'ORDER_STATUS_CTRL_005',
-        err: error,
-        sendEmail: true,
-        res
-      }))
+    const orderEta = await EtaCtrl.getEta({ status: order.order_status, timeSent: order.sent, from: order.input_currency, to: order.output_currency })
+      res.send([order, eta])
     }
-  })
-  .catch(error => ErrorHandler.handleError({
-    statusMessage: 'Unable to fetch/update Polymorph Order',
-    code: 'ORDER_STATUS_CTRL_006',
-    err: error,
-    sendEmail: true,
-    res
-  }))
-}
-
-OrderStatusCtrl.checkForSuspiciousActivity = (params, res) => {
-  LoginCtrl.insertAttempt(params.ipAddress, params.orderId)
-  .then(LoginCtrl.checkIfSuspicious(params.ipAddress)
-    .then((isSuspicious) => {
-      if (isSuspicious) {
-        LoginCtrl.blackListIp({ ipAddress: params.ipAddress })
-        .then(OrderStatusCtrl.sendBlockedResponse(res))
-        .catch(error => ErrorHandler.handleError({
-          statusMessage: 'Unable to fetch/update Polymorph Order',
-          code: 'ORDER_STATUS_CTRL_007',
-          err: error,
-          sendEmail: true,
-          res
-        }))
-      } else {
-        OrderStatusCtrl.sendEmptyResponse(res)
-      }
-    })
-    .catch(error => ErrorHandler.handleError({
+  } catch (error) {
+    ErrorHandler.handleError({
       statusMessage: 'Unable to fetch/update Polymorph Order',
-      code: 'ORDER_STATUS_CTRL_008',
+      code: 'ORDER_STATUS_CTRL_006',
       err: error,
       sendEmail: true,
       res
-    }))
-  )
-  .catch(error => ErrorHandler.handleError({
+    })
+  }
+}
+
+OrderStatusCtrl.checkForSuspiciousActivity = async (params, res) => {
+  try {
+    LoginCtrl.insertAttempt(params.ipAddress, params.orderId)
+    const isSuspicious = await LoginCtrl.checkIfSuspicious(params.ipAddress)
+    if (isSuspicious) {
+      await LoginCtrl.blackListIp({ ipAddress: params.ipAddress })
+      await OrderStatusCtrl.sendBlockedResponse(res)
+    } else {
+      OrderStatusCtrl.sendEmptyResponse(res)
+    }
+  } catch (error) {
+    ErrorHandler.handleError({
     statusMessage: 'Unable to fetch/update Polymorph Order',
-    code: 'ORDER_STATUS_CTRL_009',
+    code: 'ORDER_STATUS_CTRL_008',
     err: error,
     sendEmail: true,
     res
-  }))
+    })
+  }
 }
 
 OrderStatusCtrl.sendEmptyResponse = (res) => {
@@ -148,11 +105,13 @@ OrderStatusCtrl.sendBlockedResponse = (res) => {
 }
 
 
-OrderStatusCtrl.updateOrderStatus = (req, res) => {
-  OrderStatusCtrl.validateParams(req.params, ApiOptions.updateOrderStatusOptions)
-  .then(() => {
+OrderStatusCtrl.updateOrderStatus = async (req, res) => {
+  try {  
+    await Validator.startValidation(req.params, ApiOptions.updateOrderStatusOptions)
     const params = req.params
     const newStatus = req.params.status
+    console.log('params', params)
+    console.log('newStatus', newStatus)
     if (ConfigData.validOrderStatuses.indexOf(newStatus) === -1) {
       ErrorHandler.handleError({
         statusMessage: 'Unable to fetch/update Polymorph Order',
@@ -162,10 +121,9 @@ OrderStatusCtrl.updateOrderStatus = (req, res) => {
         res
       })
     }
-    TransactionCtrl.updateOrderStatus(params.orderId, params.orderPassword, params.newStatus)
-  })
-  .then((order) => { res.send(order) })
-  .catch((error) => {
+    const order = await TransactionCtrl.updateOrderStatus(params.orderId, params.orderPassword, params.newStatus)
+    res.send(order)
+  } catch(error) {
     ErrorHandler.handleError({
       statusMessage: 'Unable to fetch/update Polymorph Order',
       code: 'ORDER_STATUS_CTRL_011',
@@ -173,18 +131,15 @@ OrderStatusCtrl.updateOrderStatus = (req, res) => {
       sendEmail: true,
       res
     })
-  })
+  }
 }
 
-OrderStatusCtrl.abandonOrder = (req, res) => {
-  OrderStatusCtrl.validateParams(req.params, ApiOptions.updateOrderStatusOptions)
-  .then(() => {
-    const polymorphId = req.params.orderId
-    const orderPassword = req.params.orderPassword
-    TransactionCtrl.updateOrderStatus(polymorphId, orderPassword, 'ABANDONED')
-  })
-  .then(() => { res.send({ status: 'SUCCESS' }) })
-  .catch((error) => {
+OrderStatusCtrl.abandonOrder = async (req, res) => {
+  try {
+    await Validator.startValidation(req.params, ApiOptions.updateOrderStatusOptions)
+    await TransactionCtrl.updateOrderStatus(req.params.orderId, req.params.orderPassword, 'ABANDONED')
+    res.send({ status: 'SUCCESS' })
+  } catch(error) {
     ErrorHandler.handleError({
       statusMessage: 'Unable to fetch/update Polymorph Order',
       code: 'ORDER_STATUS_CTRL_012',
@@ -192,15 +147,7 @@ OrderStatusCtrl.abandonOrder = (req, res) => {
       sendEmail: true,
       res
     })
-  })
-}
-
-OrderStatusCtrl.validateParams = (params, options) => {
-  return new Promise((fulfill, reject) => {
-    Validator.startValidation(params, options)
-    .then(() => fulfill())
-    .catch((errorArr => reject(errorArr)))
-  })
+  }
 }
 
 module.exports = OrderStatusCtrl
