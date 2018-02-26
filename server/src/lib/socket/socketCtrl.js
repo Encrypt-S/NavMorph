@@ -1,5 +1,5 @@
 const serverModeCtrl = require('../db/serverMode.ctrl')
-const Logger = require('../logger')
+const logger = require('../logger')
 
 
 const SocketCtrl = {}
@@ -42,7 +42,7 @@ SocketCtrl.startDbWatch = async (socket) => {
         })
       }
     } catch(err) {
-      Logger.writeErrorLog('SKT_001', 'Something went wrong with the socket(s)', { error: err })
+      logger.writeErrorLog('SKT_001', 'Something went wrong with the socket(s)', { error: err })
     }
   }, 1000)
 }
