@@ -41,8 +41,8 @@ SocketCtrl.startDbWatch = async (socket) => {
           showMessage: currServerMessageData[0].show_message,
         })
       }
-      Logger.writeLog('SKT_001', 'Something went wrong with the socket(s)', { error: err }, false)
     } catch(err) {
+      Logger.writeErrorLog('SKT_001', 'Something went wrong with the socket(s)', { error: err })
     }
   }, 1000)
 }

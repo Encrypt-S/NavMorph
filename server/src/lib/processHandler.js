@@ -11,11 +11,11 @@ processHandler.setup = async () => {
   try {
     await processHandler.testRpc()
     processHandler.startTimer()
-    logger.writeLog('n/a', 'Setup Successful')
+    logger.writeLog('Setup Successful')
     return true
   } catch (err) {
     global.clearInterval(processHandler.processTimer)
-    logger.writeLog('PH_001', 'Setup Failed', err, true)
+    logger.writeErrorLog('PH_001', 'Setup Failed', err, true)
     return false
   }
 }
@@ -40,7 +40,7 @@ processHandler.runTasks = async () => {
     const errData = {
       stackTrace: err.stack,
     }
-    logger.writeLog('PH_002', 'Failed to pass preflightChecks', errData , true)
+    logger.writeErrorLog('PH_002', 'Failed to pass preflightChecks', errData , true)
   }
 }
 

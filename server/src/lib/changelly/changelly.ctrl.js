@@ -40,10 +40,10 @@ ChangellyCtrl.request = (method, options, callback) => {
 ChangellyCtrl.getCurrencies = (req, res) => {
   ChangellyCtrl.request(ConfigData.changellyApiEndPoints.getCurrencies, {}, (err, data) => {
     if (err) {
-      Logger.writeLog('CHNGLLY_001', 'Failed to getCurrencies', { error: err, data }, true)
+      Logger.writeErrorLog('CHNGLLY_001', 'Failed to getCurrencies', { error: err, data }, true)
       res.send(err)
     } else if (data.result && data.result.indexOf('nav') === -1) {
-      Logger.writeLog('CHNGLLY_006', 'Nav not listed in currencies', { error: err, data }, true)
+      Logger.writeErrorLog('CHNGLLY_006', 'Nav not listed in currencies', { error: err, data }, true)
       res.status(500).send(new Error('Nav not listed in currencies'))
     } else {
       res.send(data)
@@ -57,7 +57,7 @@ ChangellyCtrl.getMinAmount = (req, res) => {
   .then(() => {
     return ChangellyCtrl.request(ConfigData.changellyApiEndPoints.getMinAmount, req.params, (err, data) => {
       if (err) {
-        Logger.writeLog('CHNGLLY_002', 'Failed to getMinAmount', err, true)
+        Logger.writeErrorLog('CHNGLLY_002', 'Failed to getMinAmount', err, true)
         res.send(err)
       } else {
         res.send(data)
@@ -73,7 +73,7 @@ ChangellyCtrl.getExchangeAmount = (req, res) => {
   .then(() => {
     return ChangellyCtrl.request(ConfigData.changellyApiEndPoints.getExchangeAmount, req.params, (err, data) => {
       if (err) {
-        Logger.writeLog('CHNGLLY_003', 'Failed to getExchangeAmount', err, true)
+        Logger.writeErrorLog('CHNGLLY_003', 'Failed to getExchangeAmount', err, true)
         res.send(err)
       } else {
         res.send(data)
@@ -88,7 +88,7 @@ ChangellyCtrl.generateAddress = (req, res) => {
   .then(() => {
     return ChangellyCtrl.request(ConfigData.changellyApiEndPoints.generateAddress, req.params, (err, data) => {
       if (err) {
-        Logger.writeLog('CHNGLLY_004', 'Failed to generateAddress (external)', err, true)
+        Logger.writeErrorLog('CHNGLLY_004', 'Failed to generateAddress (external)', err, true)
         res.send(err)
       } else {
         res.send(data)
@@ -104,7 +104,7 @@ ChangellyCtrl.internal.generateAddress = (params) => {
     .then(() => {
       ChangellyCtrl.request(ConfigData.changellyApiEndPoints.generateAddress, params, (err, data) => {
         if (data.err) {
-          Logger.writeLog('CHNGLLY_005', 'Failed to generateAddress (internal)', err, false)
+          Logger.writeErrorLog('CHNGLLY_005', 'Failed to generateAddress (internal)', err, false)
           reject(new Error(data.err))
           return
         }
@@ -122,7 +122,7 @@ ChangellyCtrl.validateParams = (params, options) => {
       fulfill()
     })
     .catch((error) => {
-      Logger.writeLog('CHNGLLY_006', 'Param Validation Error', error, false)
+      Logger.writeErrorLog('CHNGLLY_006', 'Param Validation Error', error, false)
       reject(error)
     })
   })

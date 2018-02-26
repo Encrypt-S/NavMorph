@@ -13,7 +13,7 @@ rpc.unlockWallet = async () => {
       // wallet wasn't encrypted, therefore we can treat it as unlocked
       return true
     }
-    logger.writeLog('RPC_001', err.message, err)
+    logger.writeErrorLog('RPC_001', err.message, err)
     return false
   }
 }
