@@ -10,11 +10,6 @@ import BigNumber from 'bignumber.js'
 
 @Injectable()
 export class SendPageDataService implements OnInit {
-
-  ngOnInit() {
-    BigNumber.config({ DECIMAL_PLACES: 8 })
-  }
-
   dataStored: boolean = false
 
   dataBundle: dataBundleTemplate = { errors: [] }
@@ -33,11 +28,15 @@ export class SendPageDataService implements OnInit {
 
   constructor(private changellyApi: ChangellyApiService) {}
 
+  ngOnInit() {
+    BigNumber.config({ DECIMAL_PLACES: 8 })
+  }
+
   getData(): void {
     if(this.dataStored === true){
       this.dataSubject.next(this.dataBundle)
     } else {
-      this.dataSubject.next({})    
+      this.dataSubject.next({})
     }
   }
 
@@ -89,7 +88,7 @@ export class SendPageDataService implements OnInit {
   estimateFees(originCoin, destCoin, transferAmount) {
 
     if (originCoin === 'NAV' || destCoin === 'NAV') {
-      this.dataBundle.changellyFeeOne = new BigNumber(0)
+      this.dataBundle.changellyFeeOne = new BigNumber(0) // TODO Get actual fee
 
       this.dataBundle.estimatedFees = (new BigNumber(transferAmount, 10)
                                         .minus((new BigNumber(transferAmount, 10)
@@ -110,7 +109,7 @@ export class SendPageDataService implements OnInit {
       }
     this.estimateArrivalTime(originCoin, destCoin, transferAmount)
   }
-  
+
   estimateArrivalTime(originCoin, destCoin, transferAmount) {
     this.getEta(originCoin, destCoin)
     .then((data) => {
@@ -121,7 +120,7 @@ export class SendPageDataService implements OnInit {
       this.dataBundle.errors.push('ETA_ERROR')
     })
   }
-  
+
   estimateFirstExchange(originCoin, destCoin, transferAmount) {
     if (originCoin === 'NAV') {
       this.dataBundle.estConvToNav = new BigNumber(transferAmount, 10)
@@ -129,18 +128,20 @@ export class SendPageDataService implements OnInit {
       this.estimateSecondExchange(destCoin, conversionAfterFees)
     } else {
       this.getEstimatedExchange(originCoin, 'NAV', transferAmount)
-      .then((data) => {
-        this.dataBundle.estConvToNav = new BigNumber(data, 10).round(8)
+      .then((res) => {
+        console.log('estimateFirstExchange', res)
+        this.dataBundle.estConvToNav = new BigNumber(res.data.amount, 10).round(8)
 
         const conversionAfterFees = new BigNumber(this.dataBundle.estConvToNav, 10).times(1 - this.NAVTECH_FEE).round(8)
 
         this.estimateSecondExchange(destCoin, conversionAfterFees)
       })
       .catch((err) => {
+        console.log('estimateFirstExchange err', err)
         this.pushError(this.dataBundle, 'CHANGELLY_ERROR')
-        this.sendData()     
+        this.sendData()
       })
-    }      
+    }
   }
 
   estimateSecondExchange(destCoin, conversionAfterFees) {
@@ -149,16 +150,17 @@ export class SendPageDataService implements OnInit {
       this.sendData()
     } else {
      this.getEstimatedExchange('NAV', destCoin, conversionAfterFees.toString())
-      .then((data) => {
-        this.dataBundle.estConvFromNav = new BigNumber(data, 10).round(8).toString()
+      .then((res) => {
+        this.dataBundle.estConvFromNav = new BigNumber(res.data.amount, 10).round(8).toString()
         this.sendData()
       })
       .catch((err) => {
+        console.log('estimateSecondExchange err', err)
         this.pushError(this.dataBundle, 'CHANGELLY_ERROR')
         this.sendData()
       })
     }
-  }  
+  }
 
 
   sendData(){
@@ -185,7 +187,7 @@ export class SendPageDataService implements OnInit {
         dataBundle.minTransferAmount = new BigNumber(minAmount, 10).round(8).toString()
       }
     })
-    .catch((error) => {
+    .catch((err) => {
       this.pushError(dataBundle, 'CHANGELLY_ERROR')
     })
   }
@@ -216,7 +218,7 @@ export class SendPageDataService implements OnInit {
         resolve(transferAmount)
       }
       this.changellyApi.getExchangeAmount(originCoin, destCoin, transferAmount)
-      .subscribe( data => {
+      .subscribe(data => {
         resolve(data)
       }, (err) => {
         reject(err)
@@ -227,8 +229,8 @@ export class SendPageDataService implements OnInit {
   getMinTransferAmount(originCoin, destCoin) {
     return new Promise<any>((resolve, reject) => {
       this.changellyApi.getMinAmount(originCoin, destCoin)
-      .subscribe( data => {
-        resolve(data)
+      .subscribe( res => {
+        resolve(res.data.minAmount)
       }, (err) => {
         reject(err)
       })

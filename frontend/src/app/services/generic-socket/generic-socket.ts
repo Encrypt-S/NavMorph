@@ -1,16 +1,16 @@
 import { Injectable } from '@angular/core'
-
 import { Observable } from 'rxjs/Observable'
-
 import * as io from 'socket.io-client'
 
+import * as  config from '../../services/config'
 
 @Injectable()
 export class GenericSocketService {
 
-  private socket
+  private socket = io(config.socketsUrl)
 
-  constructor() { }
+  constructor() {
+  }
 
   sendMessage(messageType:string , messageContent:string) {
     if(!this.socket) {
@@ -23,8 +23,6 @@ export class GenericSocketService {
 
   getMessages(socketUrl, mode) {
     let observable = new Observable(observer => {
-      this.socket = io(socketUrl)
-      console.log('socketUrl', socketUrl)
       if (mode === 'MESSAGE' || mode === 'ALL') {
         this.socket.on('MESSAGE', (data) => {
           observer.next(data)

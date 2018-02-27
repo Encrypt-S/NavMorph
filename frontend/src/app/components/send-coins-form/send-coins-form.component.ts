@@ -6,8 +6,6 @@ import { OrderService } from '../../services/order/order'
 import { SendPageDataService } from '../../services/send-page-data/send-page-data'
 import { GenericSocketService } from '../../services/generic-socket/generic-socket'
 
-import * as io from 'socket.io-client'
-
 @Component({
   selector: 'send-coins-form-component',
   templateUrl: './send-coins-form.component.html',
@@ -67,6 +65,7 @@ export class SendCoinsFormComponent implements OnInit, OnDestroy {
 
   connectToSocket():void {
     this.connection = this.genericSocket.getMessages(this.socketUrl, 'SERVER_MODE').subscribe((serverMode) => {
+      console.log('connectToSocket', serverMode, this.maintenaceModeActive)
       if (serverMode === 'MAINTENANCE') {
         this.maintenaceModeActive = true
       } else {
@@ -169,6 +168,7 @@ export class SendCoinsFormComponent implements OnInit, OnDestroy {
     if (!destCoin) {
         destCoin = this.currencies['0']
     }
+    console.log('***storeFormData***', this.transferAmount, originCoin, destCoin, this.destAddr)
     this.dataServ.storeData(this.transferAmount, originCoin, destCoin, this.destAddr)
   }
 
@@ -201,12 +201,14 @@ export class SendCoinsFormComponent implements OnInit, OnDestroy {
     this.setLoadingState(true)
     this.changellyApi.getCurrencies()
       .subscribe(
-        response => {
-          const currencies = response.result
-          if(this.checkCurrData(currencies))
+        res => {
+          console.log(res)
+          const currencies = res.data.currencies
+          if (this.checkCurrData(currencies)) {
             this.currencies = this.formatCurrData(currencies)
             this.isDisabled = false
             this.getFormData()
+          }
         },
         error => {
           this.isDisabled = true

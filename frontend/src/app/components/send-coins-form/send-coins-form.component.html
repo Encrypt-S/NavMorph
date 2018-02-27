@@ -1,7 +1,7 @@
 <div id="container" [ngClass]="theme">
-  
+
   <loader-component *ngIf="pageLoading" [theme]="loaderTheme"></loader-component>
-  
+
   <div class="">
     <ul class="row error-message" *ngIf="errors.length > 0">
       <li *ngIf="errors.indexOf('NOT_FOUND') > -1">Unable to load available currencies from Changelly</li>
@@ -12,18 +12,17 @@
       <li *ngIf="errors.indexOf('DEFAULT') > -1">Error displaying available currencies</li>
     </ul>
 
-    <div class="row" >
+    <div class="row">
       <div class="input-field col s9 no-hoz-spacing">
-        <input type="text" name="enter-text-ex" class="input-with-select" 
-        [ngClass]="{'invalid': errors.indexOf('INVALID_TRANSFER_AMOUNT') > -1}" 
-        [attr.disabled]="isDisabled?true:null" [(ngModel)]="transferAmount" 
-        (ngModelChange)="modelUpdated('AMOUNT')" />
-        <label for="enter-text-ex" [ngClass]="{'active': transferAmount}" >Enter amount</label>
+        <input type="text" name="enter-text-ex" class="input-with-select" [ngClass]="{'invalid': errors.indexOf('INVALID_TRANSFER_AMOUNT') > -1}"
+          [attr.disabled]="isDisabled?true:null" [(ngModel)]="transferAmount" (ngModelChange)="modelUpdated('AMOUNT')" />
+        <label for="enter-text-ex" [ngClass]="{'active': transferAmount}">Enter amount</label>
       </div>
 
       <div class="input-field col s3 no-hoz-spacing">
         <!-- TODO: add error indicator when nav to nav transfer detected. Bug with materialize css select stops us from doing this atm -->
-        <select materialize="material_select"  [materializeSelectOptions]="currencies" [(ngModel)]="originCoin" (change)="invalidateEstimate()" name="originCoin" [attr.disabled]="isDisabled?true:null">
+        <select materialize="material_select" [materializeSelectOptions]="currencies" [(ngModel)]="originCoin" (change)="invalidateEstimate()"
+          name="originCoin" [attr.disabled]="isDisabled?true:null">
           <option *ngFor="let currency of currencies" [value]="currency">{{currency}}</option>
         </select>
         <label>Source Coin</label>
@@ -32,15 +31,14 @@
 
     <div class="row">
       <div class="input-field col s9 no-hoz-spacing">
-        <input type="text" name="enter-text-ex" class="input-with-select"  
-        [ngClass]="{'invalid': errors.indexOf('INVALID_DEST_ADDRESS') > -1}" 
-        [attr.disabled]="isDisabled?true:null" [(ngModel)]="destAddr" 
-        (ngModelChange)="modelUpdated('ADDRESS')" />
+        <input type="text" name="enter-text-ex" class="input-with-select" [ngClass]="{'invalid': errors.indexOf('INVALID_DEST_ADDRESS') > -1}"
+          [attr.disabled]="isDisabled?true:null" [(ngModel)]="destAddr" (ngModelChange)="modelUpdated('ADDRESS')" />
         <label for="enter-text-ex" [ngClass]="{'active': destAddr}">Enter Destination Address</label>
       </div>
 
       <div class="input-field col s3 no-hoz-spacing">
-        <select materialize="material_select"  [materializeSelectOptions]="currencies" [ngClass]="{'invalid': errors.indexOf('NAV_TO_NAV_TRANSFER') > -1}" [(ngModel)]="destCoin" (change)="invalidateEstimate()" name="destCoin" [attr.disabled]="isDisabled?true:null">
+        <select materialize="material_select" [materializeSelectOptions]="currencies" [ngClass]="{'invalid': errors.indexOf('NAV_TO_NAV_TRANSFER') > -1}"
+          [(ngModel)]="destCoin" (change)="invalidateEstimate()" name="destCoin" [attr.disabled]="isDisabled?true:null">
           <option *ngFor="let currency of currencies" [value]="currency">{{currency}}</option>
         </select>
         <label>Dest. Coin</label>
@@ -51,11 +49,13 @@
   <div class="row">
     <div class="send-buttons col s12 no-hoz-spacing">
       <button class="btn waves-effect waves-light btn-small bg-blue" type="submit" name="action" (click)="clearFormData()">Clear</button>
-      <button *ngIf="!estimateValid" [ngClass]="{'disabled' : formNotFilled}" class="btn waves-effect waves-light bg-fuschia lighten-1" type="submit" name="action" routerLink="/send" (click)="storeFormData()">Estimate
-          <i class="material-icons right">send</i>
+      <button *ngIf="!estimateValid" [ngClass]="{'disabled' : formNotFilled}" class="btn waves-effect waves-light bg-fuschia lighten-1"
+        type="submit" name="action" routerLink="/send" (click)="storeFormData()">Estimate
+        <i class="material-icons right">send</i>
       </button>
-      <button *ngIf="estimateValid" [ngClass]="{'disabled' : maintenaceModeActive }" class="btn waves-effect waves-light bg-fuschia lighten-1" type="submit" name="action" routerLink="/send" (click)="createOrder(originCoin, destCoin, destAddr, transferAmount)">Send
-          <i class="material-icons right">send</i>
+      <button *ngIf="estimateValid" [ngClass]="{'disabled' : maintenaceModeActive }" class="btn waves-effect waves-light bg-fuschia lighten-1"
+        type="submit" name="action" routerLink="/send" (click)="createOrder(originCoin, destCoin, destAddr, transferAmount)">Send
+        <i class="material-icons right">send</i>
       </button>
     </div>
   </div>

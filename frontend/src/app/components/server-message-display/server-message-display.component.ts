@@ -1,7 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core'
 import { GenericSocketService } from '../../services/generic-socket/generic-socket'
 import { ServerMessageModel } from './server-message-model'
-import * as io from 'socket.io-client'
 
 @Component({
   selector: 'server-message-display',
