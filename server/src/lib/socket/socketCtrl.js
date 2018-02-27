@@ -1,7 +1,7 @@
 'use strict'
 
 const serverModeCtrl = require('../db/serverMode.ctrl')
-const Logger = require('../logger')
+const logger = require('../logger')
 
 
 const SocketCtrl = {}
@@ -16,6 +16,9 @@ SocketCtrl.setupServerSocket = (socket) => {
         })
         socket.on('ADD_MESSAGE', (message) => {
           socket.emit('MESSAGE', { type: 'NEW_MESSAGE', text: message })
+        })
+        serverModeCtrl.checkMode().then((currServerMode) => {
+          socket.emit('SERVER_MODE', currServerMode[0].server_mode)
         })
       })
       SocketCtrl.startDbWatch(socket)
@@ -32,8 +35,8 @@ SocketCtrl.startDbWatch = (socket) => {
   setInterval(() => {
     serverModeCtrl.checkMode()
     .then((currServerMode) => {
-      if (currServerMode.length === 1 && previousMode !== currServerMode) {
-        previousMode = currServerMode
+      if (currServerMode.length === 1 && previousMode !== currServerMode[0].server_mode) {
+        previousMode = currServerMode[0].server_mode
         socket.emit('SERVER_MODE', currServerMode[0].server_mode)
       }
     })
@@ -51,7 +54,7 @@ SocketCtrl.startDbWatch = (socket) => {
       }
     })
     .catch((err) => {
-      Logger.writeLog('SKT_001', 'Something went wrong with the socket(s)', { error: err }, false)
+      logger.writeLog('SKT_001', 'Something went wrong with the socket(s)', { error: err }, false)
     })
   }, 1000)
 }

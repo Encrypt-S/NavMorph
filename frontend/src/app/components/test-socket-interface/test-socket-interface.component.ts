@@ -1,8 +1,6 @@
 import { Component, OnInit, OnDestroy} from '@angular/core'
 import { Observable } from 'rxjs/Observable'
 
-import * as io from 'socket.io-client'
-
 import { GenericSocketService } from '../../services/generic-socket/generic-socket'
 
 @Component({

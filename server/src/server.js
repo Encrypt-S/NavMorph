@@ -12,6 +12,7 @@ const auth = require('basic-auth')
 const config = require('./server-settings')
 const SettingsValidator = require('./lib/settingsValidator.js')
 const ProcessHandler = require('./lib/processHandler')
+const serverMode = require('./lib/db/serverMode.model')
 
 // Get our API routes
 const api = require('./routes/api')
