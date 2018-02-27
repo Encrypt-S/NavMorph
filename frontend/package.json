@@ -33,7 +33,7 @@
     "hammerjs": "^2.0.8",
     "jayson": "^2.0.3",
     "lodash": "^4.17.4",
-    "materialize-css": "^0.98.2",
+    "materialize-css": "^0.100.2",
     "mongoose": "^4.9.9",
     "ngx-clipboard": "^8.0.3",
     "nodemailer": "^2.7.2",
