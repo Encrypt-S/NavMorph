@@ -1,60 +1,58 @@
-const Config = require('../server-settings')
-let Logger = require('./logger') // eslint-disable-line prefer-const
-const RpcGetNewAddress = require('./rpc/get-new-address')
+let logger = require('./logger') // eslint-disable-line prefer-const
+const config = require('../server-settings')
+const preflightCheckController = require('./preflightCheckController')
 
-const ProcessHandler = {
+const processHandler = {
   tasksRunning: false,
-  timerPaused: false,
+  processTimer: undefined
 }
 
-ProcessHandler.setup = () => {
-  return new Promise((fulfill, reject) => {
-    ProcessHandler.testRpc()
-    .then(() => {
-      ProcessHandler.startTimer()
-      fulfill()
-    })
-    .catch((err) => {
-      ProcessHandler.setTimerPaused(true)
-      Logger.writeLog('PH_001', 'Failed to pass RPC pretimer check', err, true)
-      reject()
-    })
-  })
+processHandler.setup = async () => {
+  try {
+    await processHandler.testRpc()
+    processHandler.startTimer()
+    logger.writeLog('n/a', 'Setup Successful')
+    return true
+  } catch (err) {
+    global.clearInterval(processHandler.processTimer)
+    logger.writeLog('PH_001', 'Setup Failed', err, true)
+    return false
+  }
 }
 
-ProcessHandler.testRpc = () => { // TODO: Complete this function
+processHandler.testRpc = () => { // TODO: Complete this function
   return new Promise((fulfill, reject) => {
     fulfill()
   })
 }
 
-ProcessHandler.startTimer = () => {
-  global.setInterval(ProcessHandler.runTasks, Config.processHandler.timerLength)
+processHandler.startTimer = () => {
+  processHandler.processTimer = global.setInterval(processHandler.runTasks, config.processHandler.timerLength)
 }
 
-ProcessHandler.runTasks = () => { // TODO: Complete this function
-  ProcessHandler.preflightChecks()
-  .then(() => {
-
-  })
-  .catch((err) => {
-    ProcessHandler.setTimerPaused(true)
-    Logger.writeLog('PH_002', 'Failed to pass preflightChecks', err, true)
-  })
-}
-
-ProcessHandler.preflightChecks = () => { // TODO: Complete this function
-  return new Promise((fulfill, reject) => {
-    if (!ProcessHandler.timerPaused && !ProcessHandler.tasksRunning) {
-      fulfill()
-    } else {
-      reject(new Error('Preflight checks failed'))
+processHandler.runTasks = async () => {
+  try {
+    const passedChecks = await processHandler.preflightChecks()
+    return passedChecks
+  }
+  catch (err) {
+    global.clearInterval(processHandler.processTimer)
+    const errData = {
+      stackTrace: err.stack,
     }
-  })
+    logger.writeLog('PH_002', 'Failed to pass preflightChecks', errData , true)
+  }
 }
 
-ProcessHandler.setTimerPaused = (newStatus) => {
-  ProcessHandler.timerPaused = newStatus
+processHandler.preflightChecks = async () => {
+  if (!processHandler.tasksRunning) {
+    processHandler.tasksRunning = true
+    const balance = await preflightCheckController.startChecks()
+    processHandler.tasksRunning = false
+    return balance
+  }
+
+  return undefined
 }
 
-module.exports = ProcessHandler
+module.exports = processHandler

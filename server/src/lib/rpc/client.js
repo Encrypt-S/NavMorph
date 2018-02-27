@@ -1,12 +1,21 @@
-"use strict";
-
 const Client = require('bitcoin-core')
-const configData = require('../../server-settings')
 
+const config = require('../../server-settings')
+let logger = require('../logger')
+let rpc = new Client(config.navClient)
 
-let Rpc = { //eslint-disable-line
-  navClient: new Client(configData.navClient),
-  internal: {}
+rpc.unlockWallet = async () => {
+  try {
+    await rpc.walletPassphrase(config.navClient.walletPassphrase, config.navClient.walletUnlockTime)
+    return true
+  } catch (err) {
+    if (err.message.includes('unencrypted')) {
+      // wallet wasn't encrypted, therefore we can treat it as unlocked
+      return true
+    }
+    logger.writeLog('RPC_001', err.message, err)
+    return false
+  }
 }
 
-module.exports = Rpc
+module.exports = rpc

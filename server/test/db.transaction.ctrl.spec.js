@@ -6,14 +6,14 @@ const sinon = require('sinon')
 const mongoose = require('mongoose')
 
 let sandbox
-let TransactionCtrl = rewire('../server/lib/db/transaction.ctrl')
-let TransactionModel = require('../server/lib/db/transaction.model')
-let ErrorHandler = rewire('../server/lib/error-handler') // eslint-disable-line
+let TransactionCtrl = rewire('../src/lib/db/transaction.ctrl')
+let TransactionModel = require('../src/lib/db/transaction.model')
+let ErrorHandler = rewire('../src/lib/error-handler') // eslint-disable-line
 
 describe('[TransactionCtrl]', () => {
   describe('(createTransaction)', () => {
     beforeEach(() => { // reset the rewired functions
-      TransactionCtrl = rewire('../server/lib/db/transaction.ctrl')
+      TransactionCtrl = rewire('../src/lib/db/transaction.ctrl')
     })
     it('should fail on req params', (done) => {
       const fakeRes = {
@@ -105,7 +105,7 @@ describe('[TransactionCtrl]', () => {
   describe('(getOrder)', () => {
     beforeEach(() => { // reset the rewired functions
       sandbox = sinon.sandbox.create()
-      TransactionCtrl = rewire('../server/lib/db/transaction.ctrl')
+      TransactionCtrl = rewire('../src/lib/db/transaction.ctrl')
     })
     afterEach(() => { // reset the rewired functions
       sandbox.restore()
@@ -172,7 +172,7 @@ describe('[TransactionCtrl]', () => {
   describe('(getTransaction)', () => {
     beforeEach(() => { // reset the rewired functions
       sandbox = sinon.sandbox.create()
-      TransactionCtrl = rewire('../server/lib/db/transaction.ctrl')
+      TransactionCtrl = rewire('../src/lib/db/transaction.ctrl')
     })
     afterEach(() => { // reset the rewired functions
       sandbox.restore()
@@ -222,8 +222,8 @@ describe('[TransactionCtrl]', () => {
 
   describe('(gotTransaction)', () => {
     beforeEach(() => { // reset the rewired functions
-      TransactionCtrl = rewire('../server/lib/db/transaction.ctrl')
-      ErrorHandler = rewire('../server/lib/error-handler')
+      TransactionCtrl = rewire('../src/lib/db/transaction.ctrl')
+      ErrorHandler = rewire('../src/lib/error-handler')
     })
     it('should catch transactions failure', (done) => {
       const mockErrorHandler = {
@@ -286,7 +286,7 @@ describe('[TransactionCtrl]', () => {
   describe('(updateOrderStatus)', () => {
     beforeEach(() => { // reset the rewired functions
       sandbox = sinon.sandbox.create()
-      TransactionCtrl = rewire('../server/lib/db/transaction.ctrl')
+      TransactionCtrl = rewire('../src/lib/db/transaction.ctrl')
     })
     afterEach(() => { // reset the rewired functions
       sandbox.restore()
@@ -357,7 +357,7 @@ describe('[TransactionCtrl]', () => {
   describe('(checkIfIdExists)', () => {
     beforeEach(() => { // reset the rewired functions
       sandbox = sinon.sandbox.create()
-      TransactionCtrl = rewire('../server/lib/db/transaction.ctrl')
+      TransactionCtrl = rewire('../src/lib/db/transaction.ctrl')
     })
     afterEach(() => { // reset the rewired functions
       sandbox.restore()

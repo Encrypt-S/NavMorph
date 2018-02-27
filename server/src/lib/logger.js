@@ -12,12 +12,12 @@ const Logger = {}
 // Logger.transporter = nodemailer.createTransport('smtps://' + emailAuth + '@' + settings.smtp.server)
 
 
-Logger.writeLog = (errorCode, errorMessage, data, email) => {
-  if (email) {
-    // Logger.sendEmail(errorCode, errorMessage, data)
+Logger.writeLog = (errorCode, errorMessage, data, sendEmail = false) => {
+  if (sendEmail && process.env.NODE_ENV === 'production') {
+    Logger.sendEmail(errorCode, errorMessage, data)
   }
   const date = new Date()
-  let logString = '\r\n'
+  let logString = '\r\n-----------------------------------------------------------\r\n'
   logString += 'Date: ' + date + '\r\n'
   logString += 'Error Code: ' + errorCode + '\r\n'
   logString += 'Error Message: ' + errorMessage + '\r\n'
@@ -26,7 +26,7 @@ Logger.writeLog = (errorCode, errorMessage, data, email) => {
     if (data.hasOwnProperty(key)) {
       let string = data[key]
       if (typeof data[key] === 'object') string = JSON.stringify(data[key])
-      logString += key + ': ' + string + '\r\n'
+      logString += key + ': ' + string
     }
   }
   logString += '\r\n-----------------------------------------------------------\r\n'

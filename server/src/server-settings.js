@@ -21,7 +21,9 @@ module.exports = {
   "navClient": {
     "username": secrets.navClient.username,
     "password": secrets.navClient.password,
-    "port": 44444,
+    "walletPassphrase": secrets.navClient.walletPassphrase,
+    "walletUnlockTime": 600, // In seconds
+    "port": 44445,
     "host": "127.0.0.1",
   },
   "changellyApiEndPoints": {
@@ -60,5 +62,8 @@ module.exports = {
 
   "processHandler": {
     "timerLength": 120000,
+  },
+  "preflightCheckController": {
+    "maxBlockHeightDiscrepency": 5
   }
 }
