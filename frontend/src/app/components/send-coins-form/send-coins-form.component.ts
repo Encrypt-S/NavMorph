@@ -74,7 +74,6 @@ export class SendCoinsFormComponent implements OnInit {
         this.checkErrors(data.errors)
         this.fillForm(this.formData)
         this.dataServ.setDataStatus('SET')
-        this.maintenaceModeActive = data.maintenaceModeActive
         this.setLoadingState(false)
         this.checkFormFilled()
       } else if (this.dataServ.checkDataStatus() === 'UNTOUCHED') {
