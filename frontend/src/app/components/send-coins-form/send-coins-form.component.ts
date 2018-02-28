@@ -1,12 +1,18 @@
 import { Component, OnInit, Input } from '@angular/core'
 import { Router } from '@angular/router'
 import { FormsModule } from '@angular/forms'
+import { Observable } from 'rxjs/Observable'
+import { Subscription } from 'rxjs/Subscription'
+import { Observer } from 'rxjs/Observer'
+import { Subscriber } from 'rxjs/Subscriber'
 
 import { ChangellyApiService } from '../../services/changelly-api/changelly-api'
 import { OrderService } from '../../services/order/order'
 import { SendPageDataService } from '../../services/send-page-data/send-page-data'
 import { GenericSocketService } from '../../services/generic-socket/generic-socket'
 import { dataBundleTemplate } from '../../services/config'
+
+import * as config from '../../services/config'
 
 @Component({
   selector: 'send-coins-form-component',
@@ -27,7 +33,8 @@ export class SendCoinsFormComponent implements OnInit {
   estimateValid: boolean = false
   pageLoading: boolean
   formNotFilled: boolean = true
-  maintenaceModeActive: boolean = true
+
+  maintenceMode$: Observable<boolean>
 
   errors = []
 
@@ -41,6 +48,7 @@ export class SendCoinsFormComponent implements OnInit {
     private router: Router,
     private genericSocket: GenericSocketService
   ) {
+    this.maintenceMode$ = this.genericSocket.maintenceMode$
     if (!this.theme) {
       this.theme = 'form-dark'
     }
@@ -49,13 +57,6 @@ export class SendCoinsFormComponent implements OnInit {
   ngOnInit() {
     this.getFormDataStream()
     this.getCurrencies()
-    this.subscribeToMaintenceMode()
-  }
-
-  subscribeToMaintenceMode() {
-    this.dataServ.getMaintenceMode().subscribe((data: boolean) => {
-      this.maintenaceModeActive = data
-    })
   }
 
   setLoadingState(state: boolean): void {
@@ -124,26 +125,23 @@ export class SendCoinsFormComponent implements OnInit {
   }
 
   createOrder(originCoin, destCoin, destAddr, transferAmount): void {
-    this.orderServ
-      .createOrder(originCoin, destCoin, destAddr, transferAmount)
-      .subscribe(
-        result => {
-          if (result.type === 'FAIL') {
-            this.errors.push('ORDER_CREATION_FAILED')
-            return
-          } else if (result.type === 'MAINTENANCE') {
-            this.errors.push('MAINTENANCE_MODE')
-            return
-          }
-          const statusPageUrl =
-            '/status/' + result.data['0'] + '/' + result.data['1']
-          this.router.navigateByUrl(statusPageUrl)
-        },
-        error => {
-          console.log('error creating order', error)
+    this.orderServ.createOrder(originCoin, destCoin, destAddr, transferAmount).subscribe(
+      result => {
+        if (result.type === 'FAIL') {
           this.errors.push('ORDER_CREATION_FAILED')
+          return
+        } else if (result.type === 'MAINTENANCE') {
+          this.errors.push('MAINTENANCE_MODE')
+          return
         }
-      )
+        const statusPageUrl = '/status/' + result.data['0'] + '/' + result.data['1']
+        this.router.navigateByUrl(statusPageUrl)
+      },
+      error => {
+        console.log('error creating order', error)
+        this.errors.push('ORDER_CREATION_FAILED')
+      }
+    )
   }
 
   storeFormData(): void {
@@ -156,12 +154,7 @@ export class SendCoinsFormComponent implements OnInit {
     if (!destCoin) {
       destCoin = this.currencies['0']
     }
-    this.dataServ.storeData(
-      this.transferAmount,
-      originCoin,
-      destCoin,
-      this.destAddr
-    )
+    this.dataServ.storeData(this.transferAmount, originCoin, destCoin, this.destAddr)
   }
 
   fillForm(data): void {
