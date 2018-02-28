@@ -10,6 +10,11 @@
     "e2e": "ng e2e"
   },
   "private": true,
+  "prettier": {
+    "semi": false,
+    "singleQuote": true,
+    "printWidth": 120,
+  },
   "dependencies": {
     "@angular/animations": "^5.2.6",
     "@angular/common": "^5.2.6",
@@ -69,6 +74,7 @@
     "karma-jasmine": "~1.1.0",
     "karma-jasmine-html-reporter": "^0.2.2",
     "mocha": "^3.3.0",
+    "prettier": "1.11.0",
     "protractor": "~5.1.0",
     "rewire": "^2.5.2",
     "sinon": "^2.2.0",

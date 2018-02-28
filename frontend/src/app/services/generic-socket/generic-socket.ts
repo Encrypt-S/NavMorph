@@ -21,7 +21,7 @@ export class GenericSocketService {
     console.log("MESSAGE SENT", messageContent)
   }
 
-  getMessages(socketUrl, mode) {
+  getMessages(mode) {
     let observable = new Observable(observer => {
       if (mode === 'MESSAGE' || mode === 'ALL') {
         this.socket.on('MESSAGE', (data) => {
