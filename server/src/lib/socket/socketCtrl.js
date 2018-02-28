@@ -29,6 +29,14 @@ SocketCtrl.setupServerSocket = (socket) => {
   })
 }
 
+// SocketCtrl.startDbWatch = socket => {
+//   let mode = 'MAINTENANCE'
+//   setInterval( () => {
+//     mode = mode === 'MAINTENANCE' ? 'LIVE' : 'MAINTENANCE'
+//     socket.emit('SERVER_MODE', mode)
+//   }, 1000)
+// }
+
 SocketCtrl.startDbWatch = (socket) => {
   let previousMode
   let previousMessage

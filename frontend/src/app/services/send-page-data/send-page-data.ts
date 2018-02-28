@@ -4,8 +4,12 @@ import { ChangellyApiService } from '../../services/changelly-api/changelly-api'
 import { GenericFunctionsService } from '../../services/generic-functions/generic-functions'
 import { changellyConstData, dataBundleTemplate } from '../config'
 import { GenericSocketService } from '../../services/generic-socket/generic-socket'
+import * as  config from '../../services/config'
 
-import { Observable } from 'rxjs'
+import * as io from 'socket.io-client'
+
+import { Observable } from 'rxjs/Observable'
+import { Observer } from 'rxjs/Observer'
 import { Subject } from 'rxjs/Subject'
 import BigNumber from 'bignumber.js'
 
@@ -22,8 +26,6 @@ export class SendPageDataService implements OnDestroy {
   NAVTECH_FEE: number = changellyConstData.NAVTECH_FEE
   MAX_NAV_PER_TRADE: number = changellyConstData.MAX_NAV_PER_TRADE
 
-  maintenaceModeActive = new Subject<boolean>()
-
   dataSubject = new Subject<any>()
 
   dataSetSubject = new Subject<any>()
@@ -37,7 +39,6 @@ export class SendPageDataService implements OnDestroy {
     private genericSocket: GenericSocketService
   ) {
     BigNumber.config({ DECIMAL_PLACES: 8 })
-    this.getServerMode()
   }
 
   getData(): void {
@@ -46,10 +47,6 @@ export class SendPageDataService implements OnDestroy {
     } else {
       this.dataSubject.next({})
     }
-  }
-
-  getMaintenceMode(): Observable<boolean> {
-    return this.maintenaceModeActive.asObservable()
   }
 
   getDataStream(): Observable<any> {
@@ -262,18 +259,6 @@ export class SendPageDataService implements OnDestroy {
         err => {reject(err)}
       )
     })
-  }
-
-  getServerMode(): void {
-    this.connection = this.genericSocket
-      .getMessages('SERVER_MODE')
-      .subscribe(serverMode => {
-        if (serverMode === 'MAINTENANCE') {
-          this.maintenaceModeActive.next(true)
-        } else {
-          this.maintenaceModeActive.next(false)
-        }
-      })
   }
 
   ngOnDestroy() {

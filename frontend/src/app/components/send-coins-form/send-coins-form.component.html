@@ -53,10 +53,12 @@
         type="submit" name="action" routerLink="/send" (click)="storeFormData()">Estimate
         <i class="material-icons right">send</i>
       </button>
-      <button *ngIf="estimateValid" [ngClass]="{'disabled' : maintenaceModeActive }" class="btn waves-effect waves-light bg-fuschia lighten-1"
+      <button *ngIf="estimateValid" [ngClass]="{'disabled' : maintenceMode$ | async }" class="btn waves-effect waves-light bg-fuschia lighten-1"
         type="submit" name="action" routerLink="/send" (click)="createOrder(originCoin, destCoin, destAddr, transferAmount)">Send
         <i class="material-icons right">send</i>
       </button>
     </div>
+
+    <br> maintenceMode$: {{maintenceMode$ | async}}
   </div>
 </div>
