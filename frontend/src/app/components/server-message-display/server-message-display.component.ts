@@ -28,7 +28,7 @@ export class ServerMessageDisplayComponent implements OnInit {
   }
 
   connectToSocket():void {
-    this.connection = this.genericSocket.getMessages(this.socketUrl, 'SERVER_MESSAGES')
+    this.connection = this.genericSocket.getMessages('SERVER_MESSAGES')
     .subscribe((serverMessage:ServerMessageModel) => {
       if(Object.keys(serverMessage).length > 0) {
         this.displayMessage = serverMessage.showMessage

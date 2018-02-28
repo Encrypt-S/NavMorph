@@ -1,25 +1,20 @@
-import { Component, OnInit, Input, OnDestroy} from '@angular/core'
+import { Component, OnInit, Input } from '@angular/core'
 import { Router } from '@angular/router'
 import { FormsModule } from '@angular/forms'
+
 import { ChangellyApiService } from '../../services/changelly-api/changelly-api'
 import { OrderService } from '../../services/order/order'
 import { SendPageDataService } from '../../services/send-page-data/send-page-data'
 import { GenericSocketService } from '../../services/generic-socket/generic-socket'
+import { dataBundleTemplate } from '../../services/config'
 
 @Component({
   selector: 'send-coins-form-component',
   templateUrl: './send-coins-form.component.html',
   styleUrls: ['./send-coins-form.component.scss'],
-  providers: [
-    FormsModule,
-    ChangellyApiService,
-    OrderService,
-  ],
+  providers: [FormsModule, ChangellyApiService, OrderService]
 })
-
-
-export class SendCoinsFormComponent implements OnInit, OnDestroy {
-
+export class SendCoinsFormComponent implements OnInit {
   @Input() theme: string
   @Input() loaderTheme: string
   isDisabled: boolean = true
@@ -32,13 +27,11 @@ export class SendCoinsFormComponent implements OnInit, OnDestroy {
   estimateValid: boolean = false
   pageLoading: boolean
   formNotFilled: boolean = true
+  maintenaceModeActive: boolean = true
 
   errors = []
 
   formData: object = {}
-
-  private socketUrl = 'http://localhost:8080'
-  maintenaceModeActive: boolean = true
   connection
 
   constructor(
@@ -46,71 +39,63 @@ export class SendCoinsFormComponent implements OnInit, OnDestroy {
     private dataServ: SendPageDataService,
     private orderServ: OrderService,
     private router: Router,
-    private genericSocket: GenericSocketService,
+    private genericSocket: GenericSocketService
   ) {
-    if(!this.theme){
+    if (!this.theme) {
       this.theme = 'form-dark'
     }
   }
 
   ngOnInit() {
-    this.connectToSocket()
     this.getFormDataStream()
     this.getCurrencies()
+    this.subscribeToMaintenceMode()
   }
 
- ngOnDestroy() {
-    this.connection.unsubscribe()
-  }
-
-  connectToSocket():void {
-    this.connection = this.genericSocket.getMessages(this.socketUrl, 'SERVER_MODE').subscribe((serverMode) => {
-      console.log('connectToSocket', serverMode, this.maintenaceModeActive)
-      if (serverMode === 'MAINTENANCE') {
-        this.maintenaceModeActive = true
-      } else {
-        this.maintenaceModeActive = false
-      }
+  subscribeToMaintenceMode() {
+    this.dataServ.getMaintenceMode().subscribe((data: boolean) => {
+      this.maintenaceModeActive = data
     })
   }
 
-  setLoadingState(state: boolean):void {
+  setLoadingState(state: boolean): void {
     this.pageLoading = state
   }
 
-  getFormData():void {
+  getFormData(): void {
     this.dataServ.getData()
   }
 
   getFormDataStream() {
-    this.dataServ.getDataStream().subscribe(data => {
+    this.dataServ.getDataStream().subscribe((data: dataBundleTemplate) => {
       this.errors = []
       if (Object.keys(data).length > 0) {
         this.formData = data
         this.checkErrors(data.errors)
         this.fillForm(this.formData)
         this.dataServ.setDataStatus('SET')
+        this.maintenaceModeActive = data.maintenaceModeActive
         this.setLoadingState(false)
         this.checkFormFilled()
-      } else if (this.dataServ.checkDataStatus() === 'UNTOUCHED'){
+      } else if (this.dataServ.checkDataStatus() === 'UNTOUCHED') {
         this.setLoadingState(false)
         this.checkFormFilled()
       }
     })
   }
 
-  modelUpdated(input: string){
+  modelUpdated(input: string) {
     this.invalidateEstimate()
     let removedError
 
     if (input === 'AMOUNT') {
       removedError = 'INVALID_TRANSFER_AMOUNT'
-    } else if (input === 'INPUT'){
+    } else if (input === 'INPUT') {
       removedError = 'INVALID_DEST_ADDRESS'
     }
 
     const tempArray = []
-    this.errors.forEach((err) => {
+    this.errors.forEach(err => {
       if (err !== removedError) {
         tempArray.push(err)
       }
@@ -123,62 +108,70 @@ export class SendCoinsFormComponent implements OnInit, OnDestroy {
     this.estimateValid = false
   }
 
-  sendForm():void {
+  sendForm(): void {
     this.checkFormFilled()
-    if(this.formNotFilled) {
+    if (this.formNotFilled) {
       return
     }
     this.storeFormData()
   }
 
-  checkFormFilled():void {
-    if(this.transferAmount && this.destAddr) {
+  checkFormFilled(): void {
+    if (this.transferAmount && this.destAddr) {
       this.formNotFilled = false
     } else {
       this.formNotFilled = true
     }
   }
 
-  createOrder(originCoin, destCoin, destAddr, transferAmount):void {
-    this.orderServ.createOrder(originCoin, destCoin, destAddr, transferAmount).subscribe(
-      result => {
-        if (result.type === "FAIL" ){
+  createOrder(originCoin, destCoin, destAddr, transferAmount): void {
+    this.orderServ
+      .createOrder(originCoin, destCoin, destAddr, transferAmount)
+      .subscribe(
+        result => {
+          if (result.type === 'FAIL') {
+            this.errors.push('ORDER_CREATION_FAILED')
+            return
+          } else if (result.type === 'MAINTENANCE') {
+            this.errors.push('MAINTENANCE_MODE')
+            return
+          }
+          const statusPageUrl =
+            '/status/' + result.data['0'] + '/' + result.data['1']
+          this.router.navigateByUrl(statusPageUrl)
+        },
+        error => {
+          console.log('error creating order', error)
           this.errors.push('ORDER_CREATION_FAILED')
-          return
-        } else if (result.type === "MAINTENANCE" ){
-          this.errors.push('MAINTENANCE_MODE')
-          return
         }
-        const statusPageUrl = '/status/' + result.data['0'] + '/' + result.data['1']
-        this.router.navigateByUrl(statusPageUrl)
-      },
-      error => {
-        console.log('error creating order', error)
-        this.errors.push('ORDER_CREATION_FAILED')
-      })
+      )
   }
 
-  storeFormData():void {
+  storeFormData(): void {
     let originCoin = this.originCoin
     let destCoin = this.destCoin
 
     if (!originCoin) {
-        originCoin = this.currencies['0']
+      originCoin = this.currencies['0']
     }
     if (!destCoin) {
-        destCoin = this.currencies['0']
+      destCoin = this.currencies['0']
     }
-    console.log('***storeFormData***', this.transferAmount, originCoin, destCoin, this.destAddr)
-    this.dataServ.storeData(this.transferAmount, originCoin, destCoin, this.destAddr)
+    this.dataServ.storeData(
+      this.transferAmount,
+      originCoin,
+      destCoin,
+      this.destAddr
+    )
   }
 
-  fillForm(data):void {
+  fillForm(data): void {
     this.transferAmount = data.transferAmount ? data.transferAmount : undefined
     this.originCoin = data.originCoin ? data.originCoin : undefined
     this.destCoin = data.destCoin
     this.destAddr = data.destAddr
 
-    if( data.errors.length === 0 && this.dataServ.previousPageUrl === '/') {
+    if (data.errors.length === 0 && this.dataServ.previousPageUrl === '/') {
       this.estimateValid = true
       setTimeout(() => {
         this.estimateValid = false
@@ -189,7 +182,7 @@ export class SendCoinsFormComponent implements OnInit, OnDestroy {
     }
   }
 
-  clearFormData():void {
+  clearFormData(): void {
     this.dataServ.clearData(true)
     this.checkFormFilled()
     this.estimateValid = false
@@ -199,49 +192,52 @@ export class SendCoinsFormComponent implements OnInit, OnDestroy {
 
   getCurrencies() {
     this.setLoadingState(true)
-    this.changellyApi.getCurrencies()
-      .subscribe(
-        res => {
-          console.log(res)
-          const currencies = res.data.currencies
-          if (this.checkCurrData(currencies)) {
-            this.currencies = this.formatCurrData(currencies)
-            this.isDisabled = false
-            this.getFormData()
-          }
-        },
-        error => {
-          this.isDisabled = true
-          console.log('error loading currencies', error)
-          this.currencies = ['ERROR']
-          this.errors.push('NOT_FOUND')
-          this.setLoadingState(false)
-        })
+    this.changellyApi.getCurrencies().subscribe(
+      res => {
+        console.log(res)
+        const currencies = res.data.currencies
+        if (this.checkCurrData(currencies)) {
+          this.currencies = this.formatCurrData(currencies)
+          this.isDisabled = false
+          this.getFormData()
+        }
+      },
+      error => {
+        this.isDisabled = true
+        console.log('error loading currencies', error)
+        this.currencies = ['ERROR']
+        this.errors.push('NOT_FOUND')
+        this.setLoadingState(false)
+      }
+    )
   }
 
   checkErrors(errorBundle) {
-    if(errorBundle.indexOf('INVALID_DEST_ADDRESS') > -1) {
+    if (errorBundle.indexOf('INVALID_DEST_ADDRESS') > -1) {
       this.errors.push('INVALID_DEST_ADDRESS')
     }
-    if(errorBundle.indexOf('INVALID_TRANSFER_AMOUNT') > -1 || errorBundle.indexOf('TRANSFER_TOO_SMALL') > -1
-      || errorBundle.indexOf('TRANSFER_TOO_LARGE') > -1 ) {
+    if (
+      errorBundle.indexOf('INVALID_TRANSFER_AMOUNT') > -1 ||
+      errorBundle.indexOf('TRANSFER_TOO_SMALL') > -1 ||
+      errorBundle.indexOf('TRANSFER_TOO_LARGE') > -1
+    ) {
       this.errors.push('INVALID_TRANSFER_AMOUNT')
     }
-    if(errorBundle.indexOf('NAV_TO_NAV_TRANSFER') > -1) {
+    if (errorBundle.indexOf('NAV_TO_NAV_TRANSFER') > -1) {
       this.errors.push('NAV_TO_NAV_TRANSFER')
     }
-    if(errorBundle.indexOf('CHANGELLY_ERROR') > -1) {
+    if (errorBundle.indexOf('CHANGELLY_ERROR') > -1) {
       this.errors.push('CHANGELLY_ERROR')
     }
   }
 
   displayError(error) {
     console.log(error)
-    switch(error.slice(0,3)){
-      case('404'):
+    switch (error.slice(0, 3)) {
+      case '404':
         this.errors.push('NOT_FOUND')
         break
-      case('400'):
+      case '400':
         this.errors.push('DATA_FORMAT')
       default:
         this.errors.push('DEFAULT')
@@ -251,7 +247,7 @@ export class SendCoinsFormComponent implements OnInit, OnDestroy {
   }
 
   checkCurrData(data) {
-    if(data instanceof Array && data[0] instanceof String ) {
+    if (data instanceof Array && data[0] instanceof String) {
       this.displayError('400')
       return false
     }
@@ -260,7 +256,7 @@ export class SendCoinsFormComponent implements OnInit, OnDestroy {
 
   formatCurrData(coins) {
     const formattedCoins = []
-    coins.forEach((coin) => {
+    coins.forEach(coin => {
       formattedCoins.push(coin.toUpperCase())
     })
     return formattedCoins
