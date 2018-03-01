@@ -119,7 +119,7 @@ app.startUpServer = async () => {
 
       Logger.writeLog('n/a', 'Sending start up notification email.', null, false)
       Logger.writeLog('Server Start Up', 'Start Up Complete @' + new Date().toISOString() +
-        ', Polymorph Version: ' + config.version, null, true)
+        ', NavMorph Version: ' + config.version, null, true)
 
       /**
       * Setup the process handler

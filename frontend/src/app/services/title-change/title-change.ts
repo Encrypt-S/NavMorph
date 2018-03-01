@@ -14,7 +14,7 @@ export class TitleChangeService {
   }
 
   getNewTitle(url: string){
-    let newTitle = 'Polymorph - '
+    let newTitle = 'NavMorph - '
     if(url === '/'){
       return newTitle + 'Home';
     }

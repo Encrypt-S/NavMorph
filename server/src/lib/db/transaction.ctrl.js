@@ -106,7 +106,7 @@ TransactionCtrl.checkIfIdExists = (polymorphId) => {
       if (polymorphId) {
         query.where('polymorph_id').equals(polymorphId)
       } else {
-        reject(new Error('Incorrect Params - No Polymorph ID'))
+        reject(new Error('Incorrect Params - No NavMorph ID'))
         return
       }
       query.exec()

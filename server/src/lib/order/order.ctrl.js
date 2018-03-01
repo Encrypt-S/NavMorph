@@ -19,7 +19,7 @@ OrderCtrl.createOrder = (req, res) => {
   })
   .catch((error) => {
     ErrorHandler.handleError({
-      statusMessage: 'Unable to create Polymorph Order',
+      statusMessage: 'Unable to create NavMorph Order',
       err: error,
       code: 'ORDER_CTRL_001',
       sendEmail: true,
@@ -43,7 +43,7 @@ OrderCtrl.checkServerMode = (req, res) => {
   })
   .catch((error) => {
     ErrorHandler.handleError({
-      statusMessage: 'Unable to create Polymorph Order',
+      statusMessage: 'Unable to create NavMorph Order',
       err: error,
       code: 'ORDER_CTRL_002',
       sendEmail: true,
@@ -60,7 +60,7 @@ OrderCtrl.beginOrderCreation = (req, res) => {
   })
   .catch((error) => {
     ErrorHandler.handleError({
-      statusMessage: 'Unable to create Polymorph Order',
+      statusMessage: 'Unable to create NavMorph Order',
       err: error,
       code: 'ORDER_CTRL_003',
       sendEmail: true,
@@ -81,7 +81,7 @@ OrderCtrl.getFirstChangellyAddress = (req, res) => {
     })
     .catch((error) => {
       ErrorHandler.handleError({
-        statusMessage: 'Unable to create Polymorph Order',
+        statusMessage: 'Unable to create NavMorph Order',
         err: error,
         code: 'ORDER_CTRL_004',
         sendEmail: true,
@@ -103,7 +103,7 @@ OrderCtrl.getSecondChangellyAddress = (req, res) => {
     })
     .catch((error) => {
       ErrorHandler.handleError({
-        statusMessage: 'Unable to create Polymorph Order',
+        statusMessage: 'Unable to create NavMorph Order',
         err: error,
         code: 'ORDER_CTRL_005',
         sendEmail: true,
@@ -124,7 +124,7 @@ OrderCtrl.prepForDb = (req, res) => {
   })
   .catch((error) => {
     ErrorHandler.handleError({
-      statusMessage: 'Unable to create Polymorph Order',
+      statusMessage: 'Unable to create NavMorph Order',
       err: error,
       code: 'ORDER_CTRL_006',
       sendEmail: true,
@@ -144,7 +144,7 @@ OrderCtrl.storeOrder = (req, res) => {
   })
   .catch((error) => {
     ErrorHandler.handleError({
-      statusMessage: 'Unable to create Polymorph Order',
+      statusMessage: 'Unable to create NavMorph Order',
       err: error,
       code: 'ORDER_CTRL_007',
       sendEmail: true,
