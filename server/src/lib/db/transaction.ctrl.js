@@ -22,7 +22,6 @@ TransactionCtrl.createTransaction = (req, res) => {
     TransactionCtrl.runtime.transaction = new TransactionModel({
       changelly_id: req.params.changellyId || '123123123',
       polymorph_id: req.params.polymorphId,
-      polymorph_pass: req.params.polymorphPass,
       changelly_address_one: req.params.changellyAddressOne,
       changelly_address_two: req.params.changellyAddressTwo,
       order_amount: req.params.amount,
@@ -41,15 +40,15 @@ TransactionCtrl.createTransaction = (req, res) => {
   })
 }
 
-TransactionCtrl.getOrder = (id, pass) => {
+TransactionCtrl.getOrder = (id) => {
   return new Promise((fulfill, reject) => {
     const query = TransactionModel.find()
-    if (!id || !pass) {
-      reject(new Error('Id or Password missing. Id: ' + id + '. Pass: ' + pass))
+    if (!id) {
+      reject(new Error('Id. Id: ' + id))
       return
     }
-    query.and([{ polymorph_id: id }, { polymorph_pass: pass }])
-    query.select('-_id polymorph_id polymorph_pass changelly_address_one changelly_id ' +
+    query.and([{ polymorph_id: id }])
+    query.select('-_id polymorph_id changelly_address_one changelly_id ' +
       'order_amount input_currency output_currency order_status')
     query.exec()
     .then((order) => { fulfill(order) })
@@ -97,31 +96,6 @@ TransactionCtrl.gotTransaction = (err, transactions) => {
     type: 'SUCCESS',
     data: transactions,
   }))
-}
-
-TransactionCtrl.checkIfIdExists = (polymorphId) => {
-  return new Promise((fulfill, reject) => {
-    const query = TransactionModel.find()
-    try {
-      if (polymorphId) {
-        query.where('polymorph_id').equals(polymorphId)
-      } else {
-        reject(new Error('Incorrect Params - No NavMorph ID'))
-        return
-      }
-      query.exec()
-      .then((result) => {
-        if (result.length !== 0) {
-          fulfill(true)
-          return
-        }
-        fulfill(false)
-      })
-      .catch((error) => { reject(error) })
-    } catch (exception) {
-      reject(exception)
-    }
-  })
 }
 
 module.exports = TransactionCtrl

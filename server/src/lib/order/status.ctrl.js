@@ -29,7 +29,7 @@ OrderStatusCtrl.getOrder = (req, res) => {
           res
         }))
       } else {
-        OrderStatusCtrl.checkOrderExists(params, res)
+        OrderStatusCtrl.getOrderFromDb(params, res)
       }
     })
     .catch((error) => { ErrorHandler.handleError({
@@ -52,29 +52,8 @@ OrderStatusCtrl.getOrder = (req, res) => {
   })
 }
 
-
-OrderStatusCtrl.checkOrderExists = (params, res) => {
-  TransactionCtrl.checkIfIdExists(params.orderId)
-  .then((orderExists) => {
-    if (orderExists) {
-      OrderStatusCtrl.getOrderFromDb(params, res)
-    } else {
-      res.send([[], []])
-    }
-  })
-  .catch((error) => {
-    ErrorHandler.handleError({
-      statusMessage: 'Unable to fetch/update NavMorph Order',
-      code: 'ORDER_STATUS_CTRL_004',
-      err: error,
-      sendEmail: true,
-      res
-    })
-  })
-}
-
 OrderStatusCtrl.getOrderFromDb = (params, res) => {
-  TransactionCtrl.getOrder(params.orderId, params.orderPassword)
+  TransactionCtrl.getOrder(params.orderId)
   .then((orderArr) => {
     const order = orderArr[0]
     if (!order) {
@@ -162,7 +141,7 @@ OrderStatusCtrl.updateOrderStatus = (req, res) => {
         res
       })
     }
-    TransactionCtrl.updateOrderStatus(params.orderId, params.orderPassword, params.newStatus)
+    TransactionCtrl.updateOrderStatus(params.orderId, params.newStatus)
   })
   .then((order) => { res.send(order) })
   .catch((error) => {
@@ -180,8 +159,7 @@ OrderStatusCtrl.abandonOrder = (req, res) => {
   OrderStatusCtrl.validateParams(req.params, ApiOptions.updateOrderStatusOptions)
   .then(() => {
     const polymorphId = req.params.orderId
-    const orderPassword = req.params.orderPassword
-    TransactionCtrl.updateOrderStatus(polymorphId, orderPassword, 'ABANDONED')
+    TransactionCtrl.updateOrderStatus(polymorphId, 'ABANDONED')
   })
   .then(() => { res.send({ status: 'SUCCESS' }) })
   .catch((error) => {
