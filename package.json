@@ -19,5 +19,8 @@
   "bugs": {
     "url": "https://github.com/NAVCoin/polymorph/issues"
   },
-  "homepage": "https://github.com/NAVCoin/polymorph#readme"
+  "homepage": "https://github.com/NAVCoin/polymorph#readme",
+  "dependencies": {
+    "uuid": "^3.2.1"
+  }
 }
