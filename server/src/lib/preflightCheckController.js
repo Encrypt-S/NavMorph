@@ -4,7 +4,7 @@ let config = require('../server-settings')
 const preflightCheckController = {}
 
 preflightCheckController.startChecks = async () => {
-  const unlocked = await client.unlockWallet()
+  const unlocked = await client.nav.unlockWallet()
   if(!unlocked) {
     throw new Error('Unable to connect to wallet / NavCoin wallet is locked')
   }

@@ -36,6 +36,7 @@
         <label for="enter-text-ex" [ngClass]="{'active': destAddr}">Enter Destination Address</label>
       </div>
 
+
       <div class="input-field col s3 no-hoz-spacing">
         <select materialize="material_select" [materializeSelectOptions]="currencies" [ngClass]="{'invalid': errors.indexOf('NAV_TO_NAV_TRANSFER') > -1}"
           [(ngModel)]="destCoin" (change)="invalidateEstimate()" name="destCoin" [attr.disabled]="isDisabled?true:null">
@@ -45,6 +46,9 @@
       </div>
     </div>
   </div>
+  <div class="row">
+    <span>1F1tAaz5x1HUXrCNLbtMDqcw6o5GNn4xqX</span>
+  </div>
 
   <div class="row">
     <div class="send-buttons col s12 no-hoz-spacing">
@@ -53,10 +57,14 @@
         type="submit" name="action" routerLink="/send" (click)="storeFormData()">Estimate
         <i class="material-icons right">send</i>
       </button>
-      <button *ngIf="estimateValid" [ngClass]="{'disabled' : maintenceMode$ | async }" class="btn waves-effect waves-light bg-fuschia lighten-1"
-        type="submit" name="action" routerLink="/send" (click)="createOrder(originCoin, destCoin, destAddr, transferAmount)">Send
+      <button *ngIf="estimateValid" [ngClass]="{'disabled' : maintenanceMode$ | async }" class="btn waves-effect waves-light bg-fuschia lighten-1"
+        type="submit" name="action" (click)="createOrder(originCoin, destCoin, destAddr, transferAmount)">Send Payment
         <i class="material-icons right">send</i>
       </button>
     </div>
+    inMaintenanceMode : {{ inMaintenanceMode }}
+    <br /> maintenanceMode$ : {{ maintenanceMode$ | async }}
+    <br /> staticMaintenceMode : {{ canSend() }}
+    <br />
   </div>
 </div>

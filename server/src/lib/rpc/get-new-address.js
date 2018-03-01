@@ -6,14 +6,14 @@ const config = require('../../server-settings')
 Rpc.getNewAddress = () => {
   return new Promise((fulfill, reject) => {
     try {
-      const address = Rpc.navClient.getNewAddress()
+      const address = Rpc.getNewAddress()
       fulfill(address)
     } catch (firstGetAddressError) {
       if (firstGetAddressError.code === -12) {
         Rpc.keypoolRefill()
         .then(() => {
           try {
-            const address = Rpc.navClient.getNewAddress()
+            const address = Rpc.getNewAddress()
             fulfill(address)
           } catch (secondGetAddressError) {
             reject(secondGetAddressError)

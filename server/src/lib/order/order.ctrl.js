@@ -2,7 +2,7 @@
 
 const Keygen = require('generate-key')
 
-const GetNewAddress = require('../rpc/get-new-address')
+const client = require('../rpc/client')
 const ChangellyCtrl = require('../changelly/changelly.ctrl')
 const TransactionCtrl = require('../db/transaction.ctrl')
 const ServerModeCtrl = require('../db/serverMode.ctrl')
@@ -12,12 +12,15 @@ let ErrorHandler = require('../error-handler') // eslint-disable-line prefer-con
 
 const OrderCtrl = {}
 
-OrderCtrl.createOrder = (req, res) => {
-  Validator.startValidation(req.params, ApiOptions.orderOptions)
-  .then(() => {
-    OrderCtrl.checkServerMode(req, res)
-  })
-  .catch((error) => {
+OrderCtrl.createOrder = async (req, res) => {
+  console.log('create Order - req.params', req.params, ApiOptions.orderOptions)
+  try {
+    await Validator.startValidation(req.params, ApiOptions.orderOptions)
+    await OrderCtrl.checkForMaintenance(req, res)
+    await OrderCtrl.beginOrderCreation(req, res)
+    console.log('Finished...')
+  } catch (error) {
+    console.log('OrderCtrl.createOrder', error)
     ErrorHandler.handleError({
       statusMessage: 'Unable to create Polymorph Order',
       err: error,
@@ -25,32 +28,30 @@ OrderCtrl.createOrder = (req, res) => {
       sendEmail: true,
       res
     })
-  })
+  }
 }
 
-OrderCtrl.checkServerMode = (req, res) => {
-  OrderCtrl.checkForMaintenance()
-  .then((maintenanceActive) => {
-    if (maintenanceActive) {
-      res.send(JSON.stringify({
-        status: 200,
-        type: 'MAINTENANCE',
-        data: [],
-      }))
-      return
-    }
-    OrderCtrl.beginOrderCreation(req, res)
-  })
-  .catch((error) => {
-    ErrorHandler.handleError({
-      statusMessage: 'Unable to create Polymorph Order',
-      err: error,
-      code: 'ORDER_CTRL_002',
-      sendEmail: true,
-      res
-    })
-  })
-}
+// OrderCtrl.checkServerMode = (req, res) => {
+//   OrderCtrl.checkForMaintenance()
+//   .then((maintenanceActive) => {
+//     if (maintenanceActive) {
+//       res.send(JSON.stringify({
+//         status: 200,
+//         type: 'MAINTENANCE',
+//         data: [],
+//       }))
+//     }
+//   })
+//   .catch((error) => {
+//     ErrorHandler.handleError({
+//       statusMessage: 'Unable to create Polymorph Order',
+//       err: error,
+//       code: 'ORDER_CTRL_002',
+//       sendEmail: true,
+//       res
+//     })
+//   })
+// }
 
 OrderCtrl.beginOrderCreation = (req, res) => {
   OrderCtrl.getNavAddress()
@@ -153,31 +154,15 @@ OrderCtrl.storeOrder = (req, res) => {
   })
 }
 
-OrderCtrl.checkForMaintenance = () => {
-  return new Promise((fulfill, reject) => {
-    ServerModeCtrl.checkMode()
-    .then((mode) => {
-      if (mode === 'MAINTENANCE') {
-        fulfill(true)
-      } else {
-        fulfill(false)
-      }
-    })
-    .catch(err => reject(err))
-  })
+OrderCtrl.checkForMaintenance = async () => {
+  const mode = await ServerModeCtrl.checkMode()
+  return mode
 }
 
 
-OrderCtrl.getNavAddress = () => {
-  return new Promise((fulfill, reject) => {
-    GetNewAddress.getNewAddress()
-    .then((newAddress) => {
-      fulfill(newAddress)
-    })
-    .catch((error) => {
-      reject(error)
-    })
-  })
+OrderCtrl.getNavAddress = async () => {
+  const address = client.nav.getNewAddress()
+  return address
 }
 
 OrderCtrl.getChangellyAddress = (inputCurrency, outputCurrency, destAddress) => {

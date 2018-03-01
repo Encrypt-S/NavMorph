@@ -6,7 +6,7 @@ let client = rewire('../src/lib/rpc/client')
 
 
 describe('[Rpc]', () => {
-  describe('(unlockWallet)', () => {
+  describe('(nav.unlockWallet)', () => {
     beforeEach(() => { // reset the rewired functions
       client = rewire('../src/lib/rpc/client')
       const mockUnknownError = new Error()
@@ -18,7 +18,7 @@ describe('[Rpc]', () => {
       const mockRpc = { walletPassphrase: () => Promise.reject({ message: 'unknown'}) }
       client.__set__('rpc', mockRpc)
 
-      client.unlockWallet().then(result => {
+      client.nav.unlockWallet().then(result => {
         expect(result).toBe(false)
         done()
       })
@@ -28,7 +28,7 @@ describe('[Rpc]', () => {
       const mockRpc = { walletPassphrase: () => Promise.reject({ message: 'unencrypted'}) }
       client.__set__('rpc', mockRpc)
 
-      client.unlockWallet().then(result => {
+      client.nav.unlockWallet().then(result => {
         expect(result).toBe(true)
         done()
       })
@@ -39,7 +39,7 @@ describe('[Rpc]', () => {
       const mockRpc = { walletPassphrase: () => Promise.resolve() }
       client.__set__('rpc', mockRpc)
 
-      client.unlockWallet().then(result => {
+      client.nav.unlockWallet().then(result => {
         expect(result).toBe(true)
         done()
       })

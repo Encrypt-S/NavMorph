@@ -5,7 +5,8 @@ const ApiOptions = require('../api-options.json')
 const ErrorHandler = {}
 
 ErrorHandler.handleError = (params) => {
-  Validator.startValidation(params, ApiOptions)
+  console.log('ErrorHandler.handleError', params, ApiOptions.ErrorHandler)
+  Validator.startValidation(params, ApiOptions.ErrorHandler)
   .then(() => {
     params.res.send(JSON.stringify({
       statusCode: 200,
