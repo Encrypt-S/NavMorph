@@ -1,7 +1,7 @@
 version: "2"
 
 services:
-  polymorph_server:
+  navcoin_server:
     build: .
     command: node src/server.js
     ports:

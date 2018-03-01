@@ -1,7 +1,7 @@
 version: "2"
 
 services:
-  navmorph_server:
+  polymorph_server:
     command: /bin/bash ./start-dev.sh
     volumes:
       - ./:/usr/src/app
