@@ -5,14 +5,14 @@
 set_status () { 
   echo "Updating server status to $1"
   
-  echo "Calling: mongo NavMorph --eval \"db.servermodes.update({}, {'server_mode': '$1'})\""
+  echo "Calling: mongo polymorph --eval \"db.servermodes.update({}, {'server_mode': '$1'})\""
   echo "--------"
-  mongo NavMorph --eval "db.servermodes.update({}, {'server_mode': '$1'},{upsert:true})" 
+  mongo polymorph --eval "db.servermodes.update({}, {'server_mode': '$1'},{upsert:true})" 
   echo "--------"
   echo "Server status updated"
   echo "Fetching server mode"
   echo "--------"
-  mongo NavMorph --eval "db.servermodes.find({})" 
+  mongo polymorph --eval "db.servermodes.find({})" 
   echo "--------"
   exit
 }
