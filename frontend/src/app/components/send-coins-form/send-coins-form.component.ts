@@ -132,7 +132,7 @@ export class SendCoinsFormComponent implements OnInit {
           this.errors.push('MAINTENANCE_MODE')
           return
         }
-        const statusPageUrl = '/status/' + result.data['0'] + '/' + result.data['1']
+        const statusPageUrl = '/status/' + result.data['0']
         this.router.navigateByUrl(statusPageUrl)
       },
       error => {

@@ -53,7 +53,7 @@ OrderStatusCtrl.getOrder = (req, res) => {
 }
 
 OrderStatusCtrl.getOrderFromDb = (params, res) => {
-  TransactionCtrl.getOrder(params.orderId, params.orderPassword)
+  TransactionCtrl.getOrder(params.orderId)
   .then((orderArr) => {
     const order = orderArr[0]
     if (!order) {
@@ -141,7 +141,7 @@ OrderStatusCtrl.updateOrderStatus = (req, res) => {
         res
       })
     }
-    TransactionCtrl.updateOrderStatus(params.orderId, params.orderPassword, params.newStatus)
+    TransactionCtrl.updateOrderStatus(params.orderId, params.newStatus)
   })
   .then((order) => { res.send(order) })
   .catch((error) => {
@@ -159,8 +159,7 @@ OrderStatusCtrl.abandonOrder = (req, res) => {
   OrderStatusCtrl.validateParams(req.params, ApiOptions.updateOrderStatusOptions)
   .then(() => {
     const polymorphId = req.params.orderId
-    const orderPassword = req.params.orderPassword
-    TransactionCtrl.updateOrderStatus(polymorphId, orderPassword, 'ABANDONED')
+    TransactionCtrl.updateOrderStatus(polymorphId, 'ABANDONED')
   })
   .then(() => { res.send({ status: 'SUCCESS' }) })
   .catch((error) => {

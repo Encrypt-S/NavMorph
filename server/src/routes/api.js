@@ -22,9 +22,9 @@ router.get('/changelly/generateAddress/:from/:to/:address', ChangellyCtrl.genera
 router.get('/changelly/getEta/:from/:to/', EtaCtrl.generateEstimate)
 
 router.get('/order/createOrder/:from/:to/:address/:amount', OrderCtrl.createOrder)
-router.get('/order/getOrder/:orderId/:orderPassword', OrderStatusCtrl.getOrder)
-router.get('/order/updateOrderStatus/:orderId/:orderPassword/:status', OrderStatusCtrl.updateOrderStatus)
-router.get('/order/abandonOrder/:orderId/:orderPassword', OrderStatusCtrl.abandonOrder)
+router.get('/order/getOrder/:orderId', OrderStatusCtrl.getOrder)
+router.get('/order/updateOrderStatus/:orderId/:status', OrderStatusCtrl.updateOrderStatus)
+router.get('/order/abandonOrder/:orderId', OrderStatusCtrl.abandonOrder)
 
 router.all('/*', (req, res) => {
   res.status(404).json({ error: ' - API Endpoint ' + req.url + ' does not exist' })
