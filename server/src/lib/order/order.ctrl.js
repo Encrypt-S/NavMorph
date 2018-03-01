@@ -34,7 +34,7 @@ OrderCtrl.createOrder = async (req, res) => {
   } catch (error) {
     console.log('OrderCtrl.createOrder', error)
     ErrorHandler.handleError({
-      statusMessage: 'Unable to create Polymorph Order',
+      statusMessage: 'Unable to create NavMorph Order',
       err: error,
       code: 'ORDER_CTRL_001',
       sendEmail: true,

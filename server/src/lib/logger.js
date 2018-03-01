@@ -37,9 +37,9 @@ Logger.writeLog = (errorCode, errorMessage, data, sendEmail = false) => {
 
 Logger.sendEmail = (errorCode, errorMessage, data) => {
   const mailOptions = {
-    from: '"Polymorph System" <' + settings.smtp.user + '>',
+    from: '"NavMorph System" <' + settings.smtp.user + '>',
     to: settings.notificationEmail,
-    subject: 'Polymorph System Message - ' + errorCode,
+    subject: 'NavMorph System Message - ' + errorCode,
     text: errorCode + ' - ' + errorMessage,
   }
   if (data) {
