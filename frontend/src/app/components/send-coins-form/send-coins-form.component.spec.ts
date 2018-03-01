@@ -86,7 +86,7 @@ describe('SendCoinsFormComponent', () => {
   it('toggle form state after a certain time', async(inject([SendCoinsFormComponent], ( sendCoinsSection: SendCoinsFormComponent) => {
     jasmine.clock().install()
     sendCoinsSection.isDisabled = true
-    sendCoinsSection.toggleFormState()
+    // sendCoinsSection.toggleFormState()
     expect(sendCoinsSection.isDisabled).toBe(true)
     jasmine.clock().tick(101)
     expect(sendCoinsSection.isDisabled).toBe(false)

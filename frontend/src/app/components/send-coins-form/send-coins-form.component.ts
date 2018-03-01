@@ -5,6 +5,7 @@ import { Observable } from 'rxjs/Observable'
 import { Subscription } from 'rxjs/Subscription'
 import { Observer } from 'rxjs/Observer'
 import { Subscriber } from 'rxjs/Subscriber'
+import { BehaviorSubject } from 'rxjs/BehaviorSubject'
 
 import { ChangellyApiService } from '../../services/changelly-api/changelly-api'
 import { OrderService } from '../../services/order/order'
@@ -33,11 +34,8 @@ export class SendCoinsFormComponent implements OnInit {
   estimateValid: boolean = false
   pageLoading: boolean
   formNotFilled: boolean = true
-
-  maintenceMode$: Observable<boolean>
-
+  maintenanceMode$: Observable<any>
   errors = []
-
   formData: object = {}
   connection
 
@@ -48,7 +46,6 @@ export class SendCoinsFormComponent implements OnInit {
     private router: Router,
     private genericSocket: GenericSocketService
   ) {
-    this.maintenceMode$ = this.genericSocket.maintenceMode$
     if (!this.theme) {
       this.theme = 'form-dark'
     }
@@ -57,6 +54,7 @@ export class SendCoinsFormComponent implements OnInit {
   ngOnInit() {
     this.getFormDataStream()
     this.getCurrencies()
+    this.maintenanceMode$ = this.genericSocket.maintenanceModeLast$
   }
 
   setLoadingState(state: boolean): void {

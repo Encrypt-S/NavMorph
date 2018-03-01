@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core'
 import { Observable } from 'rxjs/Observable'
+import { BehaviorSubject } from 'rxjs/BehaviorSubject'
 import * as io from 'socket.io-client'
 
 import * as config from '../../services/config'
@@ -7,13 +8,16 @@ import * as config from '../../services/config'
 @Injectable()
 export class GenericSocketService {
   private socket
-  public serverMode$: Observable<string>
-  public maintenceMode$: Observable<boolean>
+  public serverMode$: BehaviorSubject<string>
+  public maintenanceModeLast$: Observable<boolean>
 
   constructor() {
     this.socket = io(config.socketsUrl)
-    this.serverMode$ = Observable.fromEvent(this.socket, 'SERVER_MODE')
-    this.maintenceMode$ = this.serverMode$.map(value => value === 'MAINTENANCE').startWith(true)
+    this.serverMode$ = new BehaviorSubject('MAINTENANCE')
+    this.maintenanceModeLast$ = this.serverMode$.map(val => val === 'MAINTENANCE')
+    this.socket.on('SERVER_MODE', data => {
+      this.serverMode$.next(data)
+    })
   }
 
   sendMessage(messageType: string, messageContent: string) {
