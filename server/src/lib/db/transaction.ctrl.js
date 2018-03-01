@@ -99,29 +99,4 @@ TransactionCtrl.gotTransaction = (err, transactions) => {
   }))
 }
 
-TransactionCtrl.checkIfIdExists = (polymorphId) => {
-  return new Promise((fulfill, reject) => {
-    const query = TransactionModel.find()
-    try {
-      if (polymorphId) {
-        query.where('polymorph_id').equals(polymorphId)
-      } else {
-        reject(new Error('Incorrect Params - No Polymorph ID'))
-        return
-      }
-      query.exec()
-      .then((result) => {
-        if (result.length !== 0) {
-          fulfill(true)
-          return
-        }
-        fulfill(false)
-      })
-      .catch((error) => { reject(error) })
-    } catch (exception) {
-      reject(exception)
-    }
-  })
-}
-
 module.exports = TransactionCtrl

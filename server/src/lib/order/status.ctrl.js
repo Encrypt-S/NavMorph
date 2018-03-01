@@ -29,7 +29,7 @@ OrderStatusCtrl.getOrder = (req, res) => {
           res
         }))
       } else {
-        OrderStatusCtrl.checkOrderExists(params, res)
+        OrderStatusCtrl.getOrderFromDb(params, res)
       }
     })
     .catch((error) => { ErrorHandler.handleError({
@@ -45,27 +45,6 @@ OrderStatusCtrl.getOrder = (req, res) => {
     ErrorHandler.handleError({
       statusMessage: 'Unable to fetch/update Polymorph Order',
       code: 'ORDER_STATUS_CTRL_001',
-      err: error,
-      sendEmail: true,
-      res
-    })
-  })
-}
-
-
-OrderStatusCtrl.checkOrderExists = (params, res) => {
-  TransactionCtrl.checkIfIdExists(params.orderId)
-  .then((orderExists) => {
-    if (orderExists) {
-      OrderStatusCtrl.getOrderFromDb(params, res)
-    } else {
-      res.send([[], []])
-    }
-  })
-  .catch((error) => {
-    ErrorHandler.handleError({
-      statusMessage: 'Unable to fetch/update Polymorph Order',
-      code: 'ORDER_STATUS_CTRL_004',
       err: error,
       sendEmail: true,
       res

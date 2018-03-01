@@ -110,6 +110,7 @@ ChangellyCtrl.internal.generateAddress = (params) => {
           reject(new Error(data.err))
           return
         }
+        console.log('generateAddress', data)
         fulfill(data)
       })
     })
