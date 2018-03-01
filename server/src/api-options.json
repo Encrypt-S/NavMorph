@@ -3,20 +3,14 @@
     "orderId": [{
       "validator": "isString"
     }],
-    "orderPassword": [{
-      "validator": "isString"
-    }],
     "ipAddress": [{
       "validator": "isString",
-      "shouldBeAlphanumeric": false 
+      "shouldBeAlphanumeric": false
     }]
   },
 
   "updateOrderStatusOptions": {
     "orderId": [{
-      "validator": "isString"
-    }],
-    "orderPassword": [{
       "validator": "isString"
     }],
     "status": [{
