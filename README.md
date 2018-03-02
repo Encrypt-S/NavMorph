@@ -60,7 +60,6 @@ For you convince we have a run and serve script.
 
 `dev-start.sh`
 
-
 ## Code scaffolding
 
 We use angular cli for creating new components.
