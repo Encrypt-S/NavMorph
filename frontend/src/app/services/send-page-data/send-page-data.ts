@@ -131,8 +131,8 @@ export class SendPageDataService implements OnDestroy {
 
   estimateArrivalTime(originCoin, destCoin, transferAmount) {
     this.getEta(originCoin, destCoin)
-      .then(data => {
-        this.dataBundle.estTime = data
+      .then(res => {
+        this.dataBundle.estTime = res.data.eta
         this.estimateFirstExchange(originCoin, destCoin, transferAmount)
       })
       .catch(err => {

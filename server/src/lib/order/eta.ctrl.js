@@ -15,11 +15,9 @@ EtaCtrl.generateEstimate = async (req, res) => {
   try {
     await Validator.startValidation(req.params, ApiOptions.generateEstimateOptions)
     const eta = await EtaCtrl.getEta({ status: 'ESTIMATE', timeSent: new Date(), from: req.params.from, to: req.params.to })
-    res.send(JSON.stringify({
-      status: 200,
-      type: 'SUCCESS',
-      data: [eta],
-    }))
+    res.status(200).json({
+      data: { eta: eta }
+    })
     return
   } catch(error) {
     ErrorHandler.handleError({
@@ -32,23 +30,18 @@ EtaCtrl.generateEstimate = async (req, res) => {
   }
 }
 
-EtaCtrl.getEta = (params) => {
-  return new Promise((fufill, reject) => {
-    Validator.startValidation(params, ApiOptions.getEtaOptions)
-    .then(() => {
-      if (!EtaCtrl.validStatus(params.status)) {
-        reject(new Error('INVALID_ORDER_STATUS'))
-        return
-      } else if (params.status === 'FINISHED' && !(params.timeSent instanceof Date)) {
-        reject(new Error('INVALID_SENT_TIME'))
-        return
-      }
-      fufill(EtaCtrl.buildEta(params))
-    })
-    .catch((error) => {
-      reject({ error })
-    })
-  })
+EtaCtrl.getEta = async (params) => {
+  try {
+    await Validator.startValidation(params, ApiOptions.getEtaOptions)
+    if (!EtaCtrl.validStatus(params.status)) {
+      return new Error('INVALID_ORDER_STATUS')
+    } else if (params.status === 'FINISHED' && !(params.timeSent instanceof Date)) {
+      throw new Error('INVALID_SENT_TIME')
+    }
+    return await EtaCtrl.buildEta(params)
+  } catch(error) {
+    throw error
+  }
 }
 
 EtaCtrl.validStatus = (status) => {
