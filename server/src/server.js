@@ -53,10 +53,6 @@ app.startUpServer = async () => {
     next()
   })
 
-
-  // Point static path to dist
-  app.use(express.static(path.join(__dirname, config.app.static)))
-
   // Set our api routes
   app.use(config.app.apiUri, api)
 

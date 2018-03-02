@@ -51,7 +51,7 @@ TransactionCtrl.getOrder = (id) => {
     query.select('-_id polymorph_id changelly_address_one changelly_id ' +
       'order_amount input_currency output_currency order_status')
     query.exec()
-    .then((order) => { fulfill(order) })
+    .then((order) => { fulfill(order[0]) })
     .catch((error) => { reject(error) })
   })
 }

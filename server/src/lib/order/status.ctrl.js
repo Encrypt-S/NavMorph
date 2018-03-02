@@ -11,37 +11,22 @@ let ErrorHandler = require('../error-handler') // eslint-disable-line prefer-con
 
 const OrderStatusCtrl = {}
 
-OrderStatusCtrl.getOrder = (req, res) => {
-  const params = req.params
-  params.ipAddress = req.ip
-  OrderStatusCtrl.validateParams(params, ApiOptions.getOrderStatusOptions)
-  .then(() => {
-    LoginCtrl.checkIpBlocked({ ipAddress: params.ipAddress })
-    .then((isBlocked) => {
-      if (isBlocked) {
-        LoginCtrl.insertAttempt(params.ipAddress, params.polymorphId)
-        .then(OrderStatusCtrl.sendBlockedResponse(res))
-        .catch(error => ErrorHandler.handleError({
-          statusMessage: 'Unable to fetch/update NavMorph Order',
-          code: 'ORDER_STATUS_CTRL_002',
-          err: error,
-          sendEmail: true,
-          res
-        }))
-      } else {
-        OrderStatusCtrl.getOrderFromDb(params, res)
-      }
-    })
-    .catch((error) => { ErrorHandler.handleError({
-      statusMessage: 'Unable to fetch/update NavMorph Order',
-      code: 'ORDER_STATUS_CTRL_003',
-      err: error,
-      sendEmail: true,
-      res
-    })
-   })
-  })
-  .catch((error) => {
+OrderStatusCtrl.getOrder = async (req, res) => {
+  try {
+    const params = req.params
+    params.ipAddress = req.ip
+    await OrderStatusCtrl.validateParams(params, ApiOptions.getOrderStatusOptions)
+    const isBlocked = await LoginCtrl.checkIpBlocked({ ipAddress: params.ipAddress })
+
+    if (isBlocked) {
+      await LoginCtrl.insertAttempt(params.ipAddress, params.polymorphId)
+      return res.status(401).json({errors: [{ code: 'GET_ORDER_UNAUTHORIZED', message: 'Unauthorised Access' }]})
+    }
+
+    const orderAndEta = await OrderStatusCtrl.getOrderFromDb(params, res)
+    return res.json({ data: orderAndEta })
+  } catch (err) {
+
     ErrorHandler.handleError({
       statusMessage: 'Unable to fetch/update NavMorph Order',
       code: 'ORDER_STATUS_CTRL_001',
@@ -49,38 +34,29 @@ OrderStatusCtrl.getOrder = (req, res) => {
       sendEmail: true,
       res
     })
-  })
+  }
 }
 
-OrderStatusCtrl.getOrderFromDb = (params, res) => {
-  TransactionCtrl.getOrder(params.orderId)
-  .then((orderArr) => {
-    const order = orderArr[0]
+OrderStatusCtrl.getOrderFromDb = async (params, res) => {
+  try {
+    const order = await TransactionCtrl.getOrder(params.orderId)
     if (!order) {
       OrderStatusCtrl.checkForSuspiciousActivity(params, res)
     } else if (order.order_status === 'ABANDONED') {
       OrderStatusCtrl.sendEmptyResponse(res)
     } else {
-      EtaCtrl.getEta({ status: order.order_status, timeSent: order.sent, from: order.input_currency, to: order.output_currency })
-      .then((eta) => {
-        res.send([order, eta])
-      })
-      .catch(error => ErrorHandler.handleError({
-        statusMessage: 'Unable to fetch/update NavMorph Order',
-        code: 'ORDER_STATUS_CTRL_005',
-        err: error,
-        sendEmail: true,
-        res
-      }))
+      const eta = await EtaCtrl.getEta({ status: order.order_status, timeSent: order.sent, from: order.input_currency, to: order.output_currency })
+      return {order, eta}
     }
-  })
-  .catch(error => ErrorHandler.handleError({
-    statusMessage: 'Unable to fetch/update NavMorph Order',
-    code: 'ORDER_STATUS_CTRL_006',
-    err: error,
-    sendEmail: true,
-    res
-  }))
+  } catch (err) {
+    ErrorHandler.handleError({
+      statusMessage: 'Unable to fetch/update NavMorph Order',
+      code: 'ORDER_STATUS_CTRL_006',
+      err: err,
+      sendEmail: true,
+      res
+    })
+  }
 }
 
 OrderStatusCtrl.checkForSuspiciousActivity = (params, res) => {

@@ -9,7 +9,6 @@ const OrderCtrl = require('../lib/order/order.ctrl')
 const EtaCtrl = require('../lib/order/eta.ctrl')
 const OrderStatusCtrl = require('../lib/order/status.ctrl')
 
-router.get('/', (req, res) => res.send('api works'))
 router.get('/db/transaction/:id', TransactionCtrl.getTransaction)
 router.get('/db/transaction', TransactionCtrl.getTransaction)
 

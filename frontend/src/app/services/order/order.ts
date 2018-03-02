@@ -21,8 +21,8 @@ export class OrderService {
     return this.getApiRequest( orderNodeApiEndPoints.getOrderStatus, [orderId, newStatus])
   }
 
-  abandonOrder(orderId, password) {
-    return this.getApiRequest( orderNodeApiEndPoints.abandonOrder, [orderId, password])
+  abandonOrder(orderId) {
+    return this.getApiRequest( orderNodeApiEndPoints.abandonOrder, [orderId])
   }
 
   getApiRequest(endpoint, params){
