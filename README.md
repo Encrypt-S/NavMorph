@@ -42,12 +42,12 @@ Docker is not a requirement, but it is the fastest way to get going.
 The docker environment for this build is a cmd line interface. This allows you to install packages, use the ng cli generator and run the app as you would with any other angular dev setup.
 Build the docker image with the following command
 
-`docker build -f dev.Dockerfile -t polymorph-frontend .`
+`docker build -f dev.Dockerfile -t navmorph-frontend .`
 
 Run the Docker container you just built
 
-Windows: `docker run -it -p 4200:4200 -v ${pwd}:/app polymorph-frontend`
-Mac: `docker run -it -p 4200:4200 -v "$(pwd)":/app polymorph-frontend`
+Windows: `docker run -it -p 4200:4200 -v ${pwd}:/app navmorph-frontend`
+Mac: `docker run -it -p 4200:4200 -v "$(pwd)":/app navmorph-frontend`
 
 ### First run
 As this is a dev env you need to run the dev-setup.sh
