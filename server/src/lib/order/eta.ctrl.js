@@ -1,26 +1,24 @@
-'use strict'
+const config = require('../../server-settings')
+let apiOptions = require('../../api-options.json') // eslint-disable-line prefer-const
 
-const Config = require('../../server-settings')
-let ApiOptions = require('../../api-options.json') // eslint-disable-line prefer-const
-
-let validStatuses = Config.validOrderStatuses // eslint-disable-line prefer-const
-let timeConsts = Config.timeConsts // eslint-disable-line prefer-const
-let Validator = require('../options-validator') // eslint-disable-line prefer-const
-let ErrorHandler = require('../error-handler') // eslint-disable-line prefer-const
+let validStatuses = config.validOrderStatuses // eslint-disable-line prefer-const
+let timeConsts = config.timeConsts // eslint-disable-line prefer-const
+let validator = require('../options-validator') // eslint-disable-line prefer-const
+let errorHandler = require('../error-handler') // eslint-disable-line prefer-const
 
 const EtaCtrl = {}
 
 
 EtaCtrl.generateEstimate = async (req, res) => {
   try {
-    await Validator.startValidation(req.params, ApiOptions.generateEstimateOptions)
+    await validator.startValidation(req.params, apiOptions.generateEstimateOptions)
     const eta = await EtaCtrl.getEta({ status: 'ESTIMATE', timeSent: new Date(), from: req.params.from, to: req.params.to })
     res.status(200).json({
       data: { eta: eta }
     })
     return
   } catch(error) {
-    ErrorHandler.handleError({
+    errorHandler.handleError({
       statusMessage: 'Unable to get ETA',
       err: error,
       code: 'ETA_CTRL_001',
@@ -32,9 +30,9 @@ EtaCtrl.generateEstimate = async (req, res) => {
 
 EtaCtrl.getEta = async (params) => {
   try {
-    await Validator.startValidation(params, ApiOptions.getEtaOptions)
+    await validator.startValidation(params, apiOptions.getEtaOptions)
     if (!EtaCtrl.validStatus(params.status)) {
-      return new Error('INVALID_ORDER_STATUS')
+      throw new Error('INVALID_ORDER_STATUS')
     } else if (params.status === 'FINISHED' && !(params.timeSent instanceof Date)) {
       throw new Error('INVALID_SENT_TIME')
     }
