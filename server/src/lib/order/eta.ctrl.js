@@ -11,15 +11,17 @@ let ErrorHandler = require('../error-handler') // eslint-disable-line prefer-con
 const EtaCtrl = {}
 
 
-EtaCtrl.generateEstimate = (req, res) => {
-  Validator.startValidation(req.params, ApiOptions.generateEstimateOptions)
-  .then(() => {
-    return EtaCtrl.getEta({ status: 'ESTIMATE', timeSent: new Date(), from: req.params.from, to: req.params.to })
-  })
-  .then((eta) => {
-    res.send(eta)
-  })
-  .catch((error) => {
+EtaCtrl.generateEstimate = async (req, res) => {
+  try {
+    await Validator.startValidation(req.params, ApiOptions.generateEstimateOptions)
+    const eta = await EtaCtrl.getEta({ status: 'ESTIMATE', timeSent: new Date(), from: req.params.from, to: req.params.to })
+    res.send(JSON.stringify({
+      status: 200,
+      type: 'SUCCESS',
+      data: [eta],
+    }))
+    return
+  } catch(error) {
     ErrorHandler.handleError({
       statusMessage: 'Unable to get ETA',
       err: error,
@@ -27,7 +29,7 @@ EtaCtrl.generateEstimate = (req, res) => {
       sendEmail: true,
       res
     })
-  })
+  }
 }
 
 EtaCtrl.getEta = (params) => {
