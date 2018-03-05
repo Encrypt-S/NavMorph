@@ -15,9 +15,6 @@ router.get('/db/transaction', TransactionCtrl.getTransaction)
 router.get('/changelly/getCurrencies', ChangellyCtrl.getCurrencies)
 router.get('/changelly/getMinAmount/:from/:to', ChangellyCtrl.getMinAmount)
 router.get('/changelly/getExchangeAmount/:from/:to/:amount', ChangellyCtrl.getExchangeAmount)
-
-router.get('/changelly/generateAddress/:from/:to/:address', ChangellyCtrl.generateAddress)
-
 router.get('/changelly/getEta/:from/:to/', EtaCtrl.generateEstimate)
 
 router.get('/order/createOrder/:from/:to/:address/:amount', OrderCtrl.createOrder)

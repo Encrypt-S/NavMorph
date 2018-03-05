@@ -6,7 +6,7 @@ const OptionsValidator = { }
 OptionsValidator.startValidation = (params, options) => {
   const errors = []
   return new Promise((fulfill, reject) => {
-    console.log('OptionsValidator.startValidation', params, options)
+    // console.log('OptionsValidator.startValidation', params, options)
     if (lodash.intersection(Object.keys(params), Object.keys(options)).length !== Object.keys(options).length) {
       reject(new Error('PARAMS_ERROR', 'Failed to receive params', params, options))
       return

@@ -67,13 +67,15 @@ OrderCtrl.getChangellyAddress = (inputCurrency, outputCurrency, destAddress) => 
     if (outputCurrency === 'NAV') {
       fulfill(destAddress)
     }
-    ChangellyCtrl.internal.generateAddress({
+    ChangellyCtrl.generateAddress({
       from: inputCurrency.toLowerCase(),
       to: outputCurrency.toLowerCase(),
       address: destAddress,
       extraId: null,
     })
     .then((data) => {
+      console.log('getChangellyAddress data' , data);
+      
       fulfill(data.result.address)
     })
     .catch((error) => { reject(error) })
