@@ -1,23 +1,29 @@
 // Get dependencies
 const express = require('express')
+const bodyParser = require('body-parser')
+const cors = require('cors')
 const path = require('path')
 const https = require('https')
 const http = require('http')
-const bodyParser = require('body-parser')
-const cors = require('cors')
 const pem = require('pem')
 const mongoose = require('mongoose')
-const socketCtrl = require('./lib/socket/socketCtrl')
 const auth = require('basic-auth')
+
+
+const socketCtrl = require('./lib/socket/socketCtrl')
 const config = require('./server-settings')
 const settingsValidator = require('./lib/settingsValidator.js')
 const processHandler = require('./lib/processHandler')
 
 // Get our API routes
-const api = require('./routes/api')
-const Logger = require('./lib/logger')
+const api = require('./api')
+const logger = require('./lib/logger')
 const app = express()
 
+app.use(cors())
+app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({ extended: false }))
+const port = process.env.PORT || config.serverPort
 
 const startUpServer = async () => {
   /**
@@ -37,94 +43,53 @@ const startUpServer = async () => {
     return
   }
 
-  // Parsers for POST data
-  app.use(bodyParser.json())
-  app.use(cors())
-  app.use(bodyParser.urlencoded({ extended: false }))
-
-  app.use((req, res, next) => {
-    const user = auth(req)
-    // if (user === undefined || user.name !== config.basicAuth.name || user.pass !== config.basicAuth.pass) {
-    //   res.send('unauthorised access attempt')
-    //   return
-    // }
-    next()
-  })
 
   // Set our api routes
   app.use(config.app.apiUri, api)
 
-  // Catch all other routes and return the index file
-  app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, config.app.catchAllUri))
-  })
+  /**
+   * Connect to mongoose
+   */
+  try {
+    mongoose.Promise = global.Promise
+    const mongoDB = config.mongoDBUrl
+    await mongoose.connect(mongoDB, { useMongoClient: true })
+    const db = mongoose.connection
+    db.on('error', console.error.bind(console, 'MongoDB connection error:'))
+
+    logger.writeLog(`Conected to MongoDB on ${mongoDB}`, 'MongoDB Connect')
+  } catch (error) {
+    logger.writeErrorLog('Failed to connect to MongoDB', '002', err, true)
+    return
+  }
+
+  logger.writeLog(`Start Up Complete @ ${new Date().toISOString()}, Polymorph Version: ${config.version}`, 'Server Start Up', true)
 
   /**
-   * Get port from environment and store in Express.
+   * Setup the process handler
    */
-  const port = process.env.PORT || config.serverPort
-  app.set('port', port)
+  const setupSuccess = processHandler.setup()
+  logger.writeLog('Process Handler Set Up')
+
+
+  const socketServer = http.createServer(app)
+  const io = require('socket.io')(socketServer)
+
+  try {
+    await socketCtrl.setupServerSocket(io)
+    logger.writeLog('Server Mode Socket Running', )
+  } catch(err) {
+    return logger.writeErrorLog('001', 'Failed to start up Server Mode Socket', err, true)
+  }
+  //
+  socketServer.listen(port, async () => {
+    logger.writeLog(`API running on http://localhost:${port}`, )
+  })
 
   /**
    * Create HTTPS server, set up sockets and listen on all network interfaces
    */
 
-  var server
-  var socketObj
-
-  pem.createCertificate({ days: 1, selfSigned: true }, async (error, keys) => {
-    if (error) {
-      console.log('pem error: ' + error)
-    }
-    const sslOptions = {
-      key: keys.serviceKey,
-      cert: keys.certificate,
-      requestCert: false,
-      rejectUnauthorized: false,
-    }
-    app.use(bodyParser.json())
-    app.use(bodyParser.urlencoded({
-      extended: true,
-    }))
-    server = http.createServer(app)
-    socketObj = require('socket.io')(server)
-    try {
-      await socketCtrl.setupServerSocket(socketObj)
-      Logger.writeLog('Server Mode Socket Running', )
-    } catch(err) {
-      Logger.writeErrorLog('001', 'Failed to start up Server Mode Socket', err, true)
-      return
-    }
-
-    server.listen(port, async () => {
-      Logger.writeLog(`API running on http://localhost:${port}`, )
-
-      /**
-      * Connect to mongoose
-      */
-      try {
-        mongoose.Promise = global.Promise
-        const mongoDB = config.mongoDBUrl
-        await mongoose.connect(mongoDB, { useMongoClient: true })
-        const db = mongoose.connection
-        db.on('error', console.error.bind(console, 'MongoDB connection error:'))
-
-        Logger.writeLog(`Conected to MongoDB on ${mongoDB}`, 'MongoDB Connect')
-      } catch (error) {
-        Logger.writeErrorLog('Failed to connect to MongoDB', '002', err, true)
-        return
-      }
-      Logger.writeLog('Sending start up notification email.')
-      Logger.writeLog('Start Up Complete @' + new Date().toISOString() +
-        ', Polymorph Version: ' + config.version, 'Server Start Up', true)
-
-      /**
-      * Setup the process handler
-      */
-      const setupSuccess = processHandler.setup()
-      Logger.writeLog('Process Handler Set Up')
-    })
-  })
 }
 
 startUpServer()

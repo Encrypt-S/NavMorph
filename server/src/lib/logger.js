@@ -18,7 +18,7 @@ logger.writeLog = (logMessage, emailSubject, sendEmail = false) => {
   let logString = '\r\n-----------------------------------------------------------\r\n'
   logString += 'Date: ' + new Date() + '\r\n'
   logString += 'Log Message: ' + logMessage + '\r\n'
-  logString += '\r\n-----------------------------------------------------------\r\n'
+  logString += '-----------------------------------------------------------\r\n'
   console.log(logString)
 }
 

@@ -3,11 +3,11 @@
 const express = require('express')
 
 const router = express.Router([])
-const TransactionCtrl = require('../lib/db/transaction.ctrl')
-const ChangellyCtrl = require('../lib/changelly/changelly.ctrl')
-const OrderCtrl = require('../lib/order/order.ctrl')
-const EtaCtrl = require('../lib/order/eta.ctrl')
-const OrderStatusCtrl = require('../lib/order/status.ctrl')
+const TransactionCtrl = require('./lib/db/transaction.ctrl')
+const ChangellyCtrl = require('./lib/changelly/changelly.ctrl')
+const OrderCtrl = require('./lib/order/order.ctrl')
+const EtaCtrl = require('./lib/order/eta.ctrl')
+const OrderStatusCtrl = require('./lib/order/status.ctrl')
 
 // TODO: Matt -- What are theses? Do they actually doing anything?
 router.get('/db/transaction/:id', TransactionCtrl.getTransaction)
