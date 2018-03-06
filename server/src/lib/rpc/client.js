@@ -26,7 +26,7 @@ rpc.nav.getNewAddress = async () => {
     return await rpc.getNewAddress()
   } catch (err) {
     console.log(err)
-    if (firstGetAddressError.code === -12) {
+    if (err.code === -12) {
       // Had a fixable error. Try fix it
       try {
         await rpc.keypoolRefill()

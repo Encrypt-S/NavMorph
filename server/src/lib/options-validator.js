@@ -1,4 +1,4 @@
-const Validator = require('validator')
+const validator = require('validator')
 const lodash = require('lodash')
 
 const OptionsValidator = { }
@@ -8,7 +8,7 @@ OptionsValidator.startValidation = (params, options) => {
   return new Promise((fulfill, reject) => {
     // console.log('OptionsValidator.startValidation', params, options)
     if (lodash.intersection(Object.keys(params), Object.keys(options)).length !== Object.keys(options).length) {
-      reject(new Error('PARAMS_ERROR', 'Failed to receive params', params, options))
+      reject(new Error('PARAMS_ERROR'))
       return
     }
     try {
@@ -48,7 +48,7 @@ OptionsValidator.isString = (param, validator, errors) => {
     return
   }
 
-  if (validator.shouldBeAlphanumeric && !Validator.isAlphanumeric(param)) {
+  if (validator.shouldBeAlphanumeric && !validator.isAlphanumeric(param)) {
     errors.push({ err: 'STR_NON_ALPHANUM', param, validator })
   }
 
@@ -61,7 +61,7 @@ OptionsValidator.isString = (param, validator, errors) => {
 }
 
 OptionsValidator.isNumber = (param, validator, errors) => {
-  if (!Validator.isNumeric(param) && !Validator.isDecimal(param)) {
+  if (!validator.isNumeric(param) && !validator.isDecimal(param)) {
     errors.push({ err: 'NUM_NON_NUMBER', param, validator })
   }
 }

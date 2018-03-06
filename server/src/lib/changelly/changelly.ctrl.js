@@ -80,11 +80,9 @@ ChangellyCtrl.getExchangeAmountRoute = async (req, res) => {
 
 ChangellyCtrl.generateAddress = async (params) => {
   try {
-
     await ChangellyCtrl.validateParams(params, ApiOptions.generateAddressOptions)
     const data = await ChangellyCtrl.request(ConfigData.changellyApiEndPoints.generateAddress, params)
     return data
-
   }
   catch (err) {
     logger.writeErrorLog('CHNGLLY_004', 'Failed to generateAddress', data.error, false)

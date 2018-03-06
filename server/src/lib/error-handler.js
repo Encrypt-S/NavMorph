@@ -5,7 +5,7 @@ const apiOptions = require('../api-options.json')
 const ErrorHandler = {}
 
 ErrorHandler.handleError = (params) => {
-  // We don't  have an Error Handler
+  // We don't  have an Error Handler Validation yet
   // console.log('ErrorHandler.handleError', params, apiOptions.ErrorHandler)
   validator.startValidation(params, {})
   .then(() => {

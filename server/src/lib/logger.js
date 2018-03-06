@@ -7,13 +7,13 @@ const settings = config.mailSettings
 
 const emailAuth = encodeURIComponent(settings.smtp.user) + ':' + encodeURIComponent(settings.smtp.pass)
 
-const Logger = {}
+const logger = {}
 
-// Logger.transporter = nodemailer.createTransport('smtps://' + emailAuth + '@' + settings.smtp.server)
+logger.transporter = nodemailer.createTransport('smtps://' + emailAuth + '@' + settings.smtp.server)
 
-Logger.writeLog = (logMessage, emailSubject, sendEmail = false) => {
+logger.writeLog = (logMessage, emailSubject, sendEmail = false) => {
   if (sendEmail && process.env.NODE_ENV === 'production') {
-    Logger.sendEmail(logMessage, emailSubject)
+    logger.sendEmail(logMessage, emailSubject)
   }
   let logString = '\r\n-----------------------------------------------------------\r\n'
   logString += 'Date: ' + new Date() + '\r\n'
@@ -22,9 +22,9 @@ Logger.writeLog = (logMessage, emailSubject, sendEmail = false) => {
   console.log(logString)
 }
 
-Logger.writeErrorLog = (errorCode, errorMessage, data, sendEmail = false) => {
+logger.writeErrorLog = (errorCode, errorMessage, data, sendEmail = false) => {
   if (sendEmail && process.env.NODE_ENV === 'production') {
-    Logger.sendEmail(errorMessage, errorCode, data)
+    logger.sendEmail(errorMessage, errorCode, data)
   }
   let logString = '\r\n-----------------------------------------------------------\r\n'
   logString += 'Date: ' + new Date() + '\r\n'
@@ -42,7 +42,7 @@ Logger.writeErrorLog = (errorCode, errorMessage, data, sendEmail = false) => {
   console.log(logString)
 }
 
-Logger.sendEmail = (message, emailSubject, data) => {
+logger.sendEmail = (message, emailSubject, data) => {
   const mailOptions = {
     from: '"NavMorph System" <' + settings.smtp.user + '>',
     to: settings.notificationEmail,
@@ -58,7 +58,7 @@ Logger.sendEmail = (message, emailSubject, data) => {
     ]
   }
 
-  Logger.transporter.sendMail(mailOptions, (error, info) => {
+  logger.transporter.sendMail(mailOptions, (error, info) => {
     if (error) {
       return console.log('nodemail error', error)
     }
@@ -66,4 +66,4 @@ Logger.sendEmail = (message, emailSubject, data) => {
   })
 }
 
-module.exports = Logger
+module.exports = logger

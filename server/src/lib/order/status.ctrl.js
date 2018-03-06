@@ -118,13 +118,5 @@ OrderStatusCtrl.abandonOrderStatusRoute = async (req, res) => {
     })
   }
 }
-OrderStatusCtrl.validateParams = async (params, options) => {
-
-  return new Promise((fulfill, reject) => {
-    validator.startValidation(params, options)
-    .then(() => fulfill())
-    .catch((errorArr => reject(errorArr)))
-  })
-}
 
 module.exports = OrderStatusCtrl
