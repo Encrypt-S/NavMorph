@@ -10,7 +10,6 @@ import { ClipboardModule } from 'ngx-clipboard'
 import { AppComponent } from './app.component'
 import { routes } from './app.routes'
 
-import { DemoPage } from './pages/demo/demo.component'
 import { AboutPage } from './pages/about/about.component'
 import { HomePage } from './pages/home/home.component'
 import { SendPage } from './pages/send/send.component'
@@ -28,21 +27,19 @@ import { LoaderComponent } from './components/loader/loader.component'
 import { TileComponent } from './components/tile/tile.component'
 import { StatusComponent } from './components/status/status.component'
 import { SendCoinsFormComponent } from './components/send-coins-form/send-coins-form.component'
-import { TestSocketInterfaceComponent } from './components/test-socket-interface/test-socket-interface.component'
 import { ServerMessageDisplayComponent } from './components/server-message-display/server-message-display.component'
 
 import { GenericNodeApiService }  from './services/generic-node-api/generic-node-api'
 import { ChangellyApiService }  from './services/changelly-api/changelly-api'
 import { SendPageDataService } from './services/send-page-data/send-page-data'
 import { GenericSocketService }  from './services/generic-socket/generic-socket'
-import { GenericFunctionsService } from './services/generic-functions/generic-functions';
+import { GenericFunctionsService } from './services/generic-functions/generic-functions'
 
 @NgModule({
   declarations: [
     AppComponent,
     HomePage,
     SendPage,
-    DemoPage,
     AboutPage,
     StatusPage,
     HeaderSection,
@@ -56,7 +53,6 @@ import { GenericFunctionsService } from './services/generic-functions/generic-fu
     SendCoinsFormComponent,
     HeroBannerSection,
     StatusComponent,
-    TestSocketInterfaceComponent,
     ServerMessageDisplayComponent,
   ],
   imports: [

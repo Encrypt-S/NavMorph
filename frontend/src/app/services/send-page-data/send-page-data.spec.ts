@@ -1,11 +1,9 @@
 import { TestBed, inject, fakeAsync, tick, async } from '@angular/core/testing';
 import { HttpClientModule } from '@angular/common/http';
-import { changellyConstData } from "../config";
-import { Observable } from 'rxjs/Observable';
 
 import { SendPageDataService } from './send-page-data';
-import { ChangellyApiService } from '../../services/changelly-api/changelly-api';
-import { GenericNodeApiService } from './../../services/generic-node-api/generic-node-api';
+import { ChangellyApiService } from '../changelly-api/changelly-api';
+import { GenericNodeApiService } from '../generic-node-api/generic-node-api';
 
 import { MockChangellyService } from '../../mock-classes';
 

@@ -1,15 +1,10 @@
 import { Injectable, OnDestroy } from '@angular/core'
 
-import { ChangellyApiService } from '../../services/changelly-api/changelly-api'
-import { GenericFunctionsService } from '../../services/generic-functions/generic-functions'
+import { ChangellyApiService } from '../changelly-api/changelly-api'
 import { changellyConstData, dataBundleTemplate } from '../config'
-import { GenericSocketService } from '../../services/generic-socket/generic-socket'
-import * as  config from '../../services/config'
-
-import * as io from 'socket.io-client'
+import { GenericSocketService } from '../generic-socket/generic-socket'
 
 import { Observable } from 'rxjs/Observable'
-import { Observer } from 'rxjs/Observer'
 import { Subject } from 'rxjs/Subject'
 import BigNumber from 'bignumber.js'
 
