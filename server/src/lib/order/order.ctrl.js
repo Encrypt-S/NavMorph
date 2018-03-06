@@ -63,7 +63,6 @@ OrderCtrl.getChangellyAddress = (inputCurrency, outputCurrency, destAddress) => 
       extraId: null,
     })
     .then((data) => {
-      console.log('getChangellyAddress data' , data);
       fulfill(data.result.address)
     })
     .catch((error) => { reject(error) })

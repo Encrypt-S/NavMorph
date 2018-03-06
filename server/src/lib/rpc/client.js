@@ -21,7 +21,6 @@ rpc.nav.unlockWallet = async () => {
 }
 
 rpc.nav.getNewAddress = async () => {
-  console.log('Fired getNewAddressPolyMorph')
   try {
     return await rpc.getNewAddress()
   } catch (err) {
