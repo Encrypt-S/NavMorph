@@ -41,13 +41,13 @@ ChangellyCtrl.getCurrencies = async (req, res) => {
     const data = await ChangellyCtrl.request(ConfigData.changellyApiEndPoints.getCurrencies, {})
 
     if (data.result && data.result.indexOf('nav') === -1) {
-      logger.writeLog('CHNGLLY_006', 'nav not listed in currencies', { error: err, data }, true)
+      logger.writeErrorLog('CHNGLLY_006', 'nav not listed in currencies', { error: err, data }, true)
       return res.status(500).json({error: new Error('nav not listed in currencies')})
     }
 
     return res.json({data: { currencies: data.result } })
   } catch (err) {
-    logger.writeLog('CHNGLLY_005', 'Failed to getMinAmount', err, true)
+    logger.writeErrorLog('CHNGLLY_005', 'Failed to getMinAmount', err, true)
     return res.status(500).send(new Error('Failed to get min transfer amount from Changelly'))
   }
 }
@@ -60,7 +60,7 @@ ChangellyCtrl.getMinAmount = async (req, res) => {
     return res.json({data: { minAmount: data.result } })
 
   } catch (err) {
-    logger.writeLog('CHNGLLY_002', 'Failed to getMinAmount', err, true)
+    logger.writeErrorLog('CHNGLLY_002', 'Failed to getMinAmount', err, true)
     return res.status(500).json({error: new Error('Failed to get min transfer amount from Changelly')})
   }
 }
@@ -73,7 +73,7 @@ ChangellyCtrl.getExchangeAmount = async (req, res) => {
     return res.json({data: { amount: data.result } })
 
   } catch (err) {
-    logger.writeLog('CHNGLLY_003', 'Failed to getExchangeAmount', err, true)
+    logger.writeErrorLog('CHNGLLY_003', 'Failed to getExchangeAmount', err, true)
     res.status(500).json({error: new Error('Failed to get the estimated exchange amount from Changelly')})
   }
 }
@@ -87,7 +87,7 @@ ChangellyCtrl.generateAddress = async (params) => {
 
   }
   catch (err) {
-    logger.writeLog('CHNGLLY_004', 'Failed to generateAddress', data.error, false)
+    logger.writeErrorLog('CHNGLLY_004', 'Failed to generateAddress', data.error, false)
     throw new Error('CHNGLLY_004 - Failed to generateAddress')
   }
 }
@@ -99,7 +99,7 @@ ChangellyCtrl.validateParams = (params, options) => {
       fulfill()
     })
     .catch((error) => {
-      logger.writeLog('CHNGLLY_005', 'Param Validation Error', error, false)
+      logger.writeErrorLog('CHNGLLY_005', 'Param Validation Error', error, false)
       reject(error)
     })
   })

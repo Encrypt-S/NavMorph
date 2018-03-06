@@ -10,7 +10,7 @@ describe('[Rpc]', () => {
     beforeEach(() => { // reset the rewired functions
       client = rewire('../src/lib/rpc/client')
       const mockUnknownError = new Error()
-      const mockLogger = { writeLog: () => {} }
+      const mockLogger = { writeErrorLog: () => {} }
       client.__set__('logger', mockLogger)
     })
     it('should return false of unknown error', (done) => {

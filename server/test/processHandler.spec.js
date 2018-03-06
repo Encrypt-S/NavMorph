@@ -5,13 +5,13 @@ const rewire = require('rewire')
 const sinon = require('sinon')
 
 let ProcessHandler = rewire('../src/lib/processHandler')
-let mockLogger = { writeLog: sinon.spy() }
+let mockLogger = { writeErrorLog: sinon.spy() }
 
 describe('[ProcessHandler]', () => {
   describe('(setup)', () => {
     beforeEach(() => { // reset the rewired functions
       ProcessHandler = rewire('../src/lib/processHandler')
-      mockLogger = { writeLog: sinon.spy() }
+      mockLogger = { writeErrorLog: sinon.spy() }
       ProcessHandler.__set__('logger', mockLogger)
     })
 
@@ -34,13 +34,13 @@ describe('[ProcessHandler]', () => {
       })
     })
 
-    it('should catch errors from testRpc, then writeLog', (done) => {
+    it('should catch errors from testRpc, then writeErrorLog', (done) => {
       ProcessHandler.testRpc = () => {
         return Promise.reject()
       }
       ProcessHandler.setup()
       .catch(() => {
-        sinon.assert.calledOnce(mockLogger.writeLog)
+        sinon.assert.calledOnce(mockLogger.writeErrorLog)
         done()
       })
     })

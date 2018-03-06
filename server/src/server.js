@@ -7,38 +7,36 @@ const bodyParser = require('body-parser')
 const cors = require('cors')
 const pem = require('pem')
 const mongoose = require('mongoose')
-const SocketCtrl = require('./lib/socket/socketCtrl')
+const socketCtrl = require('./lib/socket/socketCtrl')
 const auth = require('basic-auth')
 const config = require('./server-settings')
-const SettingsValidator = require('./lib/settingsValidator.js')
-const ProcessHandler = require('./lib/processHandler')
-const serverMode = require('./lib/db/serverMode.model')
+const settingsValidator = require('./lib/settingsValidator.js')
+const processHandler = require('./lib/processHandler')
 
 // Get our API routes
 const api = require('./routes/api')
 const Logger = require('./lib/logger')
 const app = express()
-/**
-  * Validate Server Settings Config
-  */
 
 
-SettingsValidator.validateSettings(config)
-.then(() => {
-  console.log('--------------------------------------------')
-  console.log('Server Config Validated. Continuing start up')
-  console.log('--------------------------------------------')
+const startUpServer = async () => {
+  /**
+    * Validate Server Settings Config
+    */
 
-  app.startUpServer()
-})
-.catch((err) => {
-  console.log('--------------------------------------------')
-  console.log('ERR: Server Config invalid. Stopping start up')
-  console.log(err)
-  console.log('--------------------------------------------')
-})
+  try {
+    await settingsValidator.validateSettings(config)
+    console.log('--------------------------------------------')
+    console.log('Server Config Validated. Continuing start up')
+    console.log('--------------------------------------------')
+  } catch(err) {
+    console.log('--------------------------------------------')
+    console.log('ERR: Server Config invalid. Stopping start up')
+    console.log(err)
+    console.log('--------------------------------------------')
+    return
+  }
 
-app.startUpServer = async () => {
   // Parsers for POST data
   app.use(bodyParser.json())
   app.use(cors())
@@ -72,9 +70,9 @@ app.startUpServer = async () => {
    */
 
   var server
-  var io
+  var socketObj
 
-  pem.createCertificate({ days: 1, selfSigned: true }, (error, keys) => {
+  pem.createCertificate({ days: 1, selfSigned: true }, async (error, keys) => {
     if (error) {
       console.log('pem error: ' + error)
     }
@@ -89,39 +87,44 @@ app.startUpServer = async () => {
       extended: true,
     }))
     server = http.createServer(app)
-    io = require('socket.io')(server)
+    socketObj = require('socket.io')(server)
+    try {
+      await socketCtrl.setupServerSocket(socketObj)
+      Logger.writeLog('Server Mode Socket Running', )
+    } catch(err) {
+      Logger.writeErrorLog('001', 'Failed to start up Server Mode Socket', err, true)
+      return
+    }
 
-    SocketCtrl.setupServerSocket(io)
-    .then(() => {
-      Logger.writeLog('n/a', 'Server Mode Socket Running', null)
-    })
-    .catch((err) => {
-      Logger.writeLog('001', 'Failed to start up Server Mode Socket', err, true)
-    })
-
-    server.listen(port, () => {
-      Logger.writeLog('n/a', `API running on http://localhost:${port}`, null)
+    server.listen(port, async () => {
+      Logger.writeLog(`API running on http://localhost:${port}`, )
 
       /**
       * Connect to mongoose
       */
+      try {
+        mongoose.Promise = global.Promise
+        const mongoDB = config.mongoDBUrl
+        await mongoose.connect(mongoDB, { useMongoClient: true })
+        const db = mongoose.connection
+        db.on('error', console.error.bind(console, 'MongoDB connection error:'))
 
-      mongoose.Promise = global.Promise
-      const mongoDB = config.mongoDBUrl
-      mongoose.connect(mongoDB, { useMongoClient: true })
-      const db = mongoose.connection
-      db.on('error', console.error.bind(console, 'MongoDB connection error:'))
-
-      Logger.writeLog('MongoDB Connect', `Conected to MongoDB on ${mongoDB}`, null, false)
-
-      Logger.writeLog('n/a', 'Sending start up notification email.', null, false)
-      Logger.writeLog('Server Start Up', 'Start Up Complete @' + new Date().toISOString() +
-        ', NavMorph Version: ' + config.version, null, true)
+        Logger.writeLog(`Conected to MongoDB on ${mongoDB}`, 'MongoDB Connect')
+      } catch (error) {
+        Logger.writeErrorLog('Failed to connect to MongoDB', '002', err, true)
+        return
+      }
+      Logger.writeLog('Sending start up notification email.')
+      Logger.writeLog('Start Up Complete @' + new Date().toISOString() +
+        ', Polymorph Version: ' + config.version, 'Server Start Up', true)
 
       /**
       * Setup the process handler
       */
-      const setupSuccess = ProcessHandler.setup()
+      const setupSuccess = processHandler.setup()
+      Logger.writeLog('Process Handler Set Up')
     })
   })
 }
+
+startUpServer()

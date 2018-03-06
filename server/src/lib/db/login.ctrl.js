@@ -15,7 +15,7 @@ LoginCtrl.insertAttempt = (options) => {
   const required = ['ipAddress', 'polymorphId', 'params']
   return new Promise((fulfill, reject) => {
     if (lodash.intersection(Object.keys(options), required).length !== required.length) {
-      Logger.writeLog('LGN_001', 'invalid options', { options, required })
+      Logger.writeErrorLog('LGN_001', 'Invalid Options', { options, required })
       reject('LGN_001')
       return
     }
@@ -35,7 +35,7 @@ LoginCtrl.blackListIp = (options) => {
   const required = ['ipAddress']
   return new Promise((fulfill, reject) => {
     if (lodash.intersection(Object.keys(options), required).length !== required.length) {
-      Logger.writeLog('LGN_004', 'invalid options', { options, required })
+      Logger.writeErrorLog('LGN_004', 'Invalid Options', { options, required })
       reject('LGN_004')
       return
     }
@@ -55,11 +55,11 @@ LoginCtrl.executeSave = (fulfill, reject) => {
     .then((result) => {
       fulfill(result)
     }).catch((result) => {
-      Logger.writeLog('LGN_002', 'Save Rejected', { result })
+      Logger.writeErrorLog('LGN_002', 'Save Rejected', { result })
       reject(result)
     })
   } catch (error) {
-    Logger.writeLog('LGN_003', 'Save Exception', { error })
+    Logger.writeErrorLog('LGN_003', 'Save Exception', { error })
     reject(error)
   }
 }
@@ -68,7 +68,7 @@ LoginCtrl.checkIpBlocked = (options) => {
   const required = ['ipAddress']
   return new Promise((fulfill, reject) => {
     if (lodash.intersection(Object.keys(options), required).length !== required.length) {
-      Logger.writeLog('LGN_005', 'invalid options', { options, required })
+      Logger.writeErrorLog('LGN_005', 'Invalid Options', { options, required })
       reject('LGN_005')
       return
     }

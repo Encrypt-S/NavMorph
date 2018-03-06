@@ -5,13 +5,13 @@ const rewire = require('rewire')
 const sinon = require('sinon')
 
 let LoginCtrl = rewire('../src/lib/db/login.ctrl')
-let mockLogger = { writeLog: sinon.spy() }
+let mockLogger = { writeErrorLog: sinon.spy() }
 
 describe('[Login.Ctrl]', () => {
   describe('(insertAttempt)', () => {
     beforeEach(() => { // reset the rewired functions
       LoginCtrl = rewire('../src/lib/db/login.ctrl')
-      mockLogger = { writeLog: sinon.spy() }
+      mockLogger = { writeErrorLog: sinon.spy() }
       LoginCtrl.__set__('Logger', mockLogger)
     })
 
@@ -19,8 +19,8 @@ describe('[Login.Ctrl]', () => {
       LoginCtrl.insertAttempt({ junkParam: '1234' })
         .catch((error) => {
           expect(error).toBe('LGN_001')
-          sinon.assert.calledOnce(mockLogger.writeLog)
-          sinon.assert.calledWith(mockLogger.writeLog, 'LGN_001')
+          sinon.assert.calledOnce(mockLogger.writeErrorLog)
+          sinon.assert.calledWith(mockLogger.writeErrorLog, 'LGN_001')
           done()
         })
     })
@@ -39,7 +39,7 @@ describe('[Login.Ctrl]', () => {
         expect(mockFailedLoginsModel.params.polymorph_id).toBe(polymorphId)
         expect(mockFailedLoginsModel.params.params).toBe(JSON.stringify(params))
         expect(mockFailedLoginsModel.params.timestamp instanceof Date).toBe(true)
-        sinon.assert.notCalled(mockLogger.writeLog)
+        sinon.assert.notCalled(mockLogger.writeErrorLog)
         done()
       }
 
@@ -51,7 +51,7 @@ describe('[Login.Ctrl]', () => {
   describe('(blackListIp)', () => {
     beforeEach(() => { // reset the rewired functions
       LoginCtrl = rewire('../src/lib/db/login.ctrl')
-      mockLogger = { writeLog: sinon.spy() }
+      mockLogger = { writeErrorLog: sinon.spy() }
       LoginCtrl.__set__('Logger', mockLogger)
     })
 
@@ -59,8 +59,8 @@ describe('[Login.Ctrl]', () => {
       LoginCtrl.blackListIp({ junkParam: '1234' })
         .catch((error) => {
           expect(error).toBe('LGN_004')
-          sinon.assert.calledOnce(mockLogger.writeLog)
-          sinon.assert.calledWith(mockLogger.writeLog, 'LGN_004')
+          sinon.assert.calledOnce(mockLogger.writeErrorLog)
+          sinon.assert.calledWith(mockLogger.writeErrorLog, 'LGN_004')
           done()
         })
     })
@@ -69,7 +69,7 @@ describe('[Login.Ctrl]', () => {
       const blacklistSpy = sinon.spy(LoginCtrl, 'executeSave')
       const ipAddress = '1.1.1.1'
 
-      mockLogger = { writeLog: sinon.spy() }
+      mockLogger = { writeErrorLog: sinon.spy() }
       LoginCtrl.__set__('Logger', mockLogger)
 
       function mockBlacklistModel(paramsToSave) {
@@ -79,7 +79,7 @@ describe('[Login.Ctrl]', () => {
       LoginCtrl.executeSave = (fulfill, reject) => {
         expect(LoginCtrl.runtime.transaction.params.ip_address).toBe(ipAddress)
         expect(LoginCtrl.runtime.transaction.params.timestamp instanceof Date).toBe(true)
-        sinon.assert.notCalled(mockLogger.writeLog)
+        sinon.assert.notCalled(mockLogger.writeErrorLog)
         done()
       }
 
@@ -91,7 +91,7 @@ describe('[Login.Ctrl]', () => {
   describe('(executeSave)', () => {
     beforeEach(() => { // reset the rewired functions
       LoginCtrl = rewire('../src/lib/db/login.ctrl')
-      mockLogger = { writeLog: sinon.spy() }
+      mockLogger = { writeErrorLog: sinon.spy() }
       LoginCtrl.__set__('Logger', mockLogger)
     })
 
@@ -102,7 +102,7 @@ describe('[Login.Ctrl]', () => {
 
       function fulfill(result) {
         expect(result).toBe('SUCCESS')
-        sinon.assert.notCalled(mockLogger.writeLog)
+        sinon.assert.notCalled(mockLogger.writeErrorLog)
         done()
       }
 
@@ -116,8 +116,8 @@ describe('[Login.Ctrl]', () => {
 
       function reject(result) {
         expect(result.message).toBe('SAVE_FAILED')
-        sinon.assert.calledOnce(mockLogger.writeLog)
-        sinon.assert.calledWith(mockLogger.writeLog, 'LGN_002')
+        sinon.assert.calledOnce(mockLogger.writeErrorLog)
+        sinon.assert.calledWith(mockLogger.writeErrorLog, 'LGN_002')
         done()
       }
       LoginCtrl.executeSave(null, reject)
@@ -134,8 +134,8 @@ describe('[Login.Ctrl]', () => {
 
       function reject(result) {
         expect(result.error).toBe('SAVE_EXCEPTION')
-        sinon.assert.calledOnce(mockLogger.writeLog)
-        sinon.assert.calledWith(mockLogger.writeLog, 'LGN_003')
+        sinon.assert.calledOnce(mockLogger.writeErrorLog)
+        sinon.assert.calledWith(mockLogger.writeErrorLog, 'LGN_003')
         done()
       }
 
@@ -146,7 +146,7 @@ describe('[Login.Ctrl]', () => {
   describe('(checkIpBlocked)', () => {
     beforeEach(() => { // reset the rewired functions
       LoginCtrl = rewire('../src/lib/db/login.ctrl')
-      mockLogger = { writeLog: sinon.spy() }
+      mockLogger = { writeErrorLog: sinon.spy() }
       LoginCtrl.__set__('Logger', mockLogger)
     })
 
@@ -154,8 +154,8 @@ describe('[Login.Ctrl]', () => {
       LoginCtrl.checkIpBlocked({ junkParam: '1234' })
         .catch((error) => {
           expect(error).toBe('LGN_005')
-          sinon.assert.calledOnce(mockLogger.writeLog)
-          sinon.assert.calledWith(mockLogger.writeLog, 'LGN_005')
+          sinon.assert.calledOnce(mockLogger.writeErrorLog)
+          sinon.assert.calledWith(mockLogger.writeErrorLog, 'LGN_005')
           done()
         })
     })
@@ -212,7 +212,7 @@ describe('[Login.Ctrl]', () => {
   describe('(checkIfSuspicious)', () => {
     beforeEach(() => { // reset the rewired functions
       LoginCtrl = rewire('../src/lib/db/login.ctrl')
-      mockLogger = { writeLog: sinon.spy() }
+      mockLogger = { writeErrorLog: sinon.spy() }
       LoginCtrl.__set__('Logger', mockLogger)
     })
 
