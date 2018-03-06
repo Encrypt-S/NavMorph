@@ -1,6 +1,3 @@
-'use strict'
-
-const keygen = require('generate-key')
 const uuid = require('uuid/v4')
 
 const client = require('../rpc/client')
@@ -9,7 +6,7 @@ const TransactionCtrl = require('../db/transaction.ctrl')
 const ServerModeCtrl = require('../db/serverMode.ctrl')
 const Validator = require('../options-validator')
 const ApiOptions = require('../../api-options.json')
-let ErrorHandler = require('../error-handler') // eslint-disable-line prefer-const
+let ErrorHandler = require('../error-handler')
 
 const OrderCtrl = {}
 

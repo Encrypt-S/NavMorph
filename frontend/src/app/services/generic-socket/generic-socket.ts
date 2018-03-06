@@ -10,12 +10,12 @@ import * as config from '../../services/config'
 export class GenericSocketService {
   private socket
   public serverMode$: BehaviorSubject<string>
-  public maintenanceModeLast$: Observable<boolean>
+  public maintenanceMode$: Observable<boolean>
 
   constructor() {
     this.socket = io(config.socketsUrl)
     this.serverMode$ = new BehaviorSubject('MAINTENANCE')
-    this.maintenanceModeLast$ = this.serverMode$.map(val => val === 'MAINTENANCE')
+    this.maintenanceMode$ = this.serverMode$.map(val => val === 'MAINTENANCE')
     this.socket.on('SERVER_MODE', data => {
       this.serverMode$.next(data)
     })

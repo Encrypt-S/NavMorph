@@ -2,18 +2,12 @@ import { Component, OnInit, Input } from '@angular/core'
 import { Router } from '@angular/router'
 import { FormsModule } from '@angular/forms'
 import { Observable } from 'rxjs/Observable'
-import { Subscription } from 'rxjs/Subscription'
-import { Observer } from 'rxjs/Observer'
-import { Subscriber } from 'rxjs/Subscriber'
-import { BehaviorSubject } from 'rxjs/BehaviorSubject'
 
 import { ChangellyApiService } from '../../services/changelly-api/changelly-api'
 import { OrderService } from '../../services/order/order'
 import { SendPageDataService } from '../../services/send-page-data/send-page-data'
 import { GenericSocketService } from '../../services/generic-socket/generic-socket'
 import { dataBundleTemplate } from '../../services/config'
-
-import * as config from '../../services/config'
 
 @Component({
   selector: 'send-coins-form-component',
@@ -54,7 +48,7 @@ export class SendCoinsFormComponent implements OnInit {
   ngOnInit() {
     this.getFormDataStream()
     this.getCurrencies()
-    this.maintenanceMode$ = this.genericSocket.maintenanceModeLast$
+    this.maintenanceMode$ = this.genericSocket.maintenanceMode$
   }
 
   setLoadingState(state: boolean): void {
