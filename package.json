@@ -1,6 +1,6 @@
 {
   "name": "navmorph",
-  "version": "0.1.0",
+  "version": "0.0.2",
   "description": "A site for anonymizing crypto currencies via Changelly's crypto exchange system and NavTech's anonymous NavCoin transactions.",
   "main": "index.js",
   "scripts": {
