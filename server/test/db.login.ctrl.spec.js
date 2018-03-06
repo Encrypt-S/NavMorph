@@ -4,13 +4,13 @@ const expect = require('expect')
 const rewire = require('rewire')
 const sinon = require('sinon')
 
-let LoginCtrl = rewire('../server/lib/db/login.ctrl')
+let LoginCtrl = rewire('../src/lib/db/login.ctrl')
 let mockLogger = { writeLog: sinon.spy() }
 
 describe('[Login.Ctrl]', () => {
   describe('(insertAttempt)', () => {
     beforeEach(() => { // reset the rewired functions
-      LoginCtrl = rewire('../server/lib/db/login.ctrl')
+      LoginCtrl = rewire('../src/lib/db/login.ctrl')
       mockLogger = { writeLog: sinon.spy() }
       LoginCtrl.__set__('Logger', mockLogger)
     })
@@ -50,7 +50,7 @@ describe('[Login.Ctrl]', () => {
 
   describe('(blackListIp)', () => {
     beforeEach(() => { // reset the rewired functions
-      LoginCtrl = rewire('../server/lib/db/login.ctrl')
+      LoginCtrl = rewire('../src/lib/db/login.ctrl')
       mockLogger = { writeLog: sinon.spy() }
       LoginCtrl.__set__('Logger', mockLogger)
     })
@@ -90,7 +90,7 @@ describe('[Login.Ctrl]', () => {
 
   describe('(executeSave)', () => {
     beforeEach(() => { // reset the rewired functions
-      LoginCtrl = rewire('../server/lib/db/login.ctrl')
+      LoginCtrl = rewire('../src/lib/db/login.ctrl')
       mockLogger = { writeLog: sinon.spy() }
       LoginCtrl.__set__('Logger', mockLogger)
     })
@@ -145,7 +145,7 @@ describe('[Login.Ctrl]', () => {
 
   describe('(checkIpBlocked)', () => {
     beforeEach(() => { // reset the rewired functions
-      LoginCtrl = rewire('../server/lib/db/login.ctrl')
+      LoginCtrl = rewire('../src/lib/db/login.ctrl')
       mockLogger = { writeLog: sinon.spy() }
       LoginCtrl.__set__('Logger', mockLogger)
     })
@@ -211,7 +211,7 @@ describe('[Login.Ctrl]', () => {
 
   describe('(checkIfSuspicious)', () => {
     beforeEach(() => { // reset the rewired functions
-      LoginCtrl = rewire('../server/lib/db/login.ctrl')
+      LoginCtrl = rewire('../src/lib/db/login.ctrl')
       mockLogger = { writeLog: sinon.spy() }
       LoginCtrl.__set__('Logger', mockLogger)
     })
@@ -271,7 +271,7 @@ describe('[Login.Ctrl]', () => {
 
     describe('(checkResults)', () => {
       beforeEach(() => { // reset the rewired functions
-        LoginCtrl = rewire('../server/lib/db/login.ctrl')
+        LoginCtrl = rewire('../src/lib/db/login.ctrl')
       })
 
       it('should pass a check', (done) => {

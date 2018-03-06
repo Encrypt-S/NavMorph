@@ -1,4 +1,4 @@
-# Polymorph
+# NavMorph
 
 A site for anonymizing crypto currencies via Changelly's crypto exchange system and NavTech's anonymous NavCoin transactions.
 
@@ -40,7 +40,7 @@ The frontend of NavMorph is an angular app. The dev enviroment is provided by do
 Docker is not a requirement, but it is the fastest way to get going.
 
 The docker environment for this build is a cmd line interface. This allows you to install packages, use the ng cli generator and run the app as you would with any other angular dev setup.
-Build the docker image with the following command
+Build the docker image with the following command:
 
 `docker build -f dev.Dockerfile -t navmorph-frontend .`
 
@@ -59,7 +59,6 @@ From docker container bash run `dev-setup.sh`
 For you convince we have a run and serve script.
 
 `dev-start.sh`
-
 
 ## Code scaffolding
 

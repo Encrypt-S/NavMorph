@@ -1,9 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { OrderService } from '../../services/order/order'
-import { QRCodeModule } from 'angular2-qrcode';
 import { GenericFunctionsService } from '../../services/generic-functions/generic-functions'
-
 
 @Component({
   selector: 'status-page',
@@ -19,7 +17,6 @@ export class StatusPage implements OnInit {
 
   isLoading: boolean = true
   orderId: string
-  orderPass: string
   orderData: object
 
   orderSuccess: boolean
@@ -54,39 +51,35 @@ export class StatusPage implements OnInit {
   parseUrl (url: string){
     const split = url.split('/')
     this.orderId = split[2]
-    this.orderPass = split[3]
   }
 
   getOrderData() {
-    this.OrderService.getOrder(this.orderId, this.orderPass)
-    .subscribe(data => {
-      if (data[0]) {
-        if (data[0] === 'BLOCKED') {
+    this.OrderService.getOrder(this.orderId)
+    .subscribe(res => {
+      if (res.errors && res.errors[0]) {
+        if (res.errors[0].code === 'GET_ORDER_UNAUTHORIZED') {
           this.ipBlocked = true
-        } else {
-          this.orderData = data[0]
-          this.orderSuccess = true
-          this.fillData(data)
+          this.isLoading = false
+          return
         }
-      } else {
-        this.orderFail = true
       }
+      this.orderData = res.data
+      this.orderSuccess = true
+      this.fillData(res.data.order, res.data.eta)
       this.isLoading = false
     })
   }
 
-  fillData(data) {
-    const mainData = data[0]
-    const minMax = data[1]
-    this.orderAmount = mainData.order_amount
-    this.changellyAddress = mainData.changelly_address_one
-    this.orderStatus = mainData.order_status
-    this.changellyOrderNumber = mainData.changelly_id
+  fillData(order, eta) {
+    this.orderAmount = order.order_amount
+    this.changellyAddress = order.changelly_address_one
+    this.orderStatus = order.order_status
+    this.changellyOrderNumber = order.changelly_id
     this.estFee = "10 NAV"
-    this.sourceCurrency = mainData.input_currency
-    this.destCurrency = mainData.output_currency
-    this.waitTimeLow = '' + minMax[0] + ' mins'
-    this.waitTimeHigh = '' + minMax[1] + ' mins'
+    this.sourceCurrency = order.input_currency
+    this.destCurrency = order.output_currency
+    this.waitTimeLow = '' + eta[0] + ' mins'
+    this.waitTimeHigh = '' + eta[1] + ' mins'
   }
 
   abandonOrder() {
@@ -94,9 +87,8 @@ export class StatusPage implements OnInit {
     this.orderSuccess = false
     this.abandonStatus = 'Pending'
 
-    this.OrderService.abandonOrder(this.orderId, this.orderPass)
+    this.OrderService.abandonOrder(this.orderId)
     .subscribe(data => {
-      console.log(data)
       if (data.status === 'SUCCESS') {
         this.abandonStatus = 'Order sucessfully abandoned. Redirecting to Home Page in 3 seconds'
         setTimeout(()=>{ this.router.navigateByUrl('/') } , 3000)

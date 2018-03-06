@@ -9,7 +9,6 @@ const Schema = mongoose.Schema
 const Transaction = new Schema({
   changelly_id: { type: String, required: false },
   polymorph_id: { type: String, required: true },
-  polymorph_pass: { type: String, required: true },
   changelly_address_one: { type: String, required: true },
   changelly_address_two: { type: String, required: true },
   order_amount: { type: String, required: true },

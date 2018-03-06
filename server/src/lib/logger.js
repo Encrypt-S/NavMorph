@@ -12,32 +12,34 @@ const Logger = {}
 // Logger.transporter = nodemailer.createTransport('smtps://' + emailAuth + '@' + settings.smtp.server)
 
 
-Logger.writeLog = (errorCode, errorMessage, data, email) => {
-  if (email) {
-    // Logger.sendEmail(errorCode, errorMessage, data)
+Logger.writeLog = (errorCode, errorMessage, data, sendEmail = false) => {
+  if (sendEmail && process.env.NODE_ENV === 'production') {
+    Logger.sendEmail(errorCode, errorMessage, data)
   }
   const date = new Date()
-  let logString = '\r\n'
+  let logString = '\r\n-----------------------------------------------------------\r\n'
   logString += 'Date: ' + date + '\r\n'
   logString += 'Error Code: ' + errorCode + '\r\n'
   logString += 'Error Message: ' + errorMessage + '\r\n'
+  // logString += 'Error: ' + JSON.stringify(data) + '\r\n'
 
-  for (const key in data) {
-    if (data.hasOwnProperty(key)) {
-      let string = data[key]
-      if (typeof data[key] === 'object') string = JSON.stringify(data[key])
-      logString += key + ': ' + string + '\r\n'
-    }
-  }
+  // TODO WE should figure out if we need this
+  // for (const key in data) {
+  //   if (data.hasOwnProperty(key)) {
+  //     let string = data[key]
+  //     if (typeof data[key] === 'object') string = JSON.stringify(data[key])
+  //     logString += key + ': ' + string
+  //   }
+  // }
   logString += '\r\n-----------------------------------------------------------\r\n'
   console.log(logString)
 }
 
 Logger.sendEmail = (errorCode, errorMessage, data) => {
   const mailOptions = {
-    from: '"Polymorph System" <' + settings.smtp.user + '>',
+    from: '"NavMorph System" <' + settings.smtp.user + '>',
     to: settings.notificationEmail,
-    subject: 'Polymorph System Message - ' + errorCode,
+    subject: 'NavMorph System Message - ' + errorCode,
     text: errorCode + ' - ' + errorMessage,
   }
   if (data) {

@@ -3,15 +3,15 @@
 const expect = require('expect')
 const rewire = require('rewire')
 
-let ServerModeCtrl = rewire('../server/lib/db/serverMode.ctrl')
-let ServerModeModel = require('../server/lib/db/serverMode.model')
-let ServerMessageModel = require('../server/lib/db/serverMessage.model')
+let ServerModeCtrl = rewire('../src/lib/db/serverMode.ctrl')
+let ServerModeModel = require('../src/lib/db/serverMode.model')
+let ServerMessageModel = require('../src/lib/db/serverMessage.model')
 
 
 describe('[ServerModeCtrl]', () => {
   describe('(checkMode)', () => {
     beforeEach(() => { // reset the rewired functions
-      ServerModeCtrl = rewire('../server/lib/db/serverMode.ctrl')
+      ServerModeCtrl = rewire('../src/lib/db/serverMode.ctrl')
     })
     it('should check the server mode', (done) => {
       const serverMode = 'SERVER_ON'
@@ -48,7 +48,7 @@ describe('[ServerModeCtrl]', () => {
   })
   describe('(checkMessage)', () => {
     beforeEach(() => { // reset the rewired functions
-      ServerModeCtrl = rewire('../server/lib/db/serverMode.ctrl')
+      ServerModeCtrl = rewire('../src/lib/db/serverMode.ctrl')
     })
     it('should check the server mode', (done) => {
       const serverMode = 'SERVER_ON'

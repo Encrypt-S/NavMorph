@@ -1,20 +1,12 @@
 {
-  "name": "polymorph-server",
+  "name": "navmorph-server",
   "version": "0.0.2",
   "license": "MIT",
   "scripts": {
-    "ng": "ng",
-    "start": "concurrently  \"npm run watch:sass\" \"npm run build\" \"ng serve\"",
-    "build": "ng build",
-    "build-run": "ng build && node server.js",
-    "test": "ng test",
-    "test-coverage": "ng test --code-coverage --reporters=coverage-istanbul",
-    "lint": "ng lint",
-    "e2e": "ng e2e",
-    "mocha": "./node_modules/.bin/mocha",
-    "express": "node server.js",
+    "start": "nodemon src/server.js",
     "express-coverage": "./node_modules/.bin/istanbul cover ./node_modules/mocha/bin/_mocha",
-    "express-test": "npm run mocha"
+    "test": "./node_modules/.bin/mocha",
+    "test:watch": "./node_modules/.bin/mocha --watch --recursive"
   },
   "private": true,
   "dependencies": {
@@ -57,6 +49,7 @@
     "karma-jasmine": "~1.1.0",
     "karma-jasmine-html-reporter": "^0.2.2",
     "mocha": "^3.3.0",
+    "nodemon": "^1.15.1",
     "rewire": "^2.5.2",
     "sinon": "^2.2.0",
     "ts-node": "~2.0.0",

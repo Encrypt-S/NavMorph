@@ -1,5 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { HttpModule } from '@angular/http';
+import { HttpClientModule } from '@angular/common/http';
 
 import { SendPageDataService } from '../../services/send-page-data/send-page-data';
 import { ChangellyApiService } from '../../services/changelly-api/changelly-api';
@@ -19,7 +19,7 @@ describe('StatusComponent', () => {
         ChangellyApiService,
         GenericNodeApiService,
       ],
-      imports:[HttpModule]
+      imports:[HttpClientModule]
     })
     .compileComponents();
   }));

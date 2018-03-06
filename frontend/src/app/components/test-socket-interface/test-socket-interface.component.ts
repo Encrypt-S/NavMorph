@@ -1,8 +1,6 @@
 import { Component, OnInit, OnDestroy} from '@angular/core'
 import { Observable } from 'rxjs/Observable'
 
-import * as io from 'socket.io-client'
-
 import { GenericSocketService } from '../../services/generic-socket/generic-socket'
 
 @Component({
@@ -23,7 +21,7 @@ export class TestSocketInterfaceComponent implements OnInit, OnDestroy {
   constructor(private genericSocket: GenericSocketService ) {}
 
   ngOnInit() {
-    this.connection = this.genericSocket.getMessages(this.socketUrl, 'MESSAGE').subscribe((message) => {
+    this.connection = this.genericSocket.getMessages('MESSAGE').subscribe((message) => {
       console.log(message)
       if(this.messages.length > 5) {
         this.messages = []

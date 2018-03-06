@@ -20,6 +20,8 @@ export const orderNodeApiEndPoints = {
 
 export const nodeApiBaseUrl = 'http://localhost:8080/api/'
 
+export const socketsUrl = 'http://localhost:8080'
+
 export const changellyConstData = {
   'CHANGELLY_FEE': 0.005,
   'NAVTECH_FEE': 0.005,
