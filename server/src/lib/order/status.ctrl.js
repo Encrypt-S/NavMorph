@@ -9,7 +9,7 @@ let errorHandler = require('../error-handler') // eslint-disable-line prefer-con
 
 const OrderStatusCtrl = {}
 
-OrderStatusCtrl.getOrder = async (req, res) => {
+OrderStatusCtrl.getOrderRoute = async (req, res) => {
   try {
     const params = req.params
     params.ipAddress = req.ip
@@ -76,7 +76,7 @@ OrderStatusCtrl.checkForSuspiciousActivity = async (params, res) => {
   }
 }
 
-OrderStatusCtrl.updateOrderStatus = async (req, res) => {
+OrderStatusCtrl.updateOrderStatusRoute = async (req, res) => {
   try {
     await validator.startValidation(req.params, apiOptions.updateOrderStatusOptions)
     const params = req.params
@@ -90,7 +90,7 @@ OrderStatusCtrl.updateOrderStatus = async (req, res) => {
         res
       })
     }
-    const order = await transactionCtrl.updateOrderStatus(params.orderId, params.newStatus)
+    const order = await transactionCtrl.updateOrderStatus(params.orderId, newStatus)
     return res.send(order)
   } catch(err) {
     errorHandler.handleError({
@@ -103,7 +103,7 @@ OrderStatusCtrl.updateOrderStatus = async (req, res) => {
   }
 }
 
-OrderStatusCtrl.abandonOrder = async (req, res) => {
+OrderStatusCtrl.abandonOrderStatusRoute = async (req, res) => {
   try {
     await validator.startValidation(req.params, apiOptions.updateOrderStatusOptions)
     await transactionCtrl.updateOrderStatus(req.params.orderId, 'ABANDONED')

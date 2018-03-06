@@ -10,7 +10,7 @@ let ErrorHandler = require('../error-handler')
 
 const OrderCtrl = {}
 
-OrderCtrl.createOrder = async (req, res) => {
+OrderCtrl.createOrderRoute = async (req, res) => {
   try {
     await Validator.startValidation(req.params, ApiOptions.orderOptions)
     await ServerModeCtrl.checkMode()
@@ -21,10 +21,7 @@ OrderCtrl.createOrder = async (req, res) => {
     await TransactionCtrl.createTransaction(req, res)
 
     res.json({ data: { id: req.params.polymorphId } })
-
-    console.log('Finished...')
   } catch (error) {
-    console.log('OrderCtrl.createOrder', error)
     ErrorHandler.handleError({
       statusMessage: 'Unable to create NavMorph Order',
       err: error,

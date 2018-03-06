@@ -9,14 +9,11 @@ let errorHandler = require('../error-handler') // eslint-disable-line prefer-con
 const EtaCtrl = {}
 
 
-EtaCtrl.generateEstimate = async (req, res) => {
+EtaCtrl.generateEstimateRoute = async (req, res) => {
   try {
     await validator.startValidation(req.params, apiOptions.generateEstimateOptions)
     const eta = await EtaCtrl.getEta({ status: 'ESTIMATE', timeSent: new Date(), from: req.params.from, to: req.params.to })
-    res.status(200).json({
-      data: { eta: eta }
-    })
-    return
+    return res.status(200).json({ data: { eta: eta } })
   } catch(error) {
     errorHandler.handleError({
       statusMessage: 'Unable to get ETA',

@@ -8,7 +8,7 @@ let EtaCtrl = rewire('../src/lib/order/eta.ctrl')
 let Validator = rewire('../src/lib/options-validator') // eslint-disable-line
 
 describe('[EtaCtrl]', () => {
-  describe('(generateEstimate)', () => {
+  describe('(generateEstimateRoute)', () => {
     beforeEach(() => { // reset the rewired functions
       EtaCtrl = rewire('../src/lib/order/eta.ctrl')
       Validator = rewire('../src/lib/options-validator')
@@ -42,7 +42,7 @@ describe('[EtaCtrl]', () => {
         }
       }
       EtaCtrl.__set__('ErrorHandler', mockErrorHandler)
-      EtaCtrl.generateEstimate(req, junkRes)
+      EtaCtrl.generateEstimateRoute(req, junkRes)
     })
 
     it('should pass on params', (done) => {
@@ -81,7 +81,7 @@ describe('[EtaCtrl]', () => {
         },
       }
 
-      EtaCtrl.generateEstimate(req, junkRes)
+      EtaCtrl.generateEstimateRoute(req, junkRes)
     })
 
     it('should catch rejection from getEta on params', (done) => {
@@ -113,7 +113,7 @@ describe('[EtaCtrl]', () => {
       }
       EtaCtrl.__set__('ErrorHandler', mockErrorHandler)
 
-      EtaCtrl.generateEstimate(req, null)
+      EtaCtrl.generateEstimateRoute(req, null)
     })
   })
 

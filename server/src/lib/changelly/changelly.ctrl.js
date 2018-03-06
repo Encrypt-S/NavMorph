@@ -36,7 +36,7 @@ ChangellyCtrl.request = async (method, options) => {
   return response
 }
 
-ChangellyCtrl.getCurrencies = async (req, res) => {
+ChangellyCtrl.getCurrenciesRoute = async (req, res) => {
   try {
     const data = await ChangellyCtrl.request(ConfigData.changellyApiEndPoints.getCurrencies, {})
 
@@ -52,7 +52,7 @@ ChangellyCtrl.getCurrencies = async (req, res) => {
   }
 }
 
-ChangellyCtrl.getMinAmount = async (req, res) => {
+ChangellyCtrl.getMinAmountRoute = async (req, res) => {
   try {
 
     await ChangellyCtrl.validateParams(req.params, ApiOptions.getMinAmountOptions)
@@ -65,7 +65,7 @@ ChangellyCtrl.getMinAmount = async (req, res) => {
   }
 }
 
-ChangellyCtrl.getExchangeAmount = async (req, res) => {
+ChangellyCtrl.getExchangeAmountRoute = async (req, res) => {
   try {
 
     await ChangellyCtrl.validateParams(req.params, ApiOptions.getExchangeAmountOptions)
