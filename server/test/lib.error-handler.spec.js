@@ -32,7 +32,7 @@ describe('[ErrorHandler]', () => {
       }
 
       const mockLogger = {
-        writeLog: (errCode, statusMessage, error, sendEmail) => {
+        writeErrorLog: (errCode, statusMessage, error, sendEmail) => {
           expect(statusMessage).toBe('Incorrect Params - couldn\'t handle error')
           expect(error.error).toBe(mockErr)
           expect(error.originalError).toBe(mockParams)
@@ -75,7 +75,7 @@ describe('[ErrorHandler]', () => {
       }
 
       const mockLogger = {
-        writeLog: (errCode, statusMessage, error, sendEmail) => {
+        writeErrorLog: (errCode, statusMessage, error, sendEmail) => {
           expect(statusMessage).toBe(mockStatusMessage)
           expect(error.error).toBe(mockErr)
           expect(errCode).toBe('CODE')

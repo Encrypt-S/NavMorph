@@ -13,10 +13,10 @@ ErrorHandler.handleError = (params) => {
       statusMessage: params.statusMessage,
       err: params.err,
     }))
-    Logger.writeLog(params.code, params.statusMessage, { error: params.err }, params.sendEmail)
+    Logger.writeErrorLog(params.code, params.statusMessage, { error: params.err }, params.sendEmail)
   })
   .catch((errorArr) => {
-    Logger.writeLog('ERR_HDL_001', 'Incorrect Params - couldn\'t handle error', { error: errorArr, originalError: params }, true)
+    Logger.writeErrorLog('ERR_HDL_001', 'Incorrect Params - couldn\'t handle error', { error: errorArr, originalError: params }, true)
   })
 }
 
