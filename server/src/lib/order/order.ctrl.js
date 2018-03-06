@@ -20,15 +20,10 @@ OrderCtrl.createOrder = async (req, res) => {
     req.params.navAddress = await client.nav.getNewAddress()
     req.params.changellyAddressOne = await OrderCtrl.getFirstChangellyAddress(req)
     req.params.changellyAddressTwo = await OrderCtrl.getSecondChangellyAddress(req)
-    req.params.polymorphPass = keygen.generateKey(16)
     req.params.polymorphId = uuid()
     await TransactionCtrl.createTransaction(req, res)
 
-    res.send(JSON.stringify({
-      status: 200,
-      type: 'SUCCESS',
-      data: [req.params.polymorphId, req.params.polymorphPass],
-    }))
+    res.json({ data: { id: req.params.polymorphId } })
 
     console.log('Finished...')
   } catch (error) {
@@ -75,7 +70,6 @@ OrderCtrl.getChangellyAddress = (inputCurrency, outputCurrency, destAddress) => 
     })
     .then((data) => {
       console.log('getChangellyAddress data' , data);
-      
       fulfill(data.result.address)
     })
     .catch((error) => { reject(error) })

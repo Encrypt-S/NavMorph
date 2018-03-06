@@ -11,7 +11,7 @@ const TransactionCtrl = { }
 TransactionCtrl.createTransaction = (req, res) => {
   return new Promise((fulfill, reject) => {
     const required = ['from', 'to', 'address', 'amount', 'polymorphId',
-      'polymorphPass', 'changellyAddressOne', 'changellyAddressTwo', 'navAddress']
+      'changellyAddressOne', 'changellyAddressTwo', 'navAddress']
     if (!req || lodash.intersection(Object.keys(req.params), required).length !== required.length) {
       reject(new Error('PARAMS_ERROR', 'TRANS_CTRL_001', 'Failed to receive params'))
       return

@@ -2,7 +2,7 @@ const ConfigData = require('../../server-settings')
 const ApiOptions = require('../../api-options.json')
 
 const crypto = require('crypto')
-const jayson = require('jayson')
+const jayson = require('jayson/promise')
 const logger = require('../logger')
 
 const URL = ConfigData.changellyUrl
@@ -25,83 +25,71 @@ ChangellyCtrl.sign = (message) => {
     .digest('hex')
 }
 
-ChangellyCtrl.request = (method, options, callback) => {
+ChangellyCtrl.request = async (method, options) => {
   const id = ChangellyCtrl.id()
   const message = jayson.utils.request(method, options, id)
-  client.options.headers = {
-    'api-key': ConfigData.changellyKey,
-    sign: ChangellyCtrl.sign(message),
+  client.options.headers = {  'api-key': ConfigData.changellyKey, sign: ChangellyCtrl.sign(message) }
+  const response = await client.request(method, options, id)
+  if (response.error) {
+    throw new Error(response.error.message || JSON.stringify(response.error))
   }
-  client.request(method, options, id, (err, response) => {
-    callback(err, response)
-  })
+  return response
 }
 
-ChangellyCtrl.response = (res, data) => {
-  res.json({success: true, data })
-}
+ChangellyCtrl.getCurrencies = async (req, res) => {
+  try {
+    const data = await ChangellyCtrl.request(ConfigData.changellyApiEndPoints.getCurrencies, {})
 
-ChangellyCtrl.getCurrencies = (req, res) => {
-  ChangellyCtrl.request(ConfigData.changellyApiEndPoints.getCurrencies, {}, (err, data) => {
-    if (err) {
-      logger.writeErrorLog('CHNGLLY_001', 'Failed to getCurrencies', { error: err, data }, true)
-      res.send(err)
-    } else if (data.result && data.result.indexOf('nav') === -1) {
-      logger.writeErrorLog('CHNGLLY_006', 'nav not listed in currencies', { error: err, data }, true)
-      res.status(500).send(new Error('nav not listed in currencies'))
-    } else {
-      ChangellyCtrl.response(res, { currencies: data.result })
+    if (data.result && data.result.indexOf('nav') === -1) {
+      logger.writeLog('CHNGLLY_006', 'nav not listed in currencies', { error: err, data }, true)
+      return res.status(500).json({error: new Error('nav not listed in currencies')})
     }
-  })
+
+    return res.json({data: { currencies: data.result } })
+  } catch (err) {
+    logger.writeLog('CHNGLLY_005', 'Failed to getMinAmount', err, true)
+    return res.status(500).send(new Error('Failed to get min transfer amount from Changelly'))
+  }
 }
 
-ChangellyCtrl.getMinAmount = (req, res) => {
-  ChangellyCtrl.validateParams(req.params, ApiOptions.getMinAmountOptions)
-  .then(() => {
-    return ChangellyCtrl.request(ConfigData.changellyApiEndPoints.getMinAmount, req.params, (err, data) => {
-      if (err) {
-        logger.writeErrorLog('CHNGLLY_002', 'Failed to getMinAmount', err, true)
-        res.status(500).send(new Error('Failed to get min transfer amount from Changelly'))
-      }
-      console.log(data)
-      return ChangellyCtrl.response(res, { minAmount: data.result })
-    })
-  })
-  .catch((error) => {res.send(error)})
+ChangellyCtrl.getMinAmount = async (req, res) => {
+  try {
+
+    await ChangellyCtrl.validateParams(req.params, ApiOptions.getMinAmountOptions)
+    const data = await ChangellyCtrl.request(ConfigData.changellyApiEndPoints.getMinAmount, req.params)
+    return res.json({data: { minAmount: data.result } })
+
+  } catch (err) {
+    logger.writeLog('CHNGLLY_002', 'Failed to getMinAmount', err, true)
+    return res.status(500).json({error: new Error('Failed to get min transfer amount from Changelly')})
+  }
 }
 
-ChangellyCtrl.getExchangeAmount = (req, res) => {
-  ChangellyCtrl.validateParams(req.params, ApiOptions.getExchangeAmountOptions)
-  .then(() => {
-    return ChangellyCtrl.request(ConfigData.changellyApiEndPoints.getExchangeAmount, req.params, (err, data) => {
-      if (err) {
-        logger.writeErrorLog('CHNGLLY_003', 'Failed to getExchangeAmount', err, true)
-        res.status(500).send(new Error('Failed to get the estimated exchange amount from Changelly'))
-      }
-      return ChangellyCtrl.response(res, { amount: data.result })
-    })
-  })
-  .catch((error) => { res.send(error)})
+ChangellyCtrl.getExchangeAmount = async (req, res) => {
+  try {
+
+    await ChangellyCtrl.validateParams(req.params, ApiOptions.getExchangeAmountOptions)
+    const data = await ChangellyCtrl.request(ConfigData.changellyApiEndPoints.getExchangeAmount, req.params)
+    return res.json({data: { amount: data.result } })
+
+  } catch (err) {
+    logger.writeLog('CHNGLLY_003', 'Failed to getExchangeAmount', err, true)
+    res.status(500).json({error: new Error('Failed to get the estimated exchange amount from Changelly')})
+  }
 }
 
-ChangellyCtrl.generateAddress = (params) => {
-  return new Promise((resolve, reject) => {
-    ChangellyCtrl.validateParams(params, ApiOptions.generateAddressOptions)
-    .then(() => {
-      console.log('***params, ', params)
-      ChangellyCtrl.request(ConfigData.changellyApiEndPoints.generateAddress, params, (err, data) => {
-        if (data.err) {
-          logger.writeErrorLog('CHNGLLY_004', 'Failed to generateAddress', err, false)
-          reject(new Error(data.err))
-          return
-        }
-        console.log('generateAddress', data)
-        resolve({ address: data.result })
-        return
-      })
-    })
-    .catch((err) => { reject(err)})
-  })
+ChangellyCtrl.generateAddress = async (params) => {
+  try {
+
+    await ChangellyCtrl.validateParams(params, ApiOptions.generateAddressOptions)
+    const data = await ChangellyCtrl.request(ConfigData.changellyApiEndPoints.generateAddress, params)
+    return data
+
+  }
+  catch (err) {
+    logger.writeLog('CHNGLLY_004', 'Failed to generateAddress', data.error, false)
+    throw new Error('CHNGLLY_004 - Failed to generateAddress')
+  }
 }
 
 ChangellyCtrl.validateParams = (params, options) => {
@@ -111,7 +99,7 @@ ChangellyCtrl.validateParams = (params, options) => {
       fulfill()
     })
     .catch((error) => {
-      logger.writeErrorLog('CHNGLLY_005', 'Param Validation Error', error, false)
+      logger.writeLog('CHNGLLY_005', 'Param Validation Error', error, false)
       reject(error)
     })
   })

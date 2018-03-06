@@ -125,14 +125,7 @@ export class SendCoinsFormComponent implements OnInit {
   createOrder(originCoin, destCoin, destAddr, transferAmount): void {
     this.orderServ.createOrder(originCoin, destCoin, destAddr, transferAmount).subscribe(
       result => {
-        if (result.type === 'FAIL') {
-          this.errors.push('ORDER_CREATION_FAILED')
-          return
-        } else if (result.type === 'MAINTENANCE') {
-          this.errors.push('MAINTENANCE_MODE')
-          return
-        }
-        const statusPageUrl = '/status/' + result.data['0']
+        const statusPageUrl = '/status/' + result.data.id
         this.router.navigateByUrl(statusPageUrl)
       },
       error => {
