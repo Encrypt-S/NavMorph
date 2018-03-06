@@ -1,7 +1,5 @@
 <div id="container" [ngClass]="theme">
 
-  <loader-component *ngIf="pageLoading" [theme]="loaderTheme"></loader-component>
-
   <div class="">
     <ul class="row error-message" *ngIf="errors.length > 0">
       <li *ngIf="errors.indexOf('NOT_FOUND') > -1">Unable to load available currencies from Changelly</li>

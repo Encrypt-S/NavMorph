@@ -54,11 +54,9 @@ ChangellyCtrl.getCurrenciesRoute = async (req, res) => {
 
 ChangellyCtrl.getMinAmountRoute = async (req, res) => {
   try {
-
     await ChangellyCtrl.validateParams(req.params, ApiOptions.getMinAmountOptions)
     const data = await ChangellyCtrl.request(ConfigData.changellyApiEndPoints.getMinAmount, req.params)
     return res.json({data: { minAmount: data.result } })
-
   } catch (err) {
     logger.writeErrorLog('CHNGLLY_002', 'Failed to getMinAmount', err, true)
     return res.status(500).json({error: new Error('Failed to get min transfer amount from Changelly')})
@@ -67,11 +65,9 @@ ChangellyCtrl.getMinAmountRoute = async (req, res) => {
 
 ChangellyCtrl.getExchangeAmountRoute = async (req, res) => {
   try {
-
     await ChangellyCtrl.validateParams(req.params, ApiOptions.getExchangeAmountOptions)
     const data = await ChangellyCtrl.request(ConfigData.changellyApiEndPoints.getExchangeAmount, req.params)
     return res.json({data: { amount: data.result } })
-
   } catch (err) {
     logger.writeErrorLog('CHNGLLY_003', 'Failed to getExchangeAmount', err, true)
     res.status(500).json({error: new Error('Failed to get the estimated exchange amount from Changelly')})
@@ -97,7 +93,7 @@ ChangellyCtrl.validateParams = (params, options) => {
       fulfill()
     })
     .catch((error) => {
-      logger.writeErrorLog('CHNGLLY_005', 'Param Validation Error', error, false)
+      logger.writeErrorLog('CHNGLLY_001', 'Param Validation Error', error, false)
       reject(error)
     })
   })
