@@ -17,7 +17,7 @@ OrderStatusCtrl.getOrderRoute = async (req, res) => {
     const isBlocked = await loginCtrl.checkIpBlocked({ ipAddress: params.ipAddress })
 
     if (isBlocked) {
-      await loginCtrl.insertAttempt(params.ipAddress, params.polymorphId)
+      await loginCtrl.insertAttempt({ ipAddress: params.ipAddress, polymorphId: params.polymorphId, params })
       return res.status(401).json({errors: [{ code: 'GET_ORDER_UNAUTHORIZED', message: 'Unauthorised Access' }]})
     }
 
@@ -59,7 +59,7 @@ OrderStatusCtrl.getOrderFromDb = async (params, res) => {
 
 OrderStatusCtrl.checkForSuspiciousActivity = async (params, res) => {
   try {
-    await loginCtrl.insertAttempt(params.ipAddress, params.orderId)
+    await loginCtrl.insertAttempt({ ipAddress: params.ipAddress, polymorphId: params.orderId, params})
     const isSuspicious = await loginCtrl.checkIfSuspicious(params.ipAddress)
     if (isSuspicious) {
       await loginCtrl.blackListIp({ ipAddress: params.ipAddress })
@@ -67,7 +67,7 @@ OrderStatusCtrl.checkForSuspiciousActivity = async (params, res) => {
     return {}
   } catch (err) {
     errorHandler.handleError({
-      statusMessage: 'Unable to fetch/update Polymorph Order',
+      statusMessage: 'Unable to fetch/update NavMorph Order',
       code: 'ORDER_STATUS_CTRL_004',
       err,
       sendEmail: true,

@@ -63,7 +63,7 @@ const startUpServer = async () => {
     return
   }
 
-  logger.writeLog(`Start Up Complete @ ${new Date().toISOString()}, Polymorph Version: ${config.version}`, 'Server Start Up', true)
+  logger.writeLog(`Start Up Complete @ ${new Date().toISOString()}, NavMorph Version: ${config.version}`, 'Server Start Up', true)
 
   /**
    * Setup the process handler
