@@ -1,8 +1,8 @@
-import { Injectable } from '@angular/core';
+import { Injectable } from '@angular/core'
 
-import { changellyNodeApiEndPoints } from "../config";
+import { changellyNodeApiEndPoints } from '../config'
 
-import {GenericNodeApiService}  from '../generic-node-api/generic-node-api';
+import {GenericNodeApiService} from '../generic-node-api/generic-node-api'
 
 @Injectable()
 export class ChangellyApiService {

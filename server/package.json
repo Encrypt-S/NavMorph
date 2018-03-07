@@ -1,5 +1,5 @@
 {
-  "name": "polymorph-server",
+  "name": "navmorph-server",
   "version": "0.0.2",
   "license": "MIT",
   "scripts": {
@@ -28,7 +28,8 @@
     "promise": "^8.0.0",
     "socket.io": "^2.0.3",
     "socket.io-client": "^2.0.3",
-    "validator": "^9.0.0"
+    "uuid": "^3.2.1",
+    "validator": "^9.4.0"
   },
   "devDependencies": {
     "@types/node": "~6.0.60",

@@ -102,7 +102,7 @@ describe('[TransactionCtrl]', () => {
     })
   })
 
-  describe('(getOrder)', () => {
+  describe('(getOrderRoute)', () => {
     beforeEach(() => { // reset the rewired functions
       sandbox = sinon.sandbox.create()
       TransactionCtrl = rewire('../src/lib/db/transaction.ctrl')
@@ -283,7 +283,7 @@ describe('[TransactionCtrl]', () => {
     })
   })
 
-  describe('(updateOrderStatus)', () => {
+  describe('(updateOrderStatusRoute)', () => {
     beforeEach(() => { // reset the rewired functions
       sandbox = sinon.sandbox.create()
       TransactionCtrl = rewire('../src/lib/db/transaction.ctrl')

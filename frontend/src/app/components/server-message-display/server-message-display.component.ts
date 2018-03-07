@@ -1,7 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core'
 import { GenericSocketService } from '../../services/generic-socket/generic-socket'
 import { ServerMessageModel } from './server-message-model'
-import * as io from 'socket.io-client'
 
 @Component({
   selector: 'server-message-display',
@@ -29,7 +28,7 @@ export class ServerMessageDisplayComponent implements OnInit {
   }
 
   connectToSocket():void {
-    this.connection = this.genericSocket.getMessages(this.socketUrl, 'SERVER_MESSAGES')
+    this.connection = this.genericSocket.getMessages('SERVER_MESSAGES')
     .subscribe((serverMessage:ServerMessageModel) => {
       if(Object.keys(serverMessage).length > 0) {
         this.displayMessage = serverMessage.showMessage

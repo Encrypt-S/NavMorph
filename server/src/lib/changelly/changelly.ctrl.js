@@ -2,14 +2,14 @@ const ConfigData = require('../../server-settings')
 const ApiOptions = require('../../api-options.json')
 
 const crypto = require('crypto')
-const jayson = require('jayson')
-const Logger = require('../logger')
+const jayson = require('jayson/promise')
+const logger = require('../logger')
 
 const URL = ConfigData.changellyUrl
 const client = jayson.client.https(URL)
 const Validator = require('../options-validator')
 
-const ChangellyCtrl = { internal: {} }
+const ChangellyCtrl = {}
 
 ChangellyCtrl.id = () => {
   return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
@@ -25,94 +25,65 @@ ChangellyCtrl.sign = (message) => {
     .digest('hex')
 }
 
-ChangellyCtrl.request = (method, options, callback) => {
+ChangellyCtrl.request = async (method, options) => {
   const id = ChangellyCtrl.id()
   const message = jayson.utils.request(method, options, id)
-  client.options.headers = {
-    'api-key': ConfigData.changellyKey,
-    sign: ChangellyCtrl.sign(message),
+  client.options.headers = {  'api-key': ConfigData.changellyKey, sign: ChangellyCtrl.sign(message) }
+  const response = await client.request(method, options, id)
+  if (response.error) {
+    throw new Error(response.error.message || JSON.stringify(response.error))
   }
-  client.request(method, options, id, (err, response) => {
-    callback(err, response)
-  })
+  return response
 }
 
-ChangellyCtrl.getCurrencies = (req, res) => {
-  ChangellyCtrl.request(ConfigData.changellyApiEndPoints.getCurrencies, {}, (err, data) => {
-    if (err) {
-      Logger.writeErrorLog('CHNGLLY_001', 'Failed to getCurrencies', { error: err, data }, true)
-      res.send(err)
-    } else if (data.result && data.result.indexOf('nav') === -1) {
-      Logger.writeErrorLog('CHNGLLY_006', 'Nav not listed in currencies', { error: err, data }, true)
-      res.status(500).send(new Error('Nav not listed in currencies'))
-    } else {
-      res.send(data)
+ChangellyCtrl.getCurrenciesRoute = async (req, res) => {
+  try {
+    const data = await ChangellyCtrl.request(ConfigData.changellyApiEndPoints.getCurrencies, {})
+
+    if (data.result && data.result.indexOf('nav') === -1) {
+      logger.writeErrorLog('CHNGLLY_006', 'nav not listed in currencies', { error: err, data }, true)
+      return res.status(500).json({error: new Error('nav not listed in currencies')})
     }
-  })
+
+    return res.json({data: { currencies: data.result } })
+  } catch (err) {
+    logger.writeErrorLog('CHNGLLY_005', 'Failed to getMinAmount', err, true)
+    return res.status(500).send(new Error('Failed to get min transfer amount from Changelly'))
+  }
 }
 
-ChangellyCtrl.getMinAmount = (req, res) => {
-
-  ChangellyCtrl.validateParams(req.params, ApiOptions.getMinAmountOptions)
-  .then(() => {
-    return ChangellyCtrl.request(ConfigData.changellyApiEndPoints.getMinAmount, req.params, (err, data) => {
-      if (err) {
-        Logger.writeErrorLog('CHNGLLY_002', 'Failed to getMinAmount', err, true)
-        res.send(err)
-      } else {
-        res.send(data)
-      }
-    })
-  })
-  .catch((error) => {res.send(error)})
+ChangellyCtrl.getMinAmountRoute = async (req, res) => {
+  try {
+    await ChangellyCtrl.validateParams(req.params, ApiOptions.getMinAmountOptions)
+    const data = await ChangellyCtrl.request(ConfigData.changellyApiEndPoints.getMinAmount, req.params)
+    return res.json({data: { minAmount: data.result } })
+  } catch (err) {
+    logger.writeErrorLog('CHNGLLY_002', 'Failed to getMinAmount', err, true)
+    return res.status(500).json({error: new Error('Failed to get min transfer amount from Changelly')})
+  }
 }
 
-ChangellyCtrl.getExchangeAmount = (req, res) => {
-
-  ChangellyCtrl.validateParams(req.params, ApiOptions.getExchangeAmountOptions)
-  .then(() => {
-    return ChangellyCtrl.request(ConfigData.changellyApiEndPoints.getExchangeAmount, req.params, (err, data) => {
-      if (err) {
-        Logger.writeErrorLog('CHNGLLY_003', 'Failed to getExchangeAmount', err, true)
-        res.send(err)
-      } else {
-        res.send(data)
-      }
-    })
-  })
-  .catch((error) => { res.send(error)})
+ChangellyCtrl.getExchangeAmountRoute = async (req, res) => {
+  try {
+    await ChangellyCtrl.validateParams(req.params, ApiOptions.getExchangeAmountOptions)
+    const data = await ChangellyCtrl.request(ConfigData.changellyApiEndPoints.getExchangeAmount, req.params)
+    return res.json({data: { amount: data.result } })
+  } catch (err) {
+    logger.writeErrorLog('CHNGLLY_003', 'Failed to getExchangeAmount', err, true)
+    res.status(500).json({error: new Error('Failed to get the estimated exchange amount from Changelly')})
+  }
 }
 
-ChangellyCtrl.generateAddress = (req, res) => {
-  ChangellyCtrl.validateParams(req.params, ApiOptions.generateAddressOptions)
-  .then(() => {
-    return ChangellyCtrl.request(ConfigData.changellyApiEndPoints.generateAddress, req.params, (err, data) => {
-      if (err) {
-        Logger.writeErrorLog('CHNGLLY_004', 'Failed to generateAddress (external)', err, true)
-        res.send(err)
-      } else {
-        res.send(data)
-      }
-    })
-  })
-  .catch((error) => { res.send(error)})
-}
-
-ChangellyCtrl.internal.generateAddress = (params) => {
-  return new Promise((fulfill, reject) => {
-    ChangellyCtrl.validateParams(params, ApiOptions.generateAddressOptions)
-    .then(() => {
-      ChangellyCtrl.request(ConfigData.changellyApiEndPoints.generateAddress, params, (err, data) => {
-        if (data.err) {
-          Logger.writeErrorLog('CHNGLLY_005', 'Failed to generateAddress (internal)', err, false)
-          reject(new Error(data.err))
-          return
-        }
-        fulfill(data)
-      })
-    })
-    .catch((error) => { reject(error)})
-  })
+ChangellyCtrl.generateAddress = async (params) => {
+  try {
+    await ChangellyCtrl.validateParams(params, ApiOptions.generateAddressOptions)
+    const data = await ChangellyCtrl.request(ConfigData.changellyApiEndPoints.generateAddress, params)
+    return data
+  }
+  catch (err) {
+    logger.writeErrorLog('CHNGLLY_004', 'Failed to generateAddress', data.error, false)
+    throw new Error('CHNGLLY_004 - Failed to generateAddress')
+  }
 }
 
 ChangellyCtrl.validateParams = (params, options) => {
@@ -122,7 +93,7 @@ ChangellyCtrl.validateParams = (params, options) => {
       fulfill()
     })
     .catch((error) => {
-      Logger.writeErrorLog('CHNGLLY_006', 'Param Validation Error', error, false)
+      logger.writeErrorLog('CHNGLLY_001', 'Param Validation Error', error, false)
       reject(error)
     })
   })

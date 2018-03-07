@@ -40,7 +40,7 @@
             <div class="">Source Currency: {{sourceCurrency | uppercase}}</div>
             <div class="">Dest Currency: {{destCurrency | uppercase}}</div>
           </div>
-          <button class="btn waves-effect waves-light bg-blue" type="submit" 
+          <button class="btn waves-effect waves-light bg-blue" type="submit"
             name="action" (click)=abandonOrder() *ngIf="orderStatus === 'CREATED'">
             Cancel Order
           </button>
@@ -51,7 +51,7 @@
         </div>
 
         <div class="">
-          <a [href]="'mailto:example@email.com&subject=Polymorph%20Order%20ID%20and%20Password&body=Polymorph%20ID:'
+          <a [href]="'mailto:example@email.com&subject=NavMorph%20Order%20ID%20and%20Password&body=Polymorph%20ID:'
           + orderId + '.%20Polymorph%20Password:%20' + orderPass + '%20.'">Click here to send orderID and Password to an email address</a>
           <div>If you want to be able to view the status of your order, you will need to navigate to the page again, so bookmark this page or note down the id and password in the url.</div>
         </div>

@@ -4,7 +4,9 @@ const config = require('../../server-settings')
 let logger = require('../logger')
 let rpc = new Client(config.navClient)
 
-rpc.unlockWallet = async () => {
+rpc.nav = {}
+
+rpc.nav.unlockWallet = async () => {
   try {
     await rpc.walletPassphrase(config.navClient.walletPassphrase, config.navClient.walletUnlockTime)
     return true
@@ -15,6 +17,25 @@ rpc.unlockWallet = async () => {
     }
     logger.writeErrorLog('RPC_001', err.message, err)
     return false
+  }
+}
+
+rpc.nav.getNewAddress = async () => {
+  try {
+    return await rpc.getNewAddress()
+  } catch (err) {
+    console.log(err)
+    if (err.code === -12) {
+      // Had a fixable error. Try fix it
+      try {
+        await rpc.keypoolRefill()
+        return await rpc.getNewAddress()
+      } catch (err2) {
+        // Errored again. Guess we can't fix it
+        logger.writeLog('RPC_002', err.message, err)
+        return false
+      }
+    }
   }
 }
 

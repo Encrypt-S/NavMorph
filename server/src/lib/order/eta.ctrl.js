@@ -1,52 +1,42 @@
-'use strict'
+const config = require('../../server-settings')
+let apiOptions = require('../../api-options.json') // eslint-disable-line prefer-const
 
-const Config = require('../../server-settings')
-let ApiOptions = require('../../api-options.json') // eslint-disable-line prefer-const
-
-let validStatuses = Config.validOrderStatuses // eslint-disable-line prefer-const
-let timeConsts = Config.timeConsts // eslint-disable-line prefer-const
-let Validator = require('../options-validator') // eslint-disable-line prefer-const
-let ErrorHandler = require('../error-handler') // eslint-disable-line prefer-const
+let validStatuses = config.validOrderStatuses // eslint-disable-line prefer-const
+let timeConsts = config.timeConsts // eslint-disable-line prefer-const
+let validator = require('../options-validator') // eslint-disable-line prefer-const
+let errorHandler = require('../error-handler') // eslint-disable-line prefer-const
 
 const EtaCtrl = {}
 
 
-EtaCtrl.generateEstimate = (req, res) => {
-  Validator.startValidation(req.params, ApiOptions.generateEstimateOptions)
-  .then(() => {
-    return EtaCtrl.getEta({ status: 'ESTIMATE', timeSent: new Date(), from: req.params.from, to: req.params.to })
-  })
-  .then((eta) => {
-    res.send(eta)
-  })
-  .catch((error) => {
-    ErrorHandler.handleError({
+EtaCtrl.generateEstimateRoute = async (req, res) => {
+  try {
+    await validator.startValidation(req.params, apiOptions.generateEstimateOptions)
+    const eta = await EtaCtrl.getEta({ status: 'ESTIMATE', timeSent: new Date(), from: req.params.from, to: req.params.to })
+    return res.status(200).json({ data: { eta: eta } })
+  } catch(error) {
+    errorHandler.handleError({
       statusMessage: 'Unable to get ETA',
       err: error,
       code: 'ETA_CTRL_001',
       sendEmail: true,
       res
     })
-  })
+  }
 }
 
-EtaCtrl.getEta = (params) => {
-  return new Promise((fufill, reject) => {
-    Validator.startValidation(params, ApiOptions.getEtaOptions)
-    .then(() => {
-      if (!EtaCtrl.validStatus(params.status)) {
-        reject(new Error('INVALID_ORDER_STATUS'))
-        return
-      } else if (params.status === 'FINISHED' && !(params.timeSent instanceof Date)) {
-        reject(new Error('INVALID_SENT_TIME'))
-        return
-      }
-      fufill(EtaCtrl.buildEta(params))
-    })
-    .catch((error) => {
-      reject({ error })
-    })
-  })
+EtaCtrl.getEta = async (params) => {
+  try {
+    await validator.startValidation(params, apiOptions.getEtaOptions)
+    if (!EtaCtrl.validStatus(params.status)) {
+      throw new Error('INVALID_ORDER_STATUS')
+    } else if (params.status === 'FINISHED' && !(params.timeSent instanceof Date)) {
+      throw new Error('INVALID_SENT_TIME')
+    }
+    return await EtaCtrl.buildEta(params)
+  } catch(error) {
+    throw error
+  }
 }
 
 EtaCtrl.validStatus = (status) => {

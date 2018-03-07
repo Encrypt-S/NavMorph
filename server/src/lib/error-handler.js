@@ -1,11 +1,13 @@
-let Logger = require('./logger') // eslint-disable-line prefer-const
-let Validator = require('./options-validator') // eslint-disable-line prefer-const
-const ApiOptions = require('../api-options.json')
+let logger = require('./logger') // eslint-disable-line prefer-const
+let validator = require('./options-validator') // eslint-disable-line prefer-const
+const apiOptions = require('../api-options.json')
 
 const ErrorHandler = {}
 
 ErrorHandler.handleError = (params) => {
-  Validator.startValidation(params, ApiOptions)
+  // We don't  have an Error Handler Validation yet
+  // console.log('ErrorHandler.handleError', params, apiOptions.ErrorHandler)
+  validator.startValidation(params, {})
   .then(() => {
     params.res.send(JSON.stringify({
       statusCode: 200,
@@ -13,10 +15,10 @@ ErrorHandler.handleError = (params) => {
       statusMessage: params.statusMessage,
       err: params.err,
     }))
-    Logger.writeErrorLog(params.code, params.statusMessage, { error: params.err }, params.sendEmail)
+    logger.writeErrorLog(params.code, params.statusMessage, { error: params.err }, params.sendEmail)
   })
   .catch((errorArr) => {
-    Logger.writeErrorLog('ERR_HDL_001', 'Incorrect Params - couldn\'t handle error', { error: errorArr, originalError: params }, true)
+    logger.writeErrorLog('ERR_HDL_001', 'Incorrect Params - couldn\'t handle error', { error: errorArr, originalError: params }, true)
   })
 }
 
