@@ -26,8 +26,8 @@ const port = process.env.PORT || config.serverPort
 
 const startUpServer = async () => {
   /**
-    * Validate Server Settings Config
-    */
+   * Validate Server Settings Config
+   */
 
   try {
     await settingsValidator.validateSettings(config)
@@ -56,7 +56,7 @@ const startUpServer = async () => {
     db.on('error', console.error.bind(console, 'MongoDB connection error:'))
 
     logger.writeLog(`Conected to MongoDB on ${mongoDB}`, 'MongoDB Connect')
-  } catch (error) {
+  } catch (err) {
     logger.writeErrorLog('Failed to connect to MongoDB', '002', err, true)
     return
   }
