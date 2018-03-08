@@ -1,25 +1,22 @@
-import { TestBed, inject } from '@angular/core/testing';
-import { HttpClientModule } from '@angular/common/http';
+import { TestBed, inject } from '@angular/core/testing'
+import { HttpClientModule } from '@angular/common/http'
 
-import { ChangellyApiService } from './changelly-api';
+import { ChangellyApiService } from './changelly-api'
 
-import { GenericNodeApiService } from './../../services/generic-node-api/generic-node-api';
-
+import { GenericNodeApiService } from './../../services/generic-node-api/generic-node-api'
 
 describe('ChangellyApiService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        HttpClientModule,
-      ],
-      providers: [
-        ChangellyApiService,
-        GenericNodeApiService,
-      ]
-    });
-  });
+      imports: [HttpClientModule],
+      providers: [ChangellyApiService, GenericNodeApiService],
+    })
+  })
 
-  it('should be created', inject([ChangellyApiService], (service: ChangellyApiService) => {
-    expect(service).toBeTruthy();
-  }));
-});
+  it(
+    'should be created',
+    inject([ChangellyApiService], (service: ChangellyApiService) => {
+      expect(service).toBeTruthy()
+    })
+  )
+})

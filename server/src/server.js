@@ -9,7 +9,6 @@ const pem = require('pem')
 const mongoose = require('mongoose')
 const auth = require('basic-auth')
 
-
 const socketCtrl = require('./lib/socket/socketCtrl')
 const config = require('./server-settings')
 const settingsValidator = require('./lib/settingsValidator.js')
@@ -35,14 +34,13 @@ const startUpServer = async () => {
     console.log('--------------------------------------------')
     console.log('Server Config Validated. Continuing start up')
     console.log('--------------------------------------------')
-  } catch(err) {
+  } catch (err) {
     console.log('--------------------------------------------')
     console.log('ERR: Server Config invalid. Stopping start up')
     console.log(err)
     console.log('--------------------------------------------')
     return
   }
-
 
   // Set our api routes
   app.use(config.app.apiUri, api)
@@ -63,7 +61,11 @@ const startUpServer = async () => {
     return
   }
 
-  logger.writeLog(`Start Up Complete @ ${new Date().toISOString()}, NavMorph Version: ${config.version}`, 'Server Start Up', true)
+  logger.writeLog(
+    `Start Up Complete @ ${new Date().toISOString()}, NavMorph Version: ${config.version}`,
+    'Server Start Up',
+    true
+  )
 
   /**
    * Setup the process handler
@@ -71,25 +73,23 @@ const startUpServer = async () => {
   const setupSuccess = processHandler.setup()
   logger.writeLog('Process Handler Set Up')
 
-
   const socketServer = http.createServer(app)
   const io = require('socket.io')(socketServer)
 
   try {
     await socketCtrl.setupServerSocket(io)
-    logger.writeLog('Server Mode Socket Running', )
-  } catch(err) {
+    logger.writeLog('Server Mode Socket Running')
+  } catch (err) {
     return logger.writeErrorLog('001', 'Failed to start up Server Mode Socket', err, true)
   }
   //
   socketServer.listen(port, async () => {
-    logger.writeLog(`API running on http://localhost:${port}`, )
+    logger.writeLog(`API running on http://localhost:${port}`)
   })
 
   /**
    * Create HTTPS server, set up sockets and listen on all network interfaces
    */
-
 }
 
 startUpServer()

@@ -1,7 +1,7 @@
-const validator = require('validator');
+const validator = require('validator')
 const lodash = require('lodash')
 
-const OptionsValidator = { }
+const OptionsValidator = {}
 
 OptionsValidator.startValidation = (params, options) => {
   const errors = []
@@ -25,7 +25,7 @@ OptionsValidator.startValidation = (params, options) => {
 }
 
 OptionsValidator.validateParams = (param, validators, errors) => {
-  validators.forEach((validation) => {
+  validators.forEach(validation => {
     switch (validation.validator) {
       case 'isString':
         OptionsValidator.isString(param, validation, errors)

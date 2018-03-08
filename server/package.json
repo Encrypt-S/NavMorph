@@ -8,6 +8,12 @@
     "test": "./node_modules/.bin/mocha",
     "test:watch": "./node_modules/.bin/mocha --watch --recursive"
   },
+  "prettier": {
+    "semi": false,
+    "singleQuote": true,
+    "printWidth": 120,
+    "trailingComma": "es5"
+  },
   "private": true,
   "dependencies": {
     "basic-auth": "^2.0.0",
@@ -51,6 +57,7 @@
     "karma-jasmine-html-reporter": "^0.2.2",
     "mocha": "^3.3.0",
     "nodemon": "^1.15.1",
+    "prettier": "^1.11.1",
     "rewire": "^2.5.2",
     "sinon": "^2.2.0",
     "ts-node": "~2.0.0",

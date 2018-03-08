@@ -1,64 +1,64 @@
 module.exports = {
-  "app": {
-    "static": "STRING",
-    "apiUri": "STRING",
-    "catchAllUri": "STRING"
+  app: {
+    static: 'STRING',
+    apiUri: 'STRING',
+    catchAllUri: 'STRING',
   },
 
-  "serverPort": "PORT",
+  serverPort: 'PORT',
 
-  "sslCert": {
-    "days": "NUMBER",
-    "selfSigned": "BOOLEAN"
+  sslCert: {
+    days: 'NUMBER',
+    selfSigned: 'BOOLEAN',
   },
 
-  "mongoDBUrl": "STRING",
+  mongoDBUrl: 'STRING',
 
-  "version": "STRING",
+  version: 'STRING',
 
-  "navClient": {
-    "username": "STRING",
-    "password": "STRING",
-    "port": "PORT",
-    "host": "STRING"
+  navClient: {
+    username: 'STRING',
+    password: 'STRING',
+    port: 'PORT',
+    host: 'STRING',
   },
-  "changellyApiEndPoints": {
-    "getCurrencies": "STRING",
-    "getMinAmount": "STRING",
-    "getExchangeAmount": "STRING",
-    "generateAddress": "STRING",
-    "getTransaction": "STRING",
-    "getExchangeStatus": "STRING"
+  changellyApiEndPoints: {
+    getCurrencies: 'STRING',
+    getMinAmount: 'STRING',
+    getExchangeAmount: 'STRING',
+    generateAddress: 'STRING',
+    getTransaction: 'STRING',
+    getExchangeStatus: 'STRING',
   },
-  "changellyUrl": "STRING",
-  "changellyKey": "STRING",
-  "changellySecretKey": "STRING",
-  "mailSettings": {
-    "smtp": {
-      "user": "STRING",
-      "pass": "STRING",
-      "server": "STRING"
+  changellyUrl: 'STRING',
+  changellyKey: 'STRING',
+  changellySecretKey: 'STRING',
+  mailSettings: {
+    smtp: {
+      user: 'STRING',
+      pass: 'STRING',
+      server: 'STRING',
     },
-    "clientId": "STRING",
-    "clientSecret": "STRING",
-    "refreshToken": "STRING",
-    "notificationEmail": "STRING",
-    "authCode": "STRING"
+    clientId: 'STRING',
+    clientSecret: 'STRING',
+    refreshToken: 'STRING',
+    notificationEmail: 'STRING',
+    authCode: 'STRING',
   },
-  "validOrderStatuses": "ARRAY",
+  validOrderStatuses: 'ARRAY',
 
-  "timeConsts": {
-    "changelly": "ARRAY",
-    "navTech": "ARRAY"
+  timeConsts: {
+    changelly: 'ARRAY',
+    navTech: 'ARRAY',
   },
-  "basicAuth": {
-    "name": "STRING",
-    "pass": "STRING"
+  basicAuth: {
+    name: 'STRING',
+    pass: 'STRING',
   },
-  "processHandler": {
-    "timerLength": "NUMBER",
+  processHandler: {
+    timerLength: 'NUMBER',
   },
-  "preflightCheckController": {
-    "maxBlockHeightDiscrepency": "NUMBER"
-  }
+  preflightCheckController: {
+    maxBlockHeightDiscrepency: 'NUMBER',
+  },
 }

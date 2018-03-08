@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component, OnInit } from '@angular/core'
+import { Router } from '@angular/router'
 import { OrderService } from '../../services/order/order'
 import { GenericFunctionsService } from '../../services/generic-functions/generic-functions'
 
@@ -8,13 +8,9 @@ import { GenericFunctionsService } from '../../services/generic-functions/generi
   templateUrl: './status.component.html',
   styleUrls: ['./status.component.scss'],
 
-  providers: [
-    OrderService,
-    GenericFunctionsService,
-  ],
+  providers: [OrderService, GenericFunctionsService],
 })
 export class StatusPage implements OnInit {
-
   isLoading: boolean = true
   orderId: string
   orderData: object
@@ -40,22 +36,21 @@ export class StatusPage implements OnInit {
   constructor(
     private OrderService: OrderService,
     private GenericFuncs: GenericFunctionsService,
-    private router: Router,
-   ) {}
+    private router: Router
+  ) {}
 
   ngOnInit() {
     this.parseUrl(this.router.url)
     this.getOrderData()
   }
 
-  parseUrl (url: string){
+  parseUrl(url: string) {
     const split = url.split('/')
     this.orderId = split[2]
   }
 
   getOrderData() {
-    this.OrderService.getOrder(this.orderId)
-    .subscribe(res => {
+    this.OrderService.getOrder(this.orderId).subscribe(res => {
       if (res.errors && res.errors[0]) {
         if (res.errors[0].code === 'GET_ORDER_UNAUTHORIZED') {
           this.ipBlocked = true
@@ -75,7 +70,7 @@ export class StatusPage implements OnInit {
     this.changellyAddress = order.changelly_address_one
     this.orderStatus = order.order_status
     this.changellyOrderNumber = order.changelly_id
-    this.estFee = "10 NAV"
+    this.estFee = '10 NAV'
     this.sourceCurrency = order.input_currency
     this.destCurrency = order.output_currency
     this.waitTimeLow = '' + eta[0] + ' mins'
@@ -87,11 +82,12 @@ export class StatusPage implements OnInit {
     this.orderSuccess = false
     this.abandonStatus = 'Pending'
 
-    this.OrderService.abandonOrder(this.orderId)
-    .subscribe(data => {
+    this.OrderService.abandonOrder(this.orderId).subscribe(data => {
       if (data.status === 'SUCCESS') {
         this.abandonStatus = 'Order sucessfully abandoned. Redirecting to Home Page in 3 seconds'
-        setTimeout(()=>{ this.router.navigateByUrl('/') } , 3000)
+        setTimeout(() => {
+          this.router.navigateByUrl('/')
+        }, 3000)
       } else {
         this.abandonStatus = 'Failed to Abandon Order'
       }
@@ -105,11 +101,11 @@ export class StatusPage implements OnInit {
       case 'ABANDONED':
         return 'Abandoned'
       case 'EXPIRED':
-         return 'Expired'
+        return 'Expired'
       case 'CREATED':
         return 'Created'
       case 'CONFIRMING':
-       return 'Received'
+        return 'Received'
       case 'EXCHANGING':
       case 'SENDING':
         return 'Exchanging'

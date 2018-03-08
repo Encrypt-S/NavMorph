@@ -4,7 +4,7 @@ const preflightCheckController = require('./preflightCheckController')
 
 const processHandler = {
   tasksRunning: false,
-  processTimer: undefined
+  processTimer: undefined,
 }
 
 processHandler.setup = async () => {
@@ -20,7 +20,8 @@ processHandler.setup = async () => {
   }
 }
 
-processHandler.testRpc = () => { // TODO: Complete this function
+processHandler.testRpc = () => {
+  // TODO: Complete this function
   return new Promise((fulfill, reject) => {
     fulfill()
   })
@@ -34,13 +35,12 @@ processHandler.runTasks = async () => {
   try {
     const passedChecks = await processHandler.preflightChecks()
     return passedChecks
-  }
-  catch (err) {
+  } catch (err) {
     global.clearInterval(processHandler.processTimer)
     const errData = {
       stackTrace: err.stack,
     }
-    logger.writeErrorLog('PH_002', 'Failed to pass preflightChecks', errData , true)
+    logger.writeErrorLog('PH_002', 'Failed to pass preflightChecks', errData, true)
   }
 }
 

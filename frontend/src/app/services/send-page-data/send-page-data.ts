@@ -14,7 +14,7 @@ export class SendPageDataService implements OnDestroy {
   connection
 
   dataBundle: dataBundleTemplate = {
-    errors: []
+    errors: [],
   }
 
   CHANGELLY_FEE: number = changellyConstData.CHANGELLY_FEE
@@ -29,10 +29,7 @@ export class SendPageDataService implements OnDestroy {
 
   previousPageUrl: string
 
-  constructor(
-    private changellyApi: ChangellyApiService,
-    private genericSocket: GenericSocketService
-  ) {
+  constructor(private changellyApi: ChangellyApiService, private genericSocket: GenericSocketService) {
     BigNumber.config({ DECIMAL_PLACES: 8 })
   }
 
@@ -72,9 +69,7 @@ export class SendPageDataService implements OnDestroy {
     this.setDataStatus('LOADING')
     this.dataStored = false
     try {
-      this.dataBundle.transferAmount = new BigNumber(transferAmount, 10)
-        .round(8)
-        .toString()
+      this.dataBundle.transferAmount = new BigNumber(transferAmount, 10).round(8).toString()
     } catch (e) {
       this.dataBundle.transferAmount = undefined
     }
@@ -146,7 +141,9 @@ export class SendPageDataService implements OnDestroy {
           console.log('estimateFirstExchange', res)
           this.dataBundle.estConvToNav = new BigNumber(res.data.amount, 10).round(8)
 
-          const conversionAfterFees = new BigNumber(this.dataBundle.estConvToNav, 10).times(1 - this.NAVTECH_FEE).round(8)
+          const conversionAfterFees = new BigNumber(this.dataBundle.estConvToNav, 10)
+            .times(1 - this.NAVTECH_FEE)
+            .round(8)
 
           this.estimateSecondExchange(destCoin, conversionAfterFees)
         })
@@ -160,13 +157,11 @@ export class SendPageDataService implements OnDestroy {
 
   estimateSecondExchange(destCoin, conversionAfterFees) {
     if (destCoin === 'NAV') {
-      this.dataBundle.estConvFromNav = new BigNumber(
-        conversionAfterFees,
-        10
-      ).toString()
+      this.dataBundle.estConvFromNav = new BigNumber(conversionAfterFees, 10).toString()
       this.sendData()
     } else {
-      this.getEstimatedExchange('NAV', destCoin, conversionAfterFees.toString()).then(res => {
+      this.getEstimatedExchange('NAV', destCoin, conversionAfterFees.toString())
+        .then(res => {
           this.dataBundle.estConvFromNav = new BigNumber(res.data.amount, 10).round(8).toString()
           this.sendData()
         })
@@ -180,10 +175,8 @@ export class SendPageDataService implements OnDestroy {
 
   sendData() {
     this.validateDataBundle(this.dataBundle)
-    this.dataBundle.changellyFeeOne =
-      this.dataBundle.changellyFeeOne.toString() || undefined
-    this.dataBundle.estConvToNav =
-      this.dataBundle.estConvToNav.toString() || undefined
+    this.dataBundle.changellyFeeOne = this.dataBundle.changellyFeeOne.toString() || undefined
+    this.dataBundle.estConvToNav = this.dataBundle.estConvToNav.toString() || undefined
     this.dataStored = true
     this.dataSubject.next(this.dataBundle)
     console.log('data sent')
@@ -204,7 +197,9 @@ export class SendPageDataService implements OnDestroy {
           dataBundle.minTransferAmount = new BigNumber(minAmount, 10).round(8).toString()
         }
       })
-      .catch(err => { this.pushError(dataBundle, 'CHANGELLY_ERROR') })
+      .catch(err => {
+        this.pushError(dataBundle, 'CHANGELLY_ERROR')
+      })
   }
 
   validateDataBundle(dataBundle) {
@@ -229,18 +224,27 @@ export class SendPageDataService implements OnDestroy {
 
   getEstimatedExchange(originCoin, destCoin, transferAmount) {
     return new Promise<any>((resolve, reject) => {
-      if (originCoin === 'NAV' && destCoin === 'NAV') { resolve(transferAmount) }
-      this.changellyApi
-        .getExchangeAmount(originCoin, destCoin, transferAmount)
-        .subscribe( data => { resolve(data) }, err => { reject(err) } )
+      if (originCoin === 'NAV' && destCoin === 'NAV') {
+        resolve(transferAmount)
+      }
+      this.changellyApi.getExchangeAmount(originCoin, destCoin, transferAmount).subscribe(
+        data => {
+          resolve(data)
+        },
+        err => {
+          reject(err)
+        }
+      )
     })
   }
 
   getMinTransferAmount(originCoin, destCoin) {
     return new Promise<any>((resolve, reject) => {
-      this.changellyApi.getMinAmount(originCoin, destCoin).subscribe(res => {
+      this.changellyApi.getMinAmount(originCoin, destCoin).subscribe(
+        res => {
           resolve(res.data.minAmount)
-        }, err => {
+        },
+        err => {
           reject(err)
         }
       )
@@ -250,8 +254,12 @@ export class SendPageDataService implements OnDestroy {
   getEta(originCoin, destCoin) {
     return new Promise<any>((resolve, reject) => {
       this.changellyApi.getEta(originCoin, destCoin).subscribe(
-        data => { resolve(data)},
-        err => {reject(err)}
+        data => {
+          resolve(data)
+        },
+        err => {
+          reject(err)
+        }
       )
     })
   }

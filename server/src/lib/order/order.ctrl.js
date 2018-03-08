@@ -27,11 +27,10 @@ OrderCtrl.createOrderRoute = async (req, res) => {
       err: error,
       code: 'ORDER_CTRL_001',
       sendEmail: true,
-      res
+      res,
     })
   }
 }
-
 
 OrderCtrl.getFirstChangellyAddress = async (req, res) => {
   if (req.params.from === 'NAV') {
@@ -48,7 +47,7 @@ OrderCtrl.getSecondChangellyAddress = async (req, res) => {
   } else {
     const newAddress = await OrderCtrl.getChangellyAddress('NAV', req.params.to, req.params.address)
     return newAddress
-}
+  }
 }
 
 OrderCtrl.getChangellyAddress = (inputCurrency, outputCurrency, destAddress) => {
@@ -62,10 +61,12 @@ OrderCtrl.getChangellyAddress = (inputCurrency, outputCurrency, destAddress) => 
       address: destAddress,
       extraId: null,
     })
-    .then((data) => {
-      fulfill(data.result.address)
-    })
-    .catch((error) => { reject(error) })
+      .then(data => {
+        fulfill(data.result.address)
+      })
+      .catch(error => {
+        reject(error)
+      })
   })
 }
 

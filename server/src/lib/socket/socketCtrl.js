@@ -1,17 +1,16 @@
 const serverModeCtrl = require('../db/serverMode.ctrl')
 const logger = require('../logger')
 
-
 const SocketCtrl = {}
 
-SocketCtrl.setupServerSocket = (socket) => {
+SocketCtrl.setupServerSocket = socket => {
   try {
-    socket.on('connection', function(socket){
+    socket.on('connection', function(socket) {
       console.log('a user connected')
-      socket.on('disconnect', function(){
+      socket.on('disconnect', function() {
         console.log('USER DISCONNECTED')
       })
-      socket.on('ADD_MESSAGE', (message) => {
+      socket.on('ADD_MESSAGE', message => {
         socket.emit('MESSAGE', { type: 'NEW_MESSAGE', text: message })
       })
     })
@@ -22,12 +21,12 @@ SocketCtrl.setupServerSocket = (socket) => {
   }
 }
 
-SocketCtrl.startDbWatch = async (socket) => {
+SocketCtrl.startDbWatch = async socket => {
   let previousMode
   let previousMessage
   setInterval(async () => {
-   try {
-     const currServerMode = await serverModeCtrl.checkMode()
+    try {
+      const currServerMode = await serverModeCtrl.checkMode()
       if (currServerMode.length === 1 && previousMode !== currServerMode) {
         previousMode = currServerMode
         socket.emit('SERVER_MODE', currServerMode[0].server_mode)
@@ -41,7 +40,7 @@ SocketCtrl.startDbWatch = async (socket) => {
           showMessage: currServerMessageData[0].show_message,
         })
       }
-    } catch(err) {
+    } catch (err) {
       logger.writeErrorLog('SKT_001', 'Something went wrong with the socket(s)', { error: err })
     }
   }, 1000)
