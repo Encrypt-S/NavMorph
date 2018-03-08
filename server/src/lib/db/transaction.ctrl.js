@@ -1,4 +1,4 @@
-"use strict";
+'use strict'
 
 const lodash = require('lodash')
 let ErrorHandler = require('../error-handler') // eslint-disable-line prefer-const
@@ -6,12 +6,20 @@ let ErrorHandler = require('../error-handler') // eslint-disable-line prefer-con
 // Compile model from schema
 let TransactionModel = require('./transaction.model')
 
-const TransactionCtrl = { }
+const TransactionCtrl = {}
 
 TransactionCtrl.createTransaction = (req, res) => {
   return new Promise((fulfill, reject) => {
-    const required = ['from', 'to', 'address', 'amount', 'polymorphId',
-      'changellyAddressOne', 'changellyAddressTwo', 'navAddress']
+    const required = [
+      'from',
+      'to',
+      'address',
+      'amount',
+      'polymorphId',
+      'changellyAddressOne',
+      'changellyAddressTwo',
+      'navAddress',
+    ]
     if (!req || lodash.intersection(Object.keys(req.params), required).length !== required.length) {
       reject(new Error('PARAMS_ERROR', 'TRANS_CTRL_001', 'Failed to receive params'))
       return
@@ -34,13 +42,14 @@ TransactionCtrl.createTransaction = (req, res) => {
       created: new Date(),
       sent: null,
     })
-    TransactionCtrl.runtime.transaction.save()
-    .then(() => fulfill())
-    .catch(err => reject(err))
+    TransactionCtrl.runtime.transaction
+      .save()
+      .then(() => fulfill())
+      .catch(err => reject(err))
   })
 }
 
-TransactionCtrl.getOrder = (id) => {
+TransactionCtrl.getOrder = id => {
   return new Promise((fulfill, reject) => {
     const query = TransactionModel.find()
     if (!id) {
@@ -48,11 +57,18 @@ TransactionCtrl.getOrder = (id) => {
       return
     }
     query.and([{ polymorph_id: id }])
-    query.select('-_id polymorph_id changelly_address_one changelly_id ' +
-      'order_amount input_currency output_currency order_status')
-    query.exec()
-    .then((order) => { fulfill(order[0]) })
-    .catch((error) => { reject(error) })
+    query.select(
+      '-_id polymorph_id changelly_address_one changelly_id ' +
+        'order_amount input_currency output_currency order_status'
+    )
+    query
+      .exec()
+      .then(order => {
+        fulfill(order[0])
+      })
+      .catch(error => {
+        reject(error)
+      })
   })
 }
 
@@ -64,10 +80,12 @@ TransactionCtrl.updateOrderStatus = (id, pass, newStatus) => {
     }
     const query = { polymorph_id: id, polymorph_pass: pass }
     TransactionModel.findOneAndUpdate(query, { order_status: newStatus })
-    .then(() => {
-      fulfill()
-    })
-    .catch((error) => { reject(error) })
+      .then(() => {
+        fulfill()
+      })
+      .catch(error => {
+        reject(error)
+      })
   })
 }
 
@@ -87,15 +105,17 @@ TransactionCtrl.gotTransaction = (err, transactions) => {
       err,
       code: 'TRANS_CTRL_003',
       sendEmail: false,
-      res: TransactionCtrl.runtime.res
+      res: TransactionCtrl.runtime.res,
     })
     return
   }
-  TransactionCtrl.runtime.res.send(JSON.stringify({
-    status: 200,
-    type: 'SUCCESS',
-    data: transactions,
-  }))
+  TransactionCtrl.runtime.res.send(
+    JSON.stringify({
+      status: 200,
+      type: 'SUCCESS',
+      data: transactions,
+    })
+  )
 }
 
 module.exports = TransactionCtrl

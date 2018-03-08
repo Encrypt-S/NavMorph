@@ -2,12 +2,11 @@ import { Injectable } from '@angular/core'
 
 import { changellyNodeApiEndPoints } from '../config'
 
-import {GenericNodeApiService} from '../generic-node-api/generic-node-api'
+import { GenericNodeApiService } from '../generic-node-api/generic-node-api'
 
 @Injectable()
 export class ChangellyApiService {
-
-  constructor( private genServ:GenericNodeApiService) { }
+  constructor(private genServ: GenericNodeApiService) {}
 
   getCurrencies() {
     return this.getApiRequest(changellyNodeApiEndPoints.getCurrencies, undefined)
@@ -25,16 +24,17 @@ export class ChangellyApiService {
     return this.getApiRequest(changellyNodeApiEndPoints.getExchangeAmount, [originCoin, destCoin, amount])
   }
 
-  getApiRequest(endpoint, params){
+  getApiRequest(endpoint, params) {
     let paramString = '/'
-    if(params){ //if we have undefined this wont affect the request
+    if (params) {
+      //if we have undefined this wont affect the request
       params.forEach((param, i) => {
-          if( i > 0) {
-            paramString += '/' + param
-          } else {
-            paramString += param
-          }
-      });
+        if (i > 0) {
+          paramString += '/' + param
+        } else {
+          paramString += param
+        }
+      })
     }
     return this.genServ.getRequest('changelly/' + endpoint + paramString)
   }

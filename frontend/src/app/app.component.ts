@@ -9,20 +9,19 @@ import { ServerMessageDisplayComponent } from './components/server-message-displ
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
-  providers: [TitleChangeService]
+  providers: [TitleChangeService],
 })
 export class AppComponent {
-
   previousUrl: string
 
-  constructor (
+  constructor(
     private _router: Router,
     private titleChangeService: TitleChangeService,
-    private sendDataServ: SendPageDataService,
+    private sendDataServ: SendPageDataService
   ) {
-    _router.events.subscribe((event) => {
-      if(event instanceof NavigationStart) {
-        scroll(0,0)
+    _router.events.subscribe(event => {
+      if (event instanceof NavigationStart) {
+        scroll(0, 0)
         titleChangeService.updateTitle(event)
         this.sendDataServ.previousPageUrl = _router.url
       }

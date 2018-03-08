@@ -6,7 +6,7 @@ const SettingsValidator = {
   errors: [],
 }
 
-SettingsValidator.validateSettings = (serverSettings) => {
+SettingsValidator.validateSettings = serverSettings => {
   return new Promise((resolve, reject) => {
     SettingsValidator.errors = []
     validate(serverSettings, serverSettingsTemplate)
@@ -57,10 +57,10 @@ function eachField(value, validation, currentKey) {
       break
     case 'ARRAY':
       validateArray(value, validation, currentKey)
-    break
+      break
     case 'BOOLEAN':
       validateBoolean(value, validation, currentKey)
-    break
+      break
     default:
       SettingsValidator.errors.push('NO_VALIDATION_SET for ' + currentKey)
   }
@@ -76,7 +76,6 @@ function validatePort(value, validation, key) {
 }
 
 function validateNumber(value, validation, key) {
-
   if (typeof value === 'number') {
     return true
   }
@@ -86,9 +85,7 @@ function validateNumber(value, validation, key) {
 
 function validateString(value, validation, key) {
   if (typeof value !== 'string') {
-    SettingsValidator.errors.push(
-      'INCORRECT_TYPE for ' + key + ', must be a String'
-    )
+    SettingsValidator.errors.push('INCORRECT_TYPE for ' + key + ', must be a String')
     return false
   }
   return true
@@ -96,9 +93,7 @@ function validateString(value, validation, key) {
 
 function validateBoolean(value, validation, key) {
   if (typeof value !== 'boolean') {
-    SettingsValidator.errors.push(
-      'INCORRECT_TYPE for ' + key + ', must be a Boolean'
-    )
+    SettingsValidator.errors.push('INCORRECT_TYPE for ' + key + ', must be a Boolean')
     return false
   }
   return true
@@ -106,9 +101,7 @@ function validateBoolean(value, validation, key) {
 
 function validateArray(value, validation, key) {
   if (typeof value !== 'object') {
-    SettingsValidator.errors.push(
-      'INCORRECT_TYPE for ' + key + ', must be an object (array)'
-    )
+    SettingsValidator.errors.push('INCORRECT_TYPE for ' + key + ', must be an object (array)')
     return false
   }
   return true

@@ -13,7 +13,7 @@ import { dataBundleTemplate } from '../../services/config'
   selector: 'send-coins-form-component',
   templateUrl: './send-coins-form.component.html',
   styleUrls: ['./send-coins-form.component.scss'],
-  providers: [FormsModule, ChangellyApiService, OrderService]
+  providers: [FormsModule, ChangellyApiService, OrderService],
 })
 export class SendCoinsFormComponent implements OnInit {
   @Input() theme: string

@@ -5,10 +5,9 @@ import { ServerMessageModel } from './server-message-model'
 @Component({
   selector: 'server-message-display',
   templateUrl: './server-message-display.component.html',
-  styleUrls: ['./server-message-display.component.scss']
+  styleUrls: ['./server-message-display.component.scss'],
 })
 export class ServerMessageDisplayComponent implements OnInit {
-
   private socketUrl = 'http://localhost:8080'
   connection
   displayMessage: boolean = false
@@ -17,38 +16,38 @@ export class ServerMessageDisplayComponent implements OnInit {
   modeWarn: boolean
   modeError: boolean
 
-  constructor(private genericSocket: GenericSocketService) { }
+  constructor(private genericSocket: GenericSocketService) {}
 
   ngOnInit() {
     this.connectToSocket()
   }
 
- ngOnDestroy() {
+  ngOnDestroy() {
     this.connection.unsubscribe()
   }
 
-  connectToSocket():void {
-    this.connection = this.genericSocket.getMessages('SERVER_MESSAGES')
-    .subscribe((serverMessage:ServerMessageModel) => {
-      if(Object.keys(serverMessage).length > 0) {
-        this.displayMessage = serverMessage.showMessage
-        this.serverMessage = serverMessage.serverMessage
-        this.setMode(serverMessage.serverMessageType)
+  connectToSocket(): void {
+    this.connection = this.genericSocket
+      .getMessages('SERVER_MESSAGES')
+      .subscribe((serverMessage: ServerMessageModel) => {
+        if (Object.keys(serverMessage).length > 0) {
+          this.displayMessage = serverMessage.showMessage
+          this.serverMessage = serverMessage.serverMessage
+          this.setMode(serverMessage.serverMessageType)
         }
       })
-    }
-
-    setMode(mode: String) {
-      this.modeError = false
-      this.modeWarn = false
-      this.modeInfo = false
-      if (mode === 'INFO') {
-        this.modeInfo = true
-      } else if(mode === 'WARN') {
-        this.modeWarn = true
-      } else if(mode === 'ERROR') {
-        this.modeError = true
-      }
-    }
   }
 
+  setMode(mode: String) {
+    this.modeError = false
+    this.modeWarn = false
+    this.modeInfo = false
+    if (mode === 'INFO') {
+      this.modeInfo = true
+    } else if (mode === 'WARN') {
+      this.modeWarn = true
+    } else if (mode === 'ERROR') {
+      this.modeError = true
+    }
+  }
+}

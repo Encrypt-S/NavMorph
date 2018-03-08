@@ -8,24 +8,28 @@ let errorHandler = require('../error-handler') // eslint-disable-line prefer-con
 
 const EtaCtrl = {}
 
-
 EtaCtrl.generateEstimateRoute = async (req, res) => {
   try {
     await validator.startValidation(req.params, apiOptions.generateEstimateOptions)
-    const eta = await EtaCtrl.getEta({ status: 'ESTIMATE', timeSent: new Date(), from: req.params.from, to: req.params.to })
+    const eta = await EtaCtrl.getEta({
+      status: 'ESTIMATE',
+      timeSent: new Date(),
+      from: req.params.from,
+      to: req.params.to,
+    })
     return res.status(200).json({ data: { eta: eta } })
-  } catch(error) {
+  } catch (error) {
     errorHandler.handleError({
       statusMessage: 'Unable to get ETA',
       err: error,
       code: 'ETA_CTRL_001',
       sendEmail: true,
-      res
+      res,
     })
   }
 }
 
-EtaCtrl.getEta = async (params) => {
+EtaCtrl.getEta = async params => {
   try {
     await validator.startValidation(params, apiOptions.getEtaOptions)
     if (!EtaCtrl.validStatus(params.status)) {
@@ -34,19 +38,19 @@ EtaCtrl.getEta = async (params) => {
       throw new Error('INVALID_SENT_TIME')
     }
     return await EtaCtrl.buildEta(params)
-  } catch(error) {
+  } catch (error) {
     throw error
   }
 }
 
-EtaCtrl.validStatus = (status) => {
+EtaCtrl.validStatus = status => {
   if (validStatuses.indexOf(status) === -1) {
     return false
   }
   return true
 }
 
-EtaCtrl.buildEta = (options) => {
+EtaCtrl.buildEta = options => {
   let etaMin = 0 // These are in minutes
   let etaMax = 0
 
@@ -59,8 +63,8 @@ EtaCtrl.buildEta = (options) => {
       break
     case 'CREATED':
     case 'ESTIMATE':
-      etaMin = timeConsts.navTech[0] + (timeConsts.changelly[0] * 2)
-      etaMax = timeConsts.navTech[1] + (timeConsts.changelly[1] * 2)
+      etaMin = timeConsts.navTech[0] + timeConsts.changelly[0] * 2
+      etaMax = timeConsts.navTech[1] + timeConsts.changelly[1] * 2
       if (options.originCoin === 'NAV' || options.destCoin === 'NAV') {
         etaMin -= timeConsts.changelly[0]
         etaMax -= timeConsts.changelly[1]

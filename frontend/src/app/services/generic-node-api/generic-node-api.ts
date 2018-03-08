@@ -5,32 +5,31 @@ import { Observable } from 'rxjs/Observable'
 import 'rxjs/add/operator/catch'
 import 'rxjs/add/operator/map'
 
-import { nodeApiBaseUrl } from "../config"
-
+import { nodeApiBaseUrl } from '../config'
 
 @Injectable()
 export class GenericNodeApiService {
-
   baseApiUrl: string = nodeApiBaseUrl
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
   getRequest(apiRouteUrl): Observable<any> {
-    return this.http.get(this.baseApiUrl + apiRouteUrl)
-                    .map(this.extractData)
-                    .catch(this.handleError)
+    return this.http
+      .get(this.baseApiUrl + apiRouteUrl)
+      .map(this.extractData)
+      .catch(this.handleError)
   }
 
   private extractData(res: Response) {
-    try{
+    try {
       return res
     } catch (error) {
-      console.error('Error extracting api data: ' + error )
+      console.error('Error extracting api data: ' + error)
       return ['Error']
     }
   }
 
-  private handleError (error: Response | any) {
+  private handleError(error: Response | any) {
     let errMsg: string
     if (error instanceof Response) {
       const err = error || JSON.stringify(error)

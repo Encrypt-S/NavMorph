@@ -1,17 +1,13 @@
-import { Component, OnInit } from '@angular/core';
-
+import { Component, OnInit } from '@angular/core'
 
 @Component({
   selector: 'hero-banner-section',
   templateUrl: './hero-banner.component.html',
   styleUrls: ['./hero-banner.component.scss'],
-  providers: [  ],
+  providers: [],
 })
 export class HeroBannerSection implements OnInit {
+  constructor() {}
 
-  constructor() { }
-
-  ngOnInit() {
-
-  }
+  ngOnInit() {}
 }

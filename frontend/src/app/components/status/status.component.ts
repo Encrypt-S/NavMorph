@@ -1,21 +1,19 @@
-import { Component, OnInit } from '@angular/core';
-import { Subscription } from 'rxjs/Subscription';
+import { Component, OnInit } from '@angular/core'
+import { Subscription } from 'rxjs/Subscription'
 
-import { SendPageDataService } from '../../services/send-page-data/send-page-data';
-import { ChangellyApiService } from '../../services/changelly-api/changelly-api';
-import { GenericFunctionsService } from '../../services/generic-functions/generic-functions';
+import { SendPageDataService } from '../../services/send-page-data/send-page-data'
+import { ChangellyApiService } from '../../services/changelly-api/changelly-api'
+import { GenericFunctionsService } from '../../services/generic-functions/generic-functions'
 
-import { changellyConstData } from "../../services/config";
+import { changellyConstData } from '../../services/config'
 import BigNumber from 'bignumber.js'
-
 
 @Component({
   selector: 'status-component',
   templateUrl: './status.component.html',
-  styleUrls: ['./status.component.scss']
+  styleUrls: ['./status.component.scss'],
 })
 export class StatusComponent implements OnInit {
-
   transferAmount: string
   originCoin: string
   destCoin: string
@@ -34,23 +32,17 @@ export class StatusComponent implements OnInit {
 
   formDataSubscrip: Subscription
 
-
-  constructor(
-    private dataServ: SendPageDataService,
-    private genFuncs: GenericFunctionsService,
-   ) {
+  constructor(private dataServ: SendPageDataService, private genFuncs: GenericFunctionsService) {
     this.getDataStatusStream()
     this.getFormDataStream()
   }
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
   getFormDataStream() {
-    this.dataServ.getDataStream().subscribe((data) => {
+    this.dataServ.getDataStream().subscribe(data => {
       this.formData = data
-      if(Object.keys(data).length > 0)
-        this.updateComponent(this.formData)
+      if (Object.keys(data).length > 0) this.updateComponent(this.formData)
     })
   }
 
@@ -60,7 +52,7 @@ export class StatusComponent implements OnInit {
     })
   }
 
-  updateComponent(formData):void {
+  updateComponent(formData): void {
     this.transferAmount = formData.transferAmount
     this.originCoin = formData.originCoin
     this.destCoin = formData.destCoin

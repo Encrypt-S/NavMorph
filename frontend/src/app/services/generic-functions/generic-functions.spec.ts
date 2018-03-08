@@ -1,17 +1,18 @@
-import { TestBed, inject } from '@angular/core/testing';
+import { TestBed, inject } from '@angular/core/testing'
 
-import { GenericFunctionsService } from './generic-functions';
+import { GenericFunctionsService } from './generic-functions'
 
 describe('GenericFunctionsService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [GenericFunctionsService, Title]
-    });
+      providers: [GenericFunctionsService, Title],
+    })
+  })
 
-  });
-
-  it('should be created', inject([GenericFunctionsService], (genericFunctionsService) => {
-    expect(genericFunctionsService).toBeTruthy();
-  }));
-
+  it(
+    'should be created',
+    inject([GenericFunctionsService], genericFunctionsService => {
+      expect(genericFunctionsService).toBeTruthy()
+    })
+  )
 })

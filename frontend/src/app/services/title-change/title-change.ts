@@ -1,31 +1,28 @@
-import { Injectable } from '@angular/core';
+import { Injectable } from '@angular/core'
 
-import { Title } from '@angular/platform-browser';
-
+import { Title } from '@angular/platform-browser'
 
 @Injectable()
 export class TitleChangeService {
-
-  constructor(private titleService: Title) { }
+  constructor(private titleService: Title) {}
 
   updateTitle(event) {
-    let newTitle = this.getNewTitle(event.url);
-    this.titleService.setTitle(newTitle);
+    let newTitle = this.getNewTitle(event.url)
+    this.titleService.setTitle(newTitle)
   }
 
-  getNewTitle(url: string){
+  getNewTitle(url: string) {
     let newTitle = 'NavMorph - '
-    if(url === '/'){
-      return newTitle + 'Home';
+    if (url === '/') {
+      return newTitle + 'Home'
     }
 
-    newTitle = newTitle + url.slice(1,2).toUpperCase() + url.slice(2)
+    newTitle = newTitle + url.slice(1, 2).toUpperCase() + url.slice(2)
     newTitle = newTitle.split('/')[0] // This removes any trailing url params e.g. url is status/id/pass
-    return newTitle;
+    return newTitle
   }
 
-  setTitle( string ){
-    this.titleService.setTitle(string);
+  setTitle(string) {
+    this.titleService.setTitle(string)
   }
-
 }

@@ -6,7 +6,6 @@ const configData = require('../../server-settings')
 const apiOptions = require('../../api-options.json')
 let errorHandler = require('../error-handler') // eslint-disable-line prefer-const
 
-
 const OrderStatusCtrl = {}
 
 OrderStatusCtrl.getOrderRoute = async (req, res) => {
@@ -18,7 +17,7 @@ OrderStatusCtrl.getOrderRoute = async (req, res) => {
 
     if (isBlocked) {
       await loginCtrl.insertAttempt({ ipAddress: params.ipAddress, polymorphId: params.polymorphId, params })
-      return res.status(401).json({errors: [{ code: 'GET_ORDER_UNAUTHORIZED', message: 'Unauthorised Access' }]})
+      return res.status(401).json({ errors: [{ code: 'GET_ORDER_UNAUTHORIZED', message: 'Unauthorised Access' }] })
     }
 
     const orderAndEta = await OrderStatusCtrl.getOrderFromDb(params, res)
@@ -29,9 +28,9 @@ OrderStatusCtrl.getOrderRoute = async (req, res) => {
       code: 'ORDER_STATUS_CTRL_001',
       err: err,
       sendEmail: true,
-      res
+      res,
     })
-    return res.status(500).json({errors: [{ code: 'GET_ORDER_FAILED', message: 'Failed to get order' }]})
+    return res.status(500).json({ errors: [{ code: 'GET_ORDER_FAILED', message: 'Failed to get order' }] })
   }
 }
 
@@ -41,10 +40,15 @@ OrderStatusCtrl.getOrderFromDb = async (params, res) => {
     if (!order) {
       return OrderStatusCtrl.checkForSuspiciousActivity(params, res)
     } else if (order.order_status === 'ABANDONED') {
-      return {status: 'ABANDONED'}
+      return { status: 'ABANDONED' }
     } else {
-      const eta = await etaCtrl.getEta({ status: order.order_status, timeSent: order.sent, from: order.input_currency, to: order.output_currency })
-      return {order, eta}
+      const eta = await etaCtrl.getEta({
+        status: order.order_status,
+        timeSent: order.sent,
+        from: order.input_currency,
+        to: order.output_currency,
+      })
+      return { order, eta }
     }
   } catch (err) {
     errorHandler.handleError({
@@ -52,14 +56,14 @@ OrderStatusCtrl.getOrderFromDb = async (params, res) => {
       code: 'ORDER_STATUS_CTRL_006',
       err: err,
       sendEmail: true,
-      res
+      res,
     })
   }
 }
 
 OrderStatusCtrl.checkForSuspiciousActivity = async (params, res) => {
   try {
-    await loginCtrl.insertAttempt({ ipAddress: params.ipAddress, polymorphId: params.orderId, params})
+    await loginCtrl.insertAttempt({ ipAddress: params.ipAddress, polymorphId: params.orderId, params })
     const isSuspicious = await loginCtrl.checkIfSuspicious(params.ipAddress)
     if (isSuspicious) {
       await loginCtrl.blackListIp({ ipAddress: params.ipAddress })
@@ -71,7 +75,7 @@ OrderStatusCtrl.checkForSuspiciousActivity = async (params, res) => {
       code: 'ORDER_STATUS_CTRL_004',
       err,
       sendEmail: true,
-      res
+      res,
     })
   }
 }
@@ -87,18 +91,18 @@ OrderStatusCtrl.updateOrderStatusRoute = async (req, res) => {
         code: 'ORDER_STATUS_CTRL_005',
         err: new Error('Invalid order status'),
         sendEmail: true,
-        res
+        res,
       })
     }
     const order = await transactionCtrl.updateOrderStatus(params.orderId, newStatus)
     return res.send(order)
-  } catch(err) {
+  } catch (err) {
     errorHandler.handleError({
       statusMessage: 'Unable to fetch/update Polymorph Order',
       code: 'ORDER_STATUS_CTRL_011',
       err: err,
       sendEmail: true,
-      res
+      res,
     })
   }
 }
@@ -108,13 +112,13 @@ OrderStatusCtrl.abandonOrderStatusRoute = async (req, res) => {
     await validator.startValidation(req.params, apiOptions.updateOrderStatusOptions)
     await transactionCtrl.updateOrderStatus(req.params.orderId, 'ABANDONED')
     return res.send({ status: 'SUCCESS' })
-  } catch(err) {
+  } catch (err) {
     errorHandler.handleError({
       statusMessage: 'Unable to fetch/update Polymorph Order',
       code: 'ORDER_STATUS_CTRL_012',
       err: err,
       sendEmail: true,
-      res
+      res,
     })
   }
 }

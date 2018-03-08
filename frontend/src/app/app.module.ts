@@ -29,10 +29,10 @@ import { StatusComponent } from './components/status/status.component'
 import { SendCoinsFormComponent } from './components/send-coins-form/send-coins-form.component'
 import { ServerMessageDisplayComponent } from './components/server-message-display/server-message-display.component'
 
-import { GenericNodeApiService }  from './services/generic-node-api/generic-node-api'
-import { ChangellyApiService }  from './services/changelly-api/changelly-api'
+import { GenericNodeApiService } from './services/generic-node-api/generic-node-api'
+import { ChangellyApiService } from './services/changelly-api/changelly-api'
 import { SendPageDataService } from './services/send-page-data/send-page-data'
-import { GenericSocketService }  from './services/generic-socket/generic-socket'
+import { GenericSocketService } from './services/generic-socket/generic-socket'
 import { GenericFunctionsService } from './services/generic-functions/generic-functions'
 
 @NgModule({
@@ -62,7 +62,7 @@ import { GenericFunctionsService } from './services/generic-functions/generic-fu
     BrowserModule,
     HttpClientModule,
     ClipboardModule,
-    RouterModule.forRoot(routes)
+    RouterModule.forRoot(routes),
   ],
   providers: [
     GenericNodeApiService,
@@ -71,6 +71,6 @@ import { GenericFunctionsService } from './services/generic-functions/generic-fu
     GenericSocketService,
     GenericFunctionsService,
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}
