@@ -1,9 +1,7 @@
 const Client = require('bitcoin-core')
+const configData = require('../../server-settings')
 
-const config = require('../../server-settings')
-let logger = require('../logger')
-let rpc = new Client(config.navClient)
-
+let rpc = new Client(configData.navClient)
 rpc.nav = {}
 
 rpc.nav.unlockWallet = async () => {
@@ -24,17 +22,19 @@ rpc.nav.getNewAddress = async () => {
   try {
     return await rpc.getNewAddress()
   } catch (err) {
-    console.log(err)
     if (err.code === -12) {
-      // Had a fixable error. Try fix it
+      // We're out of addresses in our prestocked pool. Try refill
       try {
         await rpc.keypoolRefill()
         return await rpc.getNewAddress()
       } catch (err2) {
-        // Errored again. Guess we can't fix it
-        logger.writeLog('RPC_002', err.message, err)
+        // Errored again. Guess we can't refill it
+        logger.writeErrorLog('RPC_002', err.message, err)
         return false
       }
+    } else {
+      logger.writeErrorLog('RPC_003', err.message, err)
+      return false
     }
   }
 }
