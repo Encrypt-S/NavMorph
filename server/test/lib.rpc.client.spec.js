@@ -13,11 +13,9 @@ describe('[Rpc]', () => {
     })
 
     it("should return false when there's an unknown error", done => {
-      const mockUnknownError = new Error()
-      const mockNav = () => {
+      rpc.walletPassphrase = () => {
         throw { message: 'unknown' }
       }
-      rpc.walletPassphrase = mockNav
 
       rpc.nav.unlockWallet().then(result => {
         expect(result).toBe(false)
@@ -26,7 +24,6 @@ describe('[Rpc]', () => {
     })
 
     it('should return true for unencrypted error', done => {
-      const mockUnknownError = new Error()
       const mockNav = () => {
         throw { message: 'unencrypted' }
       }

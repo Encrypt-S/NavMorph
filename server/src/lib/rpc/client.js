@@ -6,15 +6,16 @@ rpc.nav = {}
 
 rpc.nav.unlockWallet = async () => {
   try {
-    await rpc.walletPassphrase(config.navClient.walletPassphrase, config.navClient.walletUnlockTime)
+    await rpc.walletPassphrase(configData.navClient.walletPassphrase, configData.navClient.walletUnlockTime)
     return true
   } catch (err) {
     if (err.message.includes('unencrypted')) {
       // wallet wasn't encrypted, therefore we can treat it as unlocked
       return true
+    } else {
+      logger.writeErrorLog('RPC_001', err.message, err)
+      return false
     }
-    logger.writeErrorLog('RPC_001', err.message, err)
-    return false
   }
 }
 
