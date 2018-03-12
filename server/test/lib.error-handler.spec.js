@@ -5,15 +5,16 @@ const rewire = require('rewire')
 const sinon = require('sinon')
 
 let ErrorHandler = rewire('../src/lib/error-handler')
-let Validator = rewire('../src/lib/options-validator') // eslint-disable-line
+let validator = rewire('../src/lib/options-validator') // eslint-disable-line
 
 describe('[ErrorHandler]', () => {
   describe('(handleError)', () => {
-    beforeEach(() => { // reset the rewired functions
+    beforeEach(() => {
+      // reset the rewired functions
       ErrorHandler = rewire('../src/lib/error-handler')
-      Validator = rewire('../src/lib/options-validator')
+      validator = rewire('../src/lib/options-validator')
     })
-    it('should catch rejected params', (done) => {
+    it('should catch rejected params', done => {
       const mockStatusMessage = 'MOCK_STATUS'
       const mockErr = 'ERROR'
       const mockCode = 'CODE'
@@ -33,19 +34,19 @@ describe('[ErrorHandler]', () => {
 
       const mockLogger = {
         writeErrorLog: (errCode, statusMessage, error, sendEmail) => {
-          expect(statusMessage).toBe('Incorrect Params - couldn\'t handle error')
+          expect(statusMessage).toBe("Incorrect Params - couldn't handle error")
           expect(error.error).toBe(mockErr)
           expect(error.originalError).toBe(mockParams)
           expect(errCode).toBe('ERR_HDL_001')
           expect(sendEmail).toBe(mockSendEmail)
 
           done()
-        }
+        },
       }
 
-      ErrorHandler.__set__('Validator.startValidation', mockStartValidation)
+      ErrorHandler.__set__('validator.startValidation', mockStartValidation)
 
-      ErrorHandler.__set__('Logger', mockLogger)
+      ErrorHandler.__set__('logger', mockLogger)
 
       ErrorHandler.handleError({
         statusMessage: mockStatusMessage,
@@ -56,13 +57,13 @@ describe('[ErrorHandler]', () => {
       })
     })
 
-    it('should pass on params', (done) => {
+    it('should pass on params', done => {
       const mockStatusMessage = 'ANOTHER_MOCK_STATUS'
       const mockErr = 'ERROR'
       const mockCode = 'CODE'
       const mockSendEmail = true
       const mockRes = {
-        send: sinon.spy()
+        send: sinon.spy(),
       }
 
       const mockStartValidation = (params, options) => {
@@ -82,12 +83,12 @@ describe('[ErrorHandler]', () => {
           expect(sendEmail).toBe(mockSendEmail)
           sinon.assert.calledOnce(mockRes.send)
           done()
-        }
+        },
       }
 
-      ErrorHandler.__set__('Validator.startValidation', mockStartValidation)
+      ErrorHandler.__set__('validator.startValidation', mockStartValidation)
 
-      ErrorHandler.__set__('Logger', mockLogger)
+      ErrorHandler.__set__('logger', mockLogger)
 
       ErrorHandler.handleError({
         statusMessage: mockStatusMessage,

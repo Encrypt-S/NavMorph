@@ -5,15 +5,16 @@ const rewire = require('rewire')
 const sinon = require('sinon')
 
 let EtaCtrl = rewire('../src/lib/order/eta.ctrl')
-let Validator = rewire('../src/lib/options-validator') // eslint-disable-line
+let validator = rewire('../src/lib/options-validator') // eslint-disable-line
 
 describe('[EtaCtrl]', () => {
   describe('(generateEstimateRoute)', () => {
-    beforeEach(() => { // reset the rewired functions
+    beforeEach(() => {
+      // reset the rewired functions
       EtaCtrl = rewire('../src/lib/order/eta.ctrl')
-      Validator = rewire('../src/lib/options-validator')
+      validator = rewire('../src/lib/options-validator')
     })
-    it('should catch rejected params', (done) => {
+    it('should catch rejected params', done => {
       const req = {
         params: {
           generateEstimateOptions: {},
@@ -21,7 +22,7 @@ describe('[EtaCtrl]', () => {
       }
 
       const mockApiOptions = { junkOption: {} }
-      EtaCtrl.__set__('ApiOptions', mockApiOptions)
+      EtaCtrl.__set__('apiOptions', mockApiOptions)
 
       const err = 'TEST_ERROR'
       const junkRes = { junk: 'response' }
@@ -32,20 +33,20 @@ describe('[EtaCtrl]', () => {
         return Promise.reject(err)
       }
 
-      EtaCtrl.__set__('Validator.startValidation', mockStartValidation)
+      EtaCtrl.__set__('validator.startValidation', mockStartValidation)
       const mockErrorHandler = {
-        handleError: (params) => {
+        handleError: params => {
           expect(params.err).toBe(err)
           expect(params.res).toBe(junkRes)
           expect(params.code).toBeA('string')
           done()
-        }
+        },
       }
-      EtaCtrl.__set__('ErrorHandler', mockErrorHandler)
+      EtaCtrl.__set__('errorHandler', mockErrorHandler)
       EtaCtrl.generateEstimateRoute(req, junkRes)
     })
 
-    it('should pass on params', (done) => {
+    it('should pass on params', done => {
       const req = {
         params: {
           generateEstimateOptions: {},
@@ -54,37 +55,20 @@ describe('[EtaCtrl]', () => {
         },
       }
 
-      const mockApiOptions = { junkOption: {} }
-      EtaCtrl.__set__('ApiOptions', mockApiOptions)
+      EtaCtrl.__set__('validator.startValidation', () => Promise.resolve())
+      EtaCtrl.__set__('getEta', () => Promise.resolve([1, 2]))
 
-      const mockStartValidation = (param, options) => {
-        expect(param).toBe(req.params)
-        expect(options).toBe(mockApiOptions.generateEstimateOptions)
-        return Promise.resolve()
-      }
-      EtaCtrl.__set__('Validator.startValidation', mockStartValidation)
-
-      const mockEta = [1, 1]
-
-      EtaCtrl.getEta = (options) => {
-        expect(options.status).toBe('ESTIMATE')
-        expect(options.timeSent).toBeA('object')
-        expect(options.to).toBe(req.params.to)
-        expect(options.from).toBe(req.params.from)
-        return Promise.resolve(mockEta)
-      }
-
-      const junkRes = {
-        send: (data) => {
-          expect(data).toBe(mockEta)
+      const res = {
+        status: () => res,
+        json: () => {
           done()
         },
       }
 
-      EtaCtrl.generateEstimateRoute(req, junkRes)
+      EtaCtrl.generateEstimateRoute(req, res)
     })
 
-    it('should catch rejection from getEta on params', (done) => {
+    it('should catch rejection from getEta on params', done => {
       const req = {
         params: {
           generateEstimateOptions: {},
@@ -94,43 +78,45 @@ describe('[EtaCtrl]', () => {
       }
 
       const mockApiOptions = { junkOption: {} }
-      EtaCtrl.__set__('ApiOptions', mockApiOptions)
+      EtaCtrl.__set__('apiOptions', mockApiOptions)
 
       const mockStartValidation = () => {
         return Promise.resolve()
       }
-      EtaCtrl.__set__('Validator.startValidation', mockStartValidation)
-      const mockError = 'ERROR'
+      EtaCtrl.__set__('validator.startValidation', mockStartValidation)
+      const mockError = 'MOCK_ERROR'
       EtaCtrl.getEta = () => {
-        return Promise.reject(mockError)
+        throw mockError
       }
 
       const mockErrorHandler = {
-        handleError: (params) => {
+        handleError: params => {
           expect(params.err).toBe(mockError)
           done()
-        }
+        },
       }
-      EtaCtrl.__set__('ErrorHandler', mockErrorHandler)
+      EtaCtrl.__set__('errorHandler', mockErrorHandler)
 
       EtaCtrl.generateEstimateRoute(req, null)
     })
   })
 
   describe('(getEta)', () => {
-    beforeEach(() => { // reset the rewired functions
+    beforeEach(() => {
+      // reset the rewired functions
       EtaCtrl = rewire('../src/lib/order/eta.ctrl')
-      Validator = rewire('../src/lib/options-validator')
+      validator = rewire('../src/lib/options-validator')
     })
-    afterEach(() => { // reset the rewired functions
+    afterEach(() => {
+      // reset the rewired functions
       EtaCtrl = rewire('../src/lib/order/eta.ctrl')
-      Validator = rewire('../src/lib/options-validator')
+      validator = rewire('../src/lib/options-validator')
     })
-    it('should catch rejected params', (done) => {
+    it('should catch rejected params', done => {
       const testParams = {}
 
       const mockApiOptions = { junkOption: {} }
-      EtaCtrl.__set__('ApiOptions', mockApiOptions)
+      EtaCtrl.__set__('apiOptions', mockApiOptions)
 
       const mockErr = 'BAD_PARAMS'
 
@@ -139,81 +125,78 @@ describe('[EtaCtrl]', () => {
         expect(options).toBe(mockApiOptions.generateEstimateOptions)
         return Promise.reject(mockErr)
       }
-      EtaCtrl.__set__('Validator.startValidation', mockStartValidation)
+      EtaCtrl.__set__('validator.startValidation', mockStartValidation)
 
-      EtaCtrl.getEta(testParams)
-      .catch((error) => {
-        expect(error.error).toBe(mockErr)
+      EtaCtrl.getEta(testParams).catch(error => {
+        expect(error).toBe(mockErr)
         done()
       })
     })
 
-    it('should catch an invalid status', (done) => {
+    it('should catch an invalid status', done => {
       const testParams = {}
 
       const mockApiOptions = { junkOption: {} }
-      EtaCtrl.__set__('ApiOptions', mockApiOptions)
+      EtaCtrl.__set__('apiOptions', mockApiOptions)
 
       const mockStartValidation = () => {
         return Promise.resolve()
       }
-      EtaCtrl.__set__('Validator.startValidation', mockStartValidation)
+      EtaCtrl.__set__('validator.startValidation', mockStartValidation)
 
       EtaCtrl.validStatus = () => {
         return false
       }
 
-      EtaCtrl.getEta(testParams)
-      .catch((error) => {
+      EtaCtrl.getEta(testParams).catch(error => {
         expect(error.message).toBe('INVALID_ORDER_STATUS')
         done()
       })
     })
 
-    it('should catch an invalid timeSent', (done) => {
+    it('should catch an invalid timeSent', done => {
       const testParams = {
         timeSent: '5 hours ago',
         status: 'FINISHED',
       }
 
       const mockApiOptions = { junkOption: {} }
-      EtaCtrl.__set__('ApiOptions', mockApiOptions)
+      EtaCtrl.__set__('apiOptions', mockApiOptions)
 
       const mockStartValidation = () => {
         return Promise.resolve()
       }
-      EtaCtrl.__set__('Validator.startValidation', mockStartValidation)
+      EtaCtrl.__set__('validator.startValidation', mockStartValidation)
 
       EtaCtrl.validStatus = () => {
         return true
       }
 
-      EtaCtrl.getEta(testParams)
-      .catch((error) => {
+      EtaCtrl.getEta(testParams).catch(error => {
         expect(error.message).toBe('INVALID_SENT_TIME')
         done()
       })
     })
 
-    it('should pass on params', (done) => {
+    it('should pass on params', done => {
       const testParams = {
         timeSent: new Date(),
         status: 'CREATED',
       }
 
       const mockApiOptions = { junkOption: {} }
-      EtaCtrl.__set__('ApiOptions', mockApiOptions)
+      EtaCtrl.__set__('apiOptions', mockApiOptions)
 
       const mockStartValidation = () => {
         return Promise.resolve()
       }
-      EtaCtrl.__set__('Validator.startValidation', mockStartValidation)
+      EtaCtrl.__set__('validator.startValidation', mockStartValidation)
 
       EtaCtrl.validStatus = () => {
         return true
       }
 
-      EtaCtrl.buildEta = (params) => {
+      EtaCtrl.buildEta = params => {
         expect(params).toBe(testParams)
         done()
       }
@@ -222,14 +205,14 @@ describe('[EtaCtrl]', () => {
   })
 
   describe('(validStatus)', () => {
-    beforeEach(() => { // reset the rewired functions
+    beforeEach(() => {
+      // reset the rewired functions
       EtaCtrl = rewire('../src/lib/order/eta.ctrl')
     })
     it('should fail incorrect statuses', () => {
       const status = 'INCORRECT'
       const mockValidStatuses = ['CORRECT']
       EtaCtrl.__set__('validStatuses', mockValidStatuses)
-
 
       expect(EtaCtrl.validStatus(status)).toBe(false)
     })
@@ -239,18 +222,17 @@ describe('[EtaCtrl]', () => {
       const mockValidStatuses = ['CORRECT']
       EtaCtrl.__set__('validStatuses', mockValidStatuses)
 
-
       expect(EtaCtrl.validStatus(status)).toBe(true)
     })
   })
 
   describe('(buildEta)', () => {
-    beforeEach(() => { // reset the rewired functions
+    beforeEach(() => {
+      // reset the rewired functions
       EtaCtrl = rewire('../src/lib/order/eta.ctrl')
     })
     it('should skip on certain expected statuses', () => {
-      const statuses = ['COMPLETED', 'ABANDONED', 'FAILED', 'REFUNDED', 'EXPIRED',
-        'GARBAGE_STATUS']
+      const statuses = ['COMPLETED', 'ABANDONED', 'FAILED', 'REFUNDED', 'EXPIRED', 'GARBAGE_STATUS']
       for (const status of statuses) {
         const result = EtaCtrl.buildEta({ status })
         expect(result).toEqual([0, 0])
@@ -326,7 +308,8 @@ describe('[EtaCtrl]', () => {
   })
 
   describe('(factorTimeSinceSending)', () => {
-    beforeEach(() => { // reset the rewired functions
+    beforeEach(() => {
+      // reset the rewired functions
       EtaCtrl = rewire('../src/lib/order/eta.ctrl')
     })
     it('should factor in the time since sending', () => {

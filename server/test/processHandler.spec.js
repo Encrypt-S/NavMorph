@@ -9,13 +9,15 @@ let mockLogger = { writeErrorLog: sinon.spy() }
 
 describe('[ProcessHandler]', () => {
   describe('(setup)', () => {
-    beforeEach(() => { // reset the rewired functions
+    beforeEach(() => {
+      // reset the rewired functions
       ProcessHandler = rewire('../src/lib/processHandler')
+
       mockLogger = { writeErrorLog: sinon.spy() }
       ProcessHandler.__set__('logger', mockLogger)
     })
 
-    it('should testRpc then startTimer', (done) => {
+    it('should testRpc then startTimer', done => {
       ProcessHandler.testRpc = () => {
         return Promise.resolve()
       }
@@ -25,35 +27,36 @@ describe('[ProcessHandler]', () => {
       const timerSpy = sinon.spy(ProcessHandler, 'startTimer')
       const testRpcSpy = sinon.spy(ProcessHandler, 'testRpc')
 
-
-      ProcessHandler.setup()
-      .then(() => {
+      ProcessHandler.setup().then(() => {
         sinon.assert.called(timerSpy)
         sinon.assert.called(testRpcSpy)
         done()
       })
     })
 
-    it('should catch errors from testRpc, then writeErrorLog', (done) => {
+    it('should catch errors from testRpc, clearInterval, then writeErrorLog', done => {
+      const orig = global.clearInterval
+      global.clearInterval = sinon.spy()
       ProcessHandler.testRpc = () => {
-        return Promise.reject()
+        throw new Error()
       }
-      ProcessHandler.setup()
-      .catch(() => {
+      ProcessHandler.setup().then(data => {
+        expect(data).toBe(false)
+        sinon.assert.calledOnce(global.clearInterval)
         sinon.assert.calledOnce(mockLogger.writeErrorLog)
         done()
       })
     })
   })
 
-
   // describe('(testRpc)', () => {})
 
   describe('(startTimer)', () => {
-    beforeEach(() => { // reset the rewired functions
+    beforeEach(() => {
+      // reset the rewired functions
       ProcessHandler = rewire('../src/lib/processHandler')
     })
-    it('should run setInterval with specific args', (done) => {
+    it('should run setInterval with specific args', done => {
       this.clock = sinon.useFakeTimers()
       const intervalSpy = sinon.spy(global, 'setInterval')
       ProcessHandler.runTasks = () => {}
