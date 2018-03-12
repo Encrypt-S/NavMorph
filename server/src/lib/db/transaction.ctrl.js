@@ -1,7 +1,5 @@
-'use strict'
-
 const lodash = require('lodash')
-let ErrorHandler = require('../error-handler') // eslint-disable-line prefer-const
+let errorHandler = require('../error-handler') // eslint-disable-line prefer-const
 
 // Compile model from schema
 let TransactionModel = require('./transaction.model')
@@ -100,7 +98,7 @@ TransactionCtrl.getTransaction = (req, res) => {
 
 TransactionCtrl.gotTransaction = (err, transactions) => {
   if (err) {
-    ErrorHandler.handleError({
+    errorHandler.handleError({
       statusMessage: 'Failed to get transaction',
       err,
       code: 'TRANS_CTRL_003',
