@@ -18,10 +18,10 @@ EtaCtrl.generateEstimateRoute = async (req, res) => {
       to: req.params.to,
     })
     return res.status(200).json({ data: { eta: eta } })
-  } catch (error) {
+  } catch (err) {
     errorHandler.handleError({
       statusMessage: 'Unable to get ETA',
-      err: error,
+      err: err,
       code: 'ETA_CTRL_001',
       sendEmail: true,
       res,
