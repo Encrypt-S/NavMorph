@@ -30,14 +30,15 @@ logger.writeErrorLog = (errorCode, errorMessage, data, sendEmail = false) => {
   logString += 'Date: ' + new Date() + '\r\n'
   logString += 'Error Code: ' + errorCode + '\r\n'
   logString += 'Error Message: ' + errorMessage + '\r\n'
+  logString += 'Stack: ' + JSON.stringify(data) + '\r\n'
 
-  for (const key in data) {
-    if (data.hasOwnProperty(key)) {
-      let string = data[key]
-      if (typeof data[key] === 'object') string = JSON.stringify(data[key])
-      logString += key + ': ' + string
-    }
-  }
+  // for (const key in data) {
+  //   if (data.hasOwnProperty(key)) {
+  //     let string = data[key]
+  //     if (typeof data[key] === 'object') string = JSON.stringify(data[key])
+  //     logString += key + ': ' + string
+  //   }
+  // }
   logString += '\r\n-----------------------------------------------------------\r\n'
   console.log(logString)
 }
