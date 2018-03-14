@@ -82,41 +82,47 @@ export class SendPageDataService implements OnDestroy {
       this.dataSubject.next(this.dataBundle)
       return //validation errors, so return early
     }
-    this.estimateFees(originCoin, destCoin, transferAmount)
+    const fees = this.estimateFees(originCoin, destCoin, transferAmount)
+    this.dataBundle.changellyFee = fees.changellyFee
+    this.dataBundle.estimatedFees = fees.estimatedFees
+    this.estimateArrivalTime(originCoin, destCoin, transferAmount)
   }
 
   estimateFees(originCoin, destCoin, transferAmount) {
+    // TODO pull this out into a more generic service
+    let changellyFee
+    
+    let estimatedFees = '0'
     if (originCoin === 'NAV' || destCoin === 'NAV') {
-      this.dataBundle.changellyFeeOne = new BigNumber(0) // TODO Get actual fee
-
-      this.dataBundle.estimatedFees = new BigNumber(transferAmount, 10)
+      changellyFee = new BigNumber(0) // TODO Get actual fee
+      estimatedFees = new BigNumber(transferAmount, 10)
         .minus(
           new BigNumber(transferAmount, 10)
-            .times(new BigNumber(1 - this.NAVTECH_FEE))
-            .times(new BigNumber(1 - this.CHANGELLY_FEE))
+          .times(new BigNumber(1 - this.NAVTECH_FEE))
+          .times(new BigNumber(1 - this.CHANGELLY_FEE))
         )
         .round(8)
         .toString()
+        
     } else {
-      this.dataBundle.changellyFeeOne = new BigNumber(transferAmount, 10)
+      changellyFee = new BigNumber(transferAmount, 10)
         .minus(
           new BigNumber(transferAmount, 10)
             .times(new BigNumber(1 - this.NAVTECH_FEE))
             .times(new BigNumber(1 - this.CHANGELLY_FEE))
         )
         .round(8)
-
-      this.dataBundle.estimatedFees = new BigNumber(transferAmount, 10)
+      estimatedFees = new BigNumber(transferAmount, 10)
         .minus(
           new BigNumber(transferAmount, 10)
             .times(new BigNumber(1 - this.NAVTECH_FEE))
             .times(new BigNumber(1 - this.CHANGELLY_FEE))
-            .times(1 - this.CHANGELLY_FEE)
+            .times(new BigNumber(1 - this.CHANGELLY_FEE))
         )
         .round(8)
         .toString()
     }
-    this.estimateArrivalTime(originCoin, destCoin, transferAmount)
+    return { changellyFee, estimatedFees}
   }
 
   estimateArrivalTime(originCoin, destCoin, transferAmount) {
@@ -138,7 +144,6 @@ export class SendPageDataService implements OnDestroy {
     } else {
       this.getEstimatedExchange(originCoin, 'NAV', transferAmount)
         .then(res => {
-          console.log('estimateFirstExchange', res)
           this.dataBundle.estConvToNav = new BigNumber(res.data.amount, 10).round(8)
 
           const conversionAfterFees = new BigNumber(this.dataBundle.estConvToNav, 10)
@@ -148,7 +153,6 @@ export class SendPageDataService implements OnDestroy {
           this.estimateSecondExchange(destCoin, conversionAfterFees)
         })
         .catch(err => {
-          console.log('estimateFirstExchange err', err)
           this.pushError(this.dataBundle, 'CHANGELLY_ERROR')
           this.sendData()
         })
@@ -166,7 +170,6 @@ export class SendPageDataService implements OnDestroy {
           this.sendData()
         })
         .catch(err => {
-          console.log('estimateSecondExchange err', err)
           this.pushError(this.dataBundle, 'CHANGELLY_ERROR')
           this.sendData()
         })
@@ -175,11 +178,10 @@ export class SendPageDataService implements OnDestroy {
 
   sendData() {
     this.validateDataBundle(this.dataBundle)
-    this.dataBundle.changellyFeeOne = this.dataBundle.changellyFeeOne.toString() || undefined
+    this.dataBundle.changellyFee = this.dataBundle.changellyFee.toString() || undefined
     this.dataBundle.estConvToNav = this.dataBundle.estConvToNav.toString() || undefined
     this.dataStored = true
     this.dataSubject.next(this.dataBundle)
-    console.log('data sent')
   }
 
   validateFormData(dataBundle): void {
@@ -203,7 +205,7 @@ export class SendPageDataService implements OnDestroy {
   }
 
   validateDataBundle(dataBundle) {
-    if (dataBundle.estConvToNav.minus(dataBundle.changellyFeeOne).greaterThan(this.MAX_NAV_PER_TRADE)) {
+    if (dataBundle.estConvToNav.minus(dataBundle.changellyFee).greaterThan(this.MAX_NAV_PER_TRADE)) {
       this.pushError(dataBundle, 'TRANSFER_TOO_LARGE')
     }
     if (!this.checkAddressIsValid(dataBundle.destAddr)) {
