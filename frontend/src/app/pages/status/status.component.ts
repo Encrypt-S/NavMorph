@@ -66,17 +66,17 @@ export class StatusPage implements OnInit {
         res.data.order_amount
       )
       this.orderSuccess = true
-      this.fillData(res.data.order, res.data.eta)
+      this.fillData(res.data.order, res.data.eta, feeEstimate)
       this.isLoading = false
     })
   }
 
-  fillData(order, eta) {
+  fillData(order, eta, feeEstimate) {
     this.orderAmount = order.order_amount
     this.changellyAddress = order.changelly_address_one
     this.orderStatus = order.order_status
     this.changellyOrderNumber = order.changelly_id
-    this.estFee = '10 NAV'
+    this.estFee = feeEstimate
     this.sourceCurrency = order.input_currency
     this.destCurrency = order.output_currency
     this.waitTimeLow = '' + eta[0] + ' mins'
