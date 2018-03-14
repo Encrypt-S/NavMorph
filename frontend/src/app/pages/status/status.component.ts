@@ -2,18 +2,18 @@ import { Component, OnInit } from '@angular/core'
 import { Router } from '@angular/router'
 import { OrderService } from '../../services/order/order'
 import { GenericFunctionsService } from '../../services/generic-functions/generic-functions'
+import { SendPageDataService } from '../../services/send-page-data/send-page-data'
 
 @Component({
   selector: 'status-page',
   templateUrl: './status.component.html',
   styleUrls: ['./status.component.scss'],
 
-  providers: [OrderService, GenericFunctionsService],
+  providers: [OrderService, GenericFunctionsService, SendPageDataService],
 })
 export class StatusPage implements OnInit {
   isLoading: boolean = true
   orderId: string
-  orderData: object
 
   orderSuccess: boolean
   orderFail: boolean
@@ -36,7 +36,8 @@ export class StatusPage implements OnInit {
   constructor(
     private OrderService: OrderService,
     private GenericFuncs: GenericFunctionsService,
-    private router: Router
+    private router: Router,
+    private dataService: SendPageDataService
   ) {}
 
   ngOnInit() {
@@ -58,7 +59,12 @@ export class StatusPage implements OnInit {
           return
         }
       }
-      this.orderData = res.data
+
+      const feeEstimate = this.dataService.estimateFees(
+        res.data.sourceCurrency,
+        res.data.destCurrency,
+        res.data.order_amount
+      )
       this.orderSuccess = true
       this.fillData(res.data.order, res.data.eta)
       this.isLoading = false

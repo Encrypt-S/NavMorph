@@ -82,14 +82,16 @@ export class SendPageDataService implements OnDestroy {
       this.dataSubject.next(this.dataBundle)
       return //validation errors, so return early
     }
-    this.estimateFees(originCoin, destCoin, transferAmount)
+    this.dataBundle.estimatedFees = this.estimateFees(originCoin, destCoin, transferAmount)
+    this.estimateArrivalTime(originCoin, destCoin, transferAmount)
   }
 
   estimateFees(originCoin, destCoin, transferAmount) {
+    // TODO pull this out into a more generic service
+    let estimatedFees = '0'
     if (originCoin === 'NAV' || destCoin === 'NAV') {
-      this.dataBundle.changellyFeeOne = new BigNumber(0) // TODO Get actual fee
-
-      this.dataBundle.estimatedFees = new BigNumber(transferAmount, 10)
+      const changellyFee = new BigNumber(0) // TODO Get actual fee
+      estimatedFees = new BigNumber(transferAmount, 10)
         .minus(
           new BigNumber(transferAmount, 10)
             .times(new BigNumber(1 - this.NAVTECH_FEE))
@@ -98,25 +100,24 @@ export class SendPageDataService implements OnDestroy {
         .round(8)
         .toString()
     } else {
-      this.dataBundle.changellyFeeOne = new BigNumber(transferAmount, 10)
+      const changellyFee = new BigNumber(transferAmount, 10)
         .minus(
           new BigNumber(transferAmount, 10)
             .times(new BigNumber(1 - this.NAVTECH_FEE))
             .times(new BigNumber(1 - this.CHANGELLY_FEE))
         )
         .round(8)
-
-      this.dataBundle.estimatedFees = new BigNumber(transferAmount, 10)
+      estimatedFees = new BigNumber(transferAmount, 10)
         .minus(
           new BigNumber(transferAmount, 10)
             .times(new BigNumber(1 - this.NAVTECH_FEE))
             .times(new BigNumber(1 - this.CHANGELLY_FEE))
-            .times(1 - this.CHANGELLY_FEE)
+            .times(new BigNumber(1 - this.CHANGELLY_FEE))
         )
         .round(8)
         .toString()
     }
-    this.estimateArrivalTime(originCoin, destCoin, transferAmount)
+    return estimatedFees
   }
 
   estimateArrivalTime(originCoin, destCoin, transferAmount) {
