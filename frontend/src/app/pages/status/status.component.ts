@@ -60,9 +60,9 @@ export class StatusPage implements OnInit {
       console.log(res);
       
       const feeData = this._dataService.estimateFees(
-        res.data.sourceCurrency,
-        res.data.destCurrency,
-        res.data.order_amount
+        res.data.order.sourceCurrency,
+        res.data.order.destCurrency,
+        res.data.order.order_amount
       )
       const feeEstimate = feeData.estimatedFees
       this.orderSuccess = true
