@@ -38,7 +38,7 @@ export interface dataBundleTemplate {
   estConvFromNav?: string
   estTime?: any
   estimatedFees?: string
-  changellyFeeOne?: any
+  changellyFee?: any
   minTransferAmount?: string
   errors?: Array<string>
 }
