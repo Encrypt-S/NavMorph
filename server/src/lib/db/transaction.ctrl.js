@@ -87,6 +87,42 @@ TransactionCtrl.updateOrderStatus = (id, pass, newStatus) => {
   })
 }
 
+TransactionCtrl.mapTxsToOrders = async () => {
+  try {
+    let mappedTxs = {
+      validTx: [],
+      invalidTx: [],
+    }
+    // get tx
+    const unspentTx = await rpc.nav.listUnspentTx()
+    // get orders
+    // map
+    // return mapped
+  } catch (err) {
+    errorHandler.handleError(err)
+    return false
+  }
+}
+
+TransactionCtrl.getUnfulfilledOrders = async () => {
+  try {
+    const query = TransactionModel.find()
+    query.where('order_status').equals('unsent') //todo check if this is correct
+    const orders = await query.exec()
+    return orders
+  } catch (err) {
+    errorHandler.handleError({
+      err: err,
+      code: 'TRNSCTRL_001',
+      statusMessage: 'failed to get unfulfilled orders',
+      sendEmail: true,
+    })
+    return false
+  }
+}
+
+TransactionCtrl.gotUnfulfilledOrders = () => {}
+
 TransactionCtrl.getTransaction = (req, res) => {
   TransactionCtrl.runtime = { res, req }
   const query = TransactionModel.find()
