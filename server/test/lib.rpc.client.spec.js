@@ -1,4 +1,5 @@
 const expect = require('expect')
+const sinon = require('sinon')
 const rewire = require('rewire')
 let rpc = rewire('../src/lib/rpc/client')
 
@@ -143,6 +144,35 @@ describe('[Rpc]', () => {
 
       rpc.nav.getNewAddress().then(data => {
         expect(data === false && keypoolRefillCalled).toBe(true)
+        done()
+      })
+    })
+  })
+
+  describe('(nav.listUnspentTx)', () => {
+    beforeEach(() => {
+      rpc = rewire('../src/lib/rpc/client')
+    })
+    it('should list unspent transactions', done => {
+      const mockTxs = [1, 2, 3]
+      rpc.listUnspent = () => {
+        return Promise.resolve(mockTxs)
+      }
+      rpc.nav.listUnspentTx().then(result => {
+        expect(result).toBe(mockTxs)
+        done()
+      })
+    })
+    it('should catch errors, log and return false', done => {
+      const mockError = { message: 'MOCK_ERROR' }
+      const mockLogger = { writeErrorLog: sinon.spy() }
+      rpc.__set__('logger', mockLogger)
+      rpc.listUnspent = () => {
+        throw mockError
+      }
+      rpc.nav.listUnspentTx().then(result => {
+        sinon.assert.calledWith(mockLogger.writeErrorLog, 'RPC_004', mockError.message, mockError)
+        expect(result).toBe(false)
         done()
       })
     })
