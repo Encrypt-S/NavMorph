@@ -2,7 +2,6 @@ import { Injectable, OnDestroy } from '@angular/core'
 
 import { ChangellyApiService } from '../changelly-api/changelly-api'
 import { changellyConstData, dataBundleTemplate } from '../config'
-import { GenericSocketService } from '../generic-socket/generic-socket'
 
 import { Observable } from 'rxjs/Observable'
 import { Subject } from 'rxjs/Subject'
@@ -29,7 +28,7 @@ export class SendPageDataService implements OnDestroy {
 
   previousPageUrl: string
 
-  constructor(private changellyApi: ChangellyApiService, private genericSocket: GenericSocketService) {
+  constructor(private _ChangellyApi: ChangellyApiService) {
     BigNumber.config({ DECIMAL_PLACES: 8 })
   }
 
@@ -229,7 +228,7 @@ export class SendPageDataService implements OnDestroy {
       if (originCoin === 'NAV' && destCoin === 'NAV') {
         resolve(transferAmount)
       }
-      this.changellyApi.getExchangeAmount(originCoin, destCoin, transferAmount).subscribe(
+      this._ChangellyApi.getExchangeAmount(originCoin, destCoin, transferAmount).subscribe(
         data => {
           resolve(data)
         },
@@ -242,7 +241,7 @@ export class SendPageDataService implements OnDestroy {
 
   getMinTransferAmount(originCoin, destCoin) {
     return new Promise<any>((resolve, reject) => {
-      this.changellyApi.getMinAmount(originCoin, destCoin).subscribe(
+      this._ChangellyApi.getMinAmount(originCoin, destCoin).subscribe(
         res => {
           resolve(res.data.minAmount)
         },
@@ -255,7 +254,7 @@ export class SendPageDataService implements OnDestroy {
 
   getEta(originCoin, destCoin) {
     return new Promise<any>((resolve, reject) => {
-      this.changellyApi.getEta(originCoin, destCoin).subscribe(
+      this._ChangellyApi.getEta(originCoin, destCoin).subscribe(
         data => {
           resolve(data)
         },
