@@ -93,11 +93,43 @@ TransactionCtrl.mapTxsToOrders = async () => {
       validTx: [],
       invalidTx: [],
     }
-    // get tx
     const unspentTx = await rpc.nav.listUnspentTx()
     // get orders
+    const unfulfilledOrders = await TransactionCtrl.getUnfulfilledOrders()
     // map
-    // return mapped
+    const mapped = {
+      validTx: [],
+      invalidTx: [],
+    }
+
+    unspentTx.foreach(tx => {
+      const MIN_ORDER_AMOUNT_VARIATION = 0.95 // TODO: pull these from a config
+      const MAX_ORDER_AMOUNT_VARIATION = 1.05
+      let matchingOrder = false
+      let amountValid = false
+      unfulfilledOrders.some(order => {
+        // loop till we find a matching order or run out of orders
+        if (order.address === tx.address) {
+          matchingOrder = order
+          if (
+            order.amount * MIN_ORDER_AMOUNT_VARIATION <= tx.amount &&
+            order.amount * MAX_ORDER_AMOUNT_VARIATION >= tx.amount
+          ) {
+            amountValid = true
+          }
+        }
+        if (matchingOrder) {
+          return true
+        }
+        return false
+      })
+      if (matchingOrder && amountValid) {
+        mapped.validTx.push({ tx: tx, order: matchingOrder })
+      } else {
+        mapped.invalidTx.push({ tx: tx, order: matchingOrder })
+      }
+    })
+    return mapped
   } catch (err) {
     errorHandler.handleError(err)
     return false
@@ -107,7 +139,7 @@ TransactionCtrl.mapTxsToOrders = async () => {
 TransactionCtrl.getUnfulfilledOrders = async () => {
   try {
     const query = TransactionModel.find()
-    query.where('order_status').equals('unsent') //todo check if this is correct
+    query.where('order_status').equals('UNSENT') // TODO check if this status is correct
     const orders = await query.exec()
     return orders
   } catch (err) {
