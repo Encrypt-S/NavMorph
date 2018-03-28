@@ -52,9 +52,6 @@ OrderCtrl.getSecondChangellyAddress = async (req, res) => {
 
 OrderCtrl.getChangellyAddress = (inputCurrency, outputCurrency, destAddress) => {
   return new Promise((fulfill, reject) => {
-    if (outputCurrency === 'NAV') {
-      fulfill(destAddress)
-    }
     ChangellyCtrl.generateAddress({
       from: inputCurrency.toLowerCase(),
       to: outputCurrency.toLowerCase(),
