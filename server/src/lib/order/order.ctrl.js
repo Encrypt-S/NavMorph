@@ -50,21 +50,18 @@ OrderCtrl.getSecondChangellyAddress = async (req, res) => {
   }
 }
 
-OrderCtrl.getChangellyAddress = (inputCurrency, outputCurrency, destAddress) => {
-  return new Promise((fulfill, reject) => {
-    ChangellyCtrl.generateAddress({
+OrderCtrl.getChangellyAddress = async (inputCurrency, outputCurrency, destAddress) => {
+  try {
+    const data = await ChangellyCtrl.generateAddress({
       from: inputCurrency.toLowerCase(),
       to: outputCurrency.toLowerCase(),
       address: destAddress,
       extraId: null,
     })
-      .then(data => {
-        fulfill(data.result.address)
-      })
-      .catch(error => {
-        reject(error)
-      })
-  })
+    return data.result.address
+  } catch (err) {
+    throw err
+  }
 }
 
 module.exports = OrderCtrl
