@@ -20,6 +20,7 @@ rpc.nav.unlockWallet = async () => {
 }
 
 rpc.nav.getNewAddress = async () => {
+  // Get an unused address from our address pool
   try {
     return await rpc.getNewAddress()
   } catch (err) {
@@ -37,6 +38,16 @@ rpc.nav.getNewAddress = async () => {
       logger.writeErrorLog('RPC_003', err.message, err)
       return false
     }
+  }
+}
+
+rpc.nav.listUnspentTx = async () => {
+  // list unspent transactions from the wallet
+  try {
+    return await rpc.listUnspent()
+  } catch (err) {
+    logger.writeErrorLog('RPC_004', err.message, err)
+    return false
   }
 }
 
