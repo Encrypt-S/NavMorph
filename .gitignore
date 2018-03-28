@@ -47,5 +47,9 @@ testem.log
 .DS_Store
 Thumbs.db
 
+# Test coverage
+/server/coverage
+/server/.nyc_output
+
 #secrets
 /server/src/secrets.js
